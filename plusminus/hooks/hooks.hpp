@@ -215,9 +215,7 @@ void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
 void __fastcall ForcePositionTo(BasePlayer* pl, Vector3 pos) {
 	uintptr_t movement = read(pl + 0x4D0, uintptr_t);
 	if (GetAsyncKeyState(Keys::forcepos)) { }
-	else {
-		return original_forcepos(pl, pos);
-	}
+	else { return original_forcepos(pl, pos); }
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
 	if (Misc::CustomHitsound) { return false; }
