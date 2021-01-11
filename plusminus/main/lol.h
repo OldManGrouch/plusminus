@@ -29,13 +29,20 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	((StartAttackCooldown)(Storage::gBase + CO::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
 	return ((ProcessAttack)(Storage::gBase + CO::ProcessAttack))(Held, newHitTest);
 }
-
+typedef void(__stdcall* set_color)(uintptr_t, Color);
+typedef void(__stdcall* set_material)(uintptr_t, uintptr_t);
 void DoChams(BasePlayer* target) {
-	DWORD64 staticMaterialPropertyBlock = read(Storage::gBase + 0x29C2F58, DWORD64); if (!staticMaterialPropertyBlock) return;
-	DWORD64 newMaterialPropertyBlock = il2cpp_object_new(staticMaterialPropertyBlock); if (!newMaterialPropertyBlock) return;
-	//((SetColor)(Storage::gBase + 0x1396C80))(newMaterialPropertyBlock, Str(L"_Color"), Color(1,0,0,1));
-	uintptr_t sharedPropertBlock = read(read(read(target + oPlayerModel, uintptr_t) + 0x280, uintptr_t) + 0x48, uintptr_t);
-	write(sharedPropertBlock, newMaterialPropertyBlock, uintptr_t);
+	DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64);
+	DWORD64 cham = il2cpp_object_new(staticmaterial);
+	((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1));
+	DWORD64 renderer = read(Storage::gBase + 0x299A778, DWORD64);
+	((set_material)(Storage::gBase + 0x14DDB70))(renderer, cham);
+	//DWORD64 multimesh = read(read(target + oPlayerModel, DWORD64) + 0x280, DWORD64);
+	//DWORD64 shared = read(multimesh + 0x48, DWORD64);
+	/*typedef void(__stdcall* SetColor)(DWORD64, int, Color);
+	typedef int(__stdcall* Prop2ID)(Str);
+	int id = ((Prop2ID)(Storage::gBase + 0x14DFB10))(Str(xorstr(L"_Color")));
+	((SetColor)(Storage::gBase + 0x1396CE0))(shared, id, Color(1, 0, 0, 1));*/
 }
 float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
 void SpamKnock(uintptr_t Door) {

@@ -301,12 +301,7 @@ void EntityThreadLoop() {
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams) {
-				DWORD64 multimesh = read(read(ent + oPlayerModel, DWORD64) + 0x280, DWORD64);
-				DWORD64 shared = read(multimesh + 0x48, DWORD64);
-				typedef void(__stdcall* SetColor)(DWORD64, int, Color);
-				typedef int(__stdcall* Prop2ID)(Str);
-				int id = ((Prop2ID)(Storage::gBase + 0x14DFB10))(Str(xorstr(L"_Color")));
-				((SetColor)(Storage::gBase + 0x1396CE0))(shared, id, Color(1, 0, 0, 1));
+				DoChams((BasePlayer*)ent);
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
