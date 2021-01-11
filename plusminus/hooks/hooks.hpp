@@ -164,7 +164,7 @@ bool waslagging = false;
 void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	typedef void(__stdcall* set_rayleigh)(float);
 	if (Misc::Rayleigh) {
-		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount); // yay dd d
+		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount);
 	}
 	else {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(1.f);
