@@ -54,7 +54,7 @@ inline HandleRunning_fn original_handleRunning{};
 int yeet = 0;
 bool __fastcall SendClientTick(void* baseplayer) {
 	if (Misc::AntiAim) {
-		auto input = read(baseplayer + 0x4C8, uintptr_t); // MAGIC BOOLEWT
+		auto input = read(baseplayer + 0x4C8, uintptr_t);
 		auto state = read(input + 0x20, uintptr_t);
 		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
 		yeet += Misc::AntiAimSpeed;
