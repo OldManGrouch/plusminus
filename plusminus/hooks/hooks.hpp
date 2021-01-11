@@ -55,17 +55,8 @@ int yeet = 0;
 bool __fastcall SendClientTick(void* baseplayer) {
 	if (Misc::AntiAim) {
 		auto input = read(baseplayer + 0x4C8, uintptr_t);
-		if (!input) {
-			return original_sendclienttick(baseplayer);
-		}
 		auto state = read(input + 0x20, uintptr_t);
-		if (!state) {
-			return original_sendclienttick(baseplayer);
-		}
-		auto current = read(state + 0x10, uintptr_t);
-		if (!current) {
-			return original_sendclienttick(baseplayer);
-		}
+		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
 		yeet += Misc::AntiAimSpeed;
 		if (yeet >= 999) {
 			yeet = 0;
