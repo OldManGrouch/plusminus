@@ -64,10 +64,6 @@ void EntityLoop() {
 		Renderer::String(Vector2(100, 115), localPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
 	}
 	else { Renderer::String(Vector2(100, 115), xorstr(L"local: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
-	//if (Misc::HitLogs) {
-	//	Test();
-	//}
-	//Renderer::String(Vector2(Global::ScreenHigh - 200, Global::ScreenWidth / 2), xorstr(L"hello!"), D2D1::ColorF(1.f, 1.f, 0.f, 1.f), true, true);
 	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
 	for (int i = 0; i <= EntityCount; i++) {
 		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
@@ -305,7 +301,12 @@ void EntityThreadLoop() {
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams) {
-				//DoChams(lol);
+				DWORD64 multimesh = read(read(ent + oPlayerModel, DWORD64) + 0x280, DWORD64);
+				DWORD64 shared = read(multimesh + 0x48, DWORD64);
+				typedef void(__stdcall* SetColor)(DWORD64, int, Color);
+				typedef int(__stdcall* Prop2ID)(Str);
+				int id = ((Prop2ID)(Storage::gBase + 0x14DC870))(Str(xorstr(L"_Color")));
+				((SetColor)(Storage::gBase + 0x1393F70))(shared, id, Color(1, 0, 0, 1));
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
