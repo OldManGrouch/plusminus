@@ -204,11 +204,16 @@ void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	return original_handleRunning(a1, a2, wantsRun);
 }
 void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
-	if (!wantsJump) {
-		return;
+	if (Misc::InfiniteJump) {
+		if (!wantsJump) {
+			return;
+		}
+		typedef void(__stdcall* Jump)(void*, void*, bool);
+		((Jump)(Storage::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
 	}
-	typedef void(__stdcall* Jump)(void*, void*, bool);
-	((Jump)(Storage::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
+	else {
+		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
+	}
 }
 void __fastcall SetFlying(void* a1, void* a2) {}
 
@@ -224,7 +229,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6CDBF0), (void**)&original_handleJumping, HandleJumping);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, HandleJumping);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);

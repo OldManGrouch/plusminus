@@ -117,10 +117,6 @@ void Menu() {
 			if (Combat::silentAim) { Combat::heliSilent = false; }
 			HelpCheckbox(xorstr("Always Heli Weakspot"), &Combat::heliSilent, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 			if (Combat::heliSilent) { Combat::silentAim = false; }
-
-			ImGui::Checkbox("magic boolet", &Combat::MagicBullet);
-			ImGui::Checkbox("HELI magic boolet", &Combat::HeliMagicBullet);
-
 			HelpCheckbox(xorstr("Silent Melee"), &Weapons::SilentMelee, xorstr("Will automatically hit people next to you with a melee weapon in your hand"));
 			HelpCheckbox(xorstr("pSilent"), &Combat::pSilent, xorstr("Bullets will just fly to the target."));
 			if (Combat::pSilent) {
@@ -406,7 +402,7 @@ void Menu() {
 			HelpCheckbox(xorstr("Shoot Anywhere"), &Weapons::jumpAim, xorstr("Allows you to shoot anywhere."));
 			HelpCheckbox(xorstr("Omni-Sprint"), &Misc::omniSprint, xorstr("Allows you to sprint in any direction."));
 			ImGui::Checkbox(xorstr("Spiderman"), &Misc::SpiderMan);
-			//ImGui::Checkbox(xorstr("HitLogs"), &Misc::HitLogs);
+			ImGui::Checkbox(xorstr("Infinite Jump"), &Misc::InfiniteJump);
 			HelpCheckbox(xorstr("InstaRevive"), &Misc::InstaRevive, xorstr("Instantly picks a downed person."));
 			HelpCheckbox(xorstr("Custom Hitsound"), &Misc::CustomHitsound, xorstr("When you hit a player, your custom hitsound will play. Make a new folder in C disk called 'plusminus', and put your hitsound inside of there. It has to be in a .wav format and called 'hit'"));
 			HelpCheckbox(xorstr("AutoCollect"), &Misc::AutoCollect, xorstr("Automatically collects collectables that are close."));

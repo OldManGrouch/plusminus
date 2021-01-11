@@ -28,6 +28,7 @@ namespace CO {
 	auto CanAttack = 0x28EE70; // public bool CanAttack() { }
 	auto SendClientTick = 0x2A5E50; // internal void SendClientTick() { }
 	auto HandleRunning = 0x6CDD10; // private void HandleRunning(ModelState state, bool wantsRun) { }
+	auto HandleJumping = 0x6CDBF0;
 	auto CreateProjectile = 0x58A450; // private Projectile CreateProjectile(string prefabPath, Vector3 pos, Vector3 forward, Vector3 velocity) { }
 	auto CanHoldItems = 0x2855A0; // public virtual bool CanHoldItems() { }
 	auto Run = 0x1B88400; // public static string Run(ConsoleSystem.Option options, string strCommand, object[] args) { }

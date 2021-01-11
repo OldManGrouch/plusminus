@@ -249,6 +249,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool InfiniteJump = false;
 	bool HitLogs = false;
 	bool InstaRevive = false;
 	bool Rayleigh = false;

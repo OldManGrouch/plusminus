@@ -168,6 +168,7 @@ private:
 		SetupValue(Weapons::jumpAim, false, c_xor("Misc"), c_xor("ShootAnywhere"));
 		SetupValue(Misc::omniSprint, false, c_xor("Misc"), c_xor("OmniSprint"));
 		SetupValue(Misc::SpiderMan, false, c_xor("Misc"), c_xor("SpiderMan"));
+		SetupValue(Misc::InfiniteJump, false, c_xor("Misc"), c_xor("InfiniteJump"));
 		SetupValue(Misc::CustomHitsound, false, c_xor("Misc"), c_xor("CustomHitsound"));
 		SetupValue(Misc::AutoCollect, false, c_xor("Misc"), c_xor("AutoCollect"));
 		SetupValue(Misc::AutoAssist, false, c_xor("Misc"), c_xor("AutoAssist"));
