@@ -61,9 +61,6 @@
     <ClInclude Include="hooks/minhook\src\HDE\pstdint.h">
       <Filter>source\hooks\minhook\HDE</Filter>
     </ClInclude>
-    <ClInclude Include="stuff/structs.h">
-      <Filter>source\hooks\minhook\HDE</Filter>
-    </ClInclude>
     <ClInclude Include="hooks/minhook\src\HDE\table32.h">
       <Filter>source\hooks\minhook\HDE</Filter>
     </ClInclude>
@@ -171,6 +168,9 @@
     </ClInclude>
     <ClInclude Include="hooks/defs.h">
       <Filter>source\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="stuff/structs.h">
+      <Filter>source\stuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
