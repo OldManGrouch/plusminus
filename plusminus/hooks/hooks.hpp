@@ -203,7 +203,7 @@ void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (Misc::omniSprint) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
 }
-void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) {
+void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
 	if (!wantsJump) {
 		return;
 	}
