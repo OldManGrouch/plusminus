@@ -112,35 +112,8 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 	}
 	return original_traceall(test, traces, layerMask);
 }
-typedef void(__stdcall* SetColor)(DWORD64, Str, Color);
-typedef void(__stdcall* SetFloat)(DWORD64, Str, float);
-void __fastcall SetSkinProperties(DWORD64 playermodel, DWORD64 materialpropblock) {
-	
-	if (!PlayerEsp::chams) {
-		return original_setskinproperties(playermodel, materialpropblock);
-	}
-	else {
-		((SetColor)(Storage::gBase + 0x1396C80))(materialpropblock, Str(L"_Color"), Color(1, 0, 0, 1));
-		((SetFloat)(Storage::gBase + 0x1396D80))(materialpropblock, Str(L"niggamoment"), 58931.f);
-	}
-}
-typedef void(__stdcall* CreateWithShader)(uintptr_t, uintptr_t);
-typedef void(__stdcall* set_color)(uintptr_t, Color);
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
-
-	/*DWORD64 staticMaterial = read(Storage::gBase + 0x29E5330, DWORD64);
-	if (staticMaterial) {
-		DWORD64 newMaterial = il2cpp_object_new(staticMaterial); 
-		if (newMaterial) {
-			((CreateWithShader)(Storage::gBase + 0x1397210))(newMaterial, utils::ShaderFind(Str(L"Transparent/Diffuse")));
-			((set_color)(Storage::gBase + 0x1398AC0))(newMaterial, Color(1, 0, 0, 1));
-			write(skinset + 0x70, newMaterial, uintptr_t);
-		}
-	}*/
-	
-
-	
 	if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
 		write(color + 0x4, 0.f, float);
@@ -287,59 +260,7 @@ void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	return original_handleRunning(a1, a2, wantsRun);
 }
 void __fastcall SetFlying(void* a1, void* a2) {}
-typedef void(__stdcall* BeginCycle)(uintptr_t);
-typedef void(__stdcall* LaunchProjectile)(uintptr_t);
-typedef void(__stdcall* UpdateAmmoDisplay)(uintptr_t);
-typedef void(__stdcall* ShotFired)(uintptr_t);
-typedef void(__stdcall* DidAttackClientside)(uintptr_t);
-typedef void(__stdcall* DryFire)(uintptr_t);
-typedef bool(__stdcall* HasAttackCooldown)(uintptr_t);
-typedef void(__stdcall* Play)(uintptr_t, Str);
-void __fastcall DoAttack(uintptr_t baseproj) {
-	if (!LocalPlayer) { return; }
 
-	if (read(baseproj + 0x270, bool) == false) {
-		if (!LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY)) {
-			return;
-		}
-	}
-	else {
-		if (!LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY)) {
-			write(baseproj + 0x330, true);
-		}
-		if (read(baseproj + 0x330, bool) == false || !LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY)) {
-			return;
-		}
-	}
-	if (read(baseproj + 0x2EE, bool) == true && read(baseproj + 0x2EF, bool) == true) {
-		((BeginCycle)(Storage::gBase + 0x58A050))(baseproj);
-		return;
-	}
-	if (((HasAttackCooldown)(Storage::gBase + 0x2DD4B0))(baseproj)) { return; }
-
-	if (read(baseproj + 0x270, bool) == true) {
-		write(baseproj + 0x330, true);
-	}
-	int contents = read(read(baseproj + 0x2A0, uintptr_t) + 0x1C, int);
-	if (contents <= 0) {
-		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY)) {
-			((DryFire)(Storage::gBase + 0x58B360))(baseproj);
-		}
-		return;
-	}
-	if (read(baseproj + 0x180, uintptr_t)) {
-		((Play)(Storage::gBase + 0x5C3600))(read(baseproj + 0x180, uintptr_t), Str(L"attack"));
-	}
-	((LaunchProjectile)(Storage::gBase + 0x58E570))(baseproj);
-	((UpdateAmmoDisplay)(Storage::gBase + 0x590560))(baseproj);
-	((ShotFired)(Storage::gBase + 0x58FD00))(baseproj);
-	((DidAttackClientside)(Storage::gBase + 0x58A5E0))(baseproj);
-	if (read(baseproj + 0x2EE, bool) == false) {
-		((BeginCycle)(Storage::gBase + 0x58A050))(baseproj);
-		return;
-	}
-	write(baseproj + 0x2EF, true, bool);
-}
 void HookFunction(void* Function, void** Original, void* Detour, bool autoEnable = true) {
 	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) { std::cout << (xorstr("Failed to initialize MinHook")) << std::endl; return; }
 	MH_CreateHook(Function, Detour, Original);
@@ -358,13 +279,9 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1580), (void**)&original_domovement, DoMovement);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x58A5F0), (void**)&original_doattack, DoAttack);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, DoHitS);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, get_isHeadshot);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, ForcePositionTo);
