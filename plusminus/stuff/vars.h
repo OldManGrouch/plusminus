@@ -44,7 +44,7 @@ namespace Keys
 }
 namespace Storage
 {
-	uintptr_t chamsShader = null;
+	uintptr_t chamsShader = NULL;
 	uintptr_t gBase = NULL;
 	uintptr_t uBase = NULL;
 	uintptr_t closestPlayer = NULL;
