@@ -13,6 +13,9 @@ inline clientinput_fn original_clientinput;
 typedef void(__fastcall* dohitnotify)(DWORD64, DWORD64);
 inline dohitnotify original_dohitnotify;
 
+typedef void(__fastcall* setskinproperties)(DWORD64, DWORD64);
+inline setskinproperties original_setskinproperties;
+
 typedef void(__fastcall* lateupd)(uintptr_t);
 inline lateupd original_lateupdate;
 
