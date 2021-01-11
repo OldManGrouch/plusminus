@@ -488,8 +488,8 @@ public:
 	}
 	void SpiderMan() {
 		INT64 Movement = read(this + oMovement, UINT64);
-		safe_write(Movement + oGroundAngle, 0.f, float);
-		safe_write(Movement + oGroundAngleNew, 0.f, float);
+		write(Movement + oGroundAngle, 0.f, float);
+		write(Movement + oGroundAngleNew, 0.f, float);
 	}
 	void NoSway() {
 		write(this + oClothingAccuracyBonus, 1.f, float);

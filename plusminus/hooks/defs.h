@@ -48,3 +48,6 @@ inline cancan original_canholditems;
 
 typedef void(__fastcall* HandleRunning_fn)(void*, void*, bool);
 inline HandleRunning_fn original_handleRunning{};
+
+typedef void(__fastcall* handlejumping)(void*, void*, bool, bool);
+inline handlejumping original_handleJumping{};

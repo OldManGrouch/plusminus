@@ -35,6 +35,10 @@ inline bool __fastcall CanAttack(void* a1, void* a2) {
 	if (Weapons::jumpAim) return true;
 	return original_canattack(a1, a2);
 }
+inline bool __fastcall CanJump(void* a1, void* a2) {
+	if (Weapons::jumpAim) return true;
+	return original_canattack(a1, a2);
+}
 void __fastcall LateUpdate(uintptr_t TOD_Sky) {
 	typedef void(__stdcall* updamb)(uintptr_t);
 	if (Misc::CustomAmbient) {
@@ -172,7 +176,6 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
-	write(a2 + 0x20, Vector3(0, 0, 0), Vector3);
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
 	if (Combat::silentAim || Combat::heliSilent) {
 		if (Storage::closestPlayer != NULL && Combat::silentAim) {
@@ -200,6 +203,13 @@ void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (Misc::omniSprint) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
 }
+void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) {
+	if (!wantsJump) {
+		return;
+	}
+	typedef void(__stdcall* Jump)(void*, void*, bool);
+	((Jump)(Storage::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
+}
 void __fastcall SetFlying(void* a1, void* a2) {}
 
 void HookFunction(void* Function, void** Original, void* Detour, bool autoEnable = true) {
@@ -214,6 +224,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6CDBF0), (void**)&original_handleJumping, HandleJumping);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
