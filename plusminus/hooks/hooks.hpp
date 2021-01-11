@@ -53,6 +53,7 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 }
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
+	((set_color)(Storage::gBase + 0x1398AC0))(read(skinset + 0x70, uintptr_t), Color(1, 0, 0, 1));
 	if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
 		write(color + 0x4, 0.f, float);
@@ -214,7 +215,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xOFFSET), (void**)&original_setskinproperties, SetSkinProperties);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
