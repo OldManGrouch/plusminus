@@ -35,11 +35,13 @@ typedef void(__stdcall* CreateWithShader)(uintptr_t, uintptr_t);
 void DoChams(BasePlayer* target) {
 	DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64);
 	DWORD64 cham = il2cpp_object_new(staticmaterial);
-	printf("shaderfind: %s\n", std::to_string(utils::ShaderFind(pUncStr(L"Standard"))));
-	((CreateWithShader)(Storage::gBase + 0x1397210))(cham, utils::ShaderFind(pUncStr(L"Standard")));
-	((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1));
-	DWORD64 renderer = read(Storage::gBase + 0x299A778, DWORD64);
-	((set_material)(Storage::gBase + 0x14DDB70))(renderer, cham);
+	if (Storage::chamsShader != null) {
+		printf("shader: %s\n", std::to_string(Storage::chamsShader));
+		((CreateWithShader)(Storage::gBase + 0x1397210))(cham, Storage::chamsShader);
+		((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1));
+		DWORD64 renderer = read(Storage::gBase + 0x299A778, DWORD64);
+		((set_material)(Storage::gBase + 0x14DDB70))(renderer, cham);
+	}
 	//DWORD64 multimesh = read(read(target + oPlayerModel, DWORD64) + 0x280, DWORD64);
 	//DWORD64 shared = read(multimesh + 0x48, DWORD64);
 	/*typedef void(__stdcall* SetColor)(DWORD64, int, Color);
