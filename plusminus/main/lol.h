@@ -31,10 +31,12 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 }
 typedef void(__stdcall* set_color)(uintptr_t, Color);
 typedef void(__stdcall* set_material)(uintptr_t, uintptr_t);
+typedef void(__stdcall* CreateWithShader)(uintptr_t, uintptr_t);
 void DoChams(BasePlayer* target) {
 	DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64);
 	DWORD64 cham = il2cpp_object_new(staticmaterial);
-	//((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1));
+	((CreateWithShader)(Storage::gBase + 0x1397210))(cham, utils::ShaderFind(Str(L"Standard")));
+	((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1));
 	DWORD64 renderer = read(Storage::gBase + 0x299A778, DWORD64);
 	((set_material)(Storage::gBase + 0x14DDB70))(renderer, cham);
 	//DWORD64 multimesh = read(read(target + oPlayerModel, DWORD64) + 0x280, DWORD64);
