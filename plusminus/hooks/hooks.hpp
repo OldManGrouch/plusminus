@@ -54,9 +54,9 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
-	if (Storage::chamsShader == null) {
+	/*if (Storage::chamsShader == null) {
 		Storage::chamsShader = ((get_shader)(Storage::gBase + 0x1398A80))(read(skinset + 0x78, uintptr_t));
-	}
+	}*/
 	if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
 		write(color + 0x4, 0.f, float);
