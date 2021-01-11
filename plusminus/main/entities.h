@@ -305,8 +305,8 @@ void EntityThreadLoop() {
 				DWORD64 shared = read(multimesh + 0x48, DWORD64);
 				typedef void(__stdcall* SetColor)(DWORD64, int, Color);
 				typedef int(__stdcall* Prop2ID)(Str);
-				int id = ((Prop2ID)(Storage::gBase + 0x14DC870))(Str(xorstr(L"_Color")));
-				((SetColor)(Storage::gBase + 0x1393F70))(shared, id, Color(1, 0, 0, 1));
+				int id = ((Prop2ID)(Storage::gBase + 0x14DFB10))(Str(xorstr(L"_Color")));
+				((SetColor)(Storage::gBase + 0x1396CE0))(shared, id, Color(1, 0, 0, 1));
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
