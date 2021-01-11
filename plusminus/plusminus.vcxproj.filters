@@ -169,6 +169,9 @@
     <ClInclude Include="stuff/offsets.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
+    <ClInclude Include="hooks/defs.h">
+      <Filter>source\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

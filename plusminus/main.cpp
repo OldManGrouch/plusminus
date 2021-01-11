@@ -1,6 +1,4 @@
 ﻿#include "includes.h"
-
-
 char dlldir[320];
 void HWID_Checker(HINSTANCE hModule) {
 	HW_PROFILE_INFO hwProfileInfo;
