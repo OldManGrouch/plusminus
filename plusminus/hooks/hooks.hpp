@@ -196,7 +196,7 @@ void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDir
 Vector3 __fastcall get_position(DWORD64 playereyes) {
 	if (Misc::LongNeck) {
 		if (GetAsyncKeyState(Keys::neck)) {
-			return Vector3(LocalPlayer->GetBoneByID(head)) + Vector3(0, 1.5f, 0);
+			return Vector3(LocalPlayer->GetBoneByID(head)) + Vector3(0, 1.15, 0);
 		}
 	}
 	return original_geteyepos(playereyes);
@@ -223,7 +223,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xOFFSET), (void**)&original_setskinproperties, SetSkinProperties);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohit, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
