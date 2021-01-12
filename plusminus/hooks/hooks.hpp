@@ -154,6 +154,7 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
+	
 	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
 		if (Combat::HitboxOverride) {
 			uint32_t bone;
@@ -192,6 +193,14 @@ void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDir
 		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
 	}
 }
+Vector3 __fastcall get_position(DWORD64 playereyes) {
+	if (Misc::LongNeck) {
+		if (GetAsyncKeyState(Keys::neck)) {
+			return Vector3(LocalPlayer->GetBoneByID(head)) + Vector3(0, Global::testInt, 0);
+		}
+	}
+	return original_geteyepos(playereyes);
+}
 void __fastcall SetFlying(void* a1, void* a2) {}
 
 void HookFunction(void* Function, void** Original, void* Detour, bool autoEnable = true) {
@@ -212,6 +221,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6237E0), (void**)&original_geteyepos, get_position);
 
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xOFFSET), (void**)&original_setskinproperties, SetSkinProperties);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);

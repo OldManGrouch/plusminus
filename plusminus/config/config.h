@@ -167,6 +167,7 @@ private:
 		SetupValue(Weapons::jumpAim, false, c_xor("Misc"), c_xor("ShootAnywhere"));
 		SetupValue(Misc::omniSprint, false, c_xor("Misc"), c_xor("OmniSprint"));
 		SetupValue(Misc::SpiderMan, false, c_xor("Misc"), c_xor("SpiderMan"));
+		SetupValue(Misc::LongNeck, false, c_xor("Misc"), c_xor("LongNeck"));
 		SetupValue(Misc::InfiniteJump, false, c_xor("Misc"), c_xor("InfiniteJump"));
 		SetupValue(Misc::CustomHitsound, false, c_xor("Misc"), c_xor("CustomHitsound"));
 		SetupValue(Misc::AutoCollect, false, c_xor("Misc"), c_xor("AutoCollect"));
@@ -219,8 +220,9 @@ private:
 		SetupValue(Keys::lockTarget, 0x4A, c_xor("Keys"), c_xor("LockTarget"));
 		SetupValue(Keys::aimKey, 0x58, c_xor("Keys"), c_xor("aimKey"));
 		SetupValue(Keys::gravityKey, 0x04, c_xor("Keys"), c_xor("gravityKey"));
-		SetupValue(Keys::forcepos, 0x04, c_xor("Keys"), c_xor("froc"));
+		SetupValue(Keys::forcepos, 0x4E, c_xor("Keys"), c_xor("froc"));
 		SetupValue(Keys::pSilent, 0x50, c_xor("Keys"), c_xor("pSilent"));
+		SetupValue(Keys::neck, 0x4D, c_xor("Keys"), c_xor("neck"));
 
 		SetupValue(Crosshair::Default, false, c_xor("Crosshair"), c_xor("Default"));
 		SetupValue(Crosshair::Custom, false, c_xor("Crosshair"), c_xor("Custom"));

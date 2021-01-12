@@ -1,6 +1,9 @@
 HANDLE handle2;
 bool init, show = true;
 #define null NULL
+namespace vars {
+
+}
 namespace Global
 {
 	bool wasinvalid = false;
@@ -20,24 +23,12 @@ namespace Global
 	char ConfigName[0x100] = "cfg";
 	
 }
-namespace Globals {
-	namespace Recoil {
-		float recoilYawMin;
-		float recoilYawMax;
-		float recoilPitchMin;
-		float recoilPitchMax;
-		float ADSScale;
-		float MovementPenalty;
-	}
-}
 namespace Keys
 {
+	int neck = { 0x4D };
 	int forcepos{ 0x4E };
 	int pSilent{ 0x50 }; // P key
-	int removeBSM{ 0x05 };
-	int addBSM{ 0x06 };
 	int lockTarget{ 0x4A };
-	int clearTarget{ 0x4E };
 	int aimKey{ 0x58 }; // VK_RMOUSE
 	int gravityKey{ 0x04 };
 	int walkonWaterKey{ 0x06 };
@@ -242,6 +233,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool LongNeck = false;
 	bool InfiniteJump = false;
 	bool HitLogs = false;
 	bool InstaRevive = false;

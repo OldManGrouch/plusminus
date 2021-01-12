@@ -31,6 +31,9 @@ inline sendclienttick original_sendclienttick;
 typedef DWORD64(__fastcall* getskincolor)(DWORD64, float);
 inline getskincolor original_getskincolor;
 
+typedef Vector3(__fastcall* getpos)(DWORD64);
+inline getpos original_geteyepos;
+
 typedef void(__fastcall* crrfrawef)(BasePlayer*, Vector3);
 inline crrfrawef original_forcepos;
 

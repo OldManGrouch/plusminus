@@ -399,6 +399,10 @@ void Menu() {
 			HelpCheckbox(xorstr("Omni-Sprint"), &Misc::omniSprint, xorstr("Allows you to sprint in any direction."));
 			ImGui::Checkbox(xorstr("Spiderman"), &Misc::SpiderMan);
 			ImGui::Checkbox(xorstr("Infinite Jump"), &Misc::InfiniteJump);
+			ImGui::Checkbox(xorstr("Long Neck"), &Misc::LongNeck);
+			if (Misc::LongNeck) {
+				Hotkey(xorstr("Long Neck Key"), &Keys::neck, ImVec2(200.f, 0));
+			}
 			HelpCheckbox(xorstr("InstaRevive"), &Misc::InstaRevive, xorstr("Instantly picks a downed person."));
 			HelpCheckbox(xorstr("Custom Hitsound"), &Misc::CustomHitsound, xorstr("When you hit a player, your custom hitsound will play. Make a new folder in C disk called 'plusminus', and put your hitsound inside of there. It has to be in a .wav format and called 'hit'"));
 			HelpCheckbox(xorstr("AutoCollect"), &Misc::AutoCollect, xorstr("Automatically collects collectables that are close."));
@@ -435,6 +439,7 @@ void Menu() {
 			ImGui::Separator();
 			if (ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &Global::debugtab)) {
 				ImGui::SliderFloat(xorstr("float"), &Global::testFloat, 0.f, 50.f);
+				ImGui::SliderInt(xorstr("int"), &Global::testInt, 0, 20);
 				ImGui::InputText(xorstr("char"), Global::testChar, 0x100);
 			}
 			ImGui::Checkbox(xorstr("Panic"), &Global::Panic);
