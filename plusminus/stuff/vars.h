@@ -54,15 +54,8 @@ namespace Storage
 namespace Combat
 {
 	bool pSilentOnKey = false;
-	bool heliSilent = false;
-	bool silentAim = false;
-	bool ThroughWall = false;
-	bool HeliMagicBullet = false;
-	bool MagicBullet = false;
-	bool GamerBullet = false;
-	bool ProjectileTargeting = false;
-	bool Pierce = false;
-	bool HelipSilent = false;
+	bool AlwaysHeliHotspot = false;
+	bool HitboxOverride = false;
 	bool pSilent = false;
 	int pSilentTargeting = 0;
 	bool Activate = false;

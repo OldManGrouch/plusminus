@@ -74,9 +74,7 @@ Vector3 Prediction(const Vector3& LP_Pos, BasePlayer* Player) {
 	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
-	Vector3 BonePos;
-	if (rand() % 100 < Combat::HeadshotPercentage) { BonePos = Player->GetBoneByID(head); }
-	else { BonePos = Player->GetBoneByID(spine4); }
+	Vector3 BonePos = Player->GetBoneByID(head);
 	float Dist = Math::Calc3D_Dist(LP_Pos, BonePos);
 	if (Dist > 0.001f) {
 		float speed = GetBulletSpeed(tar, ammo) * Weapons::FastBulletMultiplier;

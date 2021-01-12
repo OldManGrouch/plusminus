@@ -134,39 +134,16 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (Misc::SilentWalk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
 void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
-	typedef float(__stdcall* Total)(uintptr_t);
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
-	if (!oPlayerList) {
-		DWORD64 val = read(Storage::gBase + CO::BasePlayer, DWORD64);
-		DWORD64 st = read(val + 0xB8, DWORD64);
-		oPlayerList = read(st + 0x8, DWORD64);
-	}
-	UINT64 ClientEntities_values = read(oPlayerList + 0x28, UINT64);
-	if (!ClientEntities_values) return;
-	int EntityCount = read(ClientEntities_values + 0x10, int);
-	UINT64 EntityBuffer = read(ClientEntities_values + 0x18, UINT64);
-	for (int i = 0; i <= EntityCount; i++) {
-		BasePlayer* Player = (BasePlayer*)read(EntityBuffer + 0x20 + (i * 0x8), UINT64);
-		if ((BasePlayer*)read(hitinfo + 0x40, uintptr_t) == Player) {
-			Global::doneHits += 1;
-			Global::doneDamage = ((Total)(Storage::gBase + 0x417960))(read(hitinfo + 0xC8, uintptr_t));
-			Global::donePlayer = Player->GetName();
-			if (Misc::CustomHitsound) {
-				PlaySoundA(xorstr("C:\\plusminus\\hait.wav"), NULL, SND_ASYNC);
-			}
-			else { return original_dohitnotify(basecombatentity, hitinfo); }
-		}
-		else { return original_dohitnotify(basecombatentity, hitinfo); }
-	}
-}
-void __fastcall ForcePositionTo(BasePlayer* pl, Vector3 pos) {
-	uintptr_t movement = read(pl + 0x4D0, uintptr_t);
-	if (GetAsyncKeyState(Keys::forcepos)) { }
-	else { return original_forcepos(pl, pos); }
+	if (Misc::CustomHitsound) { PlaySoundA(xorstr("C:\\plusminus\\hait.wav"), NULL, SND_ASYNC); }
+	else { return original_dohitnotify(basecombatentity, hitinfo); }
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
 	if (Misc::CustomHitsound) { return false; }
 	else { return original_getisheadshot(hitinfo); }
+}
+void __fastcall ForcePositionTo(BasePlayer* pl, Vector3 pos) {
+	if (GetAsyncKeyState(Keys::forcepos)) { }
+	else { return original_forcepos(pl, pos); }
 }
 bool __fastcall CanHoldItems(void* a1, void* a2) {
 	if (Weapons::canHoldItems) return true;
@@ -177,16 +154,16 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
-	if (Combat::silentAim || Combat::heliSilent) {
-		if (Storage::closestPlayer != NULL && Combat::silentAim) {
+	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
+		if (Combat::HitboxOverride) {
 			uint32_t bone;
 			if (rand() % 100 < Combat::HeadshotPercentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
 			else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); } 
-			write(AttackA + 0x30, bone, uint32_t); /*public uint hitBone;*/
+			write(AttackA + 0x30, bone, uint32_t); // public uint hitBone;
 			write(AttackA + 0x64, 16144115, uint32_t); // public uint hitPartID;
 		}
 		else {
-			if (Storage::closestHeli != NULL && Combat::heliSilent) {
+			if (Combat::AlwaysHeliHotspot) {
 				int health = (int)ceil(read(Storage::closestHeli + 0x20C, float));
 				if (health <= 5000) {
 					write(AttackA + 0x30, 224139191, uint32_t); // public uint hitBone;

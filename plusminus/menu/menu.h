@@ -17,9 +17,6 @@ void HelpMarker(const char* desc) {
 		ImGui::EndTooltip();
 	}
 }
-void DoCombo() {
-
-}
 void HelpCheckbox(const char* desc, bool* v, const char* helptext) { ImGui::Checkbox(desc, v); ImGui::SameLine(); HelpMarker(helptext); }
 VOID ImGUI_Style() {
 	ImGuiStyle* style = &ImGui::GetStyle();
@@ -113,10 +110,11 @@ void Menu() {
 		ImGui::Separator();
 		switch (tabb) {
 		case 0:
-			HelpCheckbox(xorstr("Always Headshot"), &Combat::silentAim, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
-			if (Combat::silentAim) { Combat::heliSilent = false; }
-			HelpCheckbox(xorstr("Always Heli Weakspot"), &Combat::heliSilent, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
-			if (Combat::heliSilent) { Combat::silentAim = false; }
+			HelpCheckbox(xorstr("Hitbox Override"), &Combat::HitboxOverride, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
+			if (Combat::HitboxOverride) {
+				ImGui::SliderInt(xorstr("Headshot Percentage"), &Combat::HeadshotPercentage, 0, 100);
+			}
+			HelpCheckbox(xorstr("Always Heli Weakspot"), &Combat::AlwaysHeliHotspot, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 			HelpCheckbox(xorstr("Silent Melee"), &Weapons::SilentMelee, xorstr("Will automatically hit people next to you with a melee weapon in your hand"));
 			HelpCheckbox(xorstr("pSilent"), &Combat::pSilent, xorstr("Bullets will just fly to the target."));
 			if (Combat::pSilent) {
@@ -146,7 +144,6 @@ void Menu() {
 					Hotkey(xorstr("pSilent Key"), &Keys::pSilent, ImVec2(120.f, 0));
 				}
 			}
-			if (Combat::HelipSilent) { Combat::pSilent = false; }
 			ImGui::Checkbox(xorstr("Activate Aimbot"), &Combat::Activate);
 			if (Combat::Activate) {
 				ImGui::Checkbox(xorstr("Smooth"), &Combat::Smooth);
@@ -158,7 +155,6 @@ void Menu() {
 			ImGui::Checkbox(xorstr("Visualize Targeting Fov"), &Combat::DrawFov);
 			ImGui::SliderFloat(xorstr("Targeting Fov"), &Combat::Fov, 20.f, 1000.f);
 			ImGui::SliderFloat(xorstr("Max Targeting Distance"), &Combat::Range, 0.f, 400.f);
-			ImGui::SliderInt(xorstr("Headshot Percentage"), &Combat::HeadshotPercentage, 0, 100);
 			Hotkey(xorstr("Lock Target"), &Keys::lockTarget, ImVec2(120.f, 0));
 			ImGui::Checkbox(xorstr("Ignore Players"), &Combat::IgnorePlayers);
 			ImGui::Checkbox(xorstr("Ignore Heli"), &Combat::IgnoreHeli);

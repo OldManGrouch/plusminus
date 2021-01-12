@@ -97,9 +97,9 @@ private:
 
 	void Setup()
 	{
-		SetupValue(Combat::silentAim, false, c_xor("Combat"), c_xor("silentAim"));
-		SetupValue(Combat::ThroughWall, false, c_xor("Combat"), c_xor("ThroughWall"));
-		SetupValue(Combat::heliSilent, false, c_xor("Combat"), c_xor("heliSilent"));
+		SetupValue(Combat::HitboxOverride, false, c_xor("Combat"), c_xor("HitboxOverride"));
+		SetupValue(Combat::HeadshotPercentage, 100, c_xor("Combat"), c_xor("HeadshotPercentage"));
+		SetupValue(Combat::AlwaysHeliHotspot, false, c_xor("Combat"), c_xor("AlwaysHeliHotspot"));
 		SetupValue(Weapons::SilentMelee, false, c_xor("Combat"), c_xor("SilentMelee"));
 		SetupValue(Combat::pSilent, false, c_xor("Combat"), c_xor("pSilent"));
 		SetupValue(Combat::pSilentTargeting, 0, c_xor("Combat"), c_xor("pSilentTargeting"));
@@ -109,7 +109,6 @@ private:
 		SetupValue(Combat::DrawFov, false, c_xor("Combat"), c_xor("DrawFov"));
 		SetupValue(Combat::Fov, 100.f, c_xor("Combat"), c_xor("Fov"));
 		SetupValue(Combat::Range, 300.f, c_xor("Combat"), c_xor("Range"));
-		SetupValue(Combat::HeadshotPercentage, 100, c_xor("Combat"), c_xor("HeadshotPercentage"));
 		SetupValue(Combat::IgnoreSleepers, false, c_xor("Combat"), c_xor("IgnoreSleepers"));
 		SetupValue(Combat::IgnoreTeam, false, c_xor("Combat"), c_xor("IgnoreTeam"));
 		SetupValue(Combat::IgnoreNpc, false, c_xor("Combat"), c_xor("IgnoreNpc"));
