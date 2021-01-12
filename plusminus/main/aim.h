@@ -70,12 +70,12 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 	}
 	return TargetedHeli;
 }
-Vector3 Prediction(const Vector3& LP_Pos, BasePlayer* Player) {
+Vector3 Prediction(BasePlayer* Player) {
 	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	Vector3 BonePos = Player->GetBoneByID(head);
-	float Dist = Math::Calc3D_Dist(LP_Pos, BonePos);
+	float Dist = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BonePos);
 	if (Dist > 0.001f) {
 		float speed = GetBulletSpeed(tar, ammo) * Weapons::FastBulletMultiplier;
 		float gravity = GetGravity(ammo);
@@ -95,8 +95,10 @@ void Normalize(float& Yaw, float& Pitch) {
 	else if (Yaw > 360) Yaw -= 360;
 }
 void GoToTarget(BasePlayer* player) {
-	Vector3 Local = LocalPlayer->GetBoneByID(neck);
-	Vector3 PlayerPos = Prediction(Local, player);
+	Vector3 Local;
+	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) { Local = LocalPlayer->GetBoneByID(neck) + Vector3(0, 1, 0); }
+	else { Local = LocalPlayer->GetBoneByID(neck); }
+	Vector3 PlayerPos = Prediction(player);
 	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);
 	if (Combat::Smooth) {
@@ -109,7 +111,7 @@ void GoToTarget(BasePlayer* player) {
 }
 
 void Aim(BasePlayer* AimEntity) {
-	if (Combat::Activate && !LocalPlayer->IsTeamMate(AimEntity->GetSteamID())) {
+	if (Combat::Activate) {
 		if (AimEntity && !LocalPlayer->IsMenu()) {
 			if (GetAsyncKeyState(Keys::aimKey)) GoToTarget(AimEntity);
 		}

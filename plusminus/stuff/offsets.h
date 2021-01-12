@@ -1,4 +1,5 @@
 namespace CO {
+	auto get_position = 0x6237E0; // playereyes->get_position
 	auto IsBeingHacked = 0x2FB350;
 	auto IsFullyHacked = 0x417CC0;
 	auto ForceToPos = 0x295E30;
