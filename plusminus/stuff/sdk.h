@@ -316,10 +316,6 @@ public:
 		}
 	}
 };
-class HitTest {
-public:
-
-};
 class BaseEntity {
 public:
 	bool HasFlags(int Flg) {
@@ -499,6 +495,18 @@ public:
 		write(Movement + oGravityMultiplier, val, float);
 	}
 };
+class HitTest {
+public:
+	Ray AttackRay() { return read(this + 0x14, Ray); }
+	float Radius() { return read(this + 0x2C, float); }
+	float Forgiveness() { return read(this + 0x30, float); }
+	float MaxDistance() { return read(this + 0x34, float); }
+	uintptr_t RayHit() { return read(this + 0x38, uintptr_t); }
+	bool MultiHit() { return read(this + 0x64, bool); }
+	bool BestHit() { return read(this + 0x65, bool); }
+	bool DidHit() { return read(this + 0x66, bool); }
+	uintptr_t HitEntity() { return read(this + 0x88, uintptr_t); }
+};
 class Projectile {
 public:
 	Vector3 initialVelocity() { return read(this + 0x18, Vector3); }
@@ -531,7 +539,7 @@ public:
 	uintptr_t sourceWeaponPrefab() { return read(this + 0xD8, uintptr_t); }
 	uintptr_t sourceProjectilePrefab() { return read(this + 0xE0, uintptr_t); }
 	uintptr_t mod() { return read(this + 0xE8, uintptr_t); }
-	uint32_t projectileID() { return read(this + 0xF0, uint32_t); }
+	int projectileID() { return read(this + 0xF0, int); }
 	uint32_t seed() { return read(this + 0xF4, uint32_t); }
 	bool clientsideEffect() { return read(this + 0xF8, bool); }
 	bool clientsideAttack() { return read(this + 0xF9, bool); }

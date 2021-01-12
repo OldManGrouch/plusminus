@@ -154,7 +154,7 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
-	
+	write(a2 + 0x20, Vector3(0, 0, 0), Vector3);
 	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
 		if (Combat::HitboxOverride) {
 			uint32_t bone;
@@ -223,7 +223,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohit, DoHit);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1160), (void**)&original_dohit, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
