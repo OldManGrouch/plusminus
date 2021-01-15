@@ -32,6 +32,12 @@ public:
 	inline Vector2& operator+=(const Vector2& v) { x += v.x; y += v.y; return *this; }
 	inline bool Zero() const { return (x > -0.1f && x < 0.1f && y > -0.1f && y < 0.1f); }
 };
+class Vector4 {
+public:
+	float x, y, z, w;
+	inline Vector4() { x = y = z = w = 0.0f; }
+	inline Vector4(float X, float Y, float Z, float W) { x = X; y = Y; z = Z; w = W; }
+};
 class Rect {
 public:
 	float x; // 0x10
@@ -64,10 +70,7 @@ struct Ray {
 	}
 	Ray() {}
 };
-class Vector4 {
-public:
-	float x, y, z, w;
-};
+
 
 struct Matrix4x4 {
 	union {

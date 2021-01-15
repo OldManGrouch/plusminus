@@ -1,4 +1,4 @@
-#include "hooks/defs.h"
+﻿#include "hooks/defs.h"
 int yeet = 0;
 bool __fastcall SendClientTick(void* baseplayer) {
 	if (Misc::AntiAim) {
@@ -55,17 +55,31 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 	}
 	return original_traceall(test, traces, layerMask);
 }
-typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
+void __fastcall SetSkinProperties(uintptr_t pmodel, uintptr_t block) {
+	
+}
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
-	/*if (Storage::chamsShader == null) {
-		Storage::chamsShader = ((get_shader)(Storage::gBase + 0x1398A80))(read(skinset + 0x78, uintptr_t));
-	}*/
+	
+	/*prepare*/
+	DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64); // Material_TypeInfo
+	DWORD64 cham = il2cpp_object_new(staticmaterial);
+	uintptr_t shader = utils::ShaderFind(Str(L"Hidden/KriptoFX/PostEffects/Explosion_Bloom"));
+	printf("shader: %s\n", std::to_string(shader));
+	((CreateWithShader)(Storage::gBase + 0x1397210))(cham, shader); // Material->CreateWithShader
+	((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1)); // Material->set_color
+	printf("cham: %s\n", std::to_string(cham));
+
+	/*execute*/
+	write(skinset + 0x68, cham, uintptr_t);
+	write(skinset + 0x70, cham, uintptr_t);
+	write(skinset + 0x78, cham, uintptr_t);
+
 	if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
 		write(color + 0x4, 0.f, float);
 		write(color + 0x8, 0.f, float);
-		write(color + 0xC, 0.5f, float);
+		write(color + 0xC, 0.f, float);
 	}
 	return color;
 }
@@ -110,11 +124,15 @@ Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, 
 bool waslagging = false;
 void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	typedef void(__stdcall* set_rayleigh)(float);
+	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	if (Misc::Rayleigh) {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount);
 	}
 	else {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(1.f);
+	}
+	if (Misc::Suicide) {
+		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
 	}
 	EntityThreadLoop();
 	if (!waslagging && Misc::FakeLag) {
@@ -134,7 +152,7 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (Misc::SilentWalk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
 void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
-	if (Misc::CustomHitsound) { PlaySoundA(xorstr("C:\\plusminus\\hait.wav"), NULL, SND_ASYNC); }
+	if (Misc::CustomHitsound) { PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); }
 	else { return original_dohitnotify(basecombatentity, hitinfo); }
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
@@ -220,12 +238,13 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
 
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1160), (void**)&original_dohit, DoHit);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1160), (void**)&original_dohit, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);

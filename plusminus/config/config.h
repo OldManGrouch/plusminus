@@ -131,7 +131,7 @@ private:
 		
 		SetupValue(PlayerEsp::name, false, c_xor("Players"), c_xor("name"));
 		SetupValue(PlayerEsp::box, false, c_xor("Players"), c_xor("box"));
-		SetupValue(PlayerEsp::boxstyle, 0, c_xor("NPCs"), c_xor("boxstyle"));
+		SetupValue(PlayerEsp::boxstyle, 0, c_xor("Players"), c_xor("boxstyle"));
 		SetupValue(PlayerEsp::fillbox, false, c_xor("Players"), c_xor("fillbox"));
 		SetupValue(PlayerEsp::skeleton, false, c_xor("Players"), c_xor("skeleton"));
 		SetupValue(PlayerEsp::healthdist, false, c_xor("Players"), c_xor("healthdist"));

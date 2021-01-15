@@ -64,6 +64,9 @@ void EntityLoop() {
 		Renderer::String(Vector2(100, 115), localPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
 	}
 	else { Renderer::String(Vector2(100, 115), xorstr(L"local: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
+
+	
+
 	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
 	for (int i = 0; i <= EntityCount; i++) {
 		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;

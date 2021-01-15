@@ -306,9 +306,9 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (PlayerEsp::box) {
 					if (PlayerEsp::boxstyle == 0) {
-						//Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF::Black, 3.f);
-						//Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color);
-						Renderer::FillGradientRoundedRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color, 5.f, 5.f);
+						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF::Black, 3.f);
+						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color);
+						//Renderer::FillGradientRoundedRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color, 5.f, 5.f);
 					}
 					if (PlayerEsp::boxstyle == 1) {
 						CornerBox(Entity_x, Entity_y, Entity_w, Entity_h, color);

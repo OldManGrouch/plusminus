@@ -690,8 +690,8 @@ namespace utils {
 		printf("returned 0 \n");
 		return 0;
 	}
-	uintptr_t ShaderFind(pUncStr name) {
-		typedef uintptr_t(__stdcall* ShaderFind)(pUncStr);
+	uintptr_t ShaderFind(Str name) {
+		typedef uintptr_t(__stdcall* ShaderFind)(Str);
 		uintptr_t result = ((ShaderFind)(Storage::gBase + 0x14DF9F0))(name);
 		return result;
 	}

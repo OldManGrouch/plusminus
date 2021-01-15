@@ -41,7 +41,7 @@ DWORD64 il2cpp_array(DWORD64 klass, DWORD64 size) {
 }
 DWORD64 il2cpp_object_new(DWORD64 klass) {
 	DWORD64 objnew = il2cpp::new_class_instance(klass);
-	printf("il2cpp_object_new: %s\n", std::to_string(objnew));
+	//printf("il2cpp_object_new: %s\n", std::to_string(objnew));
 	return objnew;
 }
 void il2cpp_hook(DWORD64 method, PVOID hook, PDWORD64 ret) {

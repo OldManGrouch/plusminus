@@ -1,4 +1,5 @@
 namespace CO {
+	auto OnLand = 0x29D0B0; // BasePlayer->OnLand
 	auto get_position = 0x6237E0; // playereyes->get_position
 	auto IsBeingHacked = 0x2FB350;
 	auto IsFullyHacked = 0x417CC0;

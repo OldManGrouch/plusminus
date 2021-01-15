@@ -233,6 +233,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool Suicide = false;
 	bool LongNeck = false;
 	bool InfiniteJump = false;
 	bool HitLogs = false;
