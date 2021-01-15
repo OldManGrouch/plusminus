@@ -61,19 +61,19 @@ void __fastcall SetSkinProperties(uintptr_t pmodel, uintptr_t block) {
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
 	
-	/*prepare*/
-	DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64); // Material_TypeInfo
-	DWORD64 cham = il2cpp_object_new(staticmaterial);
-	uintptr_t shader = utils::ShaderFind(Str(L"Hidden/KriptoFX/PostEffects/Explosion_Bloom"));
-	printf("shader: %s\n", std::to_string(shader));
-	((CreateWithShader)(Storage::gBase + 0x1397210))(cham, shader); // Material->CreateWithShader
-	((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1)); // Material->set_color
-	printf("cham: %s\n", std::to_string(cham));
+	///*prepare*/
+	//DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64); // Material_TypeInfo
+	//DWORD64 cham = il2cpp_object_new(staticmaterial);
+	//uintptr_t shader = utils::ShaderFind(Str(L"Hidden/KriptoFX/PostEffects/Explosion_Bloom"));
+	//printf("shader: %s\n", std::to_string(shader));
+	//((CreateWithShader)(Storage::gBase + 0x1397210))(cham, shader); // Material->CreateWithShader
+	//((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1)); // Material->set_color
+	//printf("cham: %s\n", std::to_string(cham));
 
-	/*execute*/
-	write(skinset + 0x68, cham, uintptr_t);
-	write(skinset + 0x70, cham, uintptr_t);
-	write(skinset + 0x78, cham, uintptr_t);
+	///*execute*/
+	//write(skinset + 0x68, cham, uintptr_t);
+	//write(skinset + 0x70, cham, uintptr_t);
+	//write(skinset + 0x78, cham, uintptr_t);
 
 	if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
@@ -238,7 +238,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
 
