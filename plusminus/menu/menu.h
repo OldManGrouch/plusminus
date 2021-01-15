@@ -397,9 +397,10 @@ void Menu() {
 			HelpCheckbox(xorstr("Annoyer"), &Misc::Annoyer, xorstr("Annoy anyone that has a door on their base."));
 			HelpCheckbox(xorstr("Shoot Anywhere"), &Weapons::jumpAim, xorstr("Allows you to shoot anywhere."));
 			HelpCheckbox(xorstr("Omni-Sprint"), &Misc::omniSprint, xorstr("Allows you to sprint in any direction."));
+			HelpCheckbox(xorstr("Suicide"), &Misc::Suicide, xorstr("Intantly kills you with fall damage, can be used to quickly respawn or to just annoy someone (it makes a LOT of noise). Be careful using this."));
 			ImGui::Checkbox(xorstr("Spiderman"), &Misc::SpiderMan);
-			ImGui::Checkbox(xorstr("Infinite Jump"), &Misc::InfiniteJump);
-			ImGui::Checkbox(xorstr("Long Neck"), &Misc::LongNeck);
+			HelpCheckbox(xorstr("Infinite Jump"), &Misc::InfiniteJump, xorstr("Allows you to infinitely jump, beware of flyhack."));
+			HelpCheckbox(xorstr("Long Neck"), &Misc::LongNeck, xorstr("Makes your neck longer, can be used to shoot over certain structures."));
 			if (Misc::LongNeck) {
 				Hotkey(xorstr("Long Neck Key"), &Keys::neck, ImVec2(200.f, 0));
 			}
@@ -412,7 +413,7 @@ void Menu() {
 			}
 			HelpCheckbox(xorstr("Auto Farm Ores"), &Weapons::SilentOre, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 			HelpCheckbox(xorstr("Auto Farm Trees"), &Weapons::SilentTree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
-			HelpCheckbox(xorstr("Rayleigh Changer"), &Misc::Rayleigh, xorstr("Makes your sky look pretty."));
+			HelpCheckbox(xorstr("Rayleigh Changer"), &Misc::Rayleigh, xorstr("Makes your sky look pretty when day."));
 			if (Misc::Rayleigh) {
 				ImGui::SliderFloat(xorstr("Rayleigh Amount"), &Misc::RayleighAmount, 1.f, 50.f);
 			}

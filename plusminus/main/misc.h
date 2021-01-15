@@ -32,7 +32,16 @@ void WeaponPatch() {
 		weapon->NoRecoil();
 		return;
 	}
-	
+	DWORD64 basePr = read(weapon + oHeldEntity, DWORD64);
+	DWORD64 primMag = read(basePr + 0x2A0, DWORD64);
+	DWORD64 type = read(primMag + 0x20, DWORD64);
+
+	DWORD64 itemmod = read(Storage::gBase + 0x299C300, DWORD64);
+	typedef DWORD64(__stdcall* GetComponent)(DWORD64, DWORD64);
+	DWORD64 itemmodprojectile = ((GetComponent)(Storage::gBase + 0x7FCAB0))(type, itemmod);
+
+	float projectileVelocity = read(itemmodprojectile + 0x34, float);
+	printf("%s\n", std::to_string(projectileVelocity));
 }
 void MiscFuncs() {
 	if (Misc::Gravity) {

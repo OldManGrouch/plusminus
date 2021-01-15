@@ -15,17 +15,14 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	if (!target.entity) return;
 	if (transform) { trans = target.entity->GrabTransform(head); }
 	else { trans = utils::GetTransform((DWORD64)target.entity); } if (!trans) return;
-	if (!target.entity) return;
 	write(newHitTest + 0x34, 1000.f, float);
 	write(newHitTest + 0xB0, trans, DWORD64);
 	write(newHitTest + 0x14, ray, Ray);
 	write(newHitTest + 0x66, true, bool);
-	if (!target.entity) return;
 	write(newHitTest + 0x88, target.entity, BasePlayer*);
 	write(newHitTest + 0x90, utils::TransformToPoint(trans, target.position), Vector3);
 	write(newHitTest + 0x9C, Vector3(0, 0, 0), Vector3);
 	write(newHitTest + 0x68, read(Held + 0x268, DWORD64), DWORD64);
-	if (!target.entity) return;
 	((StartAttackCooldown)(Storage::gBase + CO::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
 	return ((ProcessAttack)(Storage::gBase + CO::ProcessAttack))(Held, newHitTest);
 }

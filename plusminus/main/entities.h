@@ -304,7 +304,7 @@ void EntityThreadLoop() {
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams) {
-				DoChams((BasePlayer*)ent);
+				//DoChams((BasePlayer*)ent);
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
@@ -333,7 +333,7 @@ void EntityThreadLoop() {
 			DoMeleeAttack(target, active, false);
 		}
 		//========================================================================================================================================================================================
-		Target target = Target();
+		/*Target target = Target();
 		if (Weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
@@ -352,6 +352,16 @@ void EntityThreadLoop() {
 			if (target.entity) {
 				DoMeleeAttack(target, active, false);
 			}
+		}*/
+		if (Weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
+			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
+			Target target = Target();
+			target.valid = true;
+			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->GetBoneByID(head).y, utils::GetEntityPosition(gameObject).z);
+			target.entity = (BasePlayer*)ent;
+			DoMeleeAttack(target, active, false);
 		}
 		//========================================================================================================================================================================================
 		if (Misc::Annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {

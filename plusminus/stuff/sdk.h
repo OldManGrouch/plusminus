@@ -680,15 +680,8 @@ namespace utils {
 	}
 	DWORD64 GetTransform(DWORD64 entity) {
 		typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-		if (entity) {
-			DWORD64 result = ((GetTransform)(Storage::gBase + CO::get_transform))(entity);
-			if (result) {
-				printf("returned %s \n", std::to_string(result));
-				return result;
-			}	
-		}
-		printf("returned 0 \n");
-		return 0;
+		DWORD64 result = ((GetTransform)(Storage::gBase + CO::get_transform))(entity);
+		return result;
 	}
 	uintptr_t ShaderFind(Str name) {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
