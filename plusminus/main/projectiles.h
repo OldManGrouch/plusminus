@@ -5,11 +5,14 @@ typedef bool(__fastcall* dohit)(Projectile*, uintptr_t, Vector3, Vector3);
 inline dohit original_dohit;
 
 void __fastcall Launch(Projectile* prdoj) {
+	
 	uintptr_t mod = prdoj->mod();
 	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	float shpeed = GetBulletSpeed(tar, ammo);
+	write(prdoj + 0x28, GetGravity(ammo), float);
+	write(prdoj + 0x114, false, bool);
 	if (!shpeed) shpeed = 250.f;
 	if (Weapons::FastBullet) {
 		write(mod + 0x34, shpeed * 1.3, float);

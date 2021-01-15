@@ -32,6 +32,16 @@ float GetGravity(int ammoid) {
 
 float GetBulletSpeed(Weapon tar, int ammo)
 {
+	/*DWORD64 itemmod = read(Storage::gBase + 0x299C300, DWORD64);
+	if (!itemmod) printf("itemmod == null\n"); return;
+	DWORD64 primMag = read(Heldd + 0x2A0, DWORD64);
+	DWORD64 type = read(primMag + 0x20, DWORD64);
+	typedef DWORD64(__stdcall* GetComponent)(DWORD64, DWORD64);
+	DWORD64 itemmodprojectile = ((GetComponent)(Storage::gBase + 0x7FCAB0))(type, itemmod);
+	if (!itemmodprojectile) printf("itemmodprojectile == null\n"); return;
+	float projectileVelocity = read(itemmodprojectile + 0x34, float);
+	printf("%s\n", std::to_string(projectileVelocity));*/
+
 	if (ammo == 0) return tar.ammo[0].speed; //melee
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
@@ -96,7 +106,7 @@ void Normalize(float& Yaw, float& Pitch) {
 }
 void GoToTarget(BasePlayer* player) {
 	Vector3 Local;
-	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) { Local = LocalPlayer->GetBoneByID(neck) + Vector3(0, 1, 0); }
+	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) { Local = LocalPlayer->GetBoneByID(neck) + Vector3(0, 1.15, 0); }
 	else { Local = LocalPlayer->GetBoneByID(neck); }
 	Vector3 PlayerPos = Prediction(player);
 	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();

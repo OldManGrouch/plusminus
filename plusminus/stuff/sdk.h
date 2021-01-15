@@ -267,10 +267,18 @@ public:
 	int GetUID() {
 		return read(this + oUID, int);
 	}
+	
 	void RapidFire() {
 		if (Weapons::RapidFire) {
 			DWORD64 heldentity = read(this + oHeldEntity, DWORD64);
 			write(heldentity + oRepeatDelay, 0.09f, float);
+		}
+	}
+	void NoSway() {
+		DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
+		if (Weapons::NoSway) {
+			write(Heldd + 0x2B8, 0.f, float);
+			write(Heldd + 0x2BC, 0.f, float);
 		}
 	}
 	void NoRecoil() {
@@ -358,6 +366,11 @@ public:
 		auto klass = read(Storage::gBase + CO::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x18, Misc::SexyFuckingFovValue, float);
+	}
+	void PatchCamspeed() {
+		auto klass = read(Storage::gBase + 0x29BF240, DWORD64);
+		auto static_fields = read(klass + 0xB8, DWORD64);
+		write(static_fields + 0x2C, 1.f, float);
 	}
 	const wchar_t* GetName() {
 		pUncStr Str = ((pUncStr)(read(this + oDisplayName, DWORD64)));
@@ -665,17 +678,17 @@ namespace utils {
 	}
 	Vector3 TransformToPoint(DWORD64 Transform, Vector3 CurPos) {
 		typedef Vector3(__stdcall* ITP)(DWORD64, Vector3);
-		Vector3 result = ((ITP)(Storage::gBase + CO::utils::InverseTransformPoint))(Transform, CurPos); // public Vector3 InverseTransformPoint(Vector3 position) { }
+		Vector3 result = ((ITP)(Storage::gBase + CO::utils::InverseTransformPoint))(Transform, CurPos);
 		return result;
 	}
 	bool LineOfSight(Vector3 a, Vector3 b) {
 		typedef bool(__stdcall* LOS)(Vector3, Vector3, int, float);
-		bool result = ((LOS)(Storage::gBase + CO::utils::LineOfSight))(a, b, 2162688, 0.f); // public static bool LineOfSight(Vector3 p0, Vector3 p1, int layerMask, float padding = 0) { }
+		bool result = ((LOS)(Storage::gBase + CO::utils::LineOfSight))(a, b, 2162688, 0.f);
 		return result;
 	}
 	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {
 		typedef DWORD64(__stdcall* FindBone)(DWORD64, Str);
-		DWORD64 result = ((FindBone)(Storage::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);  // public virtual Transform FindBone(string strName) { }
+		DWORD64 result = ((FindBone)(Storage::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);
 		return result;
 	}
 	DWORD64 GetTransform(DWORD64 entity) {
@@ -692,11 +705,6 @@ namespace utils {
 		uint32_t Get(Str str) {
 			typedef uint32_t(__stdcall* Get)(Str);
 			uint32_t result = ((Get)(Storage::gBase + CO::utils::StringPool::Get))(str);
-			return result;
-		}
-		Str Get(uint32_t str) {
-			typedef Str(__stdcall* Get)(uint32_t);
-			Str result = ((Get)(Storage::gBase + 0x68C4C0))(str);
 			return result;
 		}
 	}
