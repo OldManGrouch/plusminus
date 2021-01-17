@@ -137,12 +137,6 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	else {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(1.f);
 	}
-	if (GetAsyncKeyState(0x5A)) {
-		((set_rayleigh)(Storage::gBase + 0x14E8420))(Global::testFloat);
-	}
-	else {
-		((set_rayleigh)(Storage::gBase + 0x14E8420))(1.f);
-	}
 	if (Misc::Suicide) {
 		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
 	}

@@ -185,7 +185,7 @@ void EntityLoop() {
 		otherEsp::stash(ObjectClass, Object, buff);
 		otherEsp::hackablecrate(ObjectClass, Object, buff);
 		otherEsp::world(ObjectClass, Object, buff);
-		otherEsp::explo(ObjectClass, Object, buff);
+		//otherEsp::explo(ObjectClass, Object, buff);
 		if (Ores::showCollectables) {
 			miscvis(ObjectClass, buff, Ores::Stone, Ores::showDistance, Ores::oreDrawDistance, xorstr("stone-collectable.prefab"), xorstr(L"Stone Collectable"), D2D1::ColorF::Gray);
 			miscvis(ObjectClass, buff, Ores::Sulfur, Ores::showDistance, Ores::oreDrawDistance, xorstr("sulfur-collectable.prefab"), xorstr(L"Sulfur Collectable"), D2D1::ColorF::Gold);

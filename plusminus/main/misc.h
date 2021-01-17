@@ -42,7 +42,7 @@ float aa = 0.f;
 void MiscFuncs() {
 	aa += 0.1f; // count the timer up
 	BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
-	if (weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936 && Misc::FastHeal) { // check item thru id
+	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && Misc::FastHeal) { // check item thru id
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity
 		write(Held + 0x278, 1.f, float); // disable animation cause it tries using the syringe and gives violations
 		bool deployed = read(Held + 0x188, bool); // check if is deployed

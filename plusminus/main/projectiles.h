@@ -7,16 +7,14 @@ inline dohit original_dohit;
 typedef void(__fastcall* domovement)(Projectile*, float);
 inline domovement original_domovement;
 
-typedef float(__fastcall* RustPause)(float);
 void __fastcall Launch(Projectile* prdoj) {
-
 	uintptr_t mod = prdoj->mod();
 	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	float shpeed = GetBulletSpeed(tar, ammo);
 	write(prdoj + 0x28, GetGravity(ammo), float);
-	write(prdoj + 0x114, false, bool);
+	write(prdoj + 0x114, false, bool); // invisible
 	if (!shpeed) shpeed = 250.f;
 	if (Weapons::FastBullet) {
 		write(mod + 0x34, shpeed * 1.3, float);
@@ -24,7 +22,6 @@ void __fastcall Launch(Projectile* prdoj) {
 	else {
 		write(mod + 0x34, shpeed, float);
 	}
-	((RustPause)(Storage::gBase + 0x434D70))(Global::testFloat);
 	return original_launch(prdoj);
 }
 typedef float(__fastcall* ValueS)(uint32_t);

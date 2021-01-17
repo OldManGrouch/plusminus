@@ -162,6 +162,7 @@ private:
 		SetupValue(Misc::SilentWalk, false, c_xor("Misc"), c_xor("SilentWalk"));
 		SetupValue(Misc::Flyhack, false, c_xor("Misc"), c_xor("SpoofOnLadder"));
 		SetupValue(Misc::AntiAim, false, c_xor("Misc"), c_xor("AntiAim"));
+		SetupValue(Misc::FastHeal, false, c_xor("Misc"), c_xor("FastHeal"));
 		SetupValue(Misc::FakeLag, false, c_xor("Misc"), c_xor("FakeLag"));
 		SetupValue(Misc::FakeAdmin, false, c_xor("Misc"), c_xor("FakeAdmin"));
 		SetupValue(Misc::Annoyer, false, c_xor("Misc"), c_xor("Annoyer"));
