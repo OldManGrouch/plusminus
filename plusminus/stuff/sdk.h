@@ -508,6 +508,18 @@ public:
 		write(Movement + oGravityMultiplier, val, float);
 	}
 };
+class ItemModProjectile {
+public:
+	float projectileSpread() { return read(this + 0x30, float); }
+	float projectileVelocity() { return read(this + 0x34, float); }
+	float projectileVelocitySpread() { return read(this + 0x38, float); }
+	bool useCurve() { return read(this + 0x3C, float); }
+
+	void projectileSpread(float a) { write(this + 0x30, a, float); }
+	void projectileVelocity(float a) { write(this + 0x34, a, float); }
+	void projectileVelocitySpread(float a) { write(this + 0x38, a, float); }
+	void useCurve(bool a) { write(this + 0x3C, a, float); }
+};
 class HitTest {
 public:
 	Ray AttackRay() { return read(this + 0x14, Ray); }
@@ -551,7 +563,7 @@ public:
 	BasePlayer* owner() { return (BasePlayer*)read(this + 0xD0, uintptr_t); }
 	uintptr_t sourceWeaponPrefab() { return read(this + 0xD8, uintptr_t); }
 	uintptr_t sourceProjectilePrefab() { return read(this + 0xE0, uintptr_t); }
-	uintptr_t mod() { return read(this + 0xE8, uintptr_t); }
+	ItemModProjectile* mod() { return read(this + 0xE8, ItemModProjectile*); }
 	int projectileID() { return read(this + 0xF0, int); }
 	uint32_t seed() { return read(this + 0xF4, uint32_t); }
 	bool clientsideEffect() { return read(this + 0xF8, bool); }
@@ -576,7 +588,7 @@ public:
 	uintptr_t flybyPlane() { return read(this + 0x168, uintptr_t); }
 	Ray flybyRay() { return read(this + 0x178, Ray); }
 	uintptr_t cleanupAction() { return read(this + 0x190, uintptr_t); }
-	uintptr_t hitTest() { return read(this + 0x198, uintptr_t); }
+	HitTest* hitTest() { return read(this + 0x198, HitTest*); }
 	float swimRandom() { return read(this + 0x1A0, float); }
 
 	void initialVelocity(Vector3 a) { write(this + 0x18, a, Vector3); }

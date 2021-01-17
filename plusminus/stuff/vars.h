@@ -13,6 +13,7 @@ namespace Global
 
 	int testInt = 0;
 	float testFloat = 1.f;
+	bool testBool = false;
 	char testChar[0x100] = "testyvesty";
 	bool debugtab = false;
 	int RetardDivideFactor = 0;

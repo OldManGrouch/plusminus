@@ -8,24 +8,24 @@ typedef void(__fastcall* domovement)(Projectile*, float);
 inline domovement original_domovement;
 
 void __fastcall Launch(Projectile* prdoj) {
-	uintptr_t mod = prdoj->mod();
-	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
-	Weapon tar = active->Info();
-	int ammo = active->LoadedAmmo();
+	Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
+	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
+	prdoj->gravityModifier(GetGravity(ammo));
+	prdoj->clientsideAttack(Global::testBool);
+	prdoj->invisible(false);
 	float shpeed = GetBulletSpeed(tar, ammo);
-	write(prdoj + 0x28, GetGravity(ammo), float);
-	write(prdoj + 0x114, false, bool); // invisible
 	if (!shpeed) shpeed = 250.f;
 	if (Weapons::FastBullet) {
-		write(mod + 0x34, shpeed * 1.3, float);
+		prdoj->mod()->projectileVelocity(shpeed * 1.3);
 	}
 	else {
-		write(mod + 0x34, shpeed, float);
+		prdoj->mod()->projectileVelocity(shpeed);
 	}
+	prdoj->mod()->projectileVelocitySpread(Global::testBool ? prdoj->mod()->projectileVelocitySpread() : 0.f);
 	return original_launch(prdoj);
 }
 typedef float(__fastcall* ValueS)(uint32_t);
-bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
+bool __fastcall DoRicochet(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
 	Vector3 hitPosition = proj->currentPosition();
 	Vector3 inVelocity = proj->currentVelocity();
@@ -42,12 +42,12 @@ bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 no
 		write(projectileRicochet + 0x14, proj->projectileID(), int);
 		write(projectileRicochet + 0x18, hitPosition, Vector3);
 		write(projectileRicochet + 0x24, inVelocity, Vector3);
-		write(projectileRicochet + 0x30, (TargetPlayer->GetBoneByID(head) - LocalPlayer->GetBoneByID(head)) * Global::testFloat, Vector3);
+		write(projectileRicochet + 0x30, (TargetPlayer->GetBoneByID(head) - LocalPlayer->GetBoneByID(head)) * 250.f, Vector3);
 		write(projectileRicochet + 0x3C, norm, Vector3);
 		write(projectileRicochet + 0x48, proj->traveledTime(), float);
 		typedef void(__stdcall* RPC)(DWORD64, Str, DWORD64, DWORD64);
 		((RPC)read(rpcricho, DWORD64))((DWORD64)proj, Str(xorstr(L"OnProjectileRicochet")), projectileRicochet, rpcricho);
-		//proj->sentPosition(proj->currentPosition());
+		proj->sentPosition(proj->currentPosition());
 	}
 	proj->seed(num);
 	return flag;
