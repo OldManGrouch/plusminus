@@ -25,6 +25,8 @@ inline isheadshot original_getisheadshot;
 typedef void(__fastcall* traceallthing)(uintptr_t, uintptr_t, uintptr_t);
 inline traceallthing original_traceall;
 
+
+
 typedef bool(__fastcall* sendclienttick)(void*);
 inline sendclienttick original_sendclienttick;
 

@@ -95,7 +95,13 @@ pUncStr __fastcall Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args
 Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
 	Vector3 heliDir = (HeliPrediction(LocalPlayer->GetBoneByID(head)) - LocalPlayer->GetBoneByID(head)).Normalized();
-	Vector3 playerDir = (Prediction(TargetPlayer) - LocalPlayer->GetBoneByID(head)).Normalized();
+	Vector3 playerDir;
+	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) {
+		playerDir = (Prediction(TargetPlayer) - (LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0))).Normalized();
+	}
+	else {
+		playerDir = (Prediction(TargetPlayer) - LocalPlayer->GetBoneByID(head)).Normalized();
+	}
 	if (Combat::pSilent) {
 		if (!Combat::pSilentOnKey) {
 			if (Combat::pSilentTargeting == 0 && Storage::closestPlayer != NULL) {
@@ -130,6 +136,12 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	}
 	else {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(1.f);
+	}
+	if (GetAsyncKeyState(0x5A)) {
+		((set_rayleigh)(Storage::gBase + 0x14E8420))(Global::testFloat);
+	}
+	else {
+		((set_rayleigh)(Storage::gBase + 0x14E8420))(1.f);
 	}
 	if (Misc::Suicide) {
 		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
@@ -240,6 +252,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1160), (void**)&original_dohit, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);

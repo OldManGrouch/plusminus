@@ -44,6 +44,7 @@ namespace Storage
 }
 namespace Combat
 {
+	bool magicbollet = false;
 	bool pSilentOnKey = false;
 	bool AlwaysHeliHotspot = false;
 	bool HitboxOverride = false;

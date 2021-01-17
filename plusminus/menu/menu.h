@@ -110,12 +110,15 @@ void Menu() {
 		ImGui::Separator();
 		switch (tabb) {
 		case 0:
-			HelpCheckbox(xorstr("Hitbox Override"), &Combat::HitboxOverride, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
+			HelpCheckbox(xorstr("Hitbox Override"), &Combat::HitboxOverride, xorstr("Even if you hit a person in the body, the bullet will teleport to the head (depending on the headshot percentage)."));
 			if (Combat::HitboxOverride) {
+				Combat::AlwaysHeliHotspot = false;
 				ImGui::SliderInt(xorstr("Headshot Percentage"), &Combat::HeadshotPercentage, 0, 100);
 			}
 			HelpCheckbox(xorstr("Always Heli Weakspot"), &Combat::AlwaysHeliHotspot, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
-			HelpCheckbox(xorstr("Silent Melee"), &Weapons::SilentMelee, xorstr("Will automatically hit people next to you with a melee weapon in your hand"));
+			if (Combat::AlwaysHeliHotspot) { Combat::HitboxOverride = false; }
+			HelpCheckbox(xorstr("Silent Melee"), &Weapons::SilentMelee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
+			ImGui::Checkbox("magicbollet", &Combat::magicbollet);
 			HelpCheckbox(xorstr("pSilent"), &Combat::pSilent, xorstr("Bullets will just fly to the target."));
 			if (Combat::pSilent) {
 				const char* items[] = { "Players", "Helicopter" };
@@ -175,9 +178,7 @@ void Menu() {
 			ImGui::Checkbox(xorstr("Rapid Fire"), &Weapons::RapidFire);
 			ImGui::Checkbox(xorstr("Force Automatic"), &Weapons::Automatic);
 			ImGui::Checkbox(xorstr("Thick Bullets"), &Weapons::FatBullet);
-			if (ImGui::Checkbox(xorstr("Faster Bullets"), &Weapons::FastBullet)) {
-				Weapons::FastBulletMultiplier = 1.3f;
-			}
+			ImGui::Checkbox(xorstr("Faster Bullets"), &Weapons::FastBullet);
 			HelpCheckbox(xorstr("Minicopter Aim"), &Weapons::canHoldItems, xorstr("Allows you to hold items on minicopters."));
 			ImGui::Checkbox(xorstr("EokaTap"), &Weapons::SuperEoka);
 			ImGui::Checkbox(xorstr("FastBow"), &Weapons::SuperBow);

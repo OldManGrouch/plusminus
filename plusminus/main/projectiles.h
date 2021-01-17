@@ -4,8 +4,11 @@ inline launch original_launch;
 typedef bool(__fastcall* dohit)(Projectile*, uintptr_t, Vector3, Vector3);
 inline dohit original_dohit;
 
+typedef void(__fastcall* domovement)(Projectile*, float);
+inline domovement original_domovement;
+
 void __fastcall Launch(Projectile* prdoj) {
-	
+
 	uintptr_t mod = prdoj->mod();
 	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
@@ -49,4 +52,11 @@ bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 no
 	}
 	proj->seed(num);
 	return flag;
+}
+void __fastcall DoMovement(Projectile* proj, float deltatime) {
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	if (utils::LineOfSight(proj->currentPosition(), TargetPlayer->GetBoneByID(head)) && Storage::closestPlayer != null && Combat::magicbollet) {
+		proj->currentVelocity((TargetPlayer->GetBoneByID(head) - proj->currentPosition()) * 250.f);
+	}
+	return original_domovement(proj, deltatime);
 }

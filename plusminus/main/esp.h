@@ -35,8 +35,8 @@ namespace otherEsp {
 					swprintf(buffera, xorstr(L"[%d HP]"), health);
 					if (health > 0.2) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
-						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
-						Renderer::Rectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
+						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+						Renderer::Rectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 						//Renderer::String(screen + Vector2(0, 15), buffera, D2D1::ColorF::Red, true, true);
 					}
 				}

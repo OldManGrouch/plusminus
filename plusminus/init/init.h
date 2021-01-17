@@ -124,19 +124,5 @@ void InitCheat() {
 		Renderer::FillRectangle(Vector2{ PlayerEsp::beltx + (Width / 2) - 40, PlayerEsp::belty + 135 }, Vector2{ 80 * (TargetPlayerA->GetHealth() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 		Renderer::Rectangle(Vector2{ PlayerEsp::beltx + (Width / 2) - 40, PlayerEsp::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
 	}
-	if (Misc::HitLogs) {
-		float curpos = 0;
-		for (int i = 0; i < Global::doneHits; i++) {
-			wchar_t g[0x100];
-			if (Global::wasinvalid) {
-				_swprintf(g, xorstr(L"true"));
-			}
-			else {
-				_swprintf(g, xorstr(L"false"));
-			}
-			Renderer::String({ 700, 50 + curpos }, g, D2D1::ColorF::White, true, false);
-			curpos += 15;
-		}
-	}
 	EntityLoop();
 }

@@ -63,7 +63,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 	if (Dist > 0.001f) {
 		Weapon tar = active->Info();
 		int ammo = active->LoadedAmmo();
-		float speed = GetBulletSpeed(tar, ammo) * Weapons::FastBulletMultiplier;
+		float speed = GetBulletSpeed(tar, ammo);
 		float gravity = GetGravity(ammo);
 		if (!speed) speed = 250.f;
 		float BulletTime = Dist / speed;
@@ -90,7 +90,7 @@ Vector3 Prediction(BasePlayer* Player) {
 	else { Local = LocalPlayer->GetBoneByID(head); }
 	float Dist = Math::Calc3D_Dist(Local, BonePos);
 	if (Dist > 0.001f) {
-		float speed = GetBulletSpeed(tar, ammo) * Weapons::FastBulletMultiplier;
+		float speed = GetBulletSpeed(tar, ammo);
 		float gravity = GetGravity(ammo);
 		if (!speed) speed = 250.f;
 		float BulletTime = Dist / speed;

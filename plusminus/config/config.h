@@ -102,6 +102,7 @@ private:
 		SetupValue(Combat::AlwaysHeliHotspot, false, c_xor("Combat"), c_xor("AlwaysHeliHotspot"));
 		SetupValue(Weapons::SilentMelee, false, c_xor("Combat"), c_xor("SilentMelee"));
 		SetupValue(Combat::pSilent, false, c_xor("Combat"), c_xor("pSilent"));
+		SetupValue(Combat::pSilentOnKey, false, c_xor("Combat"), c_xor("pSilentOnKey"));
 		SetupValue(Combat::pSilentTargeting, 0, c_xor("Combat"), c_xor("pSilentTargeting"));
 		SetupValue(Combat::Activate, false, c_xor("Combat"), c_xor("Aimbot"));
 		SetupValue(Combat::Smooth, false, c_xor("Combat"), c_xor("Smooth"));
