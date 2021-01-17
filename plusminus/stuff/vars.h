@@ -234,6 +234,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool FastHeal = false;
 	bool Suicide = false;
 	bool LongNeck = false;
 	bool InfiniteJump = false;

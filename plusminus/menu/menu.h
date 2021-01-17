@@ -393,6 +393,7 @@ void Menu() {
 			if (Misc::AntiAim) {
 				ImGui::SliderInt(xorstr("Anti-Aim spin speed"), &Misc::AntiAimSpeed, 1, 50);
 			}
+			HelpCheckbox(xorstr("Faster Healing"), &Misc::FastHeal, xorstr("Allows you to heal faster than usual, no need to spam mouse to heal - you can just hold it down."));
 			HelpCheckbox(xorstr("FakeLag"), &Misc::FakeLag, xorstr("Makes it looks like you're lagging on other people's screens."));
 			HelpCheckbox(xorstr("FakeAdmin"), &Misc::FakeAdmin, xorstr("Allows you to use certain admin-only commands like 'debugcamera' and 'noclip'. Note: bypasses rustberg's and arabrust's anti-fakeadmin. If you can't move in debugcamera, type 'camspeed 1' in console."));
 			HelpCheckbox(xorstr("Annoyer"), &Misc::Annoyer, xorstr("Annoy anyone that has a door on their base."));

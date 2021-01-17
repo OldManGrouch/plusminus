@@ -7,6 +7,7 @@ inline dohit original_dohit;
 typedef void(__fastcall* domovement)(Projectile*, float);
 inline domovement original_domovement;
 
+typedef float(__fastcall* RustPause)(float);
 void __fastcall Launch(Projectile* prdoj) {
 
 	uintptr_t mod = prdoj->mod();
@@ -23,6 +24,7 @@ void __fastcall Launch(Projectile* prdoj) {
 	else {
 		write(mod + 0x34, shpeed, float);
 	}
+	((RustPause)(Storage::gBase + 0x434D70))(Global::testFloat);
 	return original_launch(prdoj);
 }
 typedef float(__fastcall* ValueS)(uint32_t);
@@ -52,11 +54,4 @@ bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 no
 	}
 	proj->seed(num);
 	return flag;
-}
-void __fastcall DoMovement(Projectile* proj, float deltatime) {
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
-	if (utils::LineOfSight(proj->currentPosition(), TargetPlayer->GetBoneByID(head)) && Storage::closestPlayer != null && Combat::magicbollet) {
-		proj->currentVelocity((TargetPlayer->GetBoneByID(head) - proj->currentPosition()) * 250.f);
-	}
-	return original_domovement(proj, deltatime);
 }
