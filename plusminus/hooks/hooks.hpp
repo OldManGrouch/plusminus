@@ -174,7 +174,6 @@ bool __fastcall CanHoldItems(void* a1, void* a2) {
 	return original_canholditems(a1, a2);
 }
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;

@@ -11,7 +11,6 @@ void __fastcall Launch(Projectile* prdoj) {
 	Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
 	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
 	prdoj->gravityModifier(GetGravity(ammo));
-	prdoj->clientsideAttack(Global::testBool);
 	prdoj->invisible(false);
 	float shpeed = GetBulletSpeed(tar, ammo);
 	if (!shpeed) shpeed = 250.f;
@@ -21,7 +20,9 @@ void __fastcall Launch(Projectile* prdoj) {
 	else {
 		prdoj->mod()->projectileVelocity(shpeed);
 	}
-	prdoj->mod()->projectileVelocitySpread(Global::testBool ? prdoj->mod()->projectileVelocitySpread() : 0.f);
+	if (Weapons::AntiSpread) {
+		prdoj->mod()->projectileVelocitySpread(0.f);
+	}
 	return original_launch(prdoj);
 }
 typedef float(__fastcall* ValueS)(uint32_t);
