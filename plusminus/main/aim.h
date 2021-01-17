@@ -85,7 +85,10 @@ Vector3 Prediction(BasePlayer* Player) {
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	Vector3 BonePos = Player->GetBoneByID(head);
-	float Dist = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BonePos);
+	Vector3 Local;
+	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) { Local = LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0); }
+	else { Local = LocalPlayer->GetBoneByID(head); }
+	float Dist = Math::Calc3D_Dist(Local, BonePos);
 	if (Dist > 0.001f) {
 		float speed = GetBulletSpeed(tar, ammo) * Weapons::FastBulletMultiplier;
 		float gravity = GetGravity(ammo);

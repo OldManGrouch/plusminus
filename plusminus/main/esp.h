@@ -35,7 +35,9 @@ namespace otherEsp {
 					swprintf(buffera, xorstr(L"[%d HP]"), health);
 					if (health > 0.2) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
-						Renderer::String(screen + Vector2(0, 15), buffera, D2D1::ColorF::Red, true, true);
+						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+						Renderer::Rectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
+						//Renderer::String(screen + Vector2(0, 15), buffera, D2D1::ColorF::Red, true, true);
 					}
 				}
 			}
@@ -130,6 +132,19 @@ namespace otherEsp {
 			}
 		}
 	}
+	void explo(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
+		if (strstr(buff, xorstr("c4_explosion.prefab"))) {
+			DWORD64 object = read(ObjectClass + 0x30, DWORD64);
+			Vector3 pos = utils::GetEntityPosition(object);
+			int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+			Vector2 screen;
+			if (utils::w2s(pos, screen)) {
+				wchar_t explosionc4[0x100];
+				_swprintf(explosionc4, xorstr(L"C4 Explosion [%d]"), distance);
+				Renderer::String({ screen.x, screen.y }, explosionc4, D2D1::ColorF::Red, true, true);
+			}
+		}
+	}
 	void stash(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		typedef bool(__stdcall* IsHidden)(uintptr_t);
 		if (Visuals::Other::Stash) {
@@ -190,10 +205,8 @@ namespace otherEsp {
 						_swprintf(crateName, xorstr(L"Chinook Crate [Open]"));
 					}
 					Renderer::String({ screen.x, screen.y }, crateName, color, true, true);
-					if (Visuals::Crates::crateDistance) {
-						_swprintf(crateDist, xorstr(L"[%d m]"), distance);
-						Renderer::String(screen + Vector2(0, 15), crateDist, color, true, true);
-					}
+					_swprintf(crateDist, xorstr(L"[%d m]"), distance);
+					Renderer::String(screen + Vector2(0, 15), crateDist, color, true, true);
 				}
 			}
 		}

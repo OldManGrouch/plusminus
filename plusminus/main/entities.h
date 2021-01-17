@@ -151,20 +151,20 @@ void EntityLoop() {
 			float maxhealth = 10000.f;
 			Vector3 pos = read(VisualState + 0x90, Vector3);
 			Vector2 screenPos;
-			if (Visuals::PatrolHeli) {
-				if (utils::w2s(pos, screenPos)) {
-					wchar_t buffer[256];
-					wchar_t buffera[256];
+			if (utils::w2s(pos, screenPos)) {
+				wchar_t buffer[256];
+				wchar_t buffera[256];
+				if (Visuals::PatrolHeli) {
 					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos));
 					swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
 					Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
 					Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
 					Renderer::FillRectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / maxhealth), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 					Renderer::Rectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
-					if (health > 0.2 && !Combat::IgnoreHeli) {
-						if ((FOV > (CurFOV = GetFovHeli(pos)))) {
-							FOV = CurFOV; Storage::closestHeli = (uintptr_t)Helicopter; Storage::closestHeliObj = VisualState;
-						}
+				}
+				if (health > 0.2 && !Combat::IgnoreHeli) {
+					if ((FOV > (CurFOV = GetFovHeli(pos)))) {
+						FOV = CurFOV; Storage::closestHeli = (uintptr_t)Helicopter; Storage::closestHeliObj = VisualState;
 					}
 				}
 			}
@@ -185,6 +185,7 @@ void EntityLoop() {
 		otherEsp::stash(ObjectClass, Object, buff);
 		otherEsp::hackablecrate(ObjectClass, Object, buff);
 		otherEsp::world(ObjectClass, Object, buff);
+		otherEsp::explo(ObjectClass, Object, buff);
 		if (Ores::showCollectables) {
 			miscvis(ObjectClass, buff, Ores::Stone, Ores::showDistance, Ores::oreDrawDistance, xorstr("stone-collectable.prefab"), xorstr(L"Stone Collectable"), D2D1::ColorF::Gray);
 			miscvis(ObjectClass, buff, Ores::Sulfur, Ores::showDistance, Ores::oreDrawDistance, xorstr("sulfur-collectable.prefab"), xorstr(L"Sulfur Collectable"), D2D1::ColorF::Gold);

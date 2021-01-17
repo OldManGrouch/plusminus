@@ -334,7 +334,7 @@ void Menu() {
 				ImGui::Checkbox(xorstr("Airdrops"), &Visuals::Crates::Supply);
 				ImGui::Checkbox(xorstr("Heli Crates"), &Visuals::Crates::Heli);
 				ImGui::Checkbox(xorstr("Bradley Crates"), &Visuals::Crates::Bradley);
-				if (Visuals::Crates::Supply || Visuals::Crates::Bradley || Visuals::Crates::Heli || Visuals::Crates::Chinook) {
+				if (Visuals::Crates::Supply || Visuals::Crates::Bradley || Visuals::Crates::Heli) {
 					ImGui::SliderFloat(xorstr("Crate ESP Distance"), &Visuals::Crates::drawCrateDistance, 5.f, 3000.f);
 					ImGui::Checkbox(xorstr("Show Distance "), &Visuals::Crates::crateDistance);
 				}
@@ -387,7 +387,7 @@ void Menu() {
 			ImGui::SliderFloat(xorstr("Fov"), &Misc::SexyFuckingFovValue, 30.f, 130.f);
 			Hotkey(xorstr("Remove Position Forcing"), &Keys::forcepos, ImVec2(200.f, 0));
 			HelpCheckbox(xorstr("Silent Walk"), &Misc::SilentWalk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
-			HelpCheckbox(xorstr("Spoof OnLadder"), &Misc::Flyhack, xorstr("Spoofs OnLadder state to true (looks funny)"));
+			HelpCheckbox(xorstr("Spoof OnLadder"), &Misc::Flyhack, xorstr("Spoofs OnLadder state to true (looks funny and can be used to flyhack up buildings without getting kicked)"));
 			HelpCheckbox(xorstr("Anti-Aim"), &Misc::AntiAim, xorstr("Makes you look like you're spinning on other people's screens."));
 			if (Misc::AntiAim) {
 				ImGui::SliderInt(xorstr("Anti-Aim spin speed"), &Misc::AntiAimSpeed, 1, 50);
