@@ -54,6 +54,7 @@
     <ClInclude Include="stuff/xorstr.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lazyimp.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu/imgui/imgui.cpp" />
     <ClCompile Include="menu/imgui/imgui_draw.cpp" />

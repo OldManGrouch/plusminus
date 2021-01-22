@@ -1,4 +1,8 @@
 namespace il2cpp {
+	namespace methods {
+		using il2cpp_resolve_icall = uintptr_t(*)(const char*);
+		static auto resolve_icall = LI_FIND_DEF(il2cpp_resolve_icall);
+	}
 	typedef int(__stdcall* GPC)(DWORD64);
 	typedef DWORD64(__stdcall* AGI)(DWORD64);
 	typedef DWORD64(__stdcall* New)(DWORD64);
@@ -19,8 +23,13 @@ namespace il2cpp {
 	Ptr field_static_get_value = 0;
 	GPC method_get_param_count = 0;
 	Call array_new = 0;
-
+	namespace unity {
+		static auto set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
+	}
 	static void InitIL() {
+		using il2cpp_resolve_icall = uintptr_t(*)(const char*);
+		methods::resolve_icall = LI_FIND_DEF(il2cpp_resolve_icall);
+
 		method_get_param_count = (GPC)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_method_get_param_count")));
 		field_static_get_value = (Ptr)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_field_static_get_value")));
 		field_get_offset = (AGI)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_field_get_offset")));
@@ -32,6 +41,8 @@ namespace il2cpp {
 		class_get_fields = (Ptr)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_class_get_fields")));
 		class_get_methods = (Ptr)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_class_get_methods")));
 		array_new = (Call)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_array_new")));
+
+		unity::set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
 	}
 }
 

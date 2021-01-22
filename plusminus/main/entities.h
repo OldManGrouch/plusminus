@@ -91,6 +91,7 @@ void EntityLoop() {
 
 		}
 		if (strstr(buff, xorstr("player.prefab")) || (strstr(buff, xorstr("scientist"))) && (!strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse")))) {
+			
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
 			if (Player->GetHealth() < 0.2) continue;
@@ -168,6 +169,10 @@ void EntityLoop() {
 					}
 				}
 			}
+		}
+		if (GetAsyncKeyState(0x56)) {
+			typedef void(__stdcall* Pick)(DWORD64, Str);
+			((Pick)(Storage::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
 		}
 		if (Misc::AutoCollect && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
@@ -304,8 +309,10 @@ void EntityThreadLoop() {
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
-			if (PlayerEsp::chams) {
-				//DoChams((BasePlayer*)ent);
+			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
+				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
+				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
+				DoChams(multimesh, Color(1, 0, 0, 1));
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
@@ -318,7 +325,7 @@ void EntityThreadLoop() {
 					PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (Weapons::SilentMelee && weaponmelee && Math::Calc3D_Dist(lol->GetBoneByID(head), LocalPlayer->GetBoneByID(head)) <= 2.f) {
+			if (Weapons::SilentMelee && weaponmelee) {
 				Target target = TargetMeleeTest((BasePlayer*)ent, active);
 				DoMeleeAttack(target, active, true);
 			}

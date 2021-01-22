@@ -118,6 +118,7 @@ void Menu() {
 			HelpCheckbox(xorstr("Always Heli Weakspot"), &Combat::AlwaysHeliHotspot, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 			if (Combat::AlwaysHeliHotspot) { Combat::HitboxOverride = false; }
 			HelpCheckbox(xorstr("Silent Melee"), &Weapons::SilentMelee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
+			ImGui::Checkbox(xorstr("magic bolet"), &Combat::magicbollet);
 			HelpCheckbox(xorstr("pSilent"), &Combat::pSilent, xorstr("Bullets will just fly to the target."));
 			if (Combat::pSilent) {
 				const char* items[] = { "Players", "Helicopter" };
@@ -442,7 +443,7 @@ void Menu() {
 			if (ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &Global::debugtab)) {
 				ImGui::SliderFloat(xorstr("float"), &Global::testFloat, 0.f, 50.f);
 				ImGui::Checkbox(xorstr("bool"), &Global::testBool);
-				ImGui::SliderInt(xorstr("int"), &Global::testInt, 0, 20);
+				ImGui::SliderInt(xorstr("int"), &Global::testInt, 0, 100);
 				ImGui::InputText(xorstr("char"), Global::testChar, 0x100);
 			}
 			ImGui::Checkbox(xorstr("Panic"), &Global::Panic);

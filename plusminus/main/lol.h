@@ -1,3 +1,4 @@
+#include <vector>
 typedef void(__stdcall* ProcessAttack)(DWORD64, DWORD64);
 typedef float(__stdcall* get_time)();
 typedef void(__stdcall* StartAttackCooldown)(DWORD64, float);
@@ -26,11 +27,30 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	((StartAttackCooldown)(Storage::gBase + CO::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
 	return ((ProcessAttack)(Storage::gBase + CO::ProcessAttack))(Held, newHitTest);
 }
-typedef void(__stdcall* set_color)(uintptr_t, Color);
-typedef void(__stdcall* set_material)(uintptr_t, uintptr_t);
-typedef void(__stdcall* CreateWithShader)(uintptr_t, uintptr_t);
-void DoChams(BasePlayer* target) {
-	
+typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
+typedef uintptr_t(__stdcall* get_material)(uintptr_t);
+typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
+typedef void(__stdcall* SetColor)(uintptr_t, Str, Color);
+uintptr_t shader;
+void DoChams(uintptr_t target, Color col) {
+	if (target) {
+		auto mainRendList = ((get_Renderers)(Storage::gBase + 0x324770))(target);
+		for (int idx = 0; idx < mainRendList->get_size(); idx++) {
+			uintptr_t renderer = mainRendList->get_value(idx);
+			printf("renderer: %s", std::to_string(renderer));
+			if (renderer) {
+				uintptr_t material = ((get_material)(Storage::gBase + 0x14DD870))(renderer);
+				printf("material: %s", std::to_string(material));
+				if (shader != ((get_shader)(Storage::gBase + 0x1398A80))(material)) {
+					if (!shader) 
+						shader = utils::ShaderFind(Str(L"Hidden/Internal-Colored"));
+					printf("shader: %s", std::to_string(shader));
+					il2cpp::unity::set_shader(material, shader);
+					((SetColor)(Storage::gBase + 0x1397C70))(material, Str(L"_Color"), col);
+				}
+			}
+		}
+	}
 }
 float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
 void SpamKnock(uintptr_t Door) {

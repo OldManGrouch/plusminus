@@ -4,6 +4,9 @@ inline launch original_launch;
 typedef bool(__fastcall* dohit)(Projectile*, uintptr_t, Vector3, Vector3);
 inline dohit original_dohit;
 
+typedef bool(__fastcall* dohitt)(Projectile*, HitTest*, Vector3, Vector3);
+inline dohitt original_dohitt;
+
 typedef void(__fastcall* domovement)(Projectile*, float);
 inline domovement original_domovement;
 
@@ -24,6 +27,17 @@ void __fastcall Launch(Projectile* prdoj) {
 		prdoj->mod()->projectileVelocitySpread(0.f);
 	}
 	return original_launch(prdoj);
+}
+void __fastcall DoMovement(Projectile* proj, float delta) {
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	if (Combat::magicbollet && utils::LineOfSight(TargetPlayer->GetBoneByID(head), proj->currentPosition()) && Storage::closestPlayer != null) {
+		proj->currentVelocity((TargetPlayer->GetBoneByID(head) - proj->currentPosition()) * 250.f);
+	}
+	return original_domovement(proj, delta);
+}
+bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
+	write(test + 0xB8, utils::StringPool::Get(Str(L"head")), uint32_t);
+	return original_dohitt(proj, test, point, norm);
 }
 typedef float(__fastcall* ValueS)(uint32_t);
 bool __fastcall DoRicochet(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {

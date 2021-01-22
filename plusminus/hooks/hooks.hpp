@@ -58,6 +58,7 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 void __fastcall SetSkinProperties(uintptr_t pmodel, uintptr_t block) {
 	
 }
+typedef void(__stdcall* set_color)(uintptr_t, Color);
 DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	DWORD64 color = original_getskincolor(skinset, skinNumber);
 	
@@ -74,13 +75,15 @@ DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
 	//write(skinset + 0x68, cham, uintptr_t);
 	//write(skinset + 0x70, cham, uintptr_t);
 	//write(skinset + 0x78, cham, uintptr_t);
-
-	if (PlayerEsp::chams) {
+	//auto shader = utils::ShaderFind(Str(L"Hidden/Internal-Colored"));
+	//utils::SetShader(read(skinset + 0x70, uintptr_t), shader);
+	//((set_color)(Storage::gBase + 0x1398AC0))(read(skinset + 0x70, uintptr_t), Color(1, 0, 0, 1));
+	/*if (PlayerEsp::chams) {
 		write(color + 0x0, 255.f, float);
 		write(color + 0x4, 0.f, float);
 		write(color + 0x8, 0.f, float);
 		write(color + 0xC, 0.f, float);
-	}
+	}*/
 	return color;
 }
 pUncStr __fastcall Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
@@ -173,6 +176,9 @@ bool __fastcall CanHoldItems(void* a1, void* a2) {
 	if (Weapons::canHoldItems) return true;
 	return original_canholditems(a1, a2);
 }
+void __fastcall VendingSound(uintptr_t a1, uintptr_t a2) {
+	return;
+}
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
@@ -246,7 +252,8 @@ inline void InitHook() {
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B1160), (void**)&original_dohit, DoHit); // RICOCHET
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohitt, DoHit); // RICOCHET
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);

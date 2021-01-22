@@ -19,6 +19,34 @@ public:
 	float Distance(Vector3 b) { Vector3 calc(this->x - b.x, this->y - b.y, this->z - b.z); return sqrt(calc.x * calc.x + calc.y * calc.y + calc.z * calc.z); }
 	Vector3 midPoint(Vector3 v2) { return Vector3((x + v2.x) / 2, (y + v2.y) / 2, (z + v2.z) / 2); }
 };
+template<typename T>
+class list {
+public:
+	T get(uint32_t idx) {
+		const auto internal_list = reinterpret_cast<uintptr_t>(this + 0x20);
+		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));
+	}
+
+	T get_value(uint32_t idx) {
+		const auto list = *reinterpret_cast<uintptr_t*>((uintptr_t)this + 0x10);
+		const auto internal_list = list + 0x20;
+		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));
+	}
+
+	T operator[](uint32_t idx) { return get(idx); }
+
+	const uint32_t get_size() { return *reinterpret_cast<uint32_t*>((uintptr_t)this + 0x18); }
+
+	template<typename F>
+	void for_each(const F callback) {
+		for (auto i = 0; i < get_size(); i++) {
+			auto object = this->get(i);
+			if (!object)
+				continue;
+			callback(object, i);
+		}
+	}
+};
 
 class Vector2 {
 public:

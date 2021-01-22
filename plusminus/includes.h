@@ -37,11 +37,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/structs.h"
 #include "stuff/math.h"
 #include "stuff/vars.h"
-
 #include "main/weapons.h"
 #include "stuff/sdk.h"
 #include "main/targeting.h"
+#include "lazyimp.hpp"
 #include "stuff/il2cpp.h"
+
 #include "rendering/rendering.h"
 #include "main/lol.h"
 #include "hooks/minhook/include/MinHook.h"

@@ -210,6 +210,9 @@
     <ClCompile Include="menu/imgui/imgui_widgets.cpp">
       <Filter>source\menu\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="lazyimp.hpp">
+      <Filter>source\stuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="includes.h">

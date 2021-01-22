@@ -42,6 +42,9 @@ inline crrfrawef original_forcepos;
 typedef Vector3(__fastcall* modifiedaimconedirection)(float, Vector3, bool);
 inline modifiedaimconedirection original_aimconedirection;
 
+typedef void(__fastcall* startvend)(uintptr_t, uintptr_t);
+inline startvend original_startvendingsounds;
+
 typedef void(__fastcall* SetFlying_fn)(void*, void*);
 inline SetFlying_fn original_setflying{};
 

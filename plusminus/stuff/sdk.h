@@ -342,11 +342,12 @@ public:
 		if (!transform) return Vector3{ 0.f, 0.f, 0.f };
 		{
 			Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
-			static auto get_position = reinterpret_cast<void(__fastcall*)(DWORD64, Vector3&)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0xDD2160);
+			static auto get_position = reinterpret_cast<void(__fastcall*)(DWORD64, Vector3&)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0xDD2160); // 
 			get_position(transform, pos);
 			return pos;
 		}
 	}
+	
 	DWORD64 GetTransform(int bone) {
 		DWORD64 player_model = read(this + 0x118, DWORD64);// public Model model;_public class BaseEntity : BaseNetworkable, IProvider, ILerpTarget, IPrefabPreProcess // TypeDefIndex: 8714
 		DWORD64 boneTransforms = read(player_model + 0x48, DWORD64);//public Transform[] boneTransforms;
@@ -712,6 +713,11 @@ namespace utils {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
 		uintptr_t result = ((ShaderFind)(Storage::gBase + 0x14DF9F0))(name);
 		return result;
+	}
+	// 0x7C09A0
+	void __fastcall SetShader(uintptr_t material, uintptr_t shader) {
+		static auto set_shader = reinterpret_cast<void(__fastcall*)(uintptr_t, uintptr_t)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0x7C09A0);
+		set_shader(material, shader);
 	}
 	namespace StringPool {
 		uint32_t Get(Str str) {

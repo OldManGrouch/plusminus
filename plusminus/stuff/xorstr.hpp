@@ -67,7 +67,7 @@ namespace skc
 			return _storage;
 		}
 
-	private:
+	//private:
 		__forceinline constexpr void crypt(T* data)
 		{
 			for (int i = 0; i < _size; i++)
@@ -79,8 +79,7 @@ namespace skc
 		T _storage[_size]{};
 	};
 }
-
-#define xorstr(str) skCrypt_key(str, __TIME__[4], __TIME__[7])
+#define xorstr(strs) skCrypt_key(strs, __TIME__[4], __TIME__[7])
 #define c_xor(chararr) std::string(skCrypt(chararr)).c_str()
 #define c_wxor(chararr) std::wstring(skCrypt(chararr))
 #define skCrypt(str) skCrypt_key(str, __TIME__[4], __TIME__[7])
