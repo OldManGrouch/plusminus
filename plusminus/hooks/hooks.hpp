@@ -55,37 +55,6 @@ void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) 
 	}
 	return original_traceall(test, traces, layerMask);
 }
-void __fastcall SetSkinProperties(uintptr_t pmodel, uintptr_t block) {
-	
-}
-typedef void(__stdcall* set_color)(uintptr_t, Color);
-DWORD64 __fastcall GetSkinColor(DWORD64 skinset, float skinNumber) {
-	DWORD64 color = original_getskincolor(skinset, skinNumber);
-	
-	///*prepare*/
-	//DWORD64 staticmaterial = read(Storage::gBase + 0x29E5330, DWORD64); // Material_TypeInfo
-	//DWORD64 cham = il2cpp_object_new(staticmaterial);
-	//uintptr_t shader = utils::ShaderFind(Str(L"Hidden/KriptoFX/PostEffects/Explosion_Bloom"));
-	//printf("shader: %s\n", std::to_string(shader));
-	//((CreateWithShader)(Storage::gBase + 0x1397210))(cham, shader); // Material->CreateWithShader
-	//((set_color)(Storage::gBase + 0x1398AC0))(cham, Color(1, 0, 0, 1)); // Material->set_color
-	//printf("cham: %s\n", std::to_string(cham));
-
-	///*execute*/
-	//write(skinset + 0x68, cham, uintptr_t);
-	//write(skinset + 0x70, cham, uintptr_t);
-	//write(skinset + 0x78, cham, uintptr_t);
-	//auto shader = utils::ShaderFind(Str(L"Hidden/Internal-Colored"));
-	//utils::SetShader(read(skinset + 0x70, uintptr_t), shader);
-	//((set_color)(Storage::gBase + 0x1398AC0))(read(skinset + 0x70, uintptr_t), Color(1, 0, 0, 1));
-	/*if (PlayerEsp::chams) {
-		write(color + 0x0, 255.f, float);
-		write(color + 0x4, 0.f, float);
-		write(color + 0x8, 0.f, float);
-		write(color + 0xC, 0.f, float);
-	}*/
-	return color;
-}
 pUncStr __fastcall Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
 	if (options->IsFromServer()) {
 		std::wstring cmd = std::wstring(strCommand->str);
@@ -132,6 +101,7 @@ Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, 
 }
 bool waslagging = false;
 void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
+	if (!baseplayah) return;
 	typedef void(__stdcall* set_rayleigh)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	if (Misc::Rayleigh) {
@@ -152,7 +122,9 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 		write(LocalPlayer + 0x5C8, 0.05f, float);
 		waslagging = false;
 	}
-
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, Misc::IgnoreCollision);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::PlayerMovement, Misc::IgnoreCollision);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, Misc::IgnoreCollision);
 	WeaponPatch();
 	MiscFuncs();
 	typedef void(__stdcall* ClientInput)(DWORD64, DWORD64);
@@ -249,9 +221,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetSkinColor), (void**)&original_getskincolor, GetSkinColor);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6313C0), (void**)&original_setskinproperties, SetSkinProperties);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohitt, DoHit); // RICOCHET
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);

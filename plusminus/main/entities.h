@@ -170,10 +170,10 @@ void EntityLoop() {
 				}
 			}
 		}
-		if (GetAsyncKeyState(0x56)) {
+		/*if (GetAsyncKeyState(0x56)) {
 			typedef void(__stdcall* Pick)(DWORD64, Str);
 			((Pick)(Storage::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
-		}
+		}*/
 		if (Misc::AutoCollect && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
@@ -311,7 +311,6 @@ void EntityThreadLoop() {
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
-				write(playermodel + 0x54, true, bool);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (PlayerEsp::sleeperignore && lol->HasFlags(16)) continue;
 				if (!lol->IsNpc()) {

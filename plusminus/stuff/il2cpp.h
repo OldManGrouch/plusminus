@@ -25,6 +25,7 @@ namespace il2cpp {
 	Call array_new = 0;
 	namespace unity {
 		static auto set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
+		static auto IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 	static void InitIL() {
 		using il2cpp_resolve_icall = uintptr_t(*)(const char*);
@@ -43,6 +44,7 @@ namespace il2cpp {
 		array_new = (Call)(GetExport(GetModBase(xorstr(L"GameAssembly.dll")), xorstr("il2cpp_array_new")));
 
 		unity::set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
+		unity::IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 }
 
