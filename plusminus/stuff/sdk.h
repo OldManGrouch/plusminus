@@ -711,13 +711,8 @@ namespace utils {
 	}
 	uintptr_t ShaderFind(Str name) {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
-		uintptr_t result = ((ShaderFind)(Storage::gBase + 0x14DF9F0))(name);
+		uintptr_t result = ((ShaderFind)(Storage::gBase + CO::ShaderFind))(name);
 		return result;
-	}
-	// 0x7C09A0
-	void __fastcall SetShader(uintptr_t material, uintptr_t shader) {
-		static auto set_shader = reinterpret_cast<void(__fastcall*)(uintptr_t, uintptr_t)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0x7C09A0);
-		set_shader(material, shader);
 	}
 	namespace StringPool {
 		uint32_t Get(Str str) {

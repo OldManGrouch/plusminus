@@ -311,8 +311,15 @@ void EntityThreadLoop() {
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
+				write(playermodel + 0x54, true, bool);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
-				DoChams(multimesh, Color(1, 0, 0, 1));
+				if (PlayerEsp::sleeperignore && lol->HasFlags(16)) continue;
+				if (!lol->IsNpc()) {
+					DoChams(multimesh, Color(1, 0, 0, 1));
+				}
+				else {
+					DoChams(multimesh, Color(1, 1, 0, 1));
+				}
 			}
 			if (Misc::AutoAssist || Misc::InstaRevive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);

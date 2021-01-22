@@ -1,4 +1,10 @@
 namespace CO {
+	auto SetInt = 0x1398010;
+	auto SetColor = 0x1397C70;
+	auto get_shader = 0x1398A80;
+	auto get_material = 0x14DD870;
+	auto get_Renderers = 0x324770;
+	auto ShaderFind = 0x14DF9F0;
 	auto OnLand = 0x29D0B0; // BasePlayer->OnLand
 	auto get_position = 0x6237E0; // playereyes->get_position
 	auto IsBeingHacked = 0x2FB350;
