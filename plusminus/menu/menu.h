@@ -240,7 +240,7 @@ void Menu() {
 			}
 			ImGui::Checkbox(xorstr("Weapon"), &PlayerEsp::weapon);
 			ImGui::Checkbox(xorstr("Tracers"), &PlayerEsp::tracers);
-			HelpCheckbox(xorstr("Skin Chams"), &PlayerEsp::chams, xorstr("Either enable this in the menu before entering a server, or enable in game and kill someone / wait."));
+			HelpCheckbox(xorstr("Chams"), &PlayerEsp::chams, xorstr("Colors player models and their clothes."));
 			HelpCheckbox(xorstr("Target Tracers"), &PlayerEsp::targetline, xorstr("Shows a line to the targeted player."));
 			HelpCheckbox(xorstr("Target Belt"), &PlayerEsp::belt, xorstr("Shows the targeted player's belt."));
 			ImGui::Checkbox(xorstr("Ignore Sleepers"), &PlayerEsp::sleeperignore);
@@ -319,7 +319,7 @@ void Menu() {
 					ImGui::Checkbox(xorstr("Show Distance"), &Ores::showDistance);
 				}
 			}
-			if (ImGui::CollapsingHeader(xorstr("Animals"))) {
+			/*if (ImGui::CollapsingHeader(xorstr("Animals"))) {
 				ImGui::Checkbox(xorstr("Bears"), &Visuals::Animals::Bear);
 				ImGui::Checkbox(xorstr("Pigs"), &Visuals::Animals::Pig);
 				ImGui::Checkbox(xorstr("Wolfs"), &Visuals::Animals::Wolf);
@@ -329,7 +329,7 @@ void Menu() {
 					ImGui::SliderFloat(xorstr("Animal ESP Distance"), &Visuals::Animals::drawAnimalDistance, 5.f, 400.f);
 					ImGui::Checkbox(xorstr("Show Distance      "), &Visuals::Animals::animalDistance);
 				}
-			}
+			}*/
 			if (ImGui::CollapsingHeader(xorstr("Crates"))) {
 				ImGui::Checkbox(xorstr("Chinook Crates"), &Visuals::Crates::Chinook);
 				ImGui::Checkbox(xorstr("Airdrops"), &Visuals::Crates::Supply);
@@ -388,11 +388,13 @@ void Menu() {
 			ImGui::SliderFloat(xorstr("Fov"), &Misc::SexyFuckingFovValue, 30.f, 130.f);
 			Hotkey(xorstr("Remove Position Forcing"), &Keys::forcepos, ImVec2(200.f, 0));
 			HelpCheckbox(xorstr("Silent Walk"), &Misc::SilentWalk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
-			HelpCheckbox(xorstr("Spoof OnLadder"), &Misc::Flyhack, xorstr("Spoofs OnLadder state to true (looks funny and can be used to flyhack up buildings without getting kicked)"));
+			HelpCheckbox(xorstr("Spoof OnLadder"), &Misc::Flyhack, xorstr("Looks funny and can be used to flyhack up buildings without getting kicked."));
 			HelpCheckbox(xorstr("Anti-Aim"), &Misc::AntiAim, xorstr("Makes you look like you're spinning on other people's screens."));
 			if (Misc::AntiAim) {
 				ImGui::SliderInt(xorstr("Anti-Aim spin speed"), &Misc::AntiAimSpeed, 1, 50);
 			}
+			HelpCheckbox(xorstr("Jesus"), &Misc::Jesus, xorstr("Allows you to walk on water."));
+			HelpCheckbox(xorstr("Walker"), &Misc::IgnoreCollision, xorstr("Allows you to walk through trees and players without any resistance."));
 			HelpCheckbox(xorstr("Faster Healing"), &Misc::FastHeal, xorstr("Allows you to heal faster than usual, no need to spam mouse to heal - you can just hold it down."));
 			HelpCheckbox(xorstr("FakeLag"), &Misc::FakeLag, xorstr("Makes it looks like you're lagging on other people's screens."));
 			HelpCheckbox(xorstr("FakeAdmin"), &Misc::FakeAdmin, xorstr("Allows you to use certain admin-only commands like 'debugcamera' and 'noclip'. Note: bypasses rustberg's and arabrust's anti-fakeadmin. If you can't move in debugcamera, type 'camspeed 1' in console."));

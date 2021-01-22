@@ -146,7 +146,7 @@ void GoToTarget(BasePlayer* player) {
 }
 
 void Aim(BasePlayer* AimEntity) {
-	if (Combat::Activate) {
+	if (Combat::Activate && LocalPlayer->IsTeamMate(AimEntity->GetSteamID())) {
 		if (AimEntity && !LocalPlayer->IsMenu()) {
 			if (GetAsyncKeyState(Keys::aimKey)) GoToTarget(AimEntity);
 		}

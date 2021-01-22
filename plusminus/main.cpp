@@ -16,10 +16,10 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string winname = name;
 	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + " guid: " + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + " guid: " + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
-	if (/*hwid::sec::DBContainsHwid(lol) && */lol != "" && lol != " ") {
-		AllocConsole();
-		freopen("CONOUT$", "w", stdout);
-		std::cout << "aaaaaaa\n";
+	if (hwid::sec::DBContainsHwid(lol) && lol != "" && lol != " ") {
+		//AllocConsole();
+		//freopen("CONOUT$", "w", stdout);
+		//std::cout << "aaaaaaa\n";
 		//hwid::sec::checkVersion();
 		//hwid::sec::checkFile();
 		system(success.c_str());

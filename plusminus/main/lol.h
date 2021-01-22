@@ -31,6 +31,7 @@ typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
 typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
+typedef void(__stdcall* set_HideFlags)(uintptr_t, int);
 typedef void(__stdcall* SetColor)(uintptr_t, Str, Color);
 uintptr_t shader;
 void DoChams(uintptr_t target, Color col) {
@@ -46,6 +47,7 @@ void DoChams(uintptr_t target, Color col) {
 					il2cpp::unity::set_shader(material, shader);
 					((SetColor)(Storage::gBase + CO::SetColor))(material, Str(L"_Color"), col);
 					((SetInt)(Storage::gBase + CO::SetInt))(material, Str(L"_ZTest"), 8);
+					((set_HideFlags)(Storage::gBase + 0x13A3CC0))(material, 52);
 				}
 			}
 		}

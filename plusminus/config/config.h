@@ -170,6 +170,8 @@ private:
 		SetupValue(Misc::omniSprint, false, c_xor("Misc"), c_xor("OmniSprint"));
 		SetupValue(Misc::SpiderMan, false, c_xor("Misc"), c_xor("SpiderMan"));
 		SetupValue(Misc::LongNeck, false, c_xor("Misc"), c_xor("LongNeck"));
+		SetupValue(Misc::IgnoreCollision, false, c_xor("Misc"), c_xor("IgnoreCollision"));
+		SetupValue(Misc::Jesus, false, c_xor("Misc"), c_xor("Jesus"));
 		SetupValue(Misc::InfiniteJump, false, c_xor("Misc"), c_xor("InfiniteJump"));
 		SetupValue(Misc::CustomHitsound, false, c_xor("Misc"), c_xor("CustomHitsound"));
 		SetupValue(Misc::AutoCollect, false, c_xor("Misc"), c_xor("AutoCollect"));

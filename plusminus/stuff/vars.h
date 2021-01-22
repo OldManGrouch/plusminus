@@ -235,6 +235,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool Jesus = false;
 	bool IgnoreCollision = false;
 	bool FastHeal = false;
 	bool Suicide = false;

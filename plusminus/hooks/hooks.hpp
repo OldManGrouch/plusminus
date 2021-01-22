@@ -122,8 +122,8 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 		write(LocalPlayer + 0x5C8, 0.05f, float);
 		waslagging = false;
 	}
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, Misc::IgnoreCollision);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::PlayerMovement, Misc::IgnoreCollision);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !Misc::Jesus);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, Misc::IgnoreCollision);
 	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, Misc::IgnoreCollision);
 	WeaponPatch();
 	MiscFuncs();
@@ -222,8 +222,8 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohitt, DoHit); // RICOCHET
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohitt, DoHit); // RICOCHET
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
