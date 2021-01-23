@@ -23,7 +23,14 @@ namespace hwid {
 		c_xor("{aff77fe6-3dc5-11eb-8084-806e6f6e6963}") , // X1
 		c_xor("{5ebf94c0-008b-11eb-b602-806e6f6e6963}") , // Maxim Post
 		c_xor("{a5a59008-2d3e-11eb-a9f5-806e6f6e6963}") , // dillan
-		c_xor("{ff697771-de30-4e46-902e-187fea803201}") // andru
+		c_xor("{ff697771-de30-4e46-902e-187fea803201}") , // andru
+		c_xor("{0c833340-bee3-11ea-9de1-806e6f6e6963}") , // emanu
+		c_xor("{72cceaa5-b412-46bc-b276-1b1906420523}") , // Charis
+		c_xor("{2a6080c0-472d-11eb-995c-806e6f6e6963}") , // shana
+		c_xor("{Apple8630-18857-9853-3095421017}") , // camre
+		c_xor("{Apple15611-25076-25935-2133929717}") , // Nick
+		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") ,
+		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}")
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {

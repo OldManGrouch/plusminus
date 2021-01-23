@@ -1,5 +1,6 @@
 HANDLE handle2;
 bool init, show = true;
+bool yeetus = false;
 #define null NULL
 namespace vars {
 
@@ -235,6 +236,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool RemoveGrass = false;
 	bool Jesus = false;
 	bool IgnoreCollision = false;
 	bool FastHeal = false;

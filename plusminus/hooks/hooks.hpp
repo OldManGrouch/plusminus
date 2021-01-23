@@ -111,7 +111,9 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (Misc::Suicide) {
 		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
 	}
-	((set_grassdist)(Storage::gBase + 0x667AB0))(Global::testFloat);
+	if (Misc::RemoveGrass) {
+		((set_grassdist)(Storage::gBase + CO::set_grassDistance))(0.f);
+	}
 	EntityThreadLoop();
 	if (!waslagging && Misc::FakeLag) {
 		write(LocalPlayer + 0x5C8, 0.4f, float);
@@ -151,29 +153,35 @@ void __fastcall VendingSound(uintptr_t a1, uintptr_t a2) {
 	return;
 }
 void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
-	return original_UnregisterFromVisibility(pl, dist, true);
+	if (PlayerEsp::chams) {
+		return original_UnregisterFromVisibility(pl, 2.f, true);
+	}
+	else {
+		return original_UnregisterFromVisibility(pl, dist, vis);
+	}
 }
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
-	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
-	//printf("called spa\n");
-	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
-	write(a2 + 0x2C, Weapons::HitDistance, float);
+	uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
+	uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
+	if (Weapons::SpoofHitDistance) {
+		write(a2 + 0x2C, Weapons::HitDistance, float);
+	}
 	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
 		if (Combat::HitboxOverride) {
 			uint32_t bone;
 			if (rand() % 100 < Combat::HeadshotPercentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
 			else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); } 
-			write(AttackA + 0x30, bone, uint32_t); // public uint hitBone;
-			write(AttackA + 0x64, 16144115, uint32_t); // public uint hitPartID;
+			write(Attack + 0x30, bone, uint32_t); // public uint hitBone;
+			write(Attack + 0x64, 16144115, uint32_t); // public uint hitPartID;
 		}
 		else {
 			if (Combat::AlwaysHeliHotspot) {
 				int health = (int)ceil(read(Storage::closestHeli + 0x20C, float));
 				if (health <= 5000) {
-					write(AttackA + 0x30, 224139191, uint32_t); // public uint hitBone;
+					write(Attack + 0x30, 224139191, uint32_t); // public uint hitBone;
 				}
 				else {
-					write(AttackA + 0x30, 2699525250, uint32_t); // public uint hitBone;
+					write(Attack + 0x30, 2699525250, uint32_t); // public uint hitBone;
 				}
 			}
 		}

@@ -1,7 +1,9 @@
 namespace CO {
+	auto PropertyToId = 0x14DFB10;
+	auto set_grassDistance = 0x667AB0;
 	auto VisUpdateUsingCulling = 0x2AA2E0;
 	auto SetInt = 0x1398010;
-	auto SetColor = 0x1397C70;
+	auto SetColor = 0x1397C20;
 	auto get_shader = 0x1398A80;
 	auto get_material = 0x14DD870;
 	auto get_Renderers = 0x324770;

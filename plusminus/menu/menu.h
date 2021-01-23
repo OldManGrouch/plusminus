@@ -147,13 +147,13 @@ void Menu() {
 					Hotkey(xorstr("pSilent Key"), &Keys::pSilent, ImVec2(120.f, 0));
 				}
 			}
-			ImGui::Checkbox(xorstr("Activate Aimbot"), &Combat::Activate);
+			ImGui::Checkbox(xorstr("Memory Aim"), &Combat::Activate);
 			if (Combat::Activate) {
-				ImGui::Checkbox(xorstr("Smooth"), &Combat::Smooth);
+				//ImGui::Checkbox(xorstr("Smooth"), &Combat::Smooth);
 				if (Combat::Smooth) {
 					ImGui::SliderInt(xorstr("Smoothing"), &Combat::Smoothing, 1, 50);
 				}
-				Hotkey(xorstr("AimKey"), &Keys::aimKey, ImVec2(120.f, 0));
+				Hotkey(xorstr("Aiming Key"), &Keys::aimKey, ImVec2(120.f, 0));
 			}
 			ImGui::Checkbox(xorstr("Visualize Targeting Fov"), &Combat::DrawFov);
 			ImGui::SliderFloat(xorstr("Targeting Fov"), &Combat::Fov, 20.f, 1000.f);
@@ -424,6 +424,7 @@ void Menu() {
 			if (Misc::Rayleigh) {
 				ImGui::SliderFloat(xorstr("Rayleigh Amount"), &Misc::RayleighAmount, 1.f, 50.f);
 			}
+			ImGui::Checkbox(xorstr("Remove Grass"), &Misc::RemoveGrass);
 			HelpCheckbox(xorstr("Bright Ambient"), &Misc::CustomAmbient, xorstr("Nightmode, fullbright, whatever you want to call it."));
 			ImGui::Checkbox(xorstr("Custom Time"), &Misc::CustomTime);
 			if (Misc::CustomTime) {
@@ -434,6 +435,9 @@ void Menu() {
 				ImGui::SliderFloat(xorstr("Gravity Value"), &Misc::GravityModifier, 0.f, 10.f);
 				Hotkey(xorstr("Gravity Key"), &Keys::gravityKey, ImVec2(120.f, 0));
 			}
+			///if (ImGui::Button(xorstr("crasher master"), ImVec2(100.f, 0))) {
+			//	yeetus = true;
+			//}
 			break;
 		case 6:
 			ImGui::InputText("", Global::ConfigName, 0x100);

@@ -182,6 +182,7 @@ private:
 		SetupValue(Weapons::SilentOre, false, c_xor("Misc"), c_xor("SilentOre"));
 		SetupValue(Weapons::SilentTree, false, c_xor("Misc"), c_xor("SilentTree"));
 		SetupValue(Misc::CustomAmbient, false, c_xor("Misc"), c_xor("CustomAmbient"));
+		SetupValue(Misc::RemoveGrass, false, c_xor("Misc"), c_xor("RemoveGrass"));
 		SetupValue(Misc::Rayleigh, false, c_xor("Misc"), c_xor("Rayleigh"));
 		SetupValue(Misc::RayleighAmount, false, c_xor("Misc"), c_xor("RayleighAmount"));
 		SetupValue(Misc::CustomTime, false, c_xor("Misc"), c_xor("CustomTime"));

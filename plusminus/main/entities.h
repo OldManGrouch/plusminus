@@ -94,7 +94,6 @@ void EntityLoop() {
 			
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
-			if (Player->GetHealth() < 0.2) continue;
 			
 			if (PlayerEsp::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
@@ -102,7 +101,12 @@ void EntityLoop() {
 						Skeleton(Player, D2D1::ColorF::LimeGreen);
 					}
 					else {
-						Skeleton(Player, D2D1::ColorF::White);
+						if (Player->GetHealth() < 0.2) {
+							Skeleton(Player, D2D1::ColorF::Red);
+						}
+						else {
+							Skeleton(Player, D2D1::ColorF::White);
+						}
 					}
 				}
 				else if (Player->HasFlags(16) && !PlayerEsp::sleeperignore) {
@@ -119,7 +123,12 @@ void EntityLoop() {
 						ESP(Player, LocalPlayer, D2D1::ColorF::LimeGreen);
 					}
 					else {
-						ESP(Player, LocalPlayer, D2D1::ColorF::White);
+						if (Player->GetHealth() < 0.2) {
+							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
+						}
+						else {
+							ESP(Player, LocalPlayer, D2D1::ColorF::White);
+						}
 					}
 				}
 				else {
@@ -305,12 +314,22 @@ void EntityThreadLoop() {
 		char* classname = weapon->ClassName();
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		if (m_strstr(buff, xorstr("player.prefab"))) {
+			if (yeetus) {
+				typedef void(__stdcall* Pick)(DWORD64, Str);
+				((Pick)(Storage::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
+				yeetus = false;
+			}
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (!lol->HasFlags(16)) {
-					DoChams(multimesh, Color(1, 0, 0, 1));
+					if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
+						DoChams(multimesh, Color(0, 1, 0, 1));
+					}
+					else {
+						DoChams(multimesh, Color(1, 0, 0, 1));
+					}
 				}
 				else if (lol->HasFlags(16) && !PlayerEsp::sleeperignore) {
 					DoChams(multimesh, Color(1, 0.5, 0, 1));

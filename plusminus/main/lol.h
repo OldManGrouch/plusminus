@@ -31,11 +31,16 @@ typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
 typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
-typedef void(__stdcall* set_HideFlags)(uintptr_t, int);
-typedef void(__stdcall* SetColor)(uintptr_t, Str, Color);
+typedef void(__stdcall* SetColor)(uintptr_t, int, Color);
+typedef int(__stdcall* PropertyToId)(Str);
 uintptr_t shader;
+int property;
 void DoChams(uintptr_t target, Color col) {
+	if (!PlayerEsp::chams) return;
 	if (target) {
+		if (!property) {
+			property = ((PropertyToId)(Storage::gBase + CO::PropertyToId))(Str(xorstr(L"_Color")));
+		}
 		auto mainRendList = ((get_Renderers)(Storage::gBase + CO::get_Renderers))(target);
 		for (int idx = 0; idx < mainRendList->get_size(); idx++) {
 			uintptr_t renderer = mainRendList->get_value(idx);
@@ -43,11 +48,10 @@ void DoChams(uintptr_t target, Color col) {
 				uintptr_t material = ((get_material)(Storage::gBase + CO::get_material))(renderer);
 				if (shader != ((get_shader)(Storage::gBase + CO::get_shader))(material)) {
 					if (!shader) 
-						shader = utils::ShaderFind(Str(L"Hidden/Internal-Colored"));
+						shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 					il2cpp::unity::set_shader(material, shader);
-					((SetColor)(Storage::gBase + CO::SetColor))(material, Str(L"_Color"), col);
-					((SetInt)(Storage::gBase + CO::SetInt))(material, Str(L"_ZTest"), 8);
-					((set_HideFlags)(Storage::gBase + 0x13A3CC0))(material, 52);
+					((SetColor)(Storage::gBase + CO::SetColor))(material, property, col);
+					((SetInt)(Storage::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
 				}
 			}
 		}
