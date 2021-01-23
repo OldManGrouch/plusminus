@@ -14,14 +14,12 @@ void HWID_Checker(HINSTANCE hModule) {
 
 	std::string lol = c;
 	std::string winname = name;
-	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + " guid: " + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
-	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + " guid: " + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
-	if (hwid::sec::DBContainsHwid(lol) && lol != "" && lol != " ") {
+	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
+	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
+	if (hwid::sec::DBContainsHwid(lol)) {
 		//AllocConsole();
 		//freopen("CONOUT$", "w", stdout);
 		//std::cout << "aaaaaaa\n";
-		//hwid::sec::checkVersion();
-		//hwid::sec::checkFile();
 		system(success.c_str());
 		DisableThreadLibraryCalls(hModule);
 		GetModuleFileName(hModule, (LPWSTR)dlldir, 512);
@@ -29,19 +27,8 @@ void HWID_Checker(HINSTANCE hModule) {
 		CreateThread(NULL, 0, Start, NULL, 0, NULL);
 	}
 	else {
-		if (winname == c_xor("TJ") && (lol == "" || lol == " ")) {
-			//hwid::sec::checkVersion();
-			//hwid::sec::checkFile();
-			system(success.c_str());
-			DisableThreadLibraryCalls(hModule);
-			GetModuleFileName(hModule, (LPWSTR)dlldir, 512);
-			for (size_t i = strlen(dlldir); i > 0; i--) { if (dlldir[i] == '\\') { dlldir[i + 1] = 0; break; } }
-			CreateThread(NULL, 0, Start, NULL, 0, NULL);
-		}
-		else {
-			system(fail.c_str());
-			exit(0);
-		}
+		system(fail.c_str());
+		exit(0);
 	}
 }
 BOOL __stdcall DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved) {

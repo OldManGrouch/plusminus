@@ -1,4 +1,5 @@
 namespace CO {
+	auto VisUpdateUsingCulling = 0x2AA2E0;
 	auto SetInt = 0x1398010;
 	auto SetColor = 0x1397C70;
 	auto get_shader = 0x1398A80;

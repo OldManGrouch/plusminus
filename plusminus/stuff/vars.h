@@ -12,7 +12,7 @@ namespace Global
 	float doneDamage = 0.f;
 
 	int testInt = 0;
-	float testFloat = 1.f;
+	float testFloat = 100.f;
 	bool testBool = false;
 	char testChar[0x100] = "testyvesty";
 	bool debugtab = false;

@@ -1,71 +1,33 @@
-
+#include <vector>
 namespace hwid {
-	std::string winname;
-	std::string webhook_url = c_xor("https://discord.com/api/webhooks/782872540724199464/UClxJ-olKhhg0a35hFlpGbADTKBqD9D_W4f7PViY5AhZiO3mwcxeiBRHSLa6TriNuP-1");
-	std::string avatar_url = c_xor("https://i.imgur.com/9FKjGO8.png");
-	std::string incorrectoutput = c_xor("curl --data \"username=plusminus&content=incorrect output: ") + winname + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
-	std::string notopen = c_xor("curl --data \"username=plusminus&content=not open: ") + winname + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
+	std::vector<std::string> list = { 
+		c_xor("{dc931070-657d-4be4-9f14-630684586d28}") , 
+		c_xor("{15936d6f-f57a-11ea-8b4a-806e6f6e6963}") , // Morango
+		c_xor("{4aafc28b-5ce9-11eb-8a83-806e6f6e6963}") , // mayoo_
+		c_xor("{Apple16433-27459-31356-68921218}") , // Snowwy
+		c_xor("{536c6940-008b-11eb-9275-806e6f6e6963}") , // Noah 
+		c_xor("{1b7803eb-da69-11ea-a112-VmXJLbfL2MXp}") , // Gytis
+		c_xor("{4b78fac3-1634-11eb-ba55-806e6f6e6963}") , // sent
+		c_xor("{04de4113-b270-11ea-bf8a-806e6f6e6963}") , // Willy
+		c_xor("{ec4c96f2-4ff3-11eb-8f02-806e6f6e6963}") , // Lukas Andrulis!
+		c_xor("{1e038f69-2ac3-11eb-b6d7-806e6f6e6963}") , // Reese
+		c_xor("{Apple12640-29747-31624-225401325}") , // bholl
+		c_xor("{e949c641-48b5-11eb-825e-806e6f6e6963}") ,
+		c_xor("{b32e2340-29ef-11eb-b449-806e6f6e6963}") , // kakje
+		c_xor("{f79de240-0082-11eb-85f1-806e6f6e6963}") , // SAJACK
+		c_xor("{e0ec89c0-2a3a-11eb-ba6e-806e6f6e6963}") , // arego 
+		c_xor("{aef3b484-2d63-11eb-8e22-806e6f6e6963}") , // evans 
+		c_xor("{2dba80c0-00da-11eb-b0f4-806e6f6e6963}") , // Mornz
+		c_xor("{2bdfe3b4-4862-11eb-b3fe-806e6f6e6963}") , // paul 
+		c_xor("{PizzaXYZ-8804-14614-22219-29502}") , // blood
+		c_xor("{aff77fe6-3dc5-11eb-8084-806e6f6e6963}") , // X1
+		c_xor("{5ebf94c0-008b-11eb-b602-806e6f6e6963}") , // Maxim Post
+		c_xor("{a5a59008-2d3e-11eb-a9f5-806e6f6e6963}") , // dillan
+		c_xor("{ff697771-de30-4e46-902e-187fea803201}") // andru
+	};
 	namespace sec {
-		void checkVersion() {
-			std::string path = c_xor("C:\\Windows\\version.txt");
-			std::ifstream myReadFile;
-			myReadFile.open(path);
-			
-			if (myReadFile.is_open()) {
-				std::string output;
-				while (std::getline(myReadFile, output)) {
-					if (output != c_xor("Dbd09FN9f9JNF00fjh")) {
-						system(incorrectoutput.c_str());
-						exit(0);
-					}
-				}
-			}
-			else {
-				system(notopen.c_str());
-				exit(0);
-			}
-			myReadFile.close();
-		}
-		void checkFile() {
-			std::string path = c_xor("C:\\Windows\\PTS\\pts.txt");
-			std::ifstream myReadFile;
-			myReadFile.open(path);
-
-			if (myReadFile.is_open()) {
-				std::string output;
-				while (std::getline(myReadFile, output)) {
-					if (output != c_xor("3833")) {
-						system(incorrectoutput.c_str());
-						exit(0);
-					}
-				}
-			}
-			else {
-				system(notopen.c_str());
-				exit(0);
-			}
-			myReadFile.close();
-		}
 		bool DBContainsHwid(std::string hwid) {
-			std::string path = c_xor("C:\\plusminus\\staticdb.txt");
-			std::ifstream myReadFile;
-			myReadFile.open(path);
-
-			if (myReadFile.is_open()) {
-				std::string output;
-				while (std::getline(myReadFile, output)) {
-					if (output.find(hwid) != std::string::npos) {
-						return true;
-					}
-					else {
-						return false;
-					}
-				}
-			}
-			else {
-				return false;
-			}
-			myReadFile.close();
+			return std::find(list.begin(), list.end(), hwid) != list.end();
 		}
 	}
 }

@@ -25,9 +25,6 @@ inline Projectile* __fastcall CreateProjectile(void* BaseProjectileA, void* pref
 	if (Weapons::NoRicochet) {
 		projectile->ricochetChance(0.f);
 	}
-	if (Weapons::SpoofHitDistance) {
-		projectile->traveledDistance(10000.f);
-	}
 	// TO-DO: delay shot
 	return projectile;
 }
@@ -103,6 +100,7 @@ bool waslagging = false;
 void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (!baseplayah) return;
 	typedef void(__stdcall* set_rayleigh)(float);
+	typedef void(__stdcall* set_grassdist)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	if (Misc::Rayleigh) {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount);
@@ -113,6 +111,7 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (Misc::Suicide) {
 		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
 	}
+	((set_grassdist)(Storage::gBase + 0x667AB0))(Global::testFloat);
 	EntityThreadLoop();
 	if (!waslagging && Misc::FakeLag) {
 		write(LocalPlayer + 0x5C8, 0.4f, float);
@@ -151,11 +150,14 @@ bool __fastcall CanHoldItems(void* a1, void* a2) {
 void __fastcall VendingSound(uintptr_t a1, uintptr_t a2) {
 	return;
 }
+void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
+	return original_UnregisterFromVisibility(pl, dist, true);
+}
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttackA = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	//printf("called spa\n");
 	uintptr_t AttackA = read(PlayerAttackA + 0x18, uintptr_t); // public Attack attack;
-	write(a2 + 0x20, Vector3(0, 0, 0), Vector3);
+	write(a2 + 0x2C, Weapons::HitDistance, float);
 	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
 		if (Combat::HitboxOverride) {
 			uint32_t bone;
@@ -222,7 +224,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2AFD30), (void**)&original_dohitt, DoHit); // RICOCHET
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2B0440), (void**)&original_domovement, DoMovement);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);

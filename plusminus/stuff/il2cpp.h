@@ -59,7 +59,7 @@ DWORD64 il2cpp_object_new(DWORD64 klass) {
 }
 void il2cpp_hook(DWORD64 method, PVOID hook, PDWORD64 ret) {
 	DWORD64 orig = read(method, DWORD64);
-	if (orig != method) write(ret, orig, DWORD64); //we dont override original pointer
+	if (orig != method) write(ret, orig, DWORD64);
 	write(method, hook, PVOID);
 }
 DWORD64 il2cpp_field(DWORD64 klass, const char* nm, bool alwaysfalse = false) {

@@ -13,9 +13,6 @@ inline clientinput_fn original_clientinput;
 typedef void(__fastcall* dohitnotify)(DWORD64, DWORD64);
 inline dohitnotify original_dohitnotify;
 
-typedef void(__fastcall* setskinproperties)(DWORD64, DWORD64);
-inline setskinproperties original_setskinproperties;
-
 typedef void(__fastcall* lateupd)(uintptr_t);
 inline lateupd original_lateupdate;
 
@@ -25,13 +22,11 @@ inline isheadshot original_getisheadshot;
 typedef void(__fastcall* traceallthing)(uintptr_t, uintptr_t, uintptr_t);
 inline traceallthing original_traceall;
 
-
-
 typedef bool(__fastcall* sendclienttick)(void*);
 inline sendclienttick original_sendclienttick;
 
-typedef DWORD64(__fastcall* getskincolor)(DWORD64, float);
-inline getskincolor original_getskincolor;
+typedef void(__fastcall* UnregisterFromVisibilityS)(BasePlayer*, float, bool);
+inline UnregisterFromVisibilityS original_UnregisterFromVisibility;
 
 typedef Vector3(__fastcall* getpos)(DWORD64);
 inline getpos original_geteyepos;

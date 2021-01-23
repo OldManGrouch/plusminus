@@ -129,6 +129,7 @@ private:
 		SetupValue(Weapons::SuperBow, false, c_xor("Weapon"), c_xor("FastBow"));
 		SetupValue(Weapons::Penetrate, false, c_xor("Weapon"), c_xor("Penetrate"));
 		SetupValue(Weapons::SpoofHitDistance, false, c_xor("Weapon"), c_xor("SpoofHitDistance"));
+		SetupValue(Weapons::HitDistance, false, c_xor("Weapon"), c_xor("HitDistance"));
 		
 		SetupValue(PlayerEsp::name, false, c_xor("Players"), c_xor("name"));
 		SetupValue(PlayerEsp::box, false, c_xor("Players"), c_xor("box"));

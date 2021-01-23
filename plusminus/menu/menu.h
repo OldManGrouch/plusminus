@@ -183,7 +183,10 @@ void Menu() {
 			ImGui::Checkbox(xorstr("EokaTap"), &Weapons::SuperEoka);
 			ImGui::Checkbox(xorstr("FastBow"), &Weapons::SuperBow);
 			HelpCheckbox(xorstr("Penetrate"), &Weapons::Penetrate, xorstr("Allows you to shoot through deployables, trees."));
-			ImGui::Checkbox(xorstr("Spoof Hit Distance"), &Weapons::SpoofHitDistance);
+			HelpCheckbox(xorstr("Spoof Hit Distance"), &Weapons::SpoofHitDistance, xorstr("You can use this to make enemies think you were closer than you actually were or just flex with big meters."));
+			if (Weapons::SpoofHitDistance) {
+				ImGui::SliderFloat(xorstr("Distance"), &Weapons::HitDistance, 0.f, 10000.f);
+			}
 			break;
 		case 2:
 			ImGui::Checkbox(xorstr("Name"), &PlayerEsp::name);
@@ -240,7 +243,7 @@ void Menu() {
 			}
 			ImGui::Checkbox(xorstr("Weapon"), &PlayerEsp::weapon);
 			ImGui::Checkbox(xorstr("Tracers"), &PlayerEsp::tracers);
-			HelpCheckbox(xorstr("Chams"), &PlayerEsp::chams, xorstr("Colors player models and their clothes."));
+			HelpCheckbox(xorstr("Chams"), &PlayerEsp::chams, xorstr("Colors player models and their clothes through walls."));
 			HelpCheckbox(xorstr("Target Tracers"), &PlayerEsp::targetline, xorstr("Shows a line to the targeted player."));
 			HelpCheckbox(xorstr("Target Belt"), &PlayerEsp::belt, xorstr("Shows the targeted player's belt."));
 			ImGui::Checkbox(xorstr("Ignore Sleepers"), &PlayerEsp::sleeperignore);
@@ -443,7 +446,7 @@ void Menu() {
 			}
 			ImGui::Separator();
 			if (ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &Global::debugtab)) {
-				ImGui::SliderFloat(xorstr("float"), &Global::testFloat, 0.f, 50.f);
+				ImGui::SliderFloat(xorstr("float"), &Global::testFloat, 0.f, 200.f);
 				ImGui::Checkbox(xorstr("bool"), &Global::testBool);
 				ImGui::SliderInt(xorstr("int"), &Global::testInt, 0, 100);
 				ImGui::InputText(xorstr("char"), Global::testChar, 0x100);

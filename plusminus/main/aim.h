@@ -46,7 +46,6 @@ float GetBulletSpeed(Weapon tar, int ammo)
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
 			if (id == ammo) {
-				//printf("returned %f\n", am.speed);
 				return am.speed;
 			}
 		}
