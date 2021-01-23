@@ -30,7 +30,8 @@ namespace hwid {
 		c_xor("{Apple8630-18857-9853-3095421017}") , // camre
 		c_xor("{Apple15611-25076-25935-2133929717}") , // Nick
 		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") ,
-		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}")
+		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") ,
+		c_xor("{6fca8781-d0b8-11ea-b354-806e6f6e6963}") // DREIK ON HIs fucking shadow pc
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {
