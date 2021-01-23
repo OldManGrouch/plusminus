@@ -72,6 +72,7 @@ DWORD __stdcall Start(LPVOID) {
 	Storage::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
 	Storage::uBase = (DWORD64)GetModuleHandleA(c_xor("UnityPlayer.dll"));
 	il2cpp::InitIL();
+	//game::init();
 	HMODULE hDXGIDLL = 0;
 	do {
 		hDXGIDLL = GetModuleHandle(L"dxgi.dll");

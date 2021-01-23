@@ -120,7 +120,11 @@ enum BoneList : int {
 	collision,
 	displacement
 };
-
+enum class CursorLockMode {
+	None = 0,
+	Locked = 1,
+	Confined = 2
+};
 enum PlayerFlags : int {
 	Unused1 = 1,
 	Unused2 = 2,

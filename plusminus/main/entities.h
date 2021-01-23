@@ -189,7 +189,7 @@ void EntityLoop() {
 		}
 		//BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
 		if (weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) {
-			Test();
+			//Test();
 		}
 		otherEsp::bradley(ObjectClass, Object, buff);
 		otherEsp::corpse(ObjectClass, Object, buff);
@@ -305,6 +305,9 @@ void EntityThreadLoop() {
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
 	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
+	/*if (show) {
+		game::set_lockstate(CursorLockMode::None);
+	}*/
 	for (int i = 0; i <= EntityCount; i++) {
 		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
 		DWORD64 Object = read(Entity + 0x10, DWORD64); if (Object <= 100000) continue;

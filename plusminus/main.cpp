@@ -17,9 +17,9 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	if (hwid::sec::DBContainsHwid(lol)) {
-		//AllocConsole();
-		//freopen("CONOUT$", "w", stdout);
-		//std::cout << "aaaaaaa\n";
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		std::cout << "aaaaaaa\n";
 		system(success.c_str());
 		DisableThreadLibraryCalls(hModule);
 		GetModuleFileName(hModule, (LPWSTR)dlldir, 512);

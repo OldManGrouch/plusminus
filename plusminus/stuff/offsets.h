@@ -1,3 +1,4 @@
+
 namespace CO {
 	auto PropertyToId = 0x14DFB10;
 	auto set_grassDistance = 0x667AB0;
@@ -57,6 +58,9 @@ namespace CO {
 		namespace StringPool {
 			auto Get = 0x6B20B0; // public static uint Get(string str) { }
 		}
+	}
+	void init() {
+
 	}
 }
 #pragma once
