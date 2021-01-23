@@ -44,10 +44,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/il2cpp.h"
 
 #include "rendering/rendering.h"
-#include "main/lol.h"
+
 #include "hooks/minhook/include/MinHook.h"
 #include "main/aim.h"
 #include "main/misc.h"
+#include "main/lol.h"
 #include "main/esp.h"
 #include "main/entities.h"
 

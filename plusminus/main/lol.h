@@ -86,13 +86,13 @@ void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
 	return ((Pick)(Storage::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
 }
-float ValueD = 0.f; float MaxValue = 10.f;
+float ValueD = aa; float MaxValue = 21.f;
 void Test() {
-	ValueD += 0.02f;
+	/*ValueD += 0.02f;
 	if (ValueD > MaxValue) {
 		ValueD = 0;
 		Global::doneHits = 0;
-	}
+	}*/
 	Renderer::Rectangle(Vector2((Global::ScreenWidth / 2) - 50, Global::ScreenHigh - 200), Vector2(100, 5), D2D1::ColorF::Black, 1.f);
 	Renderer::FillRectangle(Vector2((Global::ScreenWidth / 2) - 50, Global::ScreenHigh - 200), Vector2(100 * (ValueD / MaxValue), 5), D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 }

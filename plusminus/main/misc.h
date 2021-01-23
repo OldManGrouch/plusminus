@@ -40,7 +40,9 @@ void WeaponPatch() {
 }
 float aa = 0.f;
 void MiscFuncs() {
-	aa += 0.1f; // count the timer up
+	if (aa <= 21.f) {
+		aa += 0.1f; // count the timer up
+	}
 	BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
 	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && Misc::FastHeal) { // check item thru id
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity

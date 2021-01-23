@@ -187,7 +187,10 @@ void EntityLoop() {
 				PickupItem(ent);
 			}
 		}
-
+		//BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
+		if (weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) {
+			Test();
+		}
 		otherEsp::bradley(ObjectClass, Object, buff);
 		otherEsp::corpse(ObjectClass, Object, buff);
 		otherEsp::tc(ObjectClass, Object, buff);
