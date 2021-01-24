@@ -32,6 +32,7 @@ namespace hwid {
 		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") ,
 		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") ,
 		c_xor("{6fca8781-d0b8-11ea-b354-806e6f6e6963}") , // DREIK ON HIs fucking shadow pc
+		c_xor("{2e9f0c72-00d9-11eb-a22d-806e6f6e6963}") , // DREIK ON HIs actual pc
 		c_xor("{5b3ac3fe-7892-11ea-e633-806e6f6e65b3}") ,
 		c_xor("{5c5b05c0-3d71-11eb-9a4c-806e6f6e6963}") ,
 		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}") ,
@@ -44,7 +45,12 @@ namespace hwid {
 		c_xor("{Apple8473-14051-8082-65528909}") ,
 		c_xor("{Apple30996-5625-1209-95681316}") ,
 		c_xor("{d5062f40-5f9c-11e9-816a-806e6f6e6963}") ,
-		c_xor("{24af1b3a-5a36-11eb-a58c-806e6f6e6963}")
+		c_xor("{24af1b3a-5a36-11eb-a58c-806e6f6e6963}") ,
+		c_xor("{Apple28460-28793-6227-135597203}") ,
+		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,
+		c_xor("{a11e4ad7-787a-8789-4ea8-4d8d8e889732}") ,
+		c_xor("{Apple7296-1674-18604-977829647}") ,
+		c_xor("{XYZba4e-42d99-2282-4fed5cef14}")
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {

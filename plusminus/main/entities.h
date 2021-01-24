@@ -316,11 +316,6 @@ void EntityThreadLoop() {
 		char* classname = weapon->ClassName();
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		if (m_strstr(buff, xorstr("player.prefab"))) {
-			if (yeetus) {
-				typedef void(__stdcall* Pick)(DWORD64, Str);
-				((Pick)(Storage::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
-				yeetus = false;
-			}
 			BasePlayer* lol = (BasePlayer*)ent;
 			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
