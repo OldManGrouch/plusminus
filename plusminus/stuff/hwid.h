@@ -7,7 +7,7 @@ namespace hwid {
 		c_xor("{Apple16433-27459-31356-68921218}") , // Snowwy
 		c_xor("{536c6940-008b-11eb-9275-806e6f6e6963}") , // Noah 
 		c_xor("{1b7803eb-da69-11ea-a112-VmXJLbfL2MXp}") , // Gytis
-		c_xor("{4b78fac3-1634-11eb-ba55-806e6f6e6963}") , // sent
+		c_xor("{6770ccba-5e67-11eb-a025-806e6f6e6963}") , // sent
 		c_xor("{04de4113-b270-11ea-bf8a-806e6f6e6963}") , // Willy
 		c_xor("{ec4c96f2-4ff3-11eb-8f02-806e6f6e6963}") , // Lukas Andrulis!
 		c_xor("{1e038f69-2ac3-11eb-b6d7-806e6f6e6963}") , // Reese
@@ -49,8 +49,17 @@ namespace hwid {
 		c_xor("{Apple28460-28793-6227-135597203}") ,
 		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,
 		c_xor("{a11e4ad7-787a-8789-4ea8-4d8d8e889732}") ,
-		c_xor("{Apple7296-1674-18604-977829647}") ,
-		c_xor("{XYZba4e-42d99-2282-4fed5cef14}")
+		c_xor("{A72le21c9d210560-28cc3845513338}") , // heart
+		c_xor("{XYZba4e-42d99-2282-4fed5cef14}") ,
+		c_xor("{c5a38e40-16c9-11eb-9017-806e6f6e6963}") ,
+		c_xor("{Apple27139-22866-13476-293449667}") ,
+		c_xor("{69c38fef-1749-4ceb-868c-94f51d60f8a7}") , // Lucky
+		c_xor("{v1jr8308-u7vp-d83f-7a74-uts3q62cm56b}") ,
+		c_xor("{b1f8993d-bbff-11ea-86d6-806e6f6e6963}") ,
+		c_xor("{5fffa4c0-29de-11eb-9669-806e6f6e6963}") ,
+		c_xor("{67bf4ab8-471d-11eb-b37a-806e6f6e6963}") ,
+		c_xor("{3fd63740-b9a4-11ea-bcec-806e6f6e6963}") , // epiccode-alpha
+		c_xor("{01eb958c-4f9f-11eb-9a4a-806e6f6e6963}") // benediktas
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {

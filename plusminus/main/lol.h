@@ -10,7 +10,7 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	if (read(Held + 0x23C, float) < read(Held + 0x1D8, float)) { return; }
 
 	DWORD64 staticHitTest = read(Storage::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
-	DWORD64 newHitTest = il2cpp_object_new(staticHitTest);
+	DWORD64 newHitTest = il2cpp::il2cpp_object_new(staticHitTest);
 
 	DWORD64 trans; Ray ray = Ray(LocalPlayer->GetBoneByID(neck), (target.position - LocalPlayer->GetBoneByID(neck)).Normalized());
 	if (!target.entity) return;
@@ -31,7 +31,10 @@ typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
 typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
-typedef void(__stdcall* SetColor)(uintptr_t, int, Color);
+typedef void(__stdcall* SetColorInt)(uintptr_t, int, Color);
+typedef void(__stdcall* SetColorStr)(uintptr_t, Str, Color);
+typedef void(__stdcall* SetFloat)(uintptr_t, Str, float);
+typedef void(__stdcall* EnableKeyword)(uintptr_t, Str);
 typedef int(__stdcall* PropertyToId)(Str);
 uintptr_t shader;
 int property;
@@ -50,7 +53,7 @@ void DoChams(uintptr_t target, Color col) {
 					if (!shader) 
 						shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 					il2cpp::unity::set_shader(material, shader);
-					((SetColor)(Storage::gBase + CO::SetColor))(material, property, col);
+					((SetColorInt)(Storage::gBase + CO::SetColor))(material, property, col);
 					((SetInt)(Storage::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
 				}
 			}

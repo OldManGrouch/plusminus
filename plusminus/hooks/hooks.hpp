@@ -102,6 +102,7 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	typedef void(__stdcall* set_rayleigh)(float);
 	typedef void(__stdcall* set_grassdist)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
+	typedef void(__stdcall* DoAttack)(uintptr_t);
 	if (Misc::Rayleigh) {
 		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount);
 	}
@@ -113,6 +114,26 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	}
 	if (Misc::RemoveGrass) {
 		((set_grassdist)(Storage::gBase + CO::set_grassDistance))(0.f);
+	}
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	if (Misc::AutoShoot && Storage::closestPlayer != null && Combat::pSilent) {
+		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
+		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
+		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
+		int contents = read(mag + 0x1C, int);
+		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
+			INPUT    Input = { 0 };
+			// left down 
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+			::SendInput(1, &Input, sizeof(INPUT));
+
+			// left up
+			::ZeroMemory(&Input, sizeof(INPUT));
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+			::SendInput(1, &Input, sizeof(INPUT));
+		}
 	}
 	EntityThreadLoop();
 	if (!waslagging && Misc::FakeLag) {

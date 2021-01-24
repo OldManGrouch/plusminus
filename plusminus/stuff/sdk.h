@@ -743,7 +743,7 @@ namespace utils {
 	}
 	bool LineOfSight(Vector3 a, Vector3 b) {
 		typedef bool(__stdcall* LOS)(Vector3, Vector3, int, float);
-		bool result = ((LOS)(Storage::gBase + CO::utils::LineOfSight))(a, b, 2162688, 0.f);
+		bool result = ((LOS)(Storage::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608, 0.f);
 		return result;
 	}
 	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {

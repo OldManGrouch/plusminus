@@ -317,6 +317,18 @@ void EntityThreadLoop() {
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
+			/*auto act = lol->GetActiveWeapon();
+			if (act) {
+				auto sprite = il2cpp::game::get_iconSprite(act);
+				if (sprite) {
+					auto texture = il2cpp::game::get_texture(sprite);
+					if (texture) {
+						auto rect = il2cpp::game::get_rect(sprite);
+						il2cpp::game::set_color(Color(1, 1, 1, 1));
+						il2cpp::game::DrawTexture(Rect(lol->GetBoneByID(head).x, lol->GetBoneByID(head).y, rect.wid / 7, rect.hei / 7), texture);
+					}
+				}
+			}*/
 			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);

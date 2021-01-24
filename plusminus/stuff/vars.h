@@ -13,7 +13,7 @@ namespace Global
 	float doneDamage = 0.f;
 
 	int testInt = 0;
-	float testFloat = 100.f;
+	float testFloat = 0.f;
 	bool testBool = false;
 	char testChar[0x100] = "testyvesty";
 	bool debugtab = false;
@@ -236,6 +236,7 @@ namespace ColorsNShit
 
 namespace Misc
 {
+	bool AutoShoot = false;
 	bool RemoveGrass = false;
 	bool Jesus = false;
 	bool IgnoreCollision = false;

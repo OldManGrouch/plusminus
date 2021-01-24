@@ -142,6 +142,7 @@ void Menu() {
 				if (current_item == "Helicopter") {
 					Combat::pSilentTargeting = 1;
 				}
+				ImGui::Checkbox(xorstr("Autoshoot"), &Misc::AutoShoot);
 				ImGui::Checkbox(xorstr("On Key"), &Combat::pSilentOnKey);
 				if (Combat::pSilentOnKey) {
 					Hotkey(xorstr("pSilent Key"), &Keys::pSilent, ImVec2(120.f, 0));
@@ -322,7 +323,7 @@ void Menu() {
 					ImGui::Checkbox(xorstr("Show Distance"), &Ores::showDistance);
 				}
 			}
-			/*if (ImGui::CollapsingHeader(xorstr("Animals"))) {
+			if (ImGui::CollapsingHeader(xorstr("Animals"))) {
 				ImGui::Checkbox(xorstr("Bears"), &Visuals::Animals::Bear);
 				ImGui::Checkbox(xorstr("Pigs"), &Visuals::Animals::Pig);
 				ImGui::Checkbox(xorstr("Wolfs"), &Visuals::Animals::Wolf);
@@ -332,7 +333,7 @@ void Menu() {
 					ImGui::SliderFloat(xorstr("Animal ESP Distance"), &Visuals::Animals::drawAnimalDistance, 5.f, 400.f);
 					ImGui::Checkbox(xorstr("Show Distance      "), &Visuals::Animals::animalDistance);
 				}
-			}*/
+			}
 			if (ImGui::CollapsingHeader(xorstr("Crates"))) {
 				ImGui::Checkbox(xorstr("Chinook Crates"), &Visuals::Crates::Chinook);
 				ImGui::Checkbox(xorstr("Airdrops"), &Visuals::Crates::Supply);
