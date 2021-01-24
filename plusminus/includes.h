@@ -42,7 +42,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/sdk.h"
 #include "main/targeting.h"
 #include "stuff/il2cpp.h"
-#include "game.h"
 #include "rendering/rendering.h"
 #include "hooks/minhook/include/MinHook.h"
 #include "main/aim.h"

@@ -172,9 +172,6 @@
     <ClInclude Include="stuff/structs.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

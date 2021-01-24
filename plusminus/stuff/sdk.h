@@ -335,6 +335,15 @@ public:
 			write(Heldd + oAutomatic, 1, bool);
 		}
 	}
+	void SetBulletSpeed() {
+		DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
+		if (Weapons::FastBullet) {
+			write(Heldd + 0x26C, 1.4, float);
+		}
+		else {
+			write(Heldd + 0x26C, 1, float);
+		}
+	}
 	void SuperBow() {
 		if (Weapons::SuperBow) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
@@ -569,7 +578,7 @@ public:
 	bool MultiHit() { return read(this + 0x64, bool); }
 	bool BestHit() { return read(this + 0x65, bool); }
 	bool DidHit() { return read(this + 0x66, bool); }
-	uintptr_t HitEntity() { return read(this + 0x88, uintptr_t); }
+	BasePlayer* HitEntity() { return read(this + 0x88, BasePlayer*); }
 };
 class Projectile {
 public:

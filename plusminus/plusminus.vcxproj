@@ -7,7 +7,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.h" />
     <ClInclude Include="hooks/defs.h" />
     <ClInclude Include="stuff/offsets.h" />
     <ClInclude Include="main/aim.h" />

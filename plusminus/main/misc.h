@@ -15,12 +15,14 @@ void WeaponPatch() {
 	if (target.category == -2) {
 		weapon->NoSway();
 		weapon->SuperBow();
+		weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 3) {
 		weapon->NoSway();
 		weapon->NoRecoil();
 		weapon->RapidFire();
+		weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 2) {
@@ -28,12 +30,14 @@ void WeaponPatch() {
 		weapon->NoRecoil();
 		weapon->RapidFire();
 		weapon->SetAutomatic();
+		weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == -1) {
 		weapon->NoSway();
 		weapon->SuperEoka();
 		weapon->NoRecoil();
+		weapon->SetBulletSpeed();
 		return;
 	}
 	

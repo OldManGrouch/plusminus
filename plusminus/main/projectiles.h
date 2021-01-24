@@ -15,14 +15,15 @@ void __fastcall Launch(Projectile* prdoj) {
 	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
 	prdoj->gravityModifier(GetGravity(ammo));
 	prdoj->invisible(false);
-	float shpeed = GetBulletSpeed(tar, ammo);
+	/*float shpeed = GetBulletSpeed(tar, ammo);
 	if (!shpeed) shpeed = 250.f;
 	if (Weapons::FastBullet) {
 		prdoj->mod()->projectileVelocity(shpeed * 1.3);
 	}
 	else {
 		prdoj->mod()->projectileVelocity(shpeed);
-	}
+	}*/
+	printf("%f\n", prdoj->mod()->projectileVelocity());
 	if (Weapons::AntiSpread) {
 		prdoj->mod()->projectileVelocitySpread(0.f);
 	}
@@ -36,7 +37,16 @@ void __fastcall DoMovement(Projectile* proj, float delta) {
 	return original_domovement(proj, delta);
 }
 bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
-	write(test + 0xB8, utils::StringPool::Get(Str(L"head")), uint32_t);
+	uintptr_t gameobject = read(test + 0x70, uintptr_t);
+	uintptr_t getgameobject = read(gameobject + 0x10, uintptr_t);
+	layer layerr = read(getgameobject + 0x50, layer);
+
+	auto hitent = test->HitEntity();
+	if (layerr == layer::Player_Server) {
+		if (LocalPlayer->IsTeamMate(hitent->GetSteamID())) {
+			write(test + 0x80, hitent, BasePlayer*);
+		}
+	}
 	return original_dohitt(proj, test, point, norm);
 }
 typedef float(__fastcall* ValueS)(uint32_t);

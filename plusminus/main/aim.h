@@ -64,7 +64,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 		int ammo = active->LoadedAmmo();
 		float speed;
 		if (Weapons::FastBullet) {
-			speed = GetBulletSpeed(tar, ammo) * 1.3;
+			speed = GetBulletSpeed(tar, ammo) * 1.4;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);
@@ -102,7 +102,7 @@ Vector3 Prediction(BasePlayer* Player) {
 	if (Dist > 0.001f) {
 		float speed;
 		if (Weapons::FastBullet) {
-			speed = GetBulletSpeed(tar, ammo) * 1.3;
+			speed = GetBulletSpeed(tar, ammo) * 1.4;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);

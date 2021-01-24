@@ -304,11 +304,7 @@ void EntityThreadLoop() {
 	DWORD64 ClientEntities_values = read(ClientEntities_list + 0x28, DWORD64);
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
-	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
-	/*if (show) {
-		game::set_lockstate(CursorLockMode::None);
-	}*/
-	for (int i = 0; i <= EntityCount; i++) {
+	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);	for (int i = 0; i <= EntityCount; i++) {
 		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
 		DWORD64 Object = read(Entity + 0x10, DWORD64); if (Object <= 100000) continue;
 		DWORD64 ObjectClass = read(Object + 0x30, DWORD64); if (ObjectClass <= 100000) continue;

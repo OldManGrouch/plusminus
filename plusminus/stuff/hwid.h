@@ -38,7 +38,13 @@ namespace hwid {
 		c_xor("{beba3940-0093-11eb-8bf8-806e6f6e6963}") ,
 		c_xor("{0e860a29-255e-11eb-a285-806e6f6e6963}") ,
 		c_xor("{c9143c92-3c1c-11eb-a701-806e6f6e6963}") ,
-		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}")
+		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}") ,
+		c_xor("{772a82f9-243f-11eb-ab4e-806e6f6e6963}") ,
+		c_xor("{f2729700-44f8-11eb-96c3-806e6f6e6963}") ,
+		c_xor("{Apple8473-14051-8082-65528909}") ,
+		c_xor("{Apple30996-5625-1209-95681316}") ,
+		c_xor("{d5062f40-5f9c-11e9-816a-806e6f6e6963}") ,
+		c_xor("{24af1b3a-5a36-11eb-a58c-806e6f6e6963}")
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {
