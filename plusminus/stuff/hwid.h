@@ -30,12 +30,14 @@ namespace hwid {
 		c_xor("{Apple15611-25076-25935-2133929717}") , // Nick
 		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") , // NecuDaVamKazem || JOVAN
 		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") ,
-		c_xor("{8f86c2c0-4935-11eb-8993-806e6f6e6963}") , // todor
+		c_xor("{dcb03ef5-ccd4-11ea-b00a-806e6f6e6963}") , // phara
+		c_xor("{8f86c2c0-4935-11eb-8993-806e6f6e6963}") , // todor || Zillaa
 		c_xor("{Apple24738-24811-1170-213231152}") , // !Nutinurmom
 		c_xor("{Apple10078-6437-31644-1638813775}") , // roadt || FlatMilk
 		c_xor("{6fca8781-d0b8-11ea-b354-806e6f6e6963}") , // DREIK ON HIs fucking shadow pc
 		c_xor("{2e9f0c72-00d9-11eb-a22d-806e6f6e6963}") , // DREIK ON HIs actual pc
 		c_xor("{5b3ac3fe-7892-11ea-e633-806e6f6e65b3}") ,
+		c_xor("{b5779514-1b63-11eb-9b39-806e6f6e6963}") , // alysa || Kat.
 		c_xor("{5c5b05c0-3d71-11eb-9a4c-806e6f6e6963}") ,
 		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}") ,
 		c_xor("{beba3940-0093-11eb-8bf8-806e6f6e6963}") ,

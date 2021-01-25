@@ -12,17 +12,33 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string webhook_url = c_xor("https://discord.com/api/webhooks/782872540724199464/UClxJ-olKhhg0a35hFlpGbADTKBqD9D_W4f7PViY5AhZiO3mwcxeiBRHSLa6TriNuP-1");
 	std::string avatar_url = c_xor("https://i.imgur.com/9FKjGO8.png");
 
+	HMODULE hMod;
+	std::wstring PathAndName;
+	std::wstring OnlyPath;
+
 	std::string lol = c;
 	std::string winname = name;
 	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	if (hwid::sec::DBContainsHwid(lol)) {
-
-		//AllocConsole();
-		//freopen("CONOUT$", "w", stdout);
-		//std::cout << "aaaaaaa\n";
+		
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		std::cout << "aaaaaaa\n";
 
 		system(success.c_str());
+
+		hMod = hModule;
+		const int BUFSIZE = 4096;
+		wchar_t buffer[BUFSIZE];
+		if (::GetModuleFileNameW(GetModuleHandleW(L"GameAssembly.dll"), buffer, BUFSIZE - 1) <= 0) {
+			return;
+		}
+		PathAndName = buffer;
+		size_t found = PathAndName.find_last_of(L"/\\");
+		OnlyPath = PathAndName.substr(0, found);
+		vars::stuff::dlldirectory = OnlyPath;
+
 		DisableThreadLibraryCalls(hModule);
 		GetModuleFileName(hModule, (LPWSTR)dlldir, 512);
 		for (size_t i = strlen(dlldir); i > 0; i--) { if (dlldir[i] == '\\') { dlldir[i + 1] = 0; break; } }

@@ -158,9 +158,9 @@ void GoToTarget(BasePlayer* player) {
 	Vector2 Offset = Math::CalcAngle(Local, PlayerPos);
 	Offset -= LocalPlayer->GetVA();
 	Normalize(Offset.x, Offset.y);
-	SmoothAngleOld(LocalPlayer->GetVA(), Offset, 10);
+	//SmoothAngleOld(LocalPlayer->GetVA(), Offset, 10);
 	auto delta = Offset -= LocalPlayer->GetVA();
-	//Offset = LocalPlayer->GetVA() + delta;
+	Offset = LocalPlayer->GetVA() + delta;
 	LocalPlayer->SetVA(Offset);
 }
 

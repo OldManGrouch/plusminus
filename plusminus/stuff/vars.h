@@ -4,6 +4,7 @@ bool yeetus = false;
 #define null NULL
 namespace vars {
 	namespace stuff {
+		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
 		float testFloat = 0.f;

@@ -50,7 +50,7 @@ void MiscFuncs() {
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity
 		write(Held + 0x278, 1.f, float); // disable animation cause it tries using the syringe and gives violations
 		bool deployed = read(Held + 0x188, bool); // check if is deployed
-		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && aa >= 21.f) { // check if fire button is down and if the timer has reached a specific number
+		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && aa >= 21.f && deployed) { // check if fire button is down and if the timer has reached a specific number
 			typedef void(__stdcall* ServerRPC)(DWORD64, Str); // define server rpc
 			((ServerRPC)(vars::stor::gBase + CO::ServerRPC))(Held, Str(xorstr(L"UseSelf"))); // call serverrpc
 			aa = 0.f; // reset the timer

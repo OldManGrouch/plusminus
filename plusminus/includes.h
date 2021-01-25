@@ -33,7 +33,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/hwid.h"
 #include "lazyimp.hpp"
 #include "stuff/mem.h"
-
 #include "stuff/utilities.h"
 #include "stuff/structs.h"
 #include "stuff/math.h"
@@ -42,7 +41,13 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/sdk.h"
 #include "main/targeting.h"
 #include "stuff/il2cpp.h"
+#include <d3d11.h>
+#include "init/d3defs.h"
 #include "rendering/rendering.h"
+#include "menu/imgui/imgui_impl_win32.h"
+#include "menu/imgui/imgui_impl_dx11.h"
+#include "menu/imgui/imgui_internal.h"
+#include "menu/imgui/imgui_elements.h"
 #include "hooks/minhook/include/MinHook.h"
 #include "main/aim.h"
 #include "main/misc.h"
@@ -52,12 +57,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 #include "main/projectiles.h"
 #include "hooks/hooks.hpp"
-#include "menu/imgui/imgui_impl_win32.h"
-#include "menu/imgui/imgui_impl_dx11.h"
-#include "menu/imgui/imgui_internal.h"
-#include <d3d11.h>
-#include "init/d3defs.h"
-#include "menu/imgui/imgui_elements.h"
+
 
 #include "init/init.h"
 #include "config/config.h"

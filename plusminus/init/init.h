@@ -41,13 +41,13 @@ void InitCheat() {
 			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
 		}
 	}
+	// yeet
+	
+	//printf("%ls \n", vars::stuff::dlldirectory.c_str());
 	if (vars::combat::lock_target) {
 		wchar_t trgt[64];
 		if (vars::stor::closestPlayer != NULL) {
 			_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->GetName());
-		}
-		else {
-			_swprintf(trgt, xorstr(L"Target Locked."));
 		}
 		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::PaleVioletRed, true, true);
 	}
@@ -61,7 +61,7 @@ void InitCheat() {
 				Renderer::Line(startPos, ScreenPos, D2D1::ColorF::Red, 1.f);
 		}
 	}
-	
+	//DoIcon();
 	if (vars::stor::closestHeli != NULL && vars::visuals::patrol_heli) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);

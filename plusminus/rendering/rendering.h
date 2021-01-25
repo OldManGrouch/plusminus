@@ -4,6 +4,8 @@
 #include <intrin.h>
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #define RET_CHK(x) if ( x != S_OK ) return
 Vector2 screen_size = { (float)vars::stuff::ScreenHeight, (float)vars::stuff::ScreenWidth };
 namespace Renderer {
@@ -11,6 +13,7 @@ namespace Renderer {
 	ID2D1RenderTarget* Canvas;
 	IDWriteFactory1* TextEngine;
 	IDWriteTextFormat* TextFormat;
+	IDWriteTextFormat* BigText;
 	ID2D1SolidColorBrush* SolidColor;
 	__forceinline UINT wcslen(const wchar_t* Str) {
 		const wchar_t* TempStr = Str;
@@ -24,6 +27,7 @@ namespace Renderer {
 			FC(dwrite, DWriteCreateFactory, DWRITE_FACTORY_TYPE_SHARED, __uuidof(TextEngine), (IUnknown**)&TextEngine);
 			FC(d2d1, D2D1CreateFactory, D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &CreateOpt, (void**)&Interface);
 			TextEngine->CreateTextFormat(xorstr(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 12.f, L"", &TextFormat);
+			TextEngine->CreateTextFormat(xorstr(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 20.f, L"", &BigText);
 			if (!Interface || !TextEngine || !TextFormat) return false;
 		}
 		ID3D11Device* d3d_device;
@@ -67,6 +71,9 @@ namespace Renderer {
 		}
 		SolidColor->SetColor(Clr);
 		Canvas->DrawLine({ Start.x, Start.y }, { End.x, End.y }, SolidColor, Thick);
+	}
+	__forceinline void Image(const Vector2& point) {
+		
 	}
 	__forceinline void Circle(const Vector2& Start, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
 		SolidColor->SetColor(Clr); Canvas->DrawEllipse({ { Start.x, Start.y }, Rad, Rad }, SolidColor, Thick);
@@ -117,11 +124,11 @@ namespace Renderer {
 		m_pLinearGradientBrush->Release();
 		pGradientStops->Release();
 	}
-	Vector2 String(const Vector2& pos, const wchar_t* text, const D2D1::ColorF& color, bool outline, bool center = false) {
+	Vector2 String(const Vector2& pos, const wchar_t* text, const D2D1::ColorF& color, bool outline, bool center = false, bool big = false) {
 		if (center) {
 			SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
 			IDWriteTextLayout* TextLayout;
-			TextEngine->CreateTextLayout(text, wcslen(text), TextFormat, 500.f, 100.f, &TextLayout);
+			TextEngine->CreateTextLayout(text, wcslen(text), big ? BigText : TextFormat, 500.f, 100.f, &TextLayout);
 			DWRITE_TEXT_METRICS TextInfo;
 			TextLayout->GetMetrics(&TextInfo);
 			Vector2 TextSize = { TextInfo.width / 2.f, TextInfo.height / 2.f };
@@ -140,18 +147,18 @@ namespace Renderer {
 		}
 		
 		IDWriteTextLayout* TextLayout;
-		TextEngine->CreateTextLayout(text, wcslen(text), TextFormat, 500.f, 100.f, &TextLayout);
+		TextEngine->CreateTextLayout(text, wcslen(text), big ? BigText : TextFormat, 500.f, 100.f, &TextLayout);
 		SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
 		if (outline) {
 			const auto x = pos.x;
 			const auto y = pos.y;
-			Canvas->DrawTextW(text, wcslen(text), TextFormat, { pos.x - 1, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
-			Canvas->DrawTextW(text, wcslen(text), TextFormat, { pos.x + 1, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
-			Canvas->DrawTextW(text, wcslen(text), TextFormat, { pos.x, pos.y - 1, FLT_MAX, FLT_MAX }, SolidColor);
-			Canvas->DrawTextW(text, wcslen(text), TextFormat, { pos.x, pos.y + 1, FLT_MAX, FLT_MAX }, SolidColor);
+			Canvas->DrawTextW(text, wcslen(text), big ? BigText : TextFormat, { pos.x - 1, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
+			Canvas->DrawTextW(text, wcslen(text), big ? BigText : TextFormat, { pos.x + 1, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
+			Canvas->DrawTextW(text, wcslen(text), big ? BigText : TextFormat, { pos.x, pos.y - 1, FLT_MAX, FLT_MAX }, SolidColor);
+			Canvas->DrawTextW(text, wcslen(text), big ? BigText : TextFormat, { pos.x, pos.y + 1, FLT_MAX, FLT_MAX }, SolidColor);
 		}
 		SolidColor->SetColor(color);
-		Canvas->DrawTextW(text, wcslen(text), TextFormat, { pos.x, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
+		Canvas->DrawTextW(text, wcslen(text), big ? BigText : TextFormat, { pos.x, pos.y, FLT_MAX, FLT_MAX }, SolidColor);
 		TextLayout->Release();
 		return { 0,0 };
 	}

@@ -1,4 +1,6 @@
 #include <vector>
+
+
 typedef void(__stdcall* ProcessAttack)(DWORD64, DWORD64);
 typedef float(__stdcall* get_time)();
 typedef void(__stdcall* StartAttackCooldown)(DWORD64, float);
@@ -88,6 +90,9 @@ void PickupPlayer(BasePlayer* ent) {
 void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
 	return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
+}
+void DoIcon() {
+	
 }
 float MaxValue = 21.f;
 void Test() {

@@ -68,7 +68,7 @@ Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, 
 		playerDir = (Prediction(TargetPlayer) - LocalPlayer->GetBoneByID(head)).Normalized();
 	}
 	if (vars::combat::psilent) {
-		if (!vars::combat::psilent) {
+		if (!vars::combat::psilentonkey) {
 			if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
 				inputVec = playerDir;
 			}
