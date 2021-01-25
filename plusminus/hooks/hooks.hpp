@@ -1,11 +1,11 @@
 ﻿#include "hooks/defs.h"
 int yeet = 0;
 bool __fastcall SendClientTick(void* baseplayer) {
-	if (Misc::AntiAim) {
+	if (vars::misc::anti_aim) {
 		auto input = read(baseplayer + 0x4C8, uintptr_t);
 		auto state = read(input + 0x20, uintptr_t);
 		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
-		yeet += Misc::AntiAimSpeed;
+		yeet += vars::misc::anti_aim_speed;
 		if (yeet >= 999) {
 			yeet = 0;
 		}
@@ -16,36 +16,32 @@ bool __fastcall SendClientTick(void* baseplayer) {
 inline Projectile* __fastcall CreateProjectile(void* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
 	 
-	if (Weapons::FatBullet) {
+	if (vars::weapons::thick_bullet) {
 		projectile->thickness(1.f);
 	}
 	else {
 		projectile->thickness(0.1f);
 	}
-	if (Weapons::NoRicochet) {
+	if (vars::weapons::no_ricochet) {
 		projectile->ricochetChance(0.f);
 	}
 	// TO-DO: delay shot
 	return projectile;
 }
 inline bool __fastcall CanAttack(void* a1, void* a2) {
-	if (Weapons::jumpAim) return true;
-	return original_canattack(a1, a2);
-}
-inline bool __fastcall CanJump(void* a1, void* a2) {
-	if (Weapons::jumpAim) return true;
+	if (vars::misc::can_attack) return true;
 	return original_canattack(a1, a2);
 }
 void __fastcall LateUpdate(uintptr_t TOD_Sky) {
 	typedef void(__stdcall* updamb)(uintptr_t);
-	if (Misc::CustomAmbient) {
+	if (vars::misc::bright_ambient) {
 		auto night = read(TOD_Sky + 0x58, DWORD64);
 		write(night + 0x50, 6.f, float);
 	}
 	return original_lateupdate(TOD_Sky);
 }
 void __fastcall TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) {
-	if (Weapons::Penetrate) {
+	if (vars::weapons::penetrate) {
 		layerMask &= ~Tree;
 		layerMask &= ~Deployed;
 		layerMask &= ~Water;
@@ -62,36 +58,36 @@ pUncStr __fastcall Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args
 	return original_consolerun(options, strCommand, args);
 }
 Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	Vector3 heliDir = (HeliPrediction(LocalPlayer->GetBoneByID(head)) - LocalPlayer->GetBoneByID(head)).Normalized();
 	Vector3 playerDir;
-	if (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) {
+	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
 		playerDir = (Prediction(TargetPlayer) - (LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0))).Normalized();
 	}
 	else {
 		playerDir = (Prediction(TargetPlayer) - LocalPlayer->GetBoneByID(head)).Normalized();
 	}
-	if (Combat::pSilent) {
-		if (!Combat::pSilentOnKey) {
-			if (Combat::pSilentTargeting == 0 && Storage::closestPlayer != NULL) {
+	if (vars::combat::psilent) {
+		if (!vars::combat::psilent) {
+			if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
 				inputVec = playerDir;
 			}
-			if (Combat::pSilentTargeting == 1 && Storage::closestHeli != NULL && Storage::closestHeliObj != NULL) {
+			if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
 				inputVec = heliDir;
 			}
 		}
 		else {
-			if (GetAsyncKeyState(Keys::pSilent)) {
-				if (Combat::pSilentTargeting == 0 && Storage::closestPlayer != NULL) {
+			if (GetAsyncKeyState(vars::keys::psilent)) {
+				if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
 					inputVec = playerDir;
 				}
-				if (Combat::pSilentTargeting == 1 && Storage::closestHeli != NULL && Storage::closestHeliObj != NULL) {
+				if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
 					inputVec = heliDir;
 				}
 			}
 		}
 	}
-	if (Weapons::AntiSpread) {
+	if (vars::weapons::no_spread) {
 		aimCone = 0.f;
 	}
 	return original_aimconedirection(aimCone, inputVec, anywhereInside);
@@ -100,28 +96,24 @@ bool waslagging = false;
 void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (!baseplayah) return;
 	typedef void(__stdcall* set_rayleigh)(float);
-	typedef void(__stdcall* set_grassdist)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	typedef void(__stdcall* DoAttack)(uintptr_t);
-	if (Misc::Rayleigh) {
-		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(Misc::RayleighAmount);
+	if (vars::misc::rayleigh_changer) {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
 	}
 	else {
-		((set_rayleigh)(Storage::gBase + CO::set_rayleigh))(1.f);
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
 	}
-	if (Misc::Suicide) {
-		((OnLand)(Storage::gBase + CO::OnLand))(LocalPlayer, -50);
+	if (vars::misc::suicide) {
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	}
-	if (Misc::RemoveGrass) {
-		((set_grassdist)(Storage::gBase + CO::set_grassDistance))(0.f);
-	}
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
-	if (Misc::AutoShoot && Storage::closestPlayer != null && Combat::pSilent) {
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
 		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 		int contents = read(mag + 0x1C, int);
-		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (Misc::LongNeck && GetAsyncKeyState(Keys::neck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
+		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
 			INPUT    Input = { 0 };
 			// left down 
 			Input.type = INPUT_MOUSE;
@@ -136,45 +128,42 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 		}
 	}
 	EntityThreadLoop();
-	if (!waslagging && Misc::FakeLag) {
+	if (!waslagging && vars::misc::fake_lag) {
 		write(LocalPlayer + 0x5C8, 0.4f, float);
 		waslagging = true;
 	}
-	else if (waslagging && !Misc::FakeLag) {
+	else if (waslagging && !vars::misc::fake_lag) {
 		write(LocalPlayer + 0x5C8, 0.05f, float);
 		waslagging = false;
 	}
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !Misc::Jesus);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, Misc::IgnoreCollision);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, Misc::IgnoreCollision);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 	WeaponPatch();
 	MiscFuncs();
 	typedef void(__stdcall* ClientInput)(DWORD64, DWORD64);
 	((ClientInput)original_clientinput)(baseplayah, ModelState);
-	if (Misc::Flyhack) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
-	if (Misc::SilentWalk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
+	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
+	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
 void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
-	if (Misc::CustomHitsound) { PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); }
+	if (vars::misc::custom_hitsound) { PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); }
 	else { return original_dohitnotify(basecombatentity, hitinfo); }
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
-	if (Misc::CustomHitsound) { return false; }
+	if (vars::misc::custom_hitsound) { return false; }
 	else { return original_getisheadshot(hitinfo); }
 }
 void __fastcall ForcePositionTo(BasePlayer* pl, Vector3 pos) {
-	if (GetAsyncKeyState(Keys::forcepos)) { }
+	if (GetAsyncKeyState(vars::keys::forcepos)) { }
 	else { return original_forcepos(pl, pos); }
 }
 bool __fastcall CanHoldItems(void* a1, void* a2) {
-	if (Weapons::canHoldItems) return true;
+	if (vars::weapons::minicopter_aim) return true;
 	return original_canholditems(a1, a2);
 }
-void __fastcall VendingSound(uintptr_t a1, uintptr_t a2) {
-	return;
-}
 void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
-	if (PlayerEsp::chams) {
+	if (vars::players::chams) {
 		return original_UnregisterFromVisibility(pl, 2.f, true);
 	}
 	else {
@@ -184,20 +173,20 @@ void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
-	if (Weapons::SpoofHitDistance) {
-		write(a2 + 0x2C, Weapons::HitDistance, float);
+	if (vars::weapons::spoof_hitdistance) {
+		write(a2 + 0x2C, vars::weapons::hitdistance, float);
 	}
-	if (Combat::HitboxOverride || Combat::AlwaysHeliHotspot) {
-		if (Combat::HitboxOverride) {
+	if (vars::combat::hitbox_override || vars::combat::always_heli_rotor) {
+		if (vars::combat::hitbox_override) {
 			uint32_t bone;
-			if (rand() % 100 < Combat::HeadshotPercentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
+			if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
 			else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); } 
 			write(Attack + 0x30, bone, uint32_t); // public uint hitBone;
 			write(Attack + 0x64, 16144115, uint32_t); // public uint hitPartID;
 		}
 		else {
-			if (Combat::AlwaysHeliHotspot) {
-				int health = (int)ceil(read(Storage::closestHeli + 0x20C, float));
+			if (vars::combat::always_heli_rotor) {
+				int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 				if (health <= 5000) {
 					write(Attack + 0x30, 224139191, uint32_t); // public uint hitBone;
 				}
@@ -210,24 +199,24 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	return original_sendprojectileattack(a1, a2);
 }
 void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
-	if (Misc::omniSprint) wantsRun = true;
+	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
 }
 void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
-	if (Misc::InfiniteJump) {
+	if (vars::misc::inf_jump) {
 		if (!wantsJump) {
 			return;
 		}
 		typedef void(__stdcall* Jump)(void*, void*, bool);
-		((Jump)(Storage::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
+		((Jump)(vars::stor::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
 	}
 	else {
 		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
 	}
 }
 Vector3 __fastcall get_position(DWORD64 playereyes) {
-	if (Misc::LongNeck) {
-		if (GetAsyncKeyState(Keys::neck)) {
+	if (vars::misc::long_neck) {
+		if (GetAsyncKeyState(vars::keys::longneck)) {
 			return Vector3(LocalPlayer->GetBoneByID(head)) + Vector3(0, 1.15, 0);
 		}
 	}

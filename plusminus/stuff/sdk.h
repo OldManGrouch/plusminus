@@ -307,14 +307,14 @@ public:
 	}
 	
 	void RapidFire() {
-		if (Weapons::RapidFire) {
+		if (vars::weapons::rapid_fire) {
 			DWORD64 heldentity = read(this + oHeldEntity, DWORD64);
 			write(heldentity + oRepeatDelay, 0.09f, float);
 		}
 	}
 	void NoSway() {
 		DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-		if (Weapons::NoSway) {
+		if (vars::weapons::no_sway) {
 			write(Heldd + 0x2B8, 0.f, float);
 			write(Heldd + 0x2BC, 0.f, float);
 		}
@@ -322,7 +322,7 @@ public:
 	void NoRecoil() {
 		DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
 		DWORD64 recoil = read(Heldd + oRecoil, DWORD64);
-		if (Weapons::NoRecoil) {
+		if (vars::weapons::no_recoil) {
 			write(recoil + oRecoilYawMin, 0.f, float);
 			write(recoil + oRecoilYawMax, 0.f, float);
 			write(recoil + oRecoilPitchMin, 0.f, float);
@@ -330,44 +330,32 @@ public:
 		}
 	}
 	void SetAutomatic() {
-		if (Weapons::Automatic) {
+		if (vars::weapons::automatic) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
 			write(Heldd + oAutomatic, 1, bool);
 		}
 	}
 	void SetBulletSpeed() {
 		DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-		if (Weapons::FastBullet) {
+		if (vars::weapons::fast_bullets) {
 			write(Heldd + 0x26C, 1.4, float);
 		}
 		else {
 			write(Heldd + 0x26C, 1, float);
 		}
 	}
-	void SuperBow() {
-		if (Weapons::SuperBow) {
+	void FastBow() {
+		if (vars::weapons::fastbow) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
 			write(Heldd + oAttackReady, 1, bool);
 			write(Heldd + oArrowBack, 1.f, float);
 		}
 	}
-	void SuperEoka() {
-		if (Weapons::SuperEoka) {
+	void EokaTap() {
+		if (vars::weapons::eokatap) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
 			write(Heldd + oSuccessFraction, 1.f, float);
 			write(Heldd + oDidSparkThisFrame, true, bool);
-		}
-	}
-	void LongHand() {
-		if (Weapons::LongHand) {
-			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-			write(Heldd + oMaxDistance, 4.5f, float);
-		}
-	}
-	void FatHand() {
-		if (Weapons::LongHand) {
-			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-			write(Heldd + oAttackRadius, 15.f, float);
 		}
 	}
 };
@@ -411,12 +399,12 @@ public:
 		return read(this + oHealth, float);
 	}
 	void SetFov() {
-		auto klass = read(Storage::gBase + CO::ConvarGraphics, DWORD64);
+		auto klass = read(vars::stor::gBase + CO::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
-		write(static_fields + 0x18, Misc::SexyFuckingFovValue, float);
+		write(static_fields + 0x18, vars::misc::fov, float);
 	}
 	void PatchCamspeed() {
-		auto klass = read(Storage::gBase + 0x29BF240, DWORD64);
+		auto klass = read(vars::stor::gBase + 0x29BF240, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x2C, 1.f, float);
 	}
@@ -493,7 +481,7 @@ public:
 	void SetRA() {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		Vector2 RA = read(Input + oRecoilAngles, Vector2);
-		write(Input + oRecoilAngles, Vector2(RA.x * Weapons::controlX, RA.y * Weapons::controlY), Vector2);
+		write(Input + oRecoilAngles, Vector2(RA.x * vars::weapons::control_x, RA.y * vars::weapons::control_x), Vector2);
 	}
 	Vector2 GetVA() {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
@@ -699,11 +687,11 @@ public:
 	bool DoHit(uintptr_t hitTest, Vector3 point, Vector3 normal) {
 		typedef bool(__stdcall* DoHitCall)(Projectile*, uintptr_t, Vector3, Vector3);
 		printf("called dohit\n");
-		return ((DoHitCall)(Storage::gBase + CO::DoHit))(this, hitTest, point, normal);
+		return ((DoHitCall)(vars::stor::gBase + CO::DoHit))(this, hitTest, point, normal);
 	}
 	void Retire() {
 		typedef void(__stdcall* Retire)(Projectile*);
-		((Retire)(Storage::gBase + 0x2B2AE0))(this);
+		((Retire)(vars::stor::gBase + 0x2B2AE0))(this);
 	}
 };
 Matrix4x4* pViewMatrix = nullptr;
@@ -718,7 +706,7 @@ namespace utils {
 		if (w < 0.098f) return false;
 		float y = Math::Dot(UpVec, EntityPos) + pViewMatrix->_42;
 		float x = Math::Dot(RightVec, EntityPos) + pViewMatrix->_41;
-		ScreenPos = Vector2((Global::ScreenWidth / 2) * (1.f + x / w), (Global::ScreenHigh / 2) * (1.f - y / w));
+		ScreenPos = Vector2((vars::stuff::ScreenWidth / 2) * (1.f + x / w), (vars::stuff::ScreenHeight / 2) * (1.f - y / w));
 		return true;
 	}
 	Vector3 GetEntityPosition(std::uint64_t entity) {
@@ -728,43 +716,43 @@ namespace utils {
 	}
 	Vector3 ClosestPoint(BasePlayer* player, Vector3 vec) {
 		typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
-		Vector3 result = ((CPoint)(Storage::gBase + CO::utils::ClosestPoint))(player, vec);
+		Vector3 result = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(player, vec);
 		return result;
 	}
 	Vector3 GetWorldVelocity(uintptr_t entity) {
 		typedef Vector3(__stdcall* GetWorldVelocity)(uintptr_t);
-		Vector3 result = ((GetWorldVelocity)(Storage::gBase + CO::utils::GetWorldVelocity))(entity);
+		Vector3 result = ((GetWorldVelocity)(vars::stor::gBase + CO::utils::GetWorldVelocity))(entity);
 		return result;
 	}
 	Vector3 TransformToPoint(DWORD64 Transform, Vector3 CurPos) {
 		typedef Vector3(__stdcall* ITP)(DWORD64, Vector3);
-		Vector3 result = ((ITP)(Storage::gBase + CO::utils::InverseTransformPoint))(Transform, CurPos);
+		Vector3 result = ((ITP)(vars::stor::gBase + CO::utils::InverseTransformPoint))(Transform, CurPos);
 		return result;
 	}
 	bool LineOfSight(Vector3 a, Vector3 b) {
 		typedef bool(__stdcall* LOS)(Vector3, Vector3, int, float);
-		bool result = ((LOS)(Storage::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608, 0.f);
+		bool result = ((LOS)(vars::stor::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608, 0.f);
 		return result;
 	}
 	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {
 		typedef DWORD64(__stdcall* FindBone)(DWORD64, Str);
-		DWORD64 result = ((FindBone)(Storage::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);
+		DWORD64 result = ((FindBone)(vars::stor::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);
 		return result;
 	}
 	DWORD64 GetTransform(DWORD64 entity) {
 		typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-		DWORD64 result = ((GetTransform)(Storage::gBase + CO::get_transform))(entity);
+		DWORD64 result = ((GetTransform)(vars::stor::gBase + CO::get_transform))(entity);
 		return result;
 	}
 	uintptr_t ShaderFind(Str name) {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
-		uintptr_t result = ((ShaderFind)(Storage::gBase + CO::ShaderFind))(name);
+		uintptr_t result = ((ShaderFind)(vars::stor::gBase + CO::ShaderFind))(name);
 		return result;
 	}
 	namespace StringPool {
 		uint32_t Get(Str str) {
 			typedef uint32_t(__stdcall* Get)(Str);
-			uint32_t result = ((Get)(Storage::gBase + CO::utils::StringPool::Get))(str);
+			uint32_t result = ((Get)(vars::stor::gBase + CO::utils::StringPool::Get))(str);
 			return result;
 		}
 	}

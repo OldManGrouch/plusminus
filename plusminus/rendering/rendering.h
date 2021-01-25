@@ -5,7 +5,7 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
 #define RET_CHK(x) if ( x != S_OK ) return
-Vector2 screen_size = { (float)Global::ScreenHigh, (float)Global::ScreenWidth };
+Vector2 screen_size = { (float)vars::stuff::ScreenHeight, (float)vars::stuff::ScreenWidth };
 namespace Renderer {
 	ID2D1Factory* Interface;
 	ID2D1RenderTarget* Canvas;
@@ -23,7 +23,7 @@ namespace Renderer {
 			initialized = true; D2D1_FACTORY_OPTIONS CreateOpt = { D2D1_DEBUG_LEVEL_NONE };
 			FC(dwrite, DWriteCreateFactory, DWRITE_FACTORY_TYPE_SHARED, __uuidof(TextEngine), (IUnknown**)&TextEngine);
 			FC(d2d1, D2D1CreateFactory, D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &CreateOpt, (void**)&Interface);
-			TextEngine->CreateTextFormat(StrW(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 12.f, L"", &TextFormat);
+			TextEngine->CreateTextFormat(xorstr(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 12.f, L"", &TextFormat);
 			if (!Interface || !TextEngine || !TextFormat) return false;
 		}
 		ID3D11Device* d3d_device;

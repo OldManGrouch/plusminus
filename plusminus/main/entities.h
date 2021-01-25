@@ -22,22 +22,22 @@ void FindMatrix() {
 }
 bool notreelos = false;
 void EntityLoop() {
-	float FOV = Combat::Fov, CurFOV;
+	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
 	if (!pViewMatrix || !mfound) {
 		FindMatrix();
 	}
 	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(Storage::gBase + CO::BaseNetworkable, DWORD64);
+	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
 	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
 	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
 	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
 	DWORD64 ClientEntities_values = read(ClientEntities_list + 0x28, DWORD64);
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
-	Renderer::String(Vector2(100, 55), xorstr(L"plusminus.space"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
-	if (Storage::closestHeli != NULL && Storage::closestHeliObj != NULL) {
-		Vector3 heliPos = read(Storage::closestHeliObj + 0x90, Vector3);
+	Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
+	/*if (vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
+		Vector3 heliPos = read(vars::stor::closestHeliObj + 0x90, Vector3);
 		int heliX = heliPos.x;
 		int heliY = heliPos.y;
 		int heliZ = heliPos.z;
@@ -45,8 +45,8 @@ void EntityLoop() {
 		Renderer::String(Vector2(100, 85), heliPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
 	}
 	else { Renderer::String(Vector2(100, 85), xorstr(L"patrol heli: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
-	if (Storage::closestPlayer) {
-		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	if (vars::stor::closestPlayer) {
+		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 		Vector3 playerPos = TargetPlayer->GetBoneByID(head);
 		int playerX = playerPos.x;
 		int playerY = playerPos.y;
@@ -63,7 +63,7 @@ void EntityLoop() {
 		std::wstring localPosition = L"local: " + std::to_wstring(localX) + L" " + std::to_wstring(localY) + L" " + std::to_wstring(localZ);
 		Renderer::String(Vector2(100, 115), localPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
 	}
-	else { Renderer::String(Vector2(100, 115), xorstr(L"local: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
+	else { Renderer::String(Vector2(100, 115), xorstr(L"local: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }*/
 
 	
 
@@ -95,7 +95,7 @@ void EntityLoop() {
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
 			
-			if (PlayerEsp::skeleton && !Player->IsNpc()) {
+			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
 						Skeleton(Player, D2D1::ColorF::LimeGreen);
@@ -109,11 +109,11 @@ void EntityLoop() {
 						}
 					}
 				}
-				else if (Player->HasFlags(16) && !PlayerEsp::sleeperignore) {
+				else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
 					Skeleton(Player, D2D1::ColorF::Orange);
 				}
 			}
-			else if (BotsEsp::skeleton && Player->IsNpc()) {
+			else if (vars::npc::skeleton && Player->IsNpc()) {
 				Skeleton(Player, D2D1::ColorF::Yellow);
 			}
 
@@ -139,15 +139,15 @@ void EntityLoop() {
 				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
 			}
 
-			if (Combat::IgnoreSleepers && Player->HasFlags(16)) continue;
-			if (Combat::IgnoreNpc && Player->IsNpc()) continue;
-			if (Combat::IgnoreTeam && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
+			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
+			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
+			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
 			if (Player->GetBoneByID(head).x == 0 || Player->GetBoneByID(head).y == 0 || Player->GetBoneByID(head).z == 0) continue;
-			if (Combat::IgnorePlayers) continue;
-			if (Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), Player->GetBoneByID(head)) > Combat::Range) continue;
+			if (vars::combat::ignore_players) continue;
+			if (Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), Player->GetBoneByID(head)) > vars::combat::range) continue;
 
-			if (FOV > (CurFOV = GetFov(Player, BoneList(Global::BoneToAim))) && !Player->IsDead() && !Combat::LockTarget) {
-				FOV = CurFOV; Storage::closestPlayer = (uintptr_t)Player;
+			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && !Player->IsDead() && !vars::combat::lock_target) {
+				FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
 			}
 
 		}
@@ -164,7 +164,7 @@ void EntityLoop() {
 			if (utils::w2s(pos, screenPos)) {
 				wchar_t buffer[256];
 				wchar_t buffera[256];
-				if (Visuals::PatrolHeli) {
+				if (vars::visuals::patrol_heli) {
 					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos));
 					swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
 					Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
@@ -172,15 +172,15 @@ void EntityLoop() {
 					Renderer::FillRectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / maxhealth), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 					Renderer::Rectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 				}
-				if (health > 0.2 && !Combat::IgnoreHeli) {
+				if (health > 0.2 && !vars::combat::ignore_heli) {
 					if ((FOV > (CurFOV = GetFovHeli(pos)))) {
-						FOV = CurFOV; Storage::closestHeli = (uintptr_t)Helicopter; Storage::closestHeliObj = VisualState;
+						FOV = CurFOV; vars::stor::closestHeli = (uintptr_t)Helicopter; vars::stor::closestHeliObj = VisualState;
 					}
 				}
 			}
 		}
 		
-		if (Misc::AutoCollect && m_strstr(buff, xorstr("/collectable/"))) {
+		if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
@@ -200,42 +200,42 @@ void EntityLoop() {
 		otherEsp::hackablecrate(ObjectClass, Object, buff);
 		otherEsp::world(ObjectClass, Object, buff);
 		//otherEsp::explo(ObjectClass, Object, buff);
-		if (Ores::showCollectables) {
-			miscvis(ObjectClass, buff, Ores::Stone, Ores::showDistance, Ores::oreDrawDistance, xorstr("stone-collectable.prefab"), xorstr(L"Stone Collectable"), D2D1::ColorF::Gray);
-			miscvis(ObjectClass, buff, Ores::Sulfur, Ores::showDistance, Ores::oreDrawDistance, xorstr("sulfur-collectable.prefab"), xorstr(L"Sulfur Collectable"), D2D1::ColorF::Gold);
-			miscvis(ObjectClass, buff, Ores::Metal, Ores::showDistance, Ores::oreDrawDistance, xorstr("metal-collectable.prefab"), xorstr(L"Metal Collectable"), D2D1::ColorF::SaddleBrown);
+		if (vars::ores::show_collectables) {
+			miscvis(ObjectClass, buff, vars::ores::stone, vars::ores::show_distance, vars::ores::draw_distance, xorstr("stone-collectable.prefab"), xorstr(L"Stone Collectable"), D2D1::ColorF::Gray);
+			miscvis(ObjectClass, buff, vars::ores::sulfur, vars::ores::show_distance, vars::ores::draw_distance, xorstr("sulfur-collectable.prefab"), xorstr(L"Sulfur Collectable"), D2D1::ColorF::Gold);
+			miscvis(ObjectClass, buff, vars::ores::metal, vars::ores::show_distance, vars::ores::draw_distance, xorstr("metal-collectable.prefab"), xorstr(L"Metal Collectable"), D2D1::ColorF::SaddleBrown);
 		}
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Ores::Stone, Ores::showDistance, Ores::oreDrawDistance, xorstr("stone-ore.prefab"), xorstr(L"Stone Ore"), D2D1::ColorF::Gray);
-		miscvis(ObjectClass, buff, Ores::Sulfur, Ores::showDistance, Ores::oreDrawDistance, xorstr("sulfur-ore.prefab"), xorstr(L"Sulfur Ore"), D2D1::ColorF::Gold);
-		miscvis(ObjectClass, buff, Ores::Metal, Ores::showDistance, Ores::oreDrawDistance, xorstr("metal-ore.prefab"), xorstr(L"Metal Ore"), D2D1::ColorF::SaddleBrown);
+		miscvis(ObjectClass, buff, vars::ores::stone, vars::ores::show_distance, vars::ores::draw_distance, xorstr("stone-ore.prefab"), xorstr(L"Stone Ore"), D2D1::ColorF::Gray);
+		miscvis(ObjectClass, buff, vars::ores::sulfur, vars::ores::show_distance, vars::ores::draw_distance, xorstr("sulfur-ore.prefab"), xorstr(L"Sulfur Ore"), D2D1::ColorF::Gold);
+		miscvis(ObjectClass, buff, vars::ores::metal, vars::ores::show_distance, vars::ores::draw_distance, xorstr("metal-ore.prefab"), xorstr(L"Metal Ore"), D2D1::ColorF::SaddleBrown);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Crates::Supply, Visuals::Crates::crateDistance, Visuals::Crates::drawCrateDistance, xorstr("supply_drop.prefab"), xorstr(L"Airdrop"), D2D1::ColorF::DarkCyan);
-		miscvis(ObjectClass, buff, Visuals::Crates::Heli, Visuals::Crates::crateDistance, Visuals::Crates::drawCrateDistance, xorstr("heli_crate.prefab"), xorstr(L"Heli Crate"), D2D1::ColorF::DarkGreen);
-		miscvis(ObjectClass, buff, Visuals::Crates::Bradley, Visuals::Crates::crateDistance, Visuals::Crates::drawCrateDistance, xorstr("bradley_crate.prefab"), xorstr(L"Bradley Crate"), D2D1::ColorF::GreenYellow);
+		miscvis(ObjectClass, buff, vars::visuals::crates::supply, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("supply_drop.prefab"), xorstr(L"Airdrop"), D2D1::ColorF::DarkCyan);
+		miscvis(ObjectClass, buff, vars::visuals::crates::heli, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("heli_crate.prefab"), xorstr(L"Heli Crate"), D2D1::ColorF::DarkGreen);
+		miscvis(ObjectClass, buff, vars::visuals::crates::bradley, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("bradley_crate.prefab"), xorstr(L"Bradley Crate"), D2D1::ColorF::GreenYellow);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Vehicles::Minicopter, Visuals::Vehicles::vehicleDistance, Visuals::Vehicles::drawVehicleDistance, xorstr("minicopter.entity.prefab"), xorstr(L"Minicopter"), D2D1::ColorF::Blue);
-		miscvis(ObjectClass, buff, Visuals::Vehicles::ScrapHeli, Visuals::Vehicles::vehicleDistance, Visuals::Vehicles::drawVehicleDistance, xorstr("scraptransporthelicopter.prefab"), xorstr(L"Scrap Heli"), D2D1::ColorF::DarkBlue);
-		miscvis(ObjectClass, buff, Visuals::Vehicles::Boat, Visuals::Vehicles::vehicleDistance, Visuals::Vehicles::drawVehicleDistance, xorstr("rowboat.prefab"), xorstr(L"Boat"), D2D1::ColorF::LightBlue);
-		miscvis(ObjectClass, buff, Visuals::Vehicles::RHIB, Visuals::Vehicles::vehicleDistance, Visuals::Vehicles::drawVehicleDistance, xorstr("rhib.prefab"), xorstr(L"RHIB"), D2D1::ColorF::LightCyan);
+		miscvis(ObjectClass, buff, vars::visuals::vehicles::minicopter, vars::visuals::vehicles::show_distance, vars::visuals::vehicles::draw_distance, xorstr("minicopter.entity.prefab"), xorstr(L"Minicopter"), D2D1::ColorF::Blue);
+		miscvis(ObjectClass, buff, vars::visuals::vehicles::scrapheli, vars::visuals::vehicles::show_distance, vars::visuals::vehicles::draw_distance, xorstr("scraptransporthelicopter.prefab"), xorstr(L"Scrap Heli"), D2D1::ColorF::DarkBlue);
+		miscvis(ObjectClass, buff, vars::visuals::vehicles::boat, vars::visuals::vehicles::show_distance, vars::visuals::vehicles::draw_distance, xorstr("rowboat.prefab"), xorstr(L"Boat"), D2D1::ColorF::LightBlue);
+		miscvis(ObjectClass, buff, vars::visuals::vehicles::rhib, vars::visuals::vehicles::show_distance, vars::visuals::vehicles::draw_distance, xorstr("rhib.prefab"), xorstr(L"RHIB"), D2D1::ColorF::LightCyan);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Turrets::AutoTurret, Visuals::Turrets::trapDistance, Visuals::Turrets::drawTrapDistance, xorstr("autoturret_deployed.prefab"), xorstr(L"Auto Turret"), D2D1::ColorF::Orange);
-		miscvis(ObjectClass, buff, Visuals::Turrets::FlameTurret, Visuals::Turrets::trapDistance, Visuals::Turrets::drawTrapDistance, xorstr("flameturret.deployed.prefab"), xorstr(L"Flame Turret"), D2D1::ColorF::DarkOrange);
-		miscvis(ObjectClass, buff, Visuals::Turrets::ShotgunTurret, Visuals::Turrets::trapDistance, Visuals::Turrets::drawTrapDistance, xorstr("guntrap.deployed.prefab"), xorstr(L"Shotgun Trap"), D2D1::ColorF::DimGray);
-		miscvis(ObjectClass, buff, Visuals::Turrets::Landmine, Visuals::Turrets::trapDistance, Visuals::Turrets::drawTrapDistance, xorstr("landmine.prefab"), xorstr(L"Landmine"), D2D1::ColorF::BlueViolet);
-		miscvis(ObjectClass, buff, Visuals::Turrets::BearTrap, Visuals::Turrets::trapDistance, Visuals::Turrets::drawTrapDistance, xorstr("beartrap.prefab"), xorstr(L"Beartrap"), D2D1::ColorF::Brown);
+		miscvis(ObjectClass, buff, vars::visuals::turrets::auto_turret, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("autoturret_deployed.prefab"), xorstr(L"Auto Turret"), D2D1::ColorF::Orange);
+		miscvis(ObjectClass, buff, vars::visuals::turrets::flame_turret, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("flameturret.deployed.prefab"), xorstr(L"Flame Turret"), D2D1::ColorF::DarkOrange);
+		miscvis(ObjectClass, buff, vars::visuals::turrets::shotgun_turret, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("guntrap.deployed.prefab"), xorstr(L"Shotgun Trap"), D2D1::ColorF::DimGray);
+		miscvis(ObjectClass, buff, vars::visuals::turrets::landmine, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("landmine.prefab"), xorstr(L"Landmine"), D2D1::ColorF::BlueViolet);
+		miscvis(ObjectClass, buff, vars::visuals::turrets::bear_trap, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("beartrap.prefab"), xorstr(L"Beartrap"), D2D1::ColorF::Brown);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Other::Hemp, Visuals::Other::otherDistance, Visuals::Other::drawOtherDistance, xorstr("hemp-collectable.prefab"), xorstr(L"Hemp"), D2D1::ColorF::LimeGreen);
+		miscvis(ObjectClass, buff, vars::visuals::other::hemp, vars::visuals::other::show_distance, vars::visuals::other::draw_distance, xorstr("hemp-collectable.prefab"), xorstr(L"Hemp"), D2D1::ColorF::LimeGreen);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Base::Boxes, Visuals::Base::baseDistance, Visuals::Base::drawBaseDistance, xorstr("box.wooden.large.prefab"), xorstr(L"Box"), D2D1::ColorF::RosyBrown);
+		miscvis(ObjectClass, buff, vars::visuals::base::boxes, vars::visuals::base::show_distance, vars::visuals::base::draw_distance, xorstr("box.wooden.large.prefab"), xorstr(L"Box"), D2D1::ColorF::RosyBrown);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, Visuals::Animals::Bear, Visuals::Animals::animalDistance, Visuals::Animals::drawAnimalDistance, xorstr("bear.prefab"), xorstr(L"Bear"), D2D1::ColorF::SaddleBrown);
-		miscvis(ObjectClass, buff, Visuals::Animals::Wolf, Visuals::Animals::animalDistance, Visuals::Animals::drawAnimalDistance, xorstr("agents/wolf/wolf.prefab"), xorstr(L"Wolf"), D2D1::ColorF::LightSlateGray);
-		miscvis(ObjectClass, buff, Visuals::Animals::Pig, Visuals::Animals::animalDistance, Visuals::Animals::drawAnimalDistance, xorstr("boar.prefab"), xorstr(L"Pig"), D2D1::ColorF::DarkRed);
-		miscvis(ObjectClass, buff, Visuals::Animals::Chicken, Visuals::Animals::animalDistance, Visuals::Animals::drawAnimalDistance, xorstr("agents/chicken/chicken.prefab"), xorstr(L"Chicken"), D2D1::ColorF::YellowGreen);
-		miscvis(ObjectClass, buff, Visuals::Animals::Deer, Visuals::Animals::animalDistance, Visuals::Animals::drawAnimalDistance, xorstr("agents/horse/horse.prefab"), xorstr(L"Horse"), D2D1::ColorF::SandyBrown);
+		miscvis(ObjectClass, buff, vars::visuals::animals::bear, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("bear.prefab"), xorstr(L"Bear"), D2D1::ColorF::SaddleBrown);
+		miscvis(ObjectClass, buff, vars::visuals::animals::wolf, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/wolf/wolf.prefab"), xorstr(L"Wolf"), D2D1::ColorF::LightSlateGray);
+		miscvis(ObjectClass, buff, vars::visuals::animals::pig, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("boar.prefab"), xorstr(L"Pig"), D2D1::ColorF::DarkRed);
+		miscvis(ObjectClass, buff, vars::visuals::animals::chicken, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/chicken/chicken.prefab"), xorstr(L"Chicken"), D2D1::ColorF::YellowGreen);
+		miscvis(ObjectClass, buff, vars::visuals::animals::deer, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/horse/horse.prefab"), xorstr(L"Horse"), D2D1::ColorF::SandyBrown);
 		// ---------------------------------------------------------
-		miscvis(ObjectClass, buff, true, false, 2000.f, Global::testChar, xorstr(L"TESTITEM"), D2D1::ColorF::LimeGreen);
+		miscvis(ObjectClass, buff, true, false, 2000.f, vars::stuff::testChar, xorstr(L"TESTITEM"), D2D1::ColorF::LimeGreen);
 	}
 	static DWORD64 GOM = 0;
 	if (!GOM) GOM = RVA(FindPattern((PBYTE)"\x48\x8B\x15\x00\x00\x00\x00\x66\x39", xorstr("xxx????xx"), xorstr(L"UnityPlayer.dll")), 7);
@@ -246,48 +246,48 @@ void EntityLoop() {
 		if (tag == 6 || tag == 5 || tag == 20011) {
 			DWORD64 objectclass = read(gameobject + 0x30, DWORD64);
 			DWORD64	entity = read(objectclass + 0x18, DWORD64);
-			if (tag == 20011 && Misc::CustomTime) {
+			if (tag == 20011 && vars::misc::custom_time) {
 				DWORD64 dome = read(entity + 0x28, DWORD64);
 				DWORD64 todCycle = read(dome + 0x38, DWORD64);
-				write(todCycle + 0x10, Misc::Time, float);
+				write(todCycle + 0x10, vars::misc::time, float);
 			}
 		}
 	}
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	/*targeting shit*/
 	if (TargetPlayer->GetBoneByID(head).x == 0 || TargetPlayer->GetBoneByID(head).y == 0 || TargetPlayer->GetBoneByID(head).z == 0) {
-		Storage::closestPlayer = NULL;
+		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->IsNpc() && Combat::IgnoreNpc) {
-		Storage::closestPlayer = NULL;
+	if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
+		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->HasFlags(16) && Combat::IgnoreSleepers) {
-		Storage::closestPlayer = NULL;
+	if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
+		vars::stor::closestPlayer = NULL;
 	}
-	if (LocalPlayer->IsTeamMate(TargetPlayer->GetSteamID()) && Combat::IgnoreTeam) {
-		Storage::closestPlayer = NULL;
+	if (LocalPlayer->IsTeamMate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
+		vars::stor::closestPlayer = NULL;
 	}
 	if (TargetPlayer->GetHealth() < 0.2) {
-		Combat::LockTarget = false;
-		Storage::closestPlayer = NULL;
+		vars::combat::lock_target = false;
+		vars::stor::closestPlayer = NULL;
 	}
-	if ((int)ceil(read(Storage::closestHeli + 0x20C, float)) < 0.2) {
-		Storage::closestHeli = NULL;
-		Storage::closestHeliObj = NULL;
+	if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) < 0.2) {
+		vars::stor::closestHeli = NULL;
+		vars::stor::closestHeliObj = NULL;
 	}
-	if (Combat::IgnorePlayers) {
-		Storage::closestPlayer = NULL;
+	if (vars::combat::ignore_players) {
+		vars::stor::closestPlayer = NULL;
 	}
-	if (Combat::IgnoreHeli) {
-		Storage::closestHeli = NULL;
-		Storage::closestHeliObj = NULL;
+	if (vars::combat::ignore_heli) {
+		vars::stor::closestHeli = NULL;
+		vars::stor::closestHeliObj = NULL;
 	}
-	if (read(Storage::closestHeliObj + 0x90, Vector3).y > 1500 || read(Storage::closestHeliObj + 0x90, Vector3).y < -1500) {
-		Storage::closestHeli = NULL;
-		Storage::closestHeliObj = NULL;
+	if (read(vars::stor::closestHeliObj + 0x90, Vector3).y > 1500 || read(vars::stor::closestHeliObj + 0x90, Vector3).y < -1500) {
+		vars::stor::closestHeli = NULL;
+		vars::stor::closestHeliObj = NULL;
 	}
 	if (LP_isValid) {
-		Aim((BasePlayer*)Storage::closestPlayer);
+		Aim((BasePlayer*)vars::stor::closestPlayer);
 	}
 	else LocalPlayer = nullptr;
 }
@@ -297,7 +297,7 @@ void EntityThreadLoop() {
 		FindMatrix();
 	}
 	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(Storage::gBase + CO::BaseNetworkable, DWORD64);
+	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
 	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
 	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
 	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
@@ -329,7 +329,7 @@ void EntityThreadLoop() {
 					}
 				}
 			}*/
-			if (PlayerEsp::chams && lol->GetHealth() > 0.2) {
+			if (vars::players::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (!lol->HasFlags(16)) {
@@ -340,27 +340,27 @@ void EntityThreadLoop() {
 						DoChams(multimesh, Color(1, 0, 0, 1));
 					}
 				}
-				else if (lol->HasFlags(16) && !PlayerEsp::sleeperignore) {
+				else if (lol->HasFlags(16) && !vars::players::sleeperignore) {
 					DoChams(multimesh, Color(1, 0.5, 0, 1));
 				}
 			}
-			if (Misc::AutoAssist || Misc::InstaRevive) {
+			if (vars::misc::auto_revive || vars::misc::insta_revive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 				Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-				if (Misc::AutoAssist && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
+				if (vars::misc::auto_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 					PickupPlayer((BasePlayer*)ent);
 				}
-				if (Misc::InstaRevive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE) 
+				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE)
 					&& read(LocalPlayer + 0x4E8, uintptr_t) == ent) {
 					PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (Weapons::SilentMelee && weaponmelee) {
+			if (vars::combat::silent_melee && weaponmelee) {
 				Target target = TargetMeleeTest((BasePlayer*)ent, active);
 				DoMeleeAttack(target, active, true);
 			}
 		}
-		if (Weapons::SilentOre && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
+		if (vars::misc::auto_farm_ore && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
@@ -372,7 +372,7 @@ void EntityThreadLoop() {
 		}
 		//========================================================================================================================================================================================
 		/*Target target = Target();
-		if (Weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		if (vars::weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->GetBoneByID(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f) { continue; }
@@ -381,7 +381,7 @@ void EntityThreadLoop() {
 				target.entity = (BasePlayer*)ent;
 			}
 		}
-		if (Weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
+		if (vars::weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
@@ -391,7 +391,7 @@ void EntityThreadLoop() {
 				DoMeleeAttack(target, active, false);
 			}
 		}*/
-		if (Weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
@@ -402,7 +402,7 @@ void EntityThreadLoop() {
 			DoMeleeAttack(target, active, false);
 		}
 		//========================================================================================================================================================================================
-		if (Misc::Annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
+		if (vars::misc::annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (ent && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {

@@ -3,278 +3,208 @@ bool init, show = true;
 bool yeetus = false;
 #define null NULL
 namespace vars {
-
-}
-namespace Global
-{
-	bool wasinvalid = false;
-	Str donePlayer = nullptr;
-	int doneHits = 0;
-	float doneDamage = 0.f;
-
-	int testInt = 0;
-	float testFloat = 0.f;
-	bool testBool = false;
-	char testChar[0x100] = "testyvesty";
-	bool debugtab = false;
-	int RetardDivideFactor = 0;
-	bool Panic = false;
-	int ScreenHigh = 0;
-	int ScreenWidth = 0;
-	float BoneToAim = 0.5;
-	char ConfigName[0x100] = "cfg";
-	
-}
-namespace Keys
-{
-	int neck = { 0x4D };
-	int forcepos{ 0x4E };
-	int pSilent{ 0x50 }; // P key
-	int lockTarget{ 0x4A };
-	int aimKey{ 0x58 }; // VK_RMOUSE
-	int gravityKey{ 0x04 };
-	int walkonWaterKey{ 0x06 };
-}
-namespace Storage
-{
-	uintptr_t chamsShader = NULL;
-	uintptr_t gBase = NULL;
-	uintptr_t uBase = NULL;
-	uintptr_t closestPlayer = NULL;
-	uintptr_t closestHeli = NULL;
-	uintptr_t closestHeliObj = NULL;
-}
-namespace Combat
-{
-	bool magicbollet = false;
-	bool pSilentOnKey = false;
-	bool AlwaysHeliHotspot = false;
-	bool HitboxOverride = false;
-	bool pSilent = false;
-	int pSilentTargeting = 0;
-	bool Activate = false;
-	bool Smooth = false;
-	int Smoothing = 1;
-	
-	int HeadshotPercentage = false;
-	float Range = 300.f;
-	float Fov = 100.f;
-	bool DrawFov = false;
-	bool LockTarget = false;
-	bool IgnorePlayers = false;
-	bool IgnoreHeli = false;
-	bool IgnoreSleepers = false;
-	bool IgnoreTeam = true;
-	bool IgnoreNpc = false;
-}
-
-namespace Weapons
-{
-	bool SilentMelee = false;
-	bool FastBullet = false;
-	float FastBulletMultiplier = 1.f;
-	bool SilentOre = false;
-	bool SilentTree = false;
-	bool Penetrate = false;
-	bool canHoldItems = false;
-	bool SpoofHitDistance = false;
-	float HitDistance = 100.f;
-	bool LongHand = false;
-	bool NoRicochet = false;
-	bool NoRecoil = false;
-	bool LegitNoRecoil = false;
-	float controlX = 0.f;
-	float controlY = 0.f;
-	float NoRecoilPercentage = 1.f;
-	bool AntiSpread = false;
-	bool Automatic = false;
-	bool FatBullet = false;
-	bool NoSway = false;
-	bool RapidFire = false;
-	bool SuperBow = false;
-	bool SuperEoka = false;
-	bool jumpAim = false;
-}
-namespace Radar {
-	bool Enable = false;
-	float Size = 300.f;
-	float Range = 300.f;
-	float x = 200.f;
-	float y = 200.f;
-}
-namespace PlayerEsp
-{
-	bool chams = false;
-	bool belt = false;
-	float beltx = 50.f;
-	float belty = 50.f;
-	bool box = false;
-	int boxstyle = 0;
-	bool skeleton = false;
-	bool name = false;
-	bool healthdist = false;
-	bool healthbar = false;
-	int healthbarstyle = 0;
-	bool weapon = false;
-	bool sleeperignore = false;
-	bool tracers = false;
-	bool targetline = false;
-	bool fillbox = false;
-}
-namespace BotsEsp
-{
-	bool box = false;
-	int boxstyle = false;
-	bool skeleton = false;
-	bool name = false;
-	bool healthdist = false;
-	bool healthbar = false;
-	int healthbarstyle = 0;
-	bool weapon = false;
-	bool tracers = false;
-	bool fillbox = false;
-}
-
-namespace Ores
-{
-	bool showCollectables = false;
-	bool Stone = false;
-	bool Sulfur = false;
-	bool Metal = false;
-	bool showDistance = false;
-	float oreDrawDistance = 300.f;
-}
-namespace Visuals
-{
-	bool BradleyTank = false;
-	bool PatrolHeli = false;
-
-	namespace Base {
-		bool TC = false;
-		bool SleepingBag = false;
-		bool Bed = false;
-		bool Boxes = false;
-		bool baseDistance = false;
-		float drawBaseDistance = 300.f;
+	namespace stuff {
+		bool debugtab = false;
+		int testInt = 0;
+		float testFloat = 0.f;
+		bool testBool = false;
+		char testChar[0x100] = "testyvesty";
+		bool Panic = false;
+		int ScreenHeight = 0;
+		int ScreenWidth = 0;
+		float BoneToAim = 0.5;
+		char ConfigName[0x100] = "cfg";
 	}
-	namespace Vehicles {
-		bool Minicopter = false;
-		bool ScrapHeli = false;
-		bool Boat = false;
-		bool RHIB = false;
-		bool vehicleDistance = false;
-		float drawVehicleDistance = 300.f;
+	namespace keys {
+		int longneck = { 0x4D };
+		int forcepos{ 0x4E };
+		int psilent{ 0x50 }; // P key
+		int locktarget{ 0x4A };
+		int aimkey{ 0x58 }; // VK_RMOUSE
+		int gravitykey{ 0x04 };
 	}
-	namespace Turrets {
-		bool AutoTurret = false;
-		bool FlameTurret = false;
-		bool ShotgunTurret = false;
-		bool Landmine = false;
-		bool BearTrap = false;
-		bool trapDistance = false;
-		float drawTrapDistance = 300.f;
+	namespace stor {
+		uintptr_t gBase = NULL;
+		uintptr_t closestPlayer = NULL;
+		uintptr_t closestHeli = NULL;
+		uintptr_t closestHeliObj = NULL;
 	}
-	namespace Other {
-		bool DroppedItems = false;
-		bool Corpse = false;
-		bool Stash = false;
-		bool Hemp = false;
-		bool otherDistance = false;
-		float drawOtherDistance = 300.f;
+	namespace combat {
+		bool magicbollet = false;
+		bool always_heli_rotor = false;
+		bool hitbox_override = false;
+		int hs_percentage = 50;
+		bool silent_melee = false;
+		bool psilent = false;
+		bool psilent_autoshoot = false;
+		bool psilentonkey = false;
+		int psilenttarget = 0;
+		bool aimbot = false;
+		bool smooth = false;
+		int smooth_factor = 1;
+
+		float range = 300.f;
+		float fov = 100.f;
+		bool visualize_fov = false;
+		bool lock_target = false;
+		bool ignore_players = false;
+		bool ignore_heli = false;
+		bool ignore_sleepers = false;
+		bool ignore_team = true;
+		bool ignore_npc = false;
 	}
-	namespace Crates {
-		bool Supply = false;
-		bool Chinook = false;
-		bool Heli = false;
-		bool Bradley = false;
-		bool crateDistance = false;
-		float drawCrateDistance = 300.f;
+	namespace weapons {
+		bool fast_bullets = false;
+		bool penetrate = false;
+		bool minicopter_aim = false;
+		bool spoof_hitdistance = false;
+		float hitdistance = 100.f;
+		bool no_ricochet = false;
+		bool no_recoil = false;
+		bool no_spread = false;
+		bool legit_norecoil = false;
+		float control_x = 0.f;
+		float control_y = 0.f;
+		bool automatic = false;
+		bool thick_bullet = false;
+		bool no_sway = false;
+		bool rapid_fire = false;
+		bool fastbow = false;
+		bool eokatap = false;
+		
 	}
-	namespace Animals {
-		bool Bear = false;
-		bool Pig = false;
-		bool Chicken = false;
-		bool Wolf = false;
-		bool Deer = false;
-		bool animalDistance = false;
-		float drawAnimalDistance = 300.f;
+	namespace players {
+		bool chams = false;
+		bool belt = false;
+		float beltx = 50.f;
+		float belty = 50.f;
+		bool box = false;
+		int boxstyle = 0;
+		bool skeleton = false;
+		bool name = false;
+		bool healthdist = false;
+		bool healthbar = false;
+		int healthbarstyle = 0;
+		bool weapon = false;
+		bool sleeperignore = false;
+		bool tracers = false;
+		bool targetline = false;
+		bool fillbox = false;
 	}
-}
-namespace ColorsNShit
-{
-	float playercolors[4] = { 1,1,1,1 };
-	float invisplayercolors[4] = { 1,0,0,1 };
-	float sleepercolors[4] = { 1,0.5,0,1 };
-	float crosshairfovcolors[4] = { 1,1,1,1 };
-	float botcolors[4] = { 1,1,0,1 };
-	float teamcolors[4] = { 0,1,0,1 };
+	namespace npc {
+		bool box = false;
+		int boxstyle = false;
+		bool skeleton = false;
+		bool name = false;
+		bool healthdist = false;
+		bool healthbar = false;
+		int healthbarstyle = 0;
+		bool weapon = false;
+		bool tracers = false;
+		bool fillbox = false;
+	}
+	namespace ores {
+		bool show_collectables = false;
+		bool stone = false;
+		bool sulfur = false;
+		bool metal = false;
+		bool show_distance = false;
+		float draw_distance = 300.f;
+	}
+	namespace visuals {
+		bool bradley_apc = false;
+		bool patrol_heli = false;
 
-	float stoneore[4] = { 0.78, 0.78 ,0.78 , 1 };
-	float sulfurore[4] = { 1, 0.78 ,0.13 , 1 };
-	float metalore[4] = { 0.54, 0.19 ,0 , 1 };
+		namespace base {
+			bool tc = false;
+			bool sleeping_bag = false;
+			bool bed = false;
+			bool boxes = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+		namespace vehicles {
+			bool minicopter = false;
+			bool scrapheli = false;
+			bool boat = false;
+			bool rhib = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+		namespace turrets {
+			bool auto_turret = false;
+			bool flame_turret = false;
+			bool shotgun_turret = false;
+			bool landmine = false;
+			bool bear_trap = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+		namespace other {
+			bool dropped_items = false;
+			bool corpse = false;
+			bool stash = false;
+			bool hemp = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+		namespace crates {
+			bool supply = false;
+			bool chinook = false;
+			bool heli = false;
+			bool bradley = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+		namespace animals {
+			bool bear = false;
+			bool pig = false;
+			bool chicken = false;
+			bool wolf = false;
+			bool deer = false;
+			bool show_distance = false;
+			float draw_distance = 300.f;
+		}
+	}
+	namespace misc	{
+		bool auto_farm_ore = false;
+		bool auto_farm_tree = false;
+		bool can_attack = false;
+		bool jesus = false;
+		bool walker = false;
+		bool faster_healing = false;
+		bool suicide = false;
+		bool long_neck = false;
+		bool inf_jump = false;
+		bool insta_revive = false;
+		bool auto_revive = false;
+		bool revive_team_only = false;
+		bool rayleigh_changer = false;
+		float rayleigh = 10.f;
+		bool annoyer = false;
+		bool bright_ambient = false;
+		bool auto_pickup = false;
+		bool spoof_ladderstate = false;
+		bool anti_aim = false;
+		int anti_aim_speed = 10;
+		bool fake_lag = false;
+		bool silent_walk = false;
+		float fov = 90.f;
+		bool gravity = false;
+		float gravity_modifier = 0.f;
+		bool custom_hitsound = false;
+		bool spiderman = false;
+		bool omnidirectional_sprinting = false;
+		bool fakeadmin = false;
+		bool custom_time = false;
+		float time = 10.0f;
+	}
+	namespace crosshair {
+		bool default = false;
 
-	float patrolhelicopter[4] = { 0.27 , 0.27 , 1 , 1 };
-	float airdrop[4] = { 0 , 0.20 , 0.43 , 1 };
-	float chinook[4] = { 0.34 , 0 , 0 , 1 };
-	float minicopter[4] = { 0.5 , 0.45 , 0 , 1 };
-	float scrapheli[4] = { 0 , 0.5 , 0 , 1 };
-	float boat[4] = { 0 , 0.8 , 0.8 , 1 };
-	float rhib[4] = { 0.34 , 0.34 , 0.34 , 1 };
-	float turret[4] = { 1 , 0.34 , 0 , 1 };
-	float flame[4] = { 1 , 0.78 , 0 , 1 };
-	float shotgun[4] = { 0.61 , 0.68 , 1 , 1 };
-	float landmine[4] = { 0 , 0 , 1 , 1 };
-	float beartrap[4] = { 0.32 , 0 , 0.65 , 1 };
-	float hemp[4] = { 0.56 , 1 , 0.34 , 1 };
-	float corpse[4] = { 0.5 , 0.21 , 0.34 , 1 };
-	float stash[4] = { 0 , 0.5 , 0 , 1 };
-
-
-	float fovsegments = 15;
-	float boxRoundness = 0;
-}
-
-namespace Misc
-{
-	bool AutoShoot = false;
-	bool RemoveGrass = false;
-	bool Jesus = false;
-	bool IgnoreCollision = false;
-	bool FastHeal = false;
-	bool Suicide = false;
-	bool LongNeck = false;
-	bool InfiniteJump = false;
-	bool HitLogs = false;
-	bool InstaRevive = false;
-	bool Rayleigh = false;
-	float RayleighAmount = 10.f;
-	bool AutoAssist = false;
-	bool AssistTeamOnly = false;
-	bool Annoyer = false;
-	bool CustomAmbient = false;
-	bool AutoCollect = false;
-	bool Flyhack = false;
-	bool AntiAim = false;
-	int AntiAimSpeed = 10;
-	bool FakeLag = false;
-	bool SilentWalk = false;
-	bool SexyFuckingFov = false;
-	float SexyFuckingFovValue = 90.f;
-	bool Gravity = false;
-	float GravityModifier = 0.f;
-	bool CustomHitsound = false;
-	bool SpiderMan = false;
-	bool WalkOnWater = false;
-	bool omniSprint = false;
-	bool FakeAdmin = false;
-	bool CustomTime = false;
-	float Time = 10.0f;
-}
-namespace Crosshair {
-	bool Default = false;
-	bool Custom = false;
-	
-	bool Dot = false;
-	float Gap = 5.f;
-	float Length = 5.f;
+		bool custom = false;
+		bool dot = false;
+		float gap = 5.f;
+		float length = 5.f;
+	}
 }

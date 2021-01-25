@@ -15,21 +15,21 @@ void __fastcall Launch(Projectile* prdoj) {
 	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
 	prdoj->gravityModifier(GetGravity(ammo));
 	prdoj->invisible(false);
-	if (Weapons::AntiSpread) {
+	if (vars::weapons::no_spread) {
 		prdoj->mod()->projectileVelocitySpread(0.f);
 	}
 	return original_launch(prdoj);
 }
 //void __fastcall DoMovement(Projectile* proj, float delta) {
-//	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(Storage::closestPlayer);
-//	if (Combat::magicbollet && utils::LineOfSight(TargetPlayer->GetBoneByID(head), proj->currentPosition()) && Storage::closestPlayer != null) {
+//	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+//	if (vars::combat::magicbollet && utils::LineOfSight(TargetPlayer->GetBoneByID(head), proj->currentPosition()) && vars::stor::closestPlayer != null) {
 //		proj->currentVelocity((TargetPlayer->GetBoneByID(head) - proj->currentPosition()) * 250.f);
 //	}
 //	return original_domovement(proj, delta);
 //}
 bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
 	if (test->HitEntity() != null) {
-		if (Combat::IgnoreTeam && LocalPlayer->IsTeamMate(test->HitEntity()->GetSteamID())) {
+		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(test->HitEntity()->GetSteamID())) {
 			return false;
 		}
 	}

@@ -36,14 +36,10 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 	if (GetAsyncKeyState(VK_INSERT) & 1) {
 		show = !show;
 	}
-	if (GetAsyncKeyState(Keys::lockTarget) & 1) {
-		Combat::LockTarget = !Combat::LockTarget;
+	if (GetAsyncKeyState(vars::keys::locktarget) & 1) {
+		vars::combat::lock_target = !vars::combat::lock_target;
 	}
-	
-	if (!Weapons::FastBullet) {
-		Weapons::FastBulletMultiplier = 1.f;
-	}
-	if (!Global::Panic) {
+	if (!vars::stuff::Panic) {
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -62,15 +58,14 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 	else {
 		//MH_DisableHook(MH_ALL_HOOKS); // why is this detected
 		config.Initialize();
-		Misc::SexyFuckingFovValue = 90.f;
+		vars::misc::fov = 90.f;
 	}
 	return phookD3D11Present(pSwapChain, SyncInterval, Flags);
 }
 int MultisampleCount = 1;
 LRESULT CALLBACK DXGIMsgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) { return DefWindowProc(hwnd, uMsg, wParam, lParam); }
 DWORD __stdcall Start(LPVOID) {
-	Storage::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
-	Storage::uBase = (DWORD64)GetModuleHandleA(c_xor("UnityPlayer.dll"));
+	vars::stor::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
 	il2cpp::InitIL();
 	//game::init();
 	HMODULE hDXGIDLL = 0;

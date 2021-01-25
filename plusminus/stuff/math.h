@@ -132,4 +132,19 @@ namespace Math {
 		Vector3 dir = Src - Dst;
 		return Vector2{ RAD2DEG(asin(dir.y / dir.Length())), RAD2DEG(-atan2(dir.x, -dir.z)) };
 	}
+	__forceinline Vector3 CalcAngle3D(const Vector3& Src, const Vector3& Dst) {
+
+		Vector3 Delta = Src - Dst, AimAngles;
+
+		float Hyp = sqrtf(powf(Delta.x, 2.f) + powf(Delta.y, 2.f));
+
+		AimAngles.y = atanf(Delta.y / Delta.x) * M_RADPI;
+
+		AimAngles.x = atanf(Delta.z / Hyp) * M_RADPI;
+
+		if (Delta.x >= 0.f) AimAngles.y += 180.f;
+
+		AimAngles.z = 0.f; return AimAngles;
+
+	}
 }

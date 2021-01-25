@@ -28,7 +28,7 @@ public:
 
 DWORD64 oPlayerList = 0;
 float GetFov(Vector2 Pos) {
-	return Math::Calc2D_Dist(Vector2(Global::ScreenWidth / 2, Global::ScreenHigh / 2), Pos);
+	return Math::Calc2D_Dist(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), Pos);
 }
 float GetFov(BasePlayer* Entity) {
 	Vector2 ScreenPos;
@@ -40,11 +40,11 @@ float GetFov(Vector3 Pos) {
 	if (!utils::w2s(Pos, ScreenPos)) return 1000.f;
 	return GetFov(ScreenPos);
 }
-Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = Combat::Range, float silent_traveldist = 0.f, bool visible = false) {
+Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = vars::combat::range, float silent_traveldist = 0.f, bool visible = false) {
 	Target lowest = Target();
 
 	if (!oPlayerList) {
-		DWORD64 val = read(Storage::gBase + CO::BasePlayer, DWORD64);
+		DWORD64 val = read(vars::stor::gBase + CO::BasePlayer, DWORD64);
 		DWORD64 st = read(val + 0xB8, DWORD64);
 		oPlayerList = read(st + 0x8, DWORD64);
 	}
@@ -56,10 +56,10 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 	{
 		BasePlayer* Player = (BasePlayer*)read(EntityBuffer + 0x20 + (i * 0x8), UINT64);
 		if (Player->IsDead()) continue;
-		if (Combat::IgnoreSleepers && Player->IsSleeping()) continue;
-		if (Combat::IgnoreTeam && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
-		if (Combat::IgnoreNpc && Player->IsNpc()) continue;
-		if (Combat::IgnorePlayers) continue;
+		if (vars::combat::ignore_sleepers && Player->IsSleeping()) continue;
+		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
+		if (vars::combat::ignore_npc && Player->IsNpc()) continue;
+		if (vars::combat::ignore_players) continue;
 
 		Vector3 pos = Player->GetBoneByID(neck);
 		Target res = Target();
@@ -75,13 +75,13 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 	return lowest;
 }
 Target FindProjectileTarget(Vector3 from, float traveldist) {
-	return FindAimTarget(from, false, true, Combat::Range, traveldist);
+	return FindAimTarget(from, false, true, vars::combat::range, traveldist);
 }
 
 float MaxMeleeDist(DWORD64 melee, bool localplayer) {
 	float pad = 0.1f;
 	typedef float(__stdcall* RetF)();
-	float time = ((RetF)(Storage::gBase + CO::get_time))();
+	float time = ((RetF)(vars::stor::gBase + CO::get_time))();
 
 	float desyncTime = max(time - LocalPlayer->Time() - 0.0325f, 0.f);
 	float res = pad + desyncTime * 5.5f;
@@ -94,15 +94,15 @@ Target TargetMeleeTest(BasePlayer* Player, DWORD64 melee) {
 	Target res = Target();
 
 	if (Player->GetHealth() < 0.2) return res;
-	if (Combat::IgnoreNpc && Player->IsNpc()) return res;
-	if (Combat::IgnoreSleepers && Player->IsSleeping()) return res;
-	if (Combat::IgnoreTeam && LocalPlayer->IsTeamMate(Player->GetSteamID())) return res;
+	if (vars::combat::ignore_npc && Player->IsNpc()) return res;
+	if (vars::combat::ignore_sleepers && Player->IsSleeping()) return res;
+	if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) return res;
 	typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
 
 	Vector3 prepos = Player->GetBoneByID(BoneList::head/*we dont care about bone*/);
 
-	Vector3 closest_entity = ((CPoint)(Storage::gBase + CO::utils::ClosestPoint))(LocalPlayer, prepos);
-	Vector3 closest_local = ((CPoint)(Storage::gBase + CO::utils::ClosestPoint))(Player, closest_entity);
+	Vector3 closest_entity = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(LocalPlayer, prepos);
+	Vector3 closest_local = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(Player, closest_entity);
 	float disttoentity = MaxMeleeDist(melee, false);
 	float distfromlocal = MaxMeleeDist(melee, true);
 

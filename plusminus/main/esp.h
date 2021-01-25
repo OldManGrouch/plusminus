@@ -20,7 +20,7 @@ namespace otherEsp {
 		}
 	}
 	void bradley(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (Visuals::BradleyTank) {
+		if (vars::visuals::bradley_apc) {
 			if (strstr(buff, xorstr("bradleyapc.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bradley = read(Object + 0x28, DWORD64);
@@ -44,20 +44,20 @@ namespace otherEsp {
 		}
 	}
 	void corpse(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (Visuals::Other::Corpse) {
+		if (vars::visuals::other::corpse) {
 			if (strstr(buff, xorstr("player_corpse.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 corpse = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Other::drawOtherDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t cName[0x100];
 					wchar_t cDist[0x100];
 					auto* corpsename = reinterpret_cast<pUncStr>(read(corpse + 0x2A8, DWORD64));
 					_swprintf(cName, xorstr(L"Corpse | %s"), corpsename->str);
 					Renderer::String({ screen.x, screen.y }, cName, D2D1::ColorF::Firebrick, true, true);
-					if (Visuals::Other::otherDistance) {
+					if (vars::visuals::other::show_distance) {
 						_swprintf(cDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), cDist, D2D1::ColorF::Firebrick, true, true);
 					}
@@ -66,20 +66,20 @@ namespace otherEsp {
 		}
 	}
 	void tc(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (Visuals::Base::TC) {
+		if (vars::visuals::base::tc) {
 			if (strstr(buff, xorstr("cupboard.tool.deployed.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 cupboard = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Base::drawBaseDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t TCName[0x100];
 					wchar_t TCDist[0x100];
 					int upkeep = read(cupboard + 0x500, float);
 					_swprintf(TCName, xorstr(L"Tool Cupboard | %d min."), upkeep);
 					Renderer::String({ screen.x, screen.y }, TCName, D2D1::ColorF::YellowGreen, true, true);
-					if (Visuals::Base::baseDistance) {
+					if (vars::visuals::base::show_distance) {
 						_swprintf(TCDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), TCDist, D2D1::ColorF::YellowGreen, true, true);
 					}
@@ -89,20 +89,20 @@ namespace otherEsp {
 		}
 	}
 	void sleepingbag(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (Visuals::Base::SleepingBag) {
+		if (vars::visuals::base::sleeping_bag) {
 			if (strstr(buff, xorstr("sleepingbag_leather_deployed.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Base::drawBaseDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
 					wchar_t bagDist[0x100];
 					auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
 					_swprintf(bagName, xorstr(L"Sleeping Bag | %s"), bagname->str);
 					Renderer::String({ screen.x, screen.y }, bagName, D2D1::ColorF::Olive, true, true);
-					if (Visuals::Base::baseDistance) {
+					if (vars::visuals::base::show_distance) {
 						_swprintf(bagDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), bagDist, D2D1::ColorF::Olive, true, true);
 					}
@@ -111,20 +111,20 @@ namespace otherEsp {
 		}
 	}
 	void bed(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (Visuals::Base::Bed) {
+		if (vars::visuals::base::bed) {
 			if (strstr(buff, xorstr("bed_deployed.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Base::drawBaseDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
 					wchar_t bagDist[0x100];
 					auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
 					_swprintf(bagName, xorstr(L"Bed | %s"), bagname->str);
 					Renderer::String({ screen.x, screen.y }, bagName, D2D1::ColorF::OliveDrab, true, true);
-					if (Visuals::Base::baseDistance) {
+					if (vars::visuals::base::show_distance) {
 						_swprintf(bagDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), bagDist, D2D1::ColorF::OliveDrab, true, true);
 					}
@@ -147,26 +147,26 @@ namespace otherEsp {
 	}
 	void stash(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		typedef bool(__stdcall* IsHidden)(uintptr_t);
-		if (Visuals::Other::Stash) {
+		if (vars::visuals::other::stash) {
 			if (strstr(buff, xorstr("small_stash_deployed.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 stash = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Other::drawOtherDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t sName[0x100];
 					wchar_t sNameH[0x100];
 					wchar_t sDist[0x100];
 					_swprintf(sNameH, xorstr(L"Stash [Hidden]"));
 					_swprintf(sName, xorstr(L"Stash"));
-					if (((IsHidden)(Storage::gBase + CO::IsHidden))(stash)) {
+					if (((IsHidden)(vars::stor::gBase + CO::IsHidden))(stash)) {
 						Renderer::String({ screen.x, screen.y }, sNameH, D2D1::ColorF::Yellow, true, true);
 					}
 					else {
 						Renderer::String({ screen.x, screen.y }, sName, D2D1::ColorF::Yellow, true, true);
 					}
-					if (Visuals::Other::otherDistance) {
+					if (vars::visuals::other::show_distance) {
 						_swprintf(sDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), sDist, D2D1::ColorF::Yellow, true, true);
 					}
@@ -177,7 +177,7 @@ namespace otherEsp {
 	void hackablecrate(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		typedef bool(__stdcall* IsBeingHacked)(uintptr_t);
 		typedef bool(__stdcall* IsFullyHacked)(uintptr_t);
-		if (Visuals::Crates::Chinook) {
+		if (vars::visuals::crates::chinook) {
 			if (strstr(buff, xorstr("codelockedhackablecrate.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 crate = read(Object + 0x28, DWORD64);
@@ -190,8 +190,8 @@ namespace otherEsp {
 					uintptr_t timerText = read(crate + 0x440, uintptr_t);
 					auto* m_Text = reinterpret_cast<pUncStr>(read(timerText + 0xD0, DWORD64));
 					D2D1::ColorF color = D2D1::ColorF::OrangeRed;
-					if (!((IsFullyHacked)(Storage::gBase + CO::IsFullyHacked))(crate)) {
-						if (((IsBeingHacked)(Storage::gBase + CO::IsBeingHacked))(crate)) {
+					if (!((IsFullyHacked)(vars::stor::gBase + CO::IsFullyHacked))(crate)) {
+						if (((IsBeingHacked)(vars::stor::gBase + CO::IsBeingHacked))(crate)) {
 							color = D2D1::ColorF::LightGoldenrodYellow;
 							_swprintf(crateName, xorstr(L"Chinook Crate | %s"), m_Text->str);
 						}
@@ -213,14 +213,14 @@ namespace otherEsp {
 	}
 	void world(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		typedef uintptr_t(__stdcall* GetItem)(uintptr_t);
-		if (Visuals::Other::DroppedItems) {
+		if (vars::visuals::other::dropped_items) {
 			if (strstr(buff, xorstr("world"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 item = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
 				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= Visuals::Other::drawOtherDistance) {
+				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t itemName[0x100];
 					wchar_t itemDist[0x100];
 					uintptr_t Item = read(item + 0x150, uintptr_t);
@@ -233,7 +233,7 @@ namespace otherEsp {
 					std::wstring eng = std::wstring(english->str);
 					if (!(eng.find(xorstr(L"Arrow")) != std::wstring::npos) && !(eng.find(xorstr(L"Nails")) != std::wstring::npos)) {
 						Renderer::String({ screen.x, screen.y }, itemName, D2D1::ColorF::BlanchedAlmond, true, true);
-						if (Visuals::Other::otherDistance) {
+						if (vars::visuals::other::show_distance) {
 							_swprintf(itemDist, xorstr(L"[%d m]"), distance);
 							Renderer::String(screen + Vector2(0, 15), itemDist, D2D1::ColorF::BlanchedAlmond, true, true);
 						}
@@ -289,7 +289,7 @@ inline void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Enti
 
 }
 void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
-	if (PlayerEsp::sleeperignore && BP->HasFlags(16)) return;
+	if (vars::players::sleeperignore && BP->HasFlags(16)) return;
 	Vector2 tempFeetR, tempFeetL;
 	if (utils::w2s(BP->GetBoneByID(r_foot), tempFeetR) && utils::w2s(BP->GetBoneByID(l_foot), tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
@@ -307,7 +307,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			Vector2 middlePointPlayerTop;
 			Vector2 middlePointPlayerFeet;
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
-				if (PlayerEsp::fillbox) {
+				if (vars::players::fillbox) {
 					if ((int)BP->GetHealth() > 0) {
 						if (LocalPlayer->IsTeamMate(BP->GetSteamID())) {
 							Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.4f, 0.f, 0.4f));
@@ -317,23 +317,23 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 						}
 					}
 				}
-				if (PlayerEsp::box) {
-					if (PlayerEsp::boxstyle == 0) {
+				if (vars::players::box) {
+					if (vars::players::boxstyle == 0) {
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF::Black, 3.f);
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color);
 						//Renderer::FillGradientRoundedRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color, 5.f, 5.f);
 					}
-					if (PlayerEsp::boxstyle == 1) {
+					if (vars::players::boxstyle == 1) {
 						CornerBox(Entity_x, Entity_y, Entity_w, Entity_h, color);
 					}
 				}
-				if (PlayerEsp::name) {
+				if (vars::players::name) {
 					wchar_t name[64];
 					_swprintf(name, L"%s", BP->GetName());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + 10.f }, name, color, true, true);
 					CurPos += 15;
 				}
-				if (PlayerEsp::weapon) {
+				if (vars::players::weapon) {
 					const wchar_t* ActiveWeaponName;
 					BaseProjectile* ActWeapon = BP->GetActiveWeapon();
 					ActiveWeaponName = ActWeapon->GetName();
@@ -346,16 +346,16 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, ActiveWeaponName, color, true, true);
 					CurPos += 15;
 				}
-				if (PlayerEsp::healthdist) {
+				if (vars::players::healthdist) {
 					wchar_t s[64];
 					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->GetBoneByID(head), BP->GetBoneByID(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, s, color, true, true);
 					CurPos += 15;
 				}
-				if (PlayerEsp::healthbar) {
+				if (vars::players::healthbar) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 100.f;
-					if (PlayerEsp::healthbarstyle == 0) {
+					if (vars::players::healthbarstyle == 0) {
 						if ((int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BP->GetBoneByID(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
@@ -369,7 +369,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 							Renderer::Rectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h }, D2D1::ColorF::Black, 0.5f);
 						}
 					}
-					if (PlayerEsp::healthbarstyle == 1) {
+					if (vars::players::healthbarstyle == 1) {
 						if ((int)BP->GetHealth() <= 33) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 						}
@@ -382,7 +382,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 						Renderer::Rectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 					}
 				}
-				if (PlayerEsp::tracers && !BP->HasFlags(16)) {
+				if (vars::players::tracers && !BP->HasFlags(16)) {
 					static float screenX = GetSystemMetrics(SM_CXSCREEN);
 					static float screenY = GetSystemMetrics(SM_CYSCREEN);
 					static Vector2 startPos = Vector2(screenX / 2.0f, screenY - 200.f);
@@ -412,23 +412,23 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			Vector2 middlePointPlayerTop;
 			Vector2 middlePointPlayerFeet;
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
-				if (BotsEsp::fillbox) {
+				if (vars::npc::fillbox) {
 					Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.f, 0.f, 0.4f));
 				}
-				if (BotsEsp::box) {
-					if (BotsEsp::boxstyle == 0) {
+				if (vars::npc::box) {
+					if (vars::npc::boxstyle == 0) {
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF::Black, 3.f);
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color);
 					}
-					if (BotsEsp::boxstyle == 1) {
+					if (vars::npc::boxstyle == 1) {
 						CornerBox(Entity_x, Entity_y, Entity_w, Entity_h, color);
 					}
 				}
-				if (BotsEsp::name) {
+				if (vars::npc::name) {
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + 10.f }, L"NPC", color, true, true);
 					CurPos2 += 15;
 				}
-				if (BotsEsp::weapon) {
+				if (vars::npc::weapon) {
 					const wchar_t* ActiveWeaponName;
 					BaseProjectile* ActWeapon = BP->GetActiveWeapon();
 					ActiveWeaponName = ActWeapon->GetName();
@@ -441,16 +441,16 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, ActiveWeaponName, color, true, true);
 					CurPos2 += 15;
 				}
-				if (BotsEsp::healthdist) {
+				if (vars::npc::healthdist) {
 					wchar_t s[64];
 					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->GetBoneByID(head), BP->GetBoneByID(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, s, color, true, true);
 					CurPos2 += 15;
 				}
-				if (BotsEsp::healthbar) {
+				if (vars::npc::healthbar) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 150.f;
-					if (BotsEsp::healthbarstyle == 0) {
+					if (vars::npc::healthbarstyle == 0) {
 						if ((int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BP->GetBoneByID(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
@@ -464,7 +464,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 							Renderer::Rectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h }, D2D1::ColorF::Black, 0.5f);
 						}
 					}
-					if (BotsEsp::healthbarstyle == 1) {
+					if (vars::npc::healthbarstyle == 1) {
 						if ((int)BP->GetHealth() <= 33) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 						}
@@ -477,7 +477,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 						Renderer::Rectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 					}
 				}
-				if (BotsEsp::tracers) {
+				if (vars::npc::tracers) {
 					static float screenX = GetSystemMetrics(SM_CXSCREEN);
 					static float screenY = GetSystemMetrics(SM_CYSCREEN);
 					static Vector2 startPos = Vector2(screenX / 2.0f, screenY - 200.f);

@@ -54,11 +54,38 @@ public:
 
 	inline Vector2() { x = y = 0.0f; }
 	inline Vector2 operator/(float v) const { return Vector2(x / v, y / v); }
+	inline Vector2& operator/=(int v) { x /= v; y /= v; return *this; }
 	inline Vector2(float X, float Y) { x = X; y = Y; }
 	inline Vector2 operator-(const Vector2& v) const { return Vector2(x - v.x, y - v.y); }
 	inline Vector2 operator+(const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
 	inline Vector2& operator+=(const Vector2& v) { x += v.x; y += v.y; return *this; }
+	inline Vector2& operator-=(const Vector2& v) { x -= v.x; y -= v.y; return *this; }
 	inline bool Zero() const { return (x > -0.1f && x < 0.1f && y > -0.1f && y < 0.1f); }
+	inline Vector2 Clamp() {
+		if (x > 180)
+			x -= 360;
+		else if (x < -180)
+			x += 360;
+
+		if (y > 180)
+			y -= 360;
+		else if (y < -180)
+			y += 360;
+
+		if (x < -89)
+			x = -89;
+
+		if (x > 89)
+			x = 89;
+
+		while (y < -180.0f)
+			y += 360.0f;
+
+		while (y > 180.0f)
+			y -= 360.0f;
+
+		return *this;
+	}
 };
 class Vector4 {
 public:
