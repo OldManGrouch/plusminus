@@ -1,4 +1,5 @@
 ﻿#include "hooks/defs.h"
+#include "D:\+-\cheat\yayayeyeaya\plusminus\hooks/detours.h"
 int yeet = 0;
 bool __fastcall SendClientTick(void* baseplayer) {
 	if (vars::misc::anti_aim) {
@@ -17,13 +18,13 @@ inline Projectile* __fastcall CreateProjectile(void* BaseProjectileA, void* pref
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
 	 
 	if (vars::weapons::thick_bullet) {
-		projectile->thickness(1.f);
+		projectile->thickness() = 1.f;
 	}
 	else {
-		projectile->thickness(0.1f);
+		projectile->thickness() = 0.1f;
 	}
 	if (vars::weapons::no_ricochet) {
-		projectile->ricochetChance(0.f);
+		projectile->ricochetChance() = 0.f;
 	}
 	// TO-DO: delay shot
 	return projectile;
@@ -214,7 +215,6 @@ void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
 	}
 }
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
-	printf("called spa");
 	uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
 	if (vars::weapons::spoof_hitdistance) {
@@ -315,11 +315,18 @@ void HookFunction(void* Function, void** Original, void* Detour, bool autoEnable
 		MH_EnableHook(Function);
 }
 inline void InitHook() {
+	ASSIGN_HOOK("Assembly-CSharp::PlayerWalkMovement::HandleRunning(ModelState,Boolean): Void", original_handleRunning);
+
+	DetourTransactionBegin();
+	DetourUpdateThread(GetCurrentThread());
+	DetourAttach(&(PVOID&)original_handleRunning, HandleRunning);
+	DetourTransactionCommit();
+
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, SetFlying);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, SendProjectileAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, HandleJumping);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);

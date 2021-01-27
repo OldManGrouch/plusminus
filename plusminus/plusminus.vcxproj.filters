@@ -178,6 +178,9 @@
     <ClInclude Include="crc32.hpp">
       <Filter>source\stuff</Filter>
     </ClInclude>
+    <ClInclude Include="rust.h">
+      <Filter>source\stuff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

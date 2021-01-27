@@ -21,8 +21,11 @@ namespace hwid {
 		c_xor("{3a351acb-0189-4500-986d-d1e40f5ee732}") , // Lucky
 		c_xor("{2dba80c0-00da-11eb-b0f4-806e6f6e6963}") , // Mornz
 		c_xor("{2bdfe3b4-4862-11eb-b3fe-806e6f6e6963}") , // paul
+		c_xor("{c42035ee-08eb-11eb-bde0-806e6f6e6963}") , // tater || Dzingaarms
+		c_xor("{f127d48f-6514-4845-bb36-b5239ecc3a9e}") , // bryce
 		c_xor("{71a79d40-605c-11eb-9b83-806e6f6e6963}") , // Jackt
 		c_xor("{d5eb2540-5ed3-11eb-abe0-806e6f6e6963}") , // Shark
+		c_xor("{b90dd3e5-3ea2-11eb-be28-806e6f6e6963}") , // ftxhftxhtfx || Kaiz
 		c_xor("{PizzaXYZ-8804-14614-22219-29502}") , // blood
 		c_xor("{aff77fe6-3dc5-11eb-8084-806e6f6e6963}") , // X1
 		c_xor("{5ebf94c0-008b-11eb-b602-806e6f6e6963}") , // Maxim Post
@@ -30,10 +33,14 @@ namespace hwid {
 		c_xor("{0c833340-bee3-11ea-9de1-806e6f6e6963}") , // emanu
 		c_xor("{72cceaa5-b412-46bc-b276-1b1906420523}") , // Charis
 		c_xor("{2a6080c0-472d-11eb-995c-806e6f6e6963}") , // shana
+		c_xor("{c889453e-fc41-11ea-8621-806e6f6e6963}") , // serva
 		c_xor("{Apple8630-18857-9853-3095421017}") , // camre
+		c_xor("{a4b7a4c3-5369-11eb-8018-806e6f6e6963}") , // marku || Dimitrij
+		c_xor("{a72858db-9e06-49dc-bcd3-c3e0059e5c85}") , // Levin || Tyler Tomazewski
 		c_xor("{Apple15611-25076-25935-2133929717}") , // Nick
 		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") , // NecuDaVamKazem || JOVAN
 		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") ,
+		c_xor("{b28bf731-e782-11ea-bdd4-806e6f6e6963}") , // itofr || ItDoGoDown
 		c_xor("{65484183-5e32-11eb-b480-806e6f6e6963}") , // Nooby || NoobyNecks
 		c_xor("{dcb03ef5-ccd4-11ea-b00a-806e6f6e6963}") , // phara
 		c_xor("{8f86c2c0-4935-11eb-8993-806e6f6e6963}") , // todor || Zillaa
@@ -83,7 +90,7 @@ namespace hwid {
 		c_xor("{a9931c21-58e6-11eb-8606-806e6f6e6963}") , // xshiz || klery
 		c_xor("{67bf4ab8-471d-11eb-b37a-806e6f6e6963}") ,
 		c_xor("{3fd63740-b9a4-11ea-bcec-806e6f6e6963}") , // epiccode-alpha
-		c_xor("{01eb958c-4f9f-11eb-9a4a-806e6f6e6963}") // benediktas
+		c_xor("{4c6e9e89-60f4-11eb-9c65-806e6f6e6963}") // benediktas
 	};
 	namespace sec {
 		bool DBContainsHwid(std::string hwid) {

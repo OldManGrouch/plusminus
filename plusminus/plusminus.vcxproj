@@ -10,6 +10,7 @@
     <ClInclude Include="crc32.hpp" />
     <ClInclude Include="hooks/defs.h" />
     <ClInclude Include="logsystem.h" />
+    <ClInclude Include="rust.h" />
     <ClInclude Include="stuff/offsets.h" />
     <ClInclude Include="main/aim.h" />
     <ClInclude Include="main/entities.h" />
@@ -232,7 +233,7 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D:\+-\cheat\yayayeyeaya\plusminus\hooks\detours\detours.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

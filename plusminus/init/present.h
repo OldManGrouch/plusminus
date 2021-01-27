@@ -68,6 +68,9 @@ LRESULT CALLBACK DXGIMsgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 DWORD __stdcall Start(LPVOID) {
 	vars::stor::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
 	il2cpp::InitIL();
+	il2cpp::init_classes();
+	il2cpp::init_fields();
+	il2cpp::init_methods();
 	//game::init();
 	HMODULE hDXGIDLL = 0;
 	do {

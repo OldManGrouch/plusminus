@@ -41,6 +41,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "main/weapons.h"
 #include "stuff/sdk.h"
 #include "stuff/il2cpp.h"
+#include "rust.h"
 #include "main/targeting.h"
 #include <d3d11.h>
 #include "init/d3defs.h"

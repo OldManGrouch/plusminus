@@ -21,7 +21,7 @@ void FindMatrix() {
 	}
 }
 float timee = 120.f;
-bool notreelos = false;
+bool initD = false;
 void EntityLoop() {
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
@@ -46,6 +46,10 @@ void EntityLoop() {
 				);
 			}
 		}
+	}
+	if (!initD) {
+		LogSystem::Log(c_wxor(L"Loaded!"), 10.f);
+		initD = true;
 	}
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;

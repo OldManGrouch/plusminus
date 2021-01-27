@@ -237,6 +237,7 @@ namespace il2cpp {
 		}
 		return 0;
 	}
+	using namespace wrapper;
 	static std::map<uint32_t, uint64_t> offsets = std::map<uint32_t, uint64_t>();
 	uint64_t method(uint32_t path) {
 		if (methods::map_contains_key(offsets, path))
@@ -285,6 +286,45 @@ namespace il2cpp {
 		}
 		return 0;
 	}
+	uint64_t field(uint32_t path) {
+		if (il2cpp::methods::map_contains_key(offsets, path))
+			return std::uint32_t(offsets[path]);
+
+		Il2CppDomain* domain = il2cpp_domain_get();
+		Il2CppAssembly** assemblies = domain->assemblies();
+
+		for (int i = 0; i < domain->assemblyCount(); i++) {
+			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
+			for (int c = 0; c < image->classcount(); c++) {
+				std::string temp(image->assemblyName);
+				temp.erase(temp.find(c_xor(".dll")), 4);
+
+				Il2CppClass* klass = image->get_class(c);
+				char* name = klass->name;
+				char* ns = klass->namespaze;
+				if (std::string(ns).empty())
+					temp = temp + c_xor("::") + name;
+				else
+					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+
+				Il2CppField* field;
+				void* iter = NULL;
+				while (field = klass->fields(&iter)) {
+					if (!field) continue;
+
+					std::string t(temp + c_xor("::") + field->name());
+					if (RUNTIME_CRC32(t.c_str()) == path) {
+						uint32_t off = field->offset();
+						offsets.insert(std::make_pair(path, off));
+
+						return off;
+					}
+				}
+			}
+		}
+
+		return 0;
+	}
 	wrapper::Il2CppClass* klass(uint32_t path) {
 		if (il2cpp::methods::map_contains_key(offsets, path))
 			return reinterpret_cast<wrapper::Il2CppClass*>(offsets[path]);
@@ -311,10 +351,125 @@ namespace il2cpp {
 		}
 		return nullptr;
 	}
-#define METHOD(path) *reinterpret_cast<uint64_t*>(il2cpp::method(STATIC_CRC32(path)))
+	
+	void init_classes() {
+		Il2CppDomain* domain = il2cpp_domain_get();
+		Il2CppAssembly** assemblies = domain->assemblies();
 
+		for (int i = 0; i < domain->assemblyCount(); i++) {
+			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
+			for (int c = 0; c < image->classcount(); c++) {
+				std::string temp(image->assemblyName);
+				temp.erase(temp.find(xorstr(".dll")), 4);
+
+				Il2CppClass* klass = image->get_class(c);
+				char* name = klass->name;
+				char* ns = klass->namespaze;
+				if (std::string(ns).empty())
+					temp = temp + c_xor("::") + name;
+				else
+					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+
+				uint64_t ptr = std::uint64_t(klass);
+
+				offsets.insert(std::make_pair(RUNTIME_CRC32(temp.c_str()), ptr));
+			}
+		}
+	}
+	void init_methods() {
+		Il2CppDomain* domain = il2cpp_domain_get();
+		Il2CppAssembly** assemblies = domain->assemblies();
+
+		for (int i = 0; i < domain->assemblyCount(); i++) {
+			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
+			for (int c = 0; c < image->classcount(); c++) {
+				std::string temp(image->assemblyName);
+				temp.erase(temp.find(xorstr(".dll")), 4);
+
+				Il2CppClass* klass = image->get_class(c);
+				if (!klass) continue;
+
+				char* name = klass->name;
+				char* ns = klass->namespaze;
+				if (std::string(ns).empty())
+					temp = temp + c_xor("::") + name;
+				else
+					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+
+				Il2CppMethod* mthd;
+				void* iter = NULL;
+				while (mthd = klass->methods(&iter)) {
+					if (!mthd) continue;
+
+					std::string temp2(temp + c_xor("::") + mthd->name());
+
+					if (mthd->paramCount() > 0) {
+						temp2 = temp2 + c_xor("(");
+						for (int p = 0; p < mthd->paramCount(); p++) {
+							std::string t(mthd->getParam(p)->name());
+							t = t.substr(t.find(c_xor(".")) + 1);
+							temp2 = temp2 + t + c_xor(",");
+						}
+						std::string t(mthd->retType()->name());
+						temp2 = temp2.substr(0, temp2.size() - 1);
+						temp2 = temp2 + c_xor("): ") + t.substr(t.find(".") + 1);
+					}
+					else {
+						std::string t(mthd->retType()->name());
+						temp2 = temp2 + c_xor("(): ") + t.substr(t.find(".") + 1);
+					}
+
+					offsets.insert(std::make_pair(RUNTIME_CRC32(temp2.c_str()), std::uint64_t(mthd)));
+				}
+			}
+		}
+	}
+	void init_fields() {
+		Il2CppDomain* domain = il2cpp_domain_get();
+		Il2CppAssembly** assemblies = domain->assemblies();
+
+		for (int i = 0; i < domain->assemblyCount(); i++) {
+			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
+			for (int c = 0; c < image->classcount(); c++) {
+				std::string temp(image->assemblyName);
+				temp.erase(temp.find(c_xor(".dll")), 4);
+
+				Il2CppClass* klass = image->get_class(c);
+				char* name = klass->name;
+				char* ns = klass->namespaze;
+				if (std::string(ns).empty())
+					temp = temp + c_xor("::") + name;
+				else
+					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+
+				Il2CppField* field;
+				void* iter = NULL;
+				while (field = klass->fields(&iter)) {
+					if (!field) continue;
+
+					std::string t(temp + c_xor("::") + field->name());
+					uint32_t off = field->offset();
+					offsets.insert(std::make_pair(RUNTIME_CRC32(t.c_str()), off));
+				}
+			}
+		}
+	}
+	class default_t {
+	public:
+		template<typename T>
+		operator T() const { return T(); }
+	};
+
+	default_t const defaultt = default_t();
+#define METHOD(path) *reinterpret_cast<uint64_t*>(il2cpp::method(STATIC_CRC32(path)))
 #define CLASS(path) il2cpp::klass(STATIC_CRC32(path))
-#define lol(path) CLASS(path)
+#define ASSIGN_HOOK(method_path,hook) hook = reinterpret_cast<decltype(hook)>(METHOD(method_path))
+#define OFFSET(path) il2cpp::field(STATIC_CRC32(path))
+#define NP(type) type nonptr = il2cpp::defaultt; if(!this) return nonptr;
+#define FIELD(field_path,name,type) type& name() { \
+		NP(type) \
+		static auto off = OFFSET(field_path); \
+		return *reinterpret_cast<type*>(this + off); }
 	namespace game {
 		static auto get_iconSprite = reinterpret_cast<uintptr_t(*)(BaseProjectile* nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
 		static auto get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));
