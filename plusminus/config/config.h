@@ -163,6 +163,7 @@ private:
 		SetupValue(vars::misc::silent_walk, false, c_xor("Misc"), c_xor("SilentWalk"));
 		SetupValue(vars::misc::spoof_ladderstate, false, c_xor("Misc"), c_xor("SpoofOnLadder"));
 		SetupValue(vars::misc::anti_aim, false, c_xor("Misc"), c_xor("AntiAim"));
+		SetupValue(vars::misc::hit_logs, false, c_xor("Misc"), c_xor("HitLogs"));
 		SetupValue(vars::misc::faster_healing, false, c_xor("Misc"), c_xor("FastHeal"));
 		SetupValue(vars::misc::fake_lag, false, c_xor("Misc"), c_xor("FakeLag"));
 		SetupValue(vars::misc::fakeadmin, false, c_xor("Misc"), c_xor("FakeAdmin"));

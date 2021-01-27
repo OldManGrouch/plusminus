@@ -373,6 +373,7 @@ namespace menu {
 		if (vars::misc::anti_aim) {
 			ImGui::SliderInt(xorstr("Anti-Aim spin speed"), &vars::misc::anti_aim_speed, 1, 50);
 		}
+		HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
 		HelpCheckbox(xorstr("Jesus"), &vars::misc::jesus, xorstr("Allows you to walk on water."));
 		HelpCheckbox(xorstr("Walker"), &vars::misc::walker, xorstr("Allows you to walk through trees and players without any resistance."));
 		HelpCheckbox(xorstr("Faster Healing"), &vars::misc::faster_healing, xorstr("Allows you to heal faster than usual, no need to spam mouse to heal - you can just hold it down."));
