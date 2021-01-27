@@ -320,9 +320,14 @@ inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 	Vector3 backBottomRight = Math::RotatePoint(center, Vector3(center.x + extents.x, center.y - extents.y, center.z + extents.z), y);
 
 	Vector2 frontTopLeft_2d, frontTopRight_2d, frontBottomLeft_2d, frontBottomRight_2d, backTopLeft_2d, backTopRight_2d, backBottomLeft_2d, backBottomRight_2d;
-	if (utils::w2s(frontTopLeft, frontTopLeft_2d) && utils::w2s(frontTopRight, frontTopRight_2d) && utils::w2s(frontBottomLeft, frontBottomLeft_2d) &&
-		utils::w2s(frontBottomRight, frontBottomRight_2d) && utils::w2s(backTopLeft, backTopLeft_2d) && utils::w2s(backTopRight, backTopRight_2d) &&
-		utils::w2s(backBottomLeft, backBottomLeft_2d) && utils::w2s(backBottomRight, backBottomRight_2d)) {
+	if (utils::w2s(frontTopLeft, frontTopLeft_2d) && 
+		utils::w2s(frontTopRight, frontTopRight_2d) && 
+		utils::w2s(frontBottomLeft, frontBottomLeft_2d) &&
+		utils::w2s(frontBottomRight, frontBottomRight_2d) && 
+		utils::w2s(backTopLeft, backTopLeft_2d) && 
+		utils::w2s(backTopRight, backTopRight_2d) &&
+		utils::w2s(backBottomLeft, backBottomLeft_2d) && 
+		utils::w2s(backBottomRight, backBottomRight_2d)) {
 
 		Renderer::Line(frontTopLeft_2d, frontTopRight_2d, color, 1.5f, true);
 		Renderer::Line(frontTopRight_2d, frontBottomRight_2d, color, 1.5f, true);
