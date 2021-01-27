@@ -5,6 +5,7 @@ void InitImGui() {
 	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	ImGui_ImplWin32_Init(window);
 	ImGui_ImplDX11_Init(pDevice, pContext);
+	menu::apply_fonts();
 }
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
@@ -48,7 +49,7 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 		}
 		Renderer::EndFrame();
 		if (show) {
-			Menu();
+			DrawMenu();
 		}
 		ImGui::End();
 		ImGui::Render();

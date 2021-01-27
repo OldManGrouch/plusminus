@@ -75,7 +75,7 @@ void InitCheat() {
 	if (vars::combat::fov > (kek.y - 3)) { vars::combat::fov = (kek.y - 3); } // limit fov
 	if (vars::misc::fov < 30) { vars::misc::fov = 80; } // limit graph fov
 	if (vars::combat::smooth_factor <= 0) { vars::combat::smooth_factor = 1; }
-
+	if (vars::weapons::hitdistance < 300) { vars::weapons::hitdistance = 300; }
 	/*static int cases = 0;
 	static float r = 1.00f, g = 0.00f, b = 1.00f;
 	switch (cases) {
@@ -86,7 +86,7 @@ void InitCheat() {
 	default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
 	}*/
 	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt) {
-		const float Height = 170.f;
+		const float Height = 275.f;
 		const float Width = 150.f;
 		POINT p;
 		if (GetCursorPos(&p)) {
@@ -123,6 +123,24 @@ void InitCheat() {
 		}
 		Renderer::FillRectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80 * (TargetPlayerA->GetHealth() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
+		float cPos = 125;
+		for (int i = 0; i < 7; i++) {
+			BaseProjectile* ActWeapon = TargetPlayerA->GetClothesInfo(i);
+			if (ActWeapon) {
+				const wchar_t* ActiveItem = ActWeapon->GetName();
+				if (ActiveItem) {
+					if (wcslen(ActiveItem) < 20) {
+						wchar_t itemName[0x100];
+						_swprintf(itemName, xorstr(L"%s"), ActiveItem);
+						Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
+					}
+				}
+			}
+			else {
+				Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, xorstr(L"-----"), D2D1::ColorF::White, true, true);
+			}
+			cPos += 15;
+		}
 	}
 	EntityLoop();
 }

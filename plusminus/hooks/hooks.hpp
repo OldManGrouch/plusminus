@@ -198,6 +198,9 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	}
 	return original_sendprojectileattack(a1, a2);
 }
+void __fastcall StartVendingSounds(uintptr_t a1, uintptr_t a2) {
+	return;
+}
 void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
@@ -245,6 +248,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6A6890), (void**)&original_startvendingsounds, StartVendingSounds);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);

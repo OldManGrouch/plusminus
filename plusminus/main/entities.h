@@ -179,7 +179,12 @@ void EntityLoop() {
 				}
 			}
 		}
-		
+		if (yeetus) {
+			typedef void(__stdcall* Pick)(DWORD64, Str);
+			((Pick)(vars::stor::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
+			printf("attempting to yeet\n");
+			yeetus = false;
+		}
 		if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
@@ -314,6 +319,7 @@ void EntityThreadLoop() {
 		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
+		
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		if (m_strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;

@@ -122,28 +122,11 @@ Vector3 Prediction(BasePlayer* Player) {
 	}
 	return BonePos;
 }
-void Normalize(float& x, float& y) {
-	if (x > 180)
-		x -= 360;
-	else if (x < -180)
-		x += 360;
-
-	if (y > 180)
-		y -= 360;
-	else if (y < -180)
-		y += 360;
-
-	if (x < -89)
-		x = -89;
-
-	if (x > 89)
-		x = 89;
-
-	while (y < -180.0f)
-		y += 360.0f;
-
-	while (y > 180.0f)
-		y -= 360.0f;
+void Normalize(float& Yaw, float& Pitch) {
+	if (Pitch < -89) Pitch = -89;
+	else if (Pitch > 89) Pitch = 89;
+	if (Yaw < -360) Yaw += 360;
+	else if (Yaw > 360) Yaw -= 360;
 }
 void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
 	Vector2 delta = dst - src;
@@ -151,17 +134,13 @@ void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
 	dst = src + delta / factor;
 }
 void GoToTarget(BasePlayer* player) {
-	Vector3 Local;
-	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) { Local = LocalPlayer->GetBoneByID(neck) + Vector3(0, 1.15, 0); }
-	else { Local = LocalPlayer->GetBoneByID(neck); }
+	Vector3 Local = LocalPlayer->GetBoneByID(neck);
 	Vector3 PlayerPos = Prediction(player);
-	Vector2 Offset = Math::CalcAngle(Local, PlayerPos);
-	Offset -= LocalPlayer->GetVA();
-	Normalize(Offset.x, Offset.y);
-	//SmoothAngleOld(LocalPlayer->GetVA(), Offset, 10);
-	auto delta = Offset -= LocalPlayer->GetVA();
-	Offset = LocalPlayer->GetVA() + delta;
-	LocalPlayer->SetVA(Offset);
+	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
+	Normalize(Offset.y, Offset.x);
+	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
+	Normalize(AngleToAim.y, AngleToAim.x);
+	LocalPlayer->SetVA(AngleToAim);
 }
 
 void Aim(BasePlayer* AimEntity) {

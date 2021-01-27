@@ -382,7 +382,13 @@ public:
 			return pos;
 		}
 	}
-	
+	typedef Quaternion(__stdcall* get_rotation)(DWORD64);
+	Quaternion GetRotation(DWORD64 transform) {
+		if (!transform) return Quaternion();
+		get_rotation original = (get_rotation)(vars::stor::gBase + 0x1AB3680);
+		Quaternion res = original(transform);
+		return res;
+	}
 	DWORD64 GetTransform(int bone) {
 		DWORD64 player_model = read(this + 0x118, DWORD64);// public Model model;_public class BaseEntity : BaseNetworkable, IProvider, ILerpTarget, IPrefabPreProcess // TypeDefIndex: 8714
 		DWORD64 boneTransforms = read(player_model + 0x48, DWORD64);//public Transform[] boneTransforms;
@@ -421,6 +427,9 @@ public:
 	}
 	Vector3 GetBoneByID(BoneList BoneID) {
 		return GetPosition(GetTransform(BoneID));
+	}
+	Quaternion GetRotationByID(BoneList BoneID) {
+		return GetRotation(GrabTransform(BoneID));
 	}
 	bool IsNpc() {
 		DWORD64 PlayerModel = read(this + oPlayerModel, DWORD64);
@@ -500,7 +509,14 @@ public:
 	}
 	BaseProjectile* GetWeaponInfo(int Id) {
 		DWORD64 Inventory = read(this + oInventory, DWORD64);
-		DWORD64 Belt = read(Inventory + 0x28, DWORD64);
+		DWORD64 Belt = read(Inventory + 0x28, DWORD64); // containerBelt
+		DWORD64 ItemList = read(Belt + 0x38, DWORD64);// public List<Item> itemList;
+		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
+		return (BaseProjectile*)read(Items + 0x20 + (Id * 0x8), DWORD64);
+	}
+	BaseProjectile* GetClothesInfo(int Id) {
+		DWORD64 Inventory = read(this + oInventory, DWORD64);
+		DWORD64 Belt = read(Inventory + 0x30, DWORD64); // containerWear
 		DWORD64 ItemList = read(Belt + 0x38, DWORD64);// public List<Item> itemList;
 		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
 		return (BaseProjectile*)read(Items + 0x20 + (Id * 0x8), DWORD64);

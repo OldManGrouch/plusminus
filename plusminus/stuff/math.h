@@ -128,6 +128,59 @@ namespace Math {
 	__forceinline float Calc2D_Dist(const Vector2& Src, const Vector2& Dst) {
 		return sqrt(powf(Src.x - Dst.x, 2) + powf(Src.y - Dst.y, 2));
 	}
+	float NormalizeAngle(float angle) {
+		while (angle > 360.0f) {
+			angle -= 360.0f;
+		}
+		while (angle < 0.0f) {
+			angle += 360.0f;
+		}
+		return angle;
+	}
+	Vector3 NormalizeAngles(Vector3 angles) {
+		angles.x = NormalizeAngle(angles.x);
+		angles.y = NormalizeAngle(angles.y);
+		angles.z = NormalizeAngle(angles.z);
+		return angles;
+	}
+	Vector3 EulerAngles(Quaternion q1) {
+		float num = q1.w * q1.w;
+		float num2 = q1.x * q1.x;
+		float num3 = q1.y * q1.y;
+		float num4 = q1.z * q1.z;
+		float num5 = num2 + num3 + num4 + num;
+		float num6 = q1.x * q1.w - q1.y * q1.z;
+		Vector3 vector;
+		if (num6 > 0.4995f * num5) {
+			vector.y = 2.0f * std::atan2f(q1.y, q1.x);
+			vector.x = 1.57079637f;
+			vector.z = 0.0f;
+			return NormalizeAngles(vector * 57.2958f);
+		}
+		if (num6 < -0.4995f * num5) {
+			vector.y = -2.0f * std::atan2f(q1.y, q1.x);
+			vector.x = -1.57079637f;
+			vector.z = 0.0f;
+			return NormalizeAngles(vector * 57.2958f);
+		}
+		Quaternion quaternion = Quaternion(q1.w, q1.z, q1.x, q1.y);
+		vector.y = std::atan2f(2.0f * quaternion.x * quaternion.w + 2.0f * quaternion.y * quaternion.z, 1.0f - 2.0f * (quaternion.z * quaternion.z + quaternion.w * quaternion.w));
+		vector.x = std::asin(2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y));
+		vector.z = std::atan2f(2.0f * quaternion.x * quaternion.y + 2.0f * quaternion.z * quaternion.w, 1.0f - 2.0f * (quaternion.y * quaternion.y + quaternion.z * quaternion.z));
+		return NormalizeAngles(vector * 57.2958f);
+	}
+	Vector3 RotatePoint(Vector3 center, Vector3 origin, float angle) {
+		float num = angle * 0.0174532924f;
+		float num2 = -std::sin(num);
+		float num3 = std::cos(num);
+		origin.x -= center.x;
+		origin.z -= center.z;
+		float num4 = origin.x * num3 - origin.z * num2;
+		float num5 = origin.x * num2 + origin.z * num3;
+		float num6 = num4 + center.x;
+		num5 += center.z;
+		return Vector3(num6, origin.y, num5);
+	}
 	__forceinline Vector2 CalcAngle(const Vector3& Src, const Vector3& Dst) {
 		Vector3 dir = Src - Dst;
 		return Vector2{ RAD2DEG(asin(dir.y / dir.Length())), RAD2DEG(-atan2(dir.x, -dir.z)) };
