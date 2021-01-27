@@ -53,6 +53,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "main/misc.h"
 #include "main/lol.h"
 #include "main/esp.h"
+#include "logsystem.h"
 #include "main/entities.h"
 
 #include "main/projectiles.h"

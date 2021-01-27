@@ -288,10 +288,10 @@ inline void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Enti
 	Renderer::Line({ Entity_x, Entity_y + Entity_h }, { Entity_x,(Entity_y + Entity_h) - Entity_h / 3.5f }, color);
 }
 typedef bool(__stdcall* IsDucked)(BasePlayer*);
-inline void Box3D(BasePlayer* player) {
+inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 	CBounds bounds = CBounds();
 
-	IsDucked ducked = (IsDucked)(vars::stor::gBase + 0x29A930);
+	IsDucked ducked = (IsDucked)(vars::stor::gBase + CO::IsDucked);
 	if (ducked(player)) {
 		bounds.center = player->GetBoneByID(l_foot).midPoint(player->GetBoneByID(r_foot)) + Vector3(0.0f, 0.55f, 0.0f);
 		bounds.extents = Vector3(0.4f, 0.65f, 0.4f);
@@ -324,18 +324,18 @@ inline void Box3D(BasePlayer* player) {
 		utils::w2s(frontBottomRight, frontBottomRight_2d) && utils::w2s(backTopLeft, backTopLeft_2d) && utils::w2s(backTopRight, backTopRight_2d) &&
 		utils::w2s(backBottomLeft, backBottomLeft_2d) && utils::w2s(backBottomRight, backBottomRight_2d)) {
 
-		Renderer::Line(frontTopLeft_2d, frontTopRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontTopRight_2d, frontBottomRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontBottomRight_2d, frontBottomLeft_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontBottomLeft_2d, frontTopLeft_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(backTopLeft_2d, backTopRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(backTopRight_2d, backBottomRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(backBottomRight_2d, backBottomLeft_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(backBottomLeft_2d, backTopLeft_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontTopLeft_2d, backTopLeft_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontTopRight_2d, backTopRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontBottomRight_2d, backBottomRight_2d, D2D1::ColorF::White, 1.5f, true);
-		Renderer::Line(frontBottomLeft_2d, backBottomLeft_2d, D2D1::ColorF::White, 1.5f, true);
+		Renderer::Line(frontTopLeft_2d, frontTopRight_2d, color, 1.5f, true);
+		Renderer::Line(frontTopRight_2d, frontBottomRight_2d, color, 1.5f, true);
+		Renderer::Line(frontBottomRight_2d, frontBottomLeft_2d, color, 1.5f, true);
+		Renderer::Line(frontBottomLeft_2d, frontTopLeft_2d, color, 1.5f, true);
+		Renderer::Line(backTopLeft_2d, backTopRight_2d, color, 1.5f, true);
+		Renderer::Line(backTopRight_2d, backBottomRight_2d, color, 1.5f, true);
+		Renderer::Line(backBottomRight_2d, backBottomLeft_2d, color, 1.5f, true);
+		Renderer::Line(backBottomLeft_2d, backTopLeft_2d, color, 1.5f, true);
+		Renderer::Line(frontTopLeft_2d, backTopLeft_2d, color, 1.5f, true);
+		Renderer::Line(frontTopRight_2d, backTopRight_2d, color, 1.5f, true);
+		Renderer::Line(frontBottomRight_2d, backBottomRight_2d, color, 1.5f, true);
+		Renderer::Line(frontBottomLeft_2d, backBottomLeft_2d, color, 1.5f, true);
 	}
 }
 void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
@@ -371,13 +371,13 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					if (vars::players::boxstyle == 0) {
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF::Black, 3.f);
 						Renderer::Rectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color);
-						//Renderer::FillGradientRoundedRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color, 5.f, 5.f);
+						//Renderer::FillGradientRoundedRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, color, 5.f, 5.f);d
 					}
 					if (vars::players::boxstyle == 1) {
 						CornerBox(Entity_x, Entity_y, Entity_w, Entity_h, color);
 					}
 					if (vars::players::boxstyle == 2) {
-						Box3D(BP);
+						Box3D(BP, color);
 					}
 				}
 				if (vars::players::name) {

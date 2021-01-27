@@ -168,6 +168,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool hit_logs = false;
 		bool auto_farm_ore = false;
 		bool auto_farm_tree = false;
 		bool can_attack = false;

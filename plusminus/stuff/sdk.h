@@ -385,7 +385,7 @@ public:
 	typedef Quaternion(__stdcall* get_rotation)(DWORD64);
 	Quaternion GetRotation(DWORD64 transform) {
 		if (!transform) return Quaternion();
-		get_rotation original = (get_rotation)(vars::stor::gBase + 0x1AB3680);
+		get_rotation original = (get_rotation)(vars::stor::gBase + CO::get_rotation);
 		Quaternion res = original(transform);
 		return res;
 	}
@@ -400,6 +400,23 @@ public:
 		DWORD64 bone_dict = read(entity_model + 0x48, DWORD64);
 		DWORD64 BoneValue = read(bone_dict + 0x20 + bone * 0x8, DWORD64);
 		return BoneValue;
+	}
+	const char* class_name() {
+		if (!this) return "";
+		auto oc = *reinterpret_cast<uint64_t*>(this);
+		if (!oc) return "";
+		return *reinterpret_cast<char**>(oc + 0x10);
+	}
+	bool IsPlayer() {
+		if (!this) return false;
+
+		return !strcmp(this->class_name(), xorstr("BasePlayer")) ||
+			!strcmp(this->class_name(), xorstr("NPCPlayerApex")) ||
+			!strcmp(this->class_name(), xorstr("NPCMurderer")) ||
+			!strcmp(this->class_name(), xorstr("NPCPlayer")) ||
+			!strcmp(this->class_name(), xorstr("HumanNPC")) ||
+			!strcmp(this->class_name(), xorstr("Scientist")) ||
+			!strcmp(this->class_name(), xorstr("HTNPlayer"));
 	}
 	float GetHealth() {
 		return read(this + oHealth, float);

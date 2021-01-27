@@ -1,5 +1,8 @@
 
 namespace CO {
+	auto Total = 0x434190;
+	auto IsDucked = 0x29A930;
+	auto get_rotation = 0x1AB3680;
 	auto PropertyToId = 0x14DFB10;
 	auto set_grassDistance = 0x667AB0;
 	auto VisUpdateUsingCulling = 0x2AA2E0;

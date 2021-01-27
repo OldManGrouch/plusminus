@@ -22,6 +22,7 @@ void FindMatrix() {
 }
 bool notreelos = false;
 void EntityLoop() {
+	LogSystem::Render();
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
 	if (!pViewMatrix || !mfound) {

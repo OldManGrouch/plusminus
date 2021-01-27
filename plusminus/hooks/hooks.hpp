@@ -146,9 +146,19 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
 	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
+typedef float(__stdcall* Total)(DWORD64);
 void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
-	if (vars::misc::custom_hitsound) { PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); }
-	else { return original_dohitnotify(basecombatentity, hitinfo); }
+	auto* player = reinterpret_cast<BasePlayer*>(basecombatentity);
+	uintptr_t damageTypes = read(hitinfo + 0xC8, uintptr_t);
+	if (vars::misc::hit_logs && player->IsPlayer()) {
+		LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), player->GetName(), ((Total)(vars::stor::gBase + CO::Total))(damageTypes)), 5.f);
+	}
+	if (vars::misc::custom_hitsound) { 
+		PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); 
+	}
+	else { 
+		return original_dohitnotify(basecombatentity, hitinfo); 
+	}
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
 	if (vars::misc::custom_hitsound) { return false; }
