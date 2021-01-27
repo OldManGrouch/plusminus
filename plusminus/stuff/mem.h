@@ -15,3 +15,6 @@ void Write(DWORD64 address, T data) {
 }
 #define read(Addr, Type) Read<Type>((DWORD64)Addr)
 #define write(Addr, Data, Type) Write<Type>((DWORD64)Addr, Data);
+
+
+#define CALLED_BY(func,off) (reinterpret_cast<std::uint64_t>(_ReturnAddress()) > func && reinterpret_cast<std::uint64_t>(_ReturnAddress()) < func + off)

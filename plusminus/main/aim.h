@@ -100,6 +100,10 @@ Vector3 Prediction(BasePlayer* Player) {
 	else { Local = LocalPlayer->GetBoneByID(head); }
 	float Dist = Math::Calc3D_Dist(Local, BonePos);
 	if (Dist > 0.001f) {
+		float prediction_value = 4.905f;
+		auto held_hash = active->ClassNameHash();
+		if (held_hash == STATIC_CRC32("BowWeapon") || held_hash == STATIC_CRC32("CrossbowWeapon") || held_hash == STATIC_CRC32("BaseLauncher") || held_hash == STATIC_CRC32("Nailgun"))
+			prediction_value = 2.67f;
 		float speed;
 		if (vars::weapons::fast_bullets) {
 			speed = GetBulletSpeed(tar, ammo) * 1.4;
@@ -115,10 +119,9 @@ Vector3 Prediction(BasePlayer* Player) {
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
-		Vector3 vel = Player->GetVelocity();
-		Vector3 PredictVel = vel * BulletTime * 0.75f;
+		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
 		BonePos += PredictVel;
-		BonePos.y += (4.905f * BulletTime * BulletTime) * gravity;
+		BonePos.y += prediction_value * BulletTime * BulletTime;
 	}
 	return BonePos;
 }

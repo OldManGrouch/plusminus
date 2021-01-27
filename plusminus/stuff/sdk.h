@@ -273,6 +273,13 @@ public:
 		if (len)*len = leng;
 		return Str->str;
 	}
+	uint32_t ClassNameHash() {
+		if (!this) return 0;
+		auto oc = *reinterpret_cast<uint64_t*>(this);
+		if (!oc) return 0;
+		const char* name = *reinterpret_cast<char**>(oc + 0x10);
+		return RUNTIME_CRC32(name);
+	}
 	wchar_t* GetShortNameName() {
 		DWORD64 Info = read(this + oItemDefinition, DWORD64);
 		pUncStr Str = ((pUncStr)read(Info + oShortname, DWORD64));

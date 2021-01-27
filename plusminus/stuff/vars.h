@@ -55,6 +55,7 @@ namespace vars {
 		bool ignore_npc = false;
 	}
 	namespace weapons {
+		float recoil_control = 100.f;
 		bool fast_bullets = false;
 		bool penetrate = false;
 		bool minicopter_aim = false;

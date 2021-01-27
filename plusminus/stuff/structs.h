@@ -7,6 +7,7 @@ public:
 	float operator[](int i) const { return ((float*)this)[i]; }
 	Vector3& operator-=(float v) { x -= v; y -= v; z -= v; return *this; }
 	Vector3 operator*(float v) const { return Vector3(x * v, y * v, z * v); }
+	Vector3& operator*=(float input) { x *= input; y *= input; z *= input; return *this; }
 	Vector3 operator/(float v) const { return Vector3(x / v, y / v, z / v); }
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
 	Vector3 operator-(const Vector3& v) const { return Vector3(x - v.x, y - v.y, z - v.z); }

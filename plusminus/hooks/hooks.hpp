@@ -208,8 +208,17 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	}
 	return original_sendprojectileattack(a1, a2);
 }
-void __fastcall StartVendingSounds(uintptr_t a1, uintptr_t a2) {
-	return;
+void __fastcall AddPunch(uintptr_t a1, Vector3 a2, float duration) {
+	a2 *= vars::weapons::recoil_control / 100.f;
+	return original_addpunch(a1, a2, duration);
+}
+Vector3 __fastcall MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
+	static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::SimulateAimcone(): Void");
+	if (CALLED_BY(ptr, 0x800)) {
+		a2 *= vars::weapons::recoil_control / 100.f;
+		maxDelta *= vars::weapons::recoil_control / 100.f;
+	}
+	return original_movetowards(a1, a2, maxDelta);
 }
 void __fastcall HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
@@ -258,7 +267,8 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x6A6890), (void**)&original_startvendingsounds, StartVendingSounds);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x41A0E0), (void**)&original_addpunch, AddPunch);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x1AB6F50), (void**)&original_movetowards, MoveTowards);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);

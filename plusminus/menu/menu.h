@@ -215,12 +215,7 @@ namespace menu {
 		ImGui::Checkbox(xorstr("Ignore Sleeping"), &vars::combat::ignore_sleepers);
 	}
 	void weapons() {
-		ImGui::Checkbox(xorstr("Rage No Recoil"), &vars::weapons::no_recoil);
-		ImGui::Checkbox(xorstr("Legit No Recoil"), &vars::weapons::legit_norecoil);
-		if (vars::weapons::legit_norecoil) {
-			ImGui::SliderFloat(xorstr("X Control"), &vars::weapons::control_y, 0.f, 1.f);
-			ImGui::SliderFloat(xorstr("Y Control"), &vars::weapons::control_x, 0.f, 1.f);
-		}
+		ImGui::SliderFloat(xorstr("Recoil"), &vars::weapons::recoil_control, 0.f, 100.f);
 		ImGui::Checkbox(xorstr("No Spread"), &vars::weapons::no_spread);
 		ImGui::Checkbox(xorstr("No Sway"), &vars::weapons::no_sway);
 		ImGui::Checkbox(xorstr("No Ricochet"), &vars::weapons::no_ricochet);

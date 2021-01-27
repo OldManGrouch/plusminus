@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include "stuff/offsets.h"
+#include "crc32.hpp"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
