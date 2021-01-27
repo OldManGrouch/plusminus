@@ -400,7 +400,7 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
-		HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_upgrade, xorstr("Automatically upgrades building blocks that you place."));
+		//HelpCheckbox(xorstr("Auto Upgrade gwegsdgesdgs"), &vars::misc::auto_upgrade, xorstr("Automatically upgrades building blocks that you place."));
 		if (vars::misc::auto_upgrade) {
 			ImGui::PushItemWidth(100);
 			ImGui::Combo(xorstr("Building Grade"), &vars::misc::build_grade, building_grade, IM_ARRAYSIZE(building_grade));

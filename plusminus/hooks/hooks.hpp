@@ -183,7 +183,7 @@ uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Stone, LocalPlayer);
 				break;
 			case 2:
-				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade:: Metal, LocalPlayer);
+				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Metal, LocalPlayer);
 				break;
 			case 3:
 				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::TopTier, LocalPlayer);
@@ -191,6 +191,7 @@ uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 			}
 		}
 	}
+	return ret;
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
 	if (vars::misc::custom_hitsound) { return false; }
@@ -303,7 +304,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, AddPunch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, MoveTowards);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, DoMovement);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateOrUpdateEntity), (void**)&original_createorupdateentity, CreateOrUpdateEntity);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateOrUpdateEntity), (void**)&original_createorupdateentity, CreateOrUpdateEntity);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);

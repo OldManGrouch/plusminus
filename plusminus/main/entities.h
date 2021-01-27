@@ -36,7 +36,7 @@ void EntityLoop() {
 	DWORD64 ClientEntities_values = read(ClientEntities_list + 0x28, DWORD64);
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
-	Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false, true);
+	Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 	/*if (vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
 		Vector3 heliPos = read(vars::stor::closestHeliObj + 0x90, Vector3);
 		int heliX = heliPos.x;
