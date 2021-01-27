@@ -1,5 +1,10 @@
 
 namespace CO {
+	auto UpgradeToGrade = 0x380FA0;
+	auto CreateOrUpdateEntity = 0x5648B0;
+	auto AddPunch = 0x41A0E0;
+	auto MoveTowards = 0x1AB6F50;
+	auto Jump = 0x6CDFA0;
 	auto Total = 0x434190;
 	auto IsDucked = 0x29A930;
 	auto get_rotation = 0x1AB3680;

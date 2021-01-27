@@ -115,8 +115,7 @@ private:
 		SetupValue(vars::combat::ignore_npc, false, c_xor("Combat"), c_xor("IgnoreNpc"));
 		SetupValue(vars::combat::ignore_heli, false, c_xor("Combat"), c_xor("IgnoreHeli"));
 
-		SetupValue(vars::weapons::no_recoil, false, c_xor("Weapon"), c_xor("NoRecoil"));
-		SetupValue(vars::weapons::legit_norecoil, false, c_xor("Weapon"), c_xor("NoRecoil"));
+		SetupValue(vars::weapons::recoil_control, 100.f, c_xor("Weapon"), c_xor("RecoilControl"));
 		SetupValue(vars::weapons::no_spread, false, c_xor("Weapon"), c_xor("NoSpread"));
 		SetupValue(vars::weapons::no_sway, false, c_xor("Weapon"), c_xor("NoSway"));
 		SetupValue(vars::weapons::no_ricochet, false, c_xor("Weapon"), c_xor("NoRicochet"));

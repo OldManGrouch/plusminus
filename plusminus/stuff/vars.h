@@ -169,6 +169,8 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool auto_upgrade = false;
+		int build_grade = 0;
 		bool hit_logs = false;
 		bool auto_farm_ore = false;
 		bool auto_farm_tree = false;

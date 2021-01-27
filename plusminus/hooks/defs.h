@@ -43,6 +43,9 @@ inline addpunch original_addpunch;
 typedef Vector3(__fastcall* movetowards)(Vector3, Vector3, float);
 inline movetowards original_movetowards;
 
+typedef uintptr_t(__fastcall* createorupdent)(uintptr_t, uintptr_t, long);
+inline createorupdent original_createorupdateentity;
+
 typedef void(__fastcall* SetFlying_fn)(void*, void*);
 inline SetFlying_fn original_setflying{};
 

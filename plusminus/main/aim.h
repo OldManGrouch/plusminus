@@ -32,16 +32,6 @@ float GetGravity(int ammoid) {
 
 float GetBulletSpeed(Weapon tar, int ammo)
 {
-	/*DWORD64 itemmod = read(vars::stor::gBase + 0x299C300, DWORD64);
-	if (!itemmod) printf("itemmod == null\n"); return;
-	DWORD64 primMag = read(Heldd + 0x2A0, DWORD64);
-	DWORD64 type = read(primMag + 0x20, DWORD64);
-	typedef DWORD64(__stdcall* GetComponent)(DWORD64, DWORD64);
-	DWORD64 itemmodprojectile = ((GetComponent)(vars::stor::gBase + 0x7FCAB0))(type, itemmod);
-	if (!itemmodprojectile) printf("itemmodprojectile == null\n"); return;
-	float projectileVelocity = read(itemmodprojectile + 0x34, float);
-	printf("%s\n", std::to_string(projectileVelocity));*/
-
 	if (ammo == 0) return tar.ammo[0].speed; //melee
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
@@ -100,10 +90,6 @@ Vector3 Prediction(BasePlayer* Player) {
 	else { Local = LocalPlayer->GetBoneByID(head); }
 	float Dist = Math::Calc3D_Dist(Local, BonePos);
 	if (Dist > 0.001f) {
-		float prediction_value = 4.905f;
-		auto held_hash = active->ClassNameHash();
-		if (held_hash == STATIC_CRC32("BowWeapon") || held_hash == STATIC_CRC32("CrossbowWeapon") || held_hash == STATIC_CRC32("BaseLauncher") || held_hash == STATIC_CRC32("Nailgun"))
-			prediction_value = 2.67f;
 		float speed;
 		if (vars::weapons::fast_bullets) {
 			speed = GetBulletSpeed(tar, ammo) * 1.4;
@@ -121,7 +107,7 @@ Vector3 Prediction(BasePlayer* Player) {
 		float BulletTime = Dist / speed;
 		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
 		BonePos += PredictVel;
-		BonePos.y += prediction_value * BulletTime * BulletTime;
+		BonePos.y += (4.905f * BulletTime * BulletTime) * gravity;
 	}
 	return BonePos;
 }

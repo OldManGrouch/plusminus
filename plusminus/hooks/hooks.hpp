@@ -73,18 +73,18 @@ Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, 
 				inputVec = playerDir;
 			}
 			if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-				inputVec = heliDir;
+inputVec = heliDir;
 			}
 		}
 		else {
-			if (GetAsyncKeyState(vars::keys::psilent)) {
-				if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
-					inputVec = playerDir;
-				}
-				if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-					inputVec = heliDir;
-				}
+		if (GetAsyncKeyState(vars::keys::psilent)) {
+			if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
+				inputVec = playerDir;
 			}
+			if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
+				inputVec = heliDir;
+			}
+		}
 		}
 	}
 	if (vars::weapons::no_spread) {
@@ -153,11 +153,43 @@ void __fastcall DoHitNotify(DWORD64 basecombatentity, DWORD64 hitinfo) {
 	if (vars::misc::hit_logs && player->IsPlayer()) {
 		LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), player->GetName(), ((Total)(vars::stor::gBase + CO::Total))(damageTypes)), 5.f);
 	}
-	if (vars::misc::custom_hitsound) { 
-		PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC); 
+	if (vars::misc::custom_hitsound) {
+		PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
 	}
-	else { 
-		return original_dohitnotify(basecombatentity, hitinfo); 
+	else {
+		return original_dohitnotify(basecombatentity, hitinfo);
+	}
+}
+typedef void(__stdcall* UpgradeToGrade)(DWORD64, BuildingGrade, BasePlayer*);
+uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
+	auto ret = original_createorupdateentity(client, ent, sz);
+	if (!vars::misc::auto_upgrade)
+		return ret;
+	if (!LocalPlayer)
+		return ret;
+
+	uint32_t uid = read(read(ent + 0x18, uintptr_t) + 0x14, uint32_t);
+	static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
+	uintptr_t static_fieldss = reinterpret_cast<uintptr_t>(clazz->static_fields); // EntityRealm !!!
+	static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
+	uintptr_t found = reinterpret_cast<uintptr_t(__fastcall*)(uintptr_t, uint32_t)>(off)(static_fieldss, uid);
+	if (found) {
+		if (reinterpret_cast<BaseProjectile*>(found)->ClassNameHash() == STATIC_CRC32("BuildingBlock")) {
+			switch (vars::misc::build_grade) {
+			case 0:
+				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Wood, LocalPlayer);
+				break;
+			case 1:
+				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Stone, LocalPlayer);
+				break;
+			case 2:
+				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade:: Metal, LocalPlayer);
+				break;
+			case 3:
+				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::TopTier, LocalPlayer);
+				break;
+			}
+		}
 	}
 }
 bool __fastcall get_isHeadshot(DWORD64 hitinfo) {
@@ -181,6 +213,7 @@ void __fastcall VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
 	}
 }
 inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
+	printf("called spa");
 	uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
 	if (vars::weapons::spoof_hitdistance) {
@@ -230,7 +263,7 @@ void __fastcall HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDir
 			return;
 		}
 		typedef void(__stdcall* Jump)(void*, void*, bool);
-		((Jump)(vars::stor::gBase + 0x6CDFA0))(a1, a2, jumpInDirection);
+		((Jump)(vars::stor::gBase + CO::Jump))(a1, a2, jumpInDirection);
 	}
 	else {
 		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
@@ -267,8 +300,10 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x41A0E0), (void**)&original_addpunch, AddPunch);
-	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x1AB6F50), (void**)&original_movetowards, MoveTowards);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, AddPunch);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, MoveTowards);
+	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, DoMovement);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateOrUpdateEntity), (void**)&original_createorupdateentity, CreateOrUpdateEntity);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::LateUpdate), (void**)&original_lateupdate, LateUpdate);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);

@@ -2,6 +2,7 @@
 namespace hwid {
 	std::vector<std::string> list = { 
 		c_xor("{dc931070-657d-4be4-9f14-630684586d28}") , 
+		c_xor("{3ppl29899c-ba32f-7cafa-8f820ac229}") , // Cherry trixy's friend || Harve
 		c_xor("{15936d6f-f57a-11ea-8b4a-806e6f6e6963}") , // Morango
 		c_xor("{4aafc28b-5ce9-11eb-8a83-806e6f6e6963}") , // mayoo_
 		c_xor("{Apple16433-27459-31356-68921218}") , // Snowwy
@@ -17,6 +18,7 @@ namespace hwid {
 		c_xor("{f79de240-0082-11eb-85f1-806e6f6e6963}") , // SAJACK
 		c_xor("{e0ec89c0-2a3a-11eb-ba6e-806e6f6e6963}") , // arego 
 		c_xor("{aef3b484-2d63-11eb-8e22-806e6f6e6963}") , // evans 
+		c_xor("{3a351acb-0189-4500-986d-d1e40f5ee732}") , // Lucky
 		c_xor("{2dba80c0-00da-11eb-b0f4-806e6f6e6963}") , // Mornz
 		c_xor("{2bdfe3b4-4862-11eb-b3fe-806e6f6e6963}") , // paul
 		c_xor("{71a79d40-605c-11eb-9b83-806e6f6e6963}") , // Jackt
@@ -42,7 +44,7 @@ namespace hwid {
 		c_xor("{5b3ac3fe-7892-11ea-e633-806e6f6e65b3}") ,
 		c_xor("{b5779514-1b63-11eb-9b39-806e6f6e6963}") , // alysa || Kat.
 		c_xor("{5c5b05c0-3d71-11eb-9a4c-806e6f6e6963}") ,
-		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}") ,
+		c_xor("{4285c52c-6042-11eb-9997-806e6f6e6963}") , // Elle || Zentify
 		c_xor("{beba3940-0093-11eb-8bf8-806e6f6e6963}") ,
 		c_xor("{eb022295-edb5-11ea-b62a-806e6f6e6963}") , // gabri || Shluup.
 		c_xor("{Apple4819-29119-2244-717815913}") , // silas
@@ -51,7 +53,6 @@ namespace hwid {
 		c_xor("{3b4d74e5-4c6d-11eb-8628-806e6f6e6963}") , // Jaylen
 		c_xor("{c9143c92-3c1c-11eb-a701-806e6f6e6963}") ,
 		c_xor("{Pepz-65797-38314-7457-753897835}") , // Wavey || astro
-		c_xor("{7032fb10-5e07-11eb-9f57-806e6f6e6963}") ,
 		c_xor("{dppl957740-23844-538cb-acbc2a7}") , // JamesCharles the weirdo
 		c_xor("{772a82f9-243f-11eb-ab4e-806e6f6e6963}") ,
 		c_xor("{f2729700-44f8-11eb-96c3-806e6f6e6963}") ,
@@ -69,7 +70,7 @@ namespace hwid {
 		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,
 		c_xor("{1cfdc633-cacd-11e9-8cdd-806e6f6e6963}") , // Dafydd || poge
 		c_xor("{a11e4ad7-787a-8789-4ea8-4d8d8e889732}") ,
-		c_xor("{A72le21c9d210560-28cc3845513338}") , // heart
+		c_xor("{Acele1355687839-160e4eb76748862}") , // heart
 		c_xor("{XYZba4e-42d99-2282-4fed5cef14}") ,
 		c_xor("{c5a38e40-16c9-11eb-9017-806e6f6e6963}") ,
 		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // ffazs || Trixyyy

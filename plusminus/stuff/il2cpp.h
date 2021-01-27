@@ -1,4 +1,5 @@
 #include <map>
+#include "lazyimp.hpp"
 namespace il2cpp {
 	namespace wrapper {
 		auto gameAssembly = GetModuleHandleA(xorstr("GameAssembly.dll"));
@@ -240,33 +241,26 @@ namespace il2cpp {
 	uint64_t method(uint32_t path) {
 		if (methods::map_contains_key(offsets, path))
 			return offsets[path];
-
 		wrapper::Il2CppDomain* domain = wrapper::il2cpp_domain_get();
 		wrapper::Il2CppAssembly** assemblies = domain->assemblies();
-
 		for (int i = 0; i < domain->assemblyCount(); i++) {
 			wrapper::Il2CppImage* image = *reinterpret_cast<wrapper::Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
 			for (int c = 0; c < image->classcount(); c++) {
 				std::string temp(image->assemblyName);
 				temp.erase(temp.find(xorstr(".dll")), 4);
-
 				wrapper::Il2CppClass* klass = image->get_class(c);
 				if (!klass) continue;
-
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
 					temp = temp + c_xor("::") + name;
 				else
 					temp = temp + c_xor("::") + ns + c_xor("::") + name;
-
 				wrapper::Il2CppMethod* mthd;
 				void* iter = NULL;
 				while (mthd = klass->methods(&iter)) {
 					if (!mthd) continue;
-
 					std::string temp2(temp + c_xor("::") + mthd->name());
-
 					if (mthd->paramCount() > 0) {
 						temp2 = temp2 + c_xor("(");
 						for (int p = 0; p < mthd->paramCount(); p++) {
@@ -282,21 +276,45 @@ namespace il2cpp {
 						std::string t(mthd->retType()->name());
 						temp2 = temp2 + c_xor("(): ") + t.substr(t.find(".") + 1);
 					}
-
 					if (RUNTIME_CRC32(temp2.c_str()) == path) {
 						offsets.insert(std::make_pair(path, std::uint64_t(mthd)));
-
-						//LogSystem::Log(StringConverter::ToUnicode(temp2), 5.0f);
-
 						return std::uint64_t(mthd);
 					}
 				}
 			}
 		}
-
 		return 0;
 	}
+	wrapper::Il2CppClass* klass(uint32_t path) {
+		if (il2cpp::methods::map_contains_key(offsets, path))
+			return reinterpret_cast<wrapper::Il2CppClass*>(offsets[path]);
+		wrapper::Il2CppDomain* domain = wrapper::il2cpp_domain_get();
+		wrapper::Il2CppAssembly** assemblies = domain->assemblies();
+		for (int i = 0; i < domain->assemblyCount(); i++) {
+			wrapper::Il2CppImage* image = *reinterpret_cast<wrapper::Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
+			for (int c = 0; c < image->classcount(); c++) {
+				std::string temp(image->assemblyName);
+				temp.erase(temp.find(xorstr(".dll")), 4);
+				wrapper::Il2CppClass* klass = image->get_class(c);
+				char* name = klass->name;
+				char* ns = klass->namespaze;
+				if (std::string(ns).empty())
+					temp = temp + c_xor("::") + name;
+				else
+					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+				if (path == RUNTIME_CRC32(temp.c_str())) {
+					uint64_t ptr = std::uint64_t(klass);
+					offsets.insert(std::make_pair(path, ptr));
+					return klass;
+				}
+			}
+		}
+		return nullptr;
+	}
 #define METHOD(path) *reinterpret_cast<uint64_t*>(il2cpp::method(STATIC_CRC32(path)))
+
+#define CLASS(path) il2cpp::klass(STATIC_CRC32(path))
+#define lol(path) CLASS(path)
 	namespace game {
 		static auto get_iconSprite = reinterpret_cast<uintptr_t(*)(BaseProjectile* nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
 		static auto get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));

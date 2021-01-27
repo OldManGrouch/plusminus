@@ -99,6 +99,12 @@ namespace menu {
 		"Left Side",
 		"Bottom",
 	};
+	static const char* building_grade[]{
+		"Wood",
+		"Stone",
+		"Metal",
+		"HQM",
+	};
 	static const char* npc_box_style[]{
 		"Normal",
 		"Cornered",
@@ -184,6 +190,7 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		if (vars::combat::always_heli_rotor) { vars::combat::hitbox_override = false; }
+		ImGui::Checkbox(xorstr("boolet"), &vars::combat::magicbollet);
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
@@ -393,6 +400,12 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
+		HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_upgrade, xorstr("Automatically upgrades building blocks that you place."));
+		if (vars::misc::auto_upgrade) {
+			ImGui::PushItemWidth(100);
+			ImGui::Combo(xorstr("Building Grade"), &vars::misc::build_grade, building_grade, IM_ARRAYSIZE(building_grade));
+			ImGui::PopItemWidth();
+		}
 		HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
 		if (vars::misc::rayleigh_changer) {
 			ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
@@ -407,7 +420,7 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("Gravity Value"), &vars::misc::gravity_modifier, 0.f, 10.f);
 			Hotkey(xorstr("Gravity Key"), &vars::keys::gravitykey, ImVec2(120.f, 0));
 		}
-		ImGui::Checkbox(xorstr("yeet"), &yeetus);
+		//ImGui::Checkbox(xorstr("yeet"), &yeetus);
 	}
 	void other() {
 		ImGui::InputText("", vars::stuff::ConfigName, 0x100);

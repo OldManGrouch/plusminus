@@ -32,7 +32,7 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #include <Lmcons.h>
 #include "stuff/hwid.h"
-#include "lazyimp.hpp"
+
 #include "stuff/mem.h"
 #include "stuff/utilities.h"
 #include "stuff/structs.h"
@@ -40,8 +40,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/vars.h"
 #include "main/weapons.h"
 #include "stuff/sdk.h"
-#include "main/targeting.h"
 #include "stuff/il2cpp.h"
+#include "main/targeting.h"
 #include <d3d11.h>
 #include "init/d3defs.h"
 #include "rendering/rendering.h"
