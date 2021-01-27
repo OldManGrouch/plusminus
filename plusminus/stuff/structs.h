@@ -17,7 +17,7 @@ public:
 	inline float Length() { return sqrtf(x * x + y * y + z * z); }
 	float Magnitude() { return sqrt(this->x * this->x + this->y * this->y + this->z * this->z); }
 	Vector3 Normalized() { float num = this->Magnitude(); if (num > 9.99999974737875E-06) { return { this->x / num, this->y / num, this->z / num }; } return Vector3(); }
-	float Distance(Vector3 b) { Vector3 calc(this->x - b.x, this->y - b.y, this->z - b.z); return sqrt(calc.x * calc.x + calc.y * calc.y + calc.z * calc.z); }
+	float Distance(Vector3 b) { return (*this - b).Length(); }
 	Vector3 midPoint(Vector3 v2) { return Vector3((x + v2.x) / 2, (y + v2.y) / 2, (z + v2.z) / 2); }
 };
 template<typename T>
@@ -120,6 +120,12 @@ public:
 
 		return str;
 	}
+};
+struct Explosion {
+public:
+	std::string name;
+	float timeSince;
+	Vector3 position;
 };
 class CBounds {
 public:

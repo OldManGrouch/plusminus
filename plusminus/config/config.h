@@ -195,6 +195,7 @@ private:
 		SetupValue(vars::ores::draw_distance, 300.f, c_xor("ores"), c_xor("oreDrawDistance"));
 		SetupValue(vars::ores::show_distance, false, c_xor("ores"), c_xor("showCollectables"));
 
+		SetupValue(vars::visuals::raid_esp, false, c_xor("visuals"), c_xor("Raids"));
 		SetupValue(vars::visuals::patrol_heli, false, c_xor("visuals"), c_xor("PatrolHeli"));
 		SetupValue(vars::visuals::vehicles::minicopter, false, c_xor("visuals"), c_xor("Minicopter"));
 		SetupValue(vars::visuals::vehicles::scrapheli, false, c_xor("visuals"), c_xor("ScrapHeli"));

@@ -114,6 +114,7 @@ namespace vars {
 		float draw_distance = 300.f;
 	}
 	namespace visuals {
+		bool raid_esp = false;
 		bool bradley_apc = false;
 		bool patrol_heli = false;
 

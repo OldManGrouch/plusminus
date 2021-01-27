@@ -20,9 +20,33 @@ void FindMatrix() {
 		}
 	}
 }
+float timee = 120.f;
 bool notreelos = false;
 void EntityLoop() {
 	LogSystem::Render();
+	if (vars::visuals::raid_esp) {
+		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
+			if ((get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince) >= timee) {
+				LogSystem::loggedExplosions.erase(LogSystem::loggedExplosions.begin() + i);
+				continue;
+			}
+			Explosion explosion = LogSystem::loggedExplosions.at(i);
+
+			Vector2 explPos;
+			if (utils::w2s(explosion.position, explPos)) {
+				Renderer::String(
+					explPos, 
+					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"), 
+					explosion.name.c_str(), 
+					(int)Math::Calc3D_Dist(explosion.position, LocalPlayer->GetBoneByID(head)), 
+					(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
+					D2D1::ColorF::Red, 
+					true, 
+					true
+				);
+			}
+		}
+	}
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
 	if (!pViewMatrix || !mfound) {

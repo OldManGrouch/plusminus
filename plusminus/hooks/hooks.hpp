@@ -242,6 +242,34 @@ inline void __fastcall SendProjectileAttack(void* a1, void* a2) {
 	}
 	return original_sendprojectileattack(a1, a2);
 }
+#define C4 "C4"
+#define Satchel "Satchel"
+#define IncenRocket "Incendiary Rocket"
+#define Rocket "Rocket"
+uintptr_t __fastcall CreateEffect(Str strPrefab, uintptr_t effect) {
+	if (!vars::visuals::raid_esp)
+		return original_createeffect(strPrefab, effect);
+	if (!effect || !strPrefab.str) return original_createeffect(strPrefab, effect);
+
+	auto effectName = strPrefab.str;
+	auto position = read(effect + 0x5C, Vector3);
+
+	switch (RUNTIME_CRC32_W(effectName)) {
+	case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
+		LogSystem::LogExplosion(C4, position);
+		break;
+	case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
+		LogSystem::LogExplosion(Satchel, position);
+		break;
+	case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
+		LogSystem::LogExplosion(IncenRocket, position);
+		break;
+	case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
+		LogSystem::LogExplosion(Rocket, position);
+		break;
+	}
+	return original_createeffect(strPrefab, effect);
+}
 void __fastcall AddPunch(uintptr_t a1, Vector3 a2, float duration) {
 	a2 *= vars::weapons::recoil_control / 100.f;
 	return original_addpunch(a1, a2, duration);
@@ -297,6 +325,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, CreateEffect);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);

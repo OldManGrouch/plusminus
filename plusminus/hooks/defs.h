@@ -40,6 +40,9 @@ inline modifiedaimconedirection original_aimconedirection;
 typedef void(__fastcall* addpunch)(uintptr_t, Vector3, float);
 inline addpunch original_addpunch;
 
+typedef uintptr_t(__fastcall* createff)(Str, uintptr_t);
+inline createff original_createeffect;
+
 typedef Vector3(__fastcall* movetowards)(Vector3, Vector3, float);
 inline movetowards original_movetowards;
 

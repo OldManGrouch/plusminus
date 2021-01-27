@@ -284,6 +284,9 @@ namespace menu {
 		ImGui::Checkbox(xorstr("Tracers "), &vars::npc::tracers);
 	}
 	void visuals() {
+		ImGui::Checkbox(xorstr("Raids"), &vars::visuals::raid_esp);
+		ImGui::Checkbox(xorstr("Patrol Heli"), &vars::visuals::patrol_heli);
+		ImGui::Checkbox(xorstr("Bradley APC"), &vars::visuals::bradley_apc);
 		ImGui::Checkbox(xorstr("Default Crosshair"), &vars::crosshair::default);
 		ImGui::Checkbox(xorstr("Custom Crosshair"), &vars::crosshair::custom);
 		if (vars::crosshair::custom) {
@@ -354,8 +357,6 @@ namespace menu {
 			}
 		}
 		if (ImGui::CollapsingHeader(xorstr("Misc "))) {
-			ImGui::Checkbox(xorstr("Patrol Heli"), &vars::visuals::patrol_heli);
-			ImGui::Checkbox(xorstr("Bradley APC"), &vars::visuals::bradley_apc);
 			ImGui::Checkbox(xorstr("Hemp"), &vars::visuals::other::hemp);
 			ImGui::Checkbox(xorstr("Corpses"), &vars::visuals::other::corpse);
 			ImGui::Checkbox(xorstr("Stashes"), &vars::visuals::other::stash);
