@@ -393,7 +393,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::players::weapon) {
 					const wchar_t* ActiveWeaponName;
-					BaseProjectile* ActWeapon = BP->GetActiveWeapon();
+					Item* ActWeapon = BP->GetActiveWeapon();
 					ActiveWeaponName = ActWeapon->GetName();
 					if (!ActWeapon) {
 						ActiveWeaponName = L"---";
@@ -488,7 +488,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::npc::weapon) {
 					const wchar_t* ActiveWeaponName;
-					BaseProjectile* ActWeapon = BP->GetActiveWeapon();
+					Item* ActWeapon = BP->GetActiveWeapon();
 					ActiveWeaponName = ActWeapon->GetName();
 					if (!ActWeapon) {
 						ActiveWeaponName = L"---";

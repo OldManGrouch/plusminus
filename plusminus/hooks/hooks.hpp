@@ -110,7 +110,7 @@ void __fastcall ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	}
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
-		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
+		Item* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 		int contents = read(mag + 0x1C, int);
@@ -175,7 +175,7 @@ uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 	static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
 	uintptr_t found = reinterpret_cast<uintptr_t(__fastcall*)(uintptr_t, uint32_t)>(off)(static_fieldss, uid);
 	if (found) {
-		if (reinterpret_cast<BaseProjectile*>(found)->ClassNameHash() == STATIC_CRC32("BuildingBlock")) {
+		if (reinterpret_cast<Item*>(found)->ClassNameHash() == STATIC_CRC32("BuildingBlock")) {
 			switch (vars::misc::build_grade) {
 			case 0:
 				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Wood, LocalPlayer);
@@ -315,18 +315,11 @@ void HookFunction(void* Function, void** Original, void* Detour, bool autoEnable
 		MH_EnableHook(Function);
 }
 inline void InitHook() {
-	ASSIGN_HOOK("Assembly-CSharp::PlayerWalkMovement::HandleRunning(ModelState,Boolean): Void", original_handleRunning);
-
-	DetourTransactionBegin();
-	DetourUpdateThread(GetCurrentThread());
-	DetourAttach(&(PVOID&)original_handleRunning, HandleRunning);
-	DetourTransactionCommit();
-
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, SetFlying);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, SendProjectileAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
-	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, HandleJumping);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);

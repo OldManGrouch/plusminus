@@ -48,7 +48,7 @@ void EntityLoop() {
 		}
 	}
 	if (!initD) {
-		LogSystem::Log(c_wxor(L"Loaded!"), 10.f);
+		LogSystem::Log(c_wxor(L"All systems loaded 1.0!"), 10.f);
 		initD = true;
 	}
 	float FOV = vars::combat::fov, CurFOV;
@@ -104,7 +104,7 @@ void EntityLoop() {
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
 		DWORD64 ent = read(Object + 0x28, UINT64);
-		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
+		Item* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
@@ -221,7 +221,7 @@ void EntityLoop() {
 				PickupItem(ent);
 			}
 		}
-		//BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
+		//Item* weapon = LocalPlayer->GetActiveWeapon(); // get active item
 		if (weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) {
 			//Test();
 		}
@@ -345,7 +345,7 @@ void EntityThreadLoop() {
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
 		DWORD64 ent = read(Object + 0x28, UINT64);
-		BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
+		Item* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
 		

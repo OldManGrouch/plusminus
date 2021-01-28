@@ -1,5 +1,6 @@
 
 namespace CO {
+	auto Client = 0x29BF240; // ConVar.Client_TypeInfo
 	auto CreateEffect = 0x70A0C0;
 	auto UpgradeToGrade = 0x380FA0;
 	auto CreateOrUpdateEntity = 0x5648B0;

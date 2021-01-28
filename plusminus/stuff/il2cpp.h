@@ -471,7 +471,7 @@ namespace il2cpp {
 		static auto off = OFFSET(field_path); \
 		return *reinterpret_cast<type*>(this + off); }
 	namespace game {
-		static auto get_iconSprite = reinterpret_cast<uintptr_t(*)(BaseProjectile* nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
+		static auto get_iconSprite = reinterpret_cast<uintptr_t(*)(Item* nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
 		static auto get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));
 		static auto get_rect = reinterpret_cast<Rect(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_rect"), 0, xorstr(""), c_xor("UnityEngine"))));
 		static auto set_color = reinterpret_cast<void(*)(Color)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("set_color"), -1, xorstr(""), c_xor("UnityEngine"))));
@@ -510,7 +510,7 @@ namespace il2cpp {
 		using il2cpp_runtime_class_init = uintptr_t(*)(uintptr_t);
 		methods::runtime_class_init = LI_FIND_DEF(il2cpp_runtime_class_init);
 
-		game::get_iconSprite = reinterpret_cast<uintptr_t(*)(BaseProjectile * nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
+		game::get_iconSprite = reinterpret_cast<uintptr_t(*)(Item * nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
 		game::get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));
 		game::get_rect = reinterpret_cast<Rect(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_rect"), 0, xorstr(""), c_xor("UnityEngine"))));
 		game::set_color = reinterpret_cast<void(*)(Color)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("set_color"), -1, xorstr(""), c_xor("UnityEngine"))));

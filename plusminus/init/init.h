@@ -105,7 +105,7 @@ void InitCheat() {
 		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF::White, 1);
 		float Pos = 0;
 		for (int i = 0; i < 6; i++) {
-			BaseProjectile* ActWeapon = TargetPlayerA->GetWeaponInfo(i);
+			Item* ActWeapon = TargetPlayerA->GetWeaponInfo(i);
 			if (ActWeapon) {
 				const wchar_t* ActiveItem = ActWeapon->GetName();
 				if (ActiveItem) {
@@ -125,7 +125,7 @@ void InitCheat() {
 		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
 		float cPos = 125;
 		for (int i = 0; i < 7; i++) {
-			BaseProjectile* ActWeapon = TargetPlayerA->GetClothesInfo(i);
+			Item* ActWeapon = TargetPlayerA->GetClothesInfo(i);
 			if (ActWeapon) {
 				const wchar_t* ActiveItem = ActWeapon->GetName();
 				if (ActiveItem) {

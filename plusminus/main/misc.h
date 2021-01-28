@@ -1,5 +1,5 @@
 void WeaponPatch() {
-	BaseProjectile* weapon = LocalPlayer->GetActiveWeapon();
+	Item* weapon = LocalPlayer->GetActiveWeapon();
 	if (weapon == nullptr) return;
 	
 	//-3 - hammer, -2 - bows, -1 - eoka, 0-nopatch, 1 - meele, 2 - semiautomatic, 3 - automatic
@@ -42,7 +42,7 @@ void MiscFuncs() {
 	if (aa <= 21.f) {
 		aa += 0.1f; // count the timer up
 	}
-	BaseProjectile* weapon = LocalPlayer->GetActiveWeapon(); // get active item
+	Item* weapon = LocalPlayer->GetActiveWeapon(); // get active item
 	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && vars::misc::faster_healing) { // check item thru id
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity
 		write(Held + 0x278, 1.f, float); // disable animation cause it tries using the syringe and gives violations

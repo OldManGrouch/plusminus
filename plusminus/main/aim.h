@@ -44,7 +44,7 @@ float GetBulletSpeed(Weapon tar, int ammo)
 	return 250.f;
 }
 Vector3 HeliPrediction(const Vector3& LP_Pos) {
-	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
+	Item* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	Vector3 TargetedHeli = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
@@ -81,7 +81,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 	return TargetedHeli;
 }
 Vector3 Prediction(BasePlayer* Player) {
-	BaseProjectile* active = LocalPlayer->GetActiveWeapon();
+	Item* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	Vector3 BonePos = Player->GetBoneByID(head);
