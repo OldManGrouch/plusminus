@@ -24,7 +24,7 @@ void HWID_Checker(HINSTANCE hModule) {
 		
 		//AllocConsole();
 		//freopen("CONOUT$", "w", stdout);
-		////std::cout << "aaaaaaa\n";
+		//std::cout << "aaaaaaa\n";
 
 		system(success.c_str());
 

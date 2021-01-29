@@ -54,7 +54,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 		int ammo = active->LoadedAmmo();
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.45;
+			speed = GetBulletSpeed(tar, ammo) * 1.3;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);
@@ -63,7 +63,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 			speed = 250.f;
 		}
 		else if (!speed && vars::weapons::fast_bullets) {
-			speed = 250.f * 1.45;
+			speed = 250.f * 1.3;
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
@@ -92,7 +92,7 @@ Vector3 Prediction(BasePlayer* Player) {
 	if (Dist > 0.001f) {
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.45;
+			speed = GetBulletSpeed(tar, ammo) * 1.3;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);
@@ -101,7 +101,7 @@ Vector3 Prediction(BasePlayer* Player) {
 			speed = 250.f;
 		}
 		else if (!speed && vars::weapons::fast_bullets) {
-			speed = 250.f * 1.45;
+			speed = 250.f * 1.3;
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;

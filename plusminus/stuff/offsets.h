@@ -1,5 +1,7 @@
 
 namespace CO {
+	auto get_frameCount = 0x14E81F0;
+	auto GetRandomVelocity = 0x391360;
 	auto Client = 0x29BF240; // ConVar.Client_TypeInfo
 	auto CreateEffect = 0x70A0C0;
 	auto UpgradeToGrade = 0x380FA0;
@@ -24,7 +26,7 @@ namespace CO {
 	auto IsBeingHacked = 0x2FB350;
 	auto IsFullyHacked = 0x417CC0;
 	auto ForceToPos = 0x295E30;
-	auto LateUpdate = 0xA1F340; // protected void LateUpdate() { } || TOD_Sky
+	auto UpdateAmbient = 0xA22730; // protected void UpdateAmbient() { } || TOD_Sky
 	auto set_rayleigh = 0x673C80;
 	auto BasePlayer = 0x29BF798; // BasePlayer_TypeInfo
 	auto AssistPlayer = 0x29C9F0; // public void Menu_AssistPlayer(BasePlayer player) { }

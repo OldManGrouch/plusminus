@@ -1,4 +1,151 @@
-﻿class BasePlayer {
+﻿using ptr_t = uint64_t;
+enum UnmanagedCallingConvention {
+	UnmanagedCdecl,
+	UnmanagedStdcall,
+	UnmanagedFastcall,
+};
+
+template<typename t_Function>
+class UnmanagedPointer {
+public:
+
+	template<typename... t_FunctionParameters>
+	auto operator()(t_FunctionParameters... params) {
+		using result_type = decltype(std::declval<t_Function>()(std::declval<t_FunctionParameters>()...));
+		using function_cdecl_ptr_t = result_type(__cdecl*)(t_FunctionParameters...);
+		using function_stdcall_ptr_t = result_type(__stdcall*)(t_FunctionParameters...);
+		using function_fastcall_ptr_t = result_type(_fastcall*)(t_FunctionParameters...);
+
+		switch (this->m_CallingConvention) {
+		case UnmanagedCdecl:
+			return reinterpret_cast<function_cdecl_ptr_t>(this->m_Address)(params...);
+		case UnmanagedStdcall:
+			return reinterpret_cast<function_stdcall_ptr_t>(this->m_Address)(params...);
+		case UnmanagedFastcall:
+			return reinterpret_cast<function_fastcall_ptr_t>(this->m_Address)(params...);
+		}
+	}
+
+	UnmanagedPointer(ptr_t dwAddress, UnmanagedCallingConvention unmCallingConvention) {
+		this->m_Address = dwAddress;
+		this->m_CallingConvention = unmCallingConvention;
+	}
+private:
+	ptr_t m_Address;
+	UnmanagedCallingConvention m_CallingConvention;
+};
+
+#define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
+
+class BaseEntity {
+public:
+	bool isClient() {
+		if (!this) return false;
+		static auto off = METHOD("Assembly-CSharp::BaseNetworkable::get_isClient(): Boolean");
+		return reinterpret_cast<bool(__fastcall*)(uintptr_t)>(off)((uintptr_t)this);
+	}
+	Vector3 GetWorldVelocity() {
+		if (!this) return Vector3(0.f, 0.f, 0.f);
+		static auto off = METHOD("Assembly-CSharp::BaseEntity::GetWorldVelocity(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(BaseEntity*)>(off)(this);
+	}
+};
+class RenderSettings {
+public:
+	enum class AmbientMode {
+		Skybox,
+		Trilight,
+		Flat,
+		Custom
+	};
+	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::RenderSettings::set_ambientMode(Rendering.AmbientMode): Void", set_ambientMode, void(AmbientMode));
+	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::RenderSettings::set_ambientIntensity(Single): Void", set_ambientIntensity, void(float));
+	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::RenderSettings::set_ambientLight(Color): Void", set_ambientLight, void(Color));
+};
+class BaseCombatEntity : public BaseEntity {
+public:
+	const char* ClassName() {
+		if (!this) return "";
+		auto oc = *reinterpret_cast<uint64_t*>(this);
+		if (!oc) return "";
+		return *reinterpret_cast<char**>(oc + 0x10);
+	}
+	bool IsPlayer() {
+		if (!this) return false;
+		return !strcmp(this->ClassName(), xorstr("BasePlayer")) ||
+			!strcmp(this->ClassName(), xorstr("NPCPlayerApex")) ||
+			!strcmp(this->ClassName(), xorstr("NPCMurderer")) ||
+			!strcmp(this->ClassName(), xorstr("NPCPlayer")) ||
+			!strcmp(this->ClassName(), xorstr("HumanNPC")) ||
+			!strcmp(this->ClassName(), xorstr("Scientist")) ||
+			!strcmp(this->ClassName(), xorstr("HTNPlayer"));
+	}
+	FIELD("Assembly-CSharp::BaseCombatEntity::_health", health, float);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsHitNotification", sendsHitNotification, bool);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", sendsMeleeHitNotification, bool);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", lastNotifyFrame, int);
+};
+class DamageTypeList {
+public:
+	enum class DamageType {
+		Generic,
+		Hunger,
+		Thirst,
+		Cold,
+		Drowned,
+		Heat,
+		Bleeding,
+		Poison,
+		Suicide,
+		Bullet,
+		Slash,
+		Blunt,
+		Fall,
+		Radiation,
+		Bite,
+		Stab,
+		Explosion,
+		RadiationExposure,
+		ColdExposure,
+		Decay,
+		ElectricShock,
+		Arrow,
+		AntiVehicle,
+		Collision,
+		Fun_Water,
+		LAST
+	};
+	float Total() {
+		if (!this) return false;
+		static auto off = METHOD("Assembly-CSharp::Rust::DamageTypeList::Total(): Single");
+		return reinterpret_cast<float(__fastcall*)(DamageTypeList*)>(off)(this);
+	}
+};
+class HitInfo {
+public:
+	FIELD("Assembly-CSharp::HitInfo::Initiator", Initiator, BaseEntity*);
+	FIELD("Assembly-CSharp::HitInfo::WeaponPrefab", WeaponPrefab, BaseEntity*);
+	FIELD("Assembly-CSharp::HitInfo::DoHitEffects", DoHitEffects, bool);
+	FIELD("Assembly-CSharp::HitInfo::DoDecals", DoDecals, bool);
+	FIELD("Assembly-CSharp::HitInfo::IsPredicting", IsPredicting, bool);
+	FIELD("Assembly-CSharp::HitInfo::UseProtection", UseProtection, bool);
+	FIELD("Assembly-CSharp::HitInfo::DidHit", DidHit, bool);
+	FIELD("Assembly-CSharp::HitInfo::HitEntity", HitEntity, BaseEntity*);
+	FIELD("Assembly-CSharp::HitInfo::HitBone", HitBone, uint32_t);
+	FIELD("Assembly-CSharp::HitInfo::HitPart", HitPart, uint32_t);
+	FIELD("Assembly-CSharp::HitInfo::HitMaterial", HitMaterial, uint32_t);
+	FIELD("Assembly-CSharp::HitInfo::HitPositionWorld", HitPositionWorld, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::HitPositionLocal", HitPositionLocal, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::HitNormalWorld", HitNormalWorld, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::HitNormalLocal", HitNormalLocal, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::PointStart", PointStart, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::PointEnd", PointEnd, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::ProjectileID", ProjectileID, int);
+	FIELD("Assembly-CSharp::HitInfo::ProjectileDistance", ProjectileDistance, float);
+	FIELD("Assembly-CSharp::HitInfo::ProjectileVelocity", ProjectileVelocity, Vector3);
+	FIELD("Assembly-CSharp::HitInfo::damageTypes", damageTypes, DamageTypeList*);
+};
+class BasePlayer : public BaseCombatEntity {
 public:
 	void SetVA(const Vector2& VA) {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
@@ -13,11 +160,11 @@ public:
 		return read(PlayerModel + oNewVelocity, Vector3);
 	}
 	float GetHealth() {
-		return read(this + oHealth, float);
+		return this->health();
 	}
 	bool IsNpc() {
 		DWORD64 PlayerModel = read(this + oPlayerModel, DWORD64);
-		return read(PlayerModel + oIsNpc, bool);
+		return read(PlayerModel + 0x2C0, bool);
 	}
 	DWORD64 GetSteamID() {
 		return read(this + oUserID, DWORD64);
@@ -50,23 +197,8 @@ public:
 		DWORD64 BoneValue = read(bone_dict + 0x20 + bone * 0x8, DWORD64);
 		return BoneValue;
 	}
-	const char* ClassName() {
-		if (!this) return "";
-		auto oc = *reinterpret_cast<uint64_t*>(this);
-		if (!oc) return "";
-		return *reinterpret_cast<char**>(oc + 0x10);
-	}
-	bool IsPlayer() {
-		if (!this) return false;
-
-		return !strcmp(this->ClassName(), xorstr("BasePlayer")) ||
-			!strcmp(this->ClassName(), xorstr("NPCPlayerApex")) ||
-			!strcmp(this->ClassName(), xorstr("NPCMurderer")) ||
-			!strcmp(this->ClassName(), xorstr("NPCPlayer")) ||
-			!strcmp(this->ClassName(), xorstr("HumanNPC")) ||
-			!strcmp(this->ClassName(), xorstr("Scientist")) ||
-			!strcmp(this->ClassName(), xorstr("HTNPlayer"));
-	}
+	
+	
 	void SetFov() {
 		auto klass = read(vars::stor::gBase + CO::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);

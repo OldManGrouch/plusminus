@@ -10,11 +10,11 @@ inline can_attack_fn original_canattack;
 typedef void(__fastcall* clientinput_fn)(DWORD64, DWORD64);
 inline clientinput_fn original_clientinput;
 
-typedef void(__fastcall* dohitnotify)(DWORD64, DWORD64);
+typedef void(__fastcall* dohitnotify)(BaseCombatEntity*, HitInfo*);
 inline dohitnotify original_dohitnotify;
 
 typedef void(__fastcall* lateupd)(uintptr_t);
-inline lateupd original_lateupdate;
+inline lateupd original_updateambient;
 
 typedef bool(__fastcall* isheadshot)(DWORD64);
 inline isheadshot original_getisheadshot;
@@ -25,7 +25,7 @@ inline traceallthing original_traceall;
 typedef float(__fastcall* getrandvel)(uintptr_t);
 inline getrandvel original_getrandomvelocity;
 
-typedef bool(__fastcall* sendclienttick)(void*);
+typedef void(__fastcall* sendclienttick)(BasePlayer*);
 inline sendclienttick original_sendclienttick;
 
 typedef void(__fastcall* UnregisterFromVisibilityS)(BasePlayer*, float, bool);
@@ -43,7 +43,7 @@ inline modifiedaimconedirection original_aimconedirection;
 typedef void(__fastcall* addpunch)(uintptr_t, Vector3, float);
 inline addpunch original_addpunch;
 
-typedef uintptr_t(__fastcall* createff)(Str, uintptr_t);
+typedef uintptr_t(__fastcall* createff)(pUncStr, uintptr_t);
 inline createff original_createeffect;
 
 typedef Vector3(__fastcall* movetowards)(Vector3, Vector3, float);

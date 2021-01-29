@@ -48,7 +48,7 @@ void EntityLoop() {
 		}
 	}
 	if (!initD) {
-		LogSystem::Log(c_wxor(L"All systems loaded 1.5!"), 10.f);
+		LogSystem::Log(c_wxor(L"Cheat loaded favorably!"), 5.f);
 		initD = true;
 	}
 	float FOV = vars::combat::fov, CurFOV;
@@ -119,7 +119,7 @@ void EntityLoop() {
 			LP_isValid = true;
 
 		}
-		if (strstr(buff, xorstr("player.prefab")) || (strstr(buff, xorstr("scientist"))) && (!strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse")))) {
+		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 			
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
@@ -390,7 +390,7 @@ void EntityThreadLoop() {
 					PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (vars::combat::silent_melee && weaponmelee) {
+			if (vars::combat::silent_melee && weaponmelee && Math::Calc3D_Dist(lol->GetBoneByID(head), LocalPlayer->GetBoneByID(head)) <= 3.5f) {
 				Target target = TargetMeleeTest((BasePlayer*)ent, active);
 				DoMeleeAttack(target, active, true);
 			}
