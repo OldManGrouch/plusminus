@@ -103,6 +103,7 @@ Vector3 Prediction(BasePlayer* Player) {
 		else if (!speed && vars::weapons::fast_bullets) {
 			speed = 250.f * 1.3;
 		}
+		speed *= active->GetStringBonusVelocity();
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
 		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
@@ -123,7 +124,7 @@ void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
 	dst = src + delta / factor;
 }
 void GoToTarget(BasePlayer* player) {
-	Vector3 Local = LocalPlayer->GetBoneByID(neck);
+	Vector3 Local = LocalPlayer->GetBoneByID(head);
 	Vector3 PlayerPos = Prediction(player);
 	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);

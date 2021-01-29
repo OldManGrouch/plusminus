@@ -43,6 +43,7 @@ namespace hwid {
 		c_xor("{Apple15611-25076-25935-2133929717}") , // Nick
 		c_xor("{2c78a614-4266-11eb-b41d-806e6f6e6963}") , // NecuDaVamKazem || JOVAN
 		//c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") ,
+		c_xor("{e69a08c0-0803-11ea-810a-806e6f6e6963}") , // Adam (50 chins)
 		c_xor("{b28bf731-e782-11ea-bdd4-806e6f6e6963}") , // itofr || ItDoGoDown
 		c_xor("{65484183-5e32-11eb-b480-806e6f6e6963}") , // Nooby || NoobyNecks
 		c_xor("{dcb03ef5-ccd4-11ea-b00a-806e6f6e6963}") , // phara
@@ -59,7 +60,7 @@ namespace hwid {
 		c_xor("{eb022295-edb5-11ea-b62a-806e6f6e6963}") , // gabri || Shluup.
 		c_xor("{Apple4819-29119-2244-717815913}") , // silas
 		c_xor("{a4294740-f2c1-11ea-a848-806e6f6e6963}") , // nicki || Pattesutter
-		//c_xor("{0e860a29-255e-11eb-a285-806e6f6e6963}") ,
+		c_xor("{0e860a29-255e-11eb-a285-806e6f6e6963}") , // LegendOfMist || kgera
 		c_xor("{3b4d74e5-4c6d-11eb-8628-806e6f6e6963}") , // Jaylen
 		//c_xor("{c9143c92-3c1c-11eb-a701-806e6f6e6963}") ,
 		c_xor("{Pepz-65797-38314-7457-753897835}") , // Wavey || astro
@@ -72,7 +73,7 @@ namespace hwid {
 		//c_xor("{24af1b3a-5a36-11eb-a58c-806e6f6e6963}") ,
 		//c_xor("{Apple28460-28793-6227-135597203}") ,
 		//c_xor("{ebbb6152-0db2-11eb-a129-806e6f6e6963}") ,
-		c_xor("{Apple13536-29784-23450-2176415012}") , // Spac3y || winname user
+		c_xor("{Apple13536-29784-23450-2176415012}") , // Spac3y || User
 		c_xor("{90ba0ba2-ff2b-11ea-88bb-806e6f6e6963}") , // lazab
 		c_xor("{c13aa1eb-5f2b-11eb-b5e9-806e6f6e6963}") , // Jonas || Ganja
 		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,

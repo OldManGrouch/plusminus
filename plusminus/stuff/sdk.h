@@ -301,6 +301,10 @@ public:
 		pUncStr Str = ((pUncStr)read(DispName + 0x18, DWORD64)); // default
 		if (!Str) return nullptr; return Str->str;
 	}
+	float GetStringBonusVelocity() {
+		DWORD64 heldentity = read(this + oHeldEntity, DWORD64);
+		return read(heldentity + 0x364, float);
+	}
 	int GetCount() {
 		return read(this + 0x30, int);
 	}
