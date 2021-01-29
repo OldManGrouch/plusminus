@@ -48,7 +48,7 @@ void EntityLoop() {
 		}
 	}
 	if (!initD) {
-		LogSystem::Log(c_wxor(L"All systems loaded 1.0!"), 10.f);
+		LogSystem::Log(c_wxor(L"All systems loaded 1.5!"), 10.f);
 		initD = true;
 	}
 	float FOV = vars::combat::fov, CurFOV;
@@ -124,13 +124,13 @@ void EntityLoop() {
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
 			
-			if (vars::players::skeleton && !Player->playerModel()->IsNpc()) {
+			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(Player->userID())) {
+					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
 						Skeleton(Player, D2D1::ColorF::LimeGreen);
 					}
 					else {
-						if (Player->health() < 0.2) {
+						if (Player->GetHealth() < 0.2) {
 							Skeleton(Player, D2D1::ColorF::Red);
 						}
 						else {
@@ -142,17 +142,17 @@ void EntityLoop() {
 					Skeleton(Player, D2D1::ColorF::Orange);
 				}
 			}
-			else if (vars::npc::skeleton && Player->playerModel()->IsNpc()) {
+			else if (vars::npc::skeleton && Player->IsNpc()) {
 				Skeleton(Player, D2D1::ColorF::Yellow);
 			}
 
-			if (!Player->playerModel()->IsNpc()) {
+			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(Player->userID())) {
+					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
 						ESP(Player, LocalPlayer, D2D1::ColorF::LimeGreen);
 					}
 					else {
-						if (Player->health() < 0.2) {
+						if (Player->GetHealth() < 0.2) {
 							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
 						}
 						else {
@@ -164,18 +164,18 @@ void EntityLoop() {
 					ESP(Player, LocalPlayer, D2D1::ColorF::Orange);
 				}
 			}
-			else if (Player->playerModel()->IsNpc()) {
+			else if (Player->IsNpc()) {
 				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
 			}
 
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
-			if (vars::combat::ignore_npc && Player->playerModel()->IsNpc()) continue;
-			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->userID())) continue;
+			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
+			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
 			if (Player->GetBoneByID(head).x == 0 || Player->GetBoneByID(head).y == 0 || Player->GetBoneByID(head).z == 0) continue;
 			if (vars::combat::ignore_players) continue;
 			if (Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), Player->GetBoneByID(head)) > vars::combat::range) continue;
 
-			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->health() > 0 && !vars::combat::lock_target) {
+			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
 				FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
 			}
 
@@ -183,10 +183,10 @@ void EntityLoop() {
 		if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
 			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
 			uintptr_t BaseEntity = read(BaseObject + 0x18, uintptr_t);
-			BaseHelicopter* Helicopter = read(BaseEntity + 0x28, BaseHelicopter*);
+			uintptr_t Helicopter = read(BaseEntity + 0x28, uintptr_t);
 			uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
 			uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
-			float health = Helicopter->health();
+			float health = read(Helicopter + oHealth, float);
 			float maxhealth = 10000.f;
 			Vector3 pos = read(VisualState + 0x90, Vector3);
 			Vector2 screenPos;
@@ -292,16 +292,16 @@ void EntityLoop() {
 	if (TargetPlayer->GetBoneByID(head).x == 0 || TargetPlayer->GetBoneByID(head).y == 0 || TargetPlayer->GetBoneByID(head).z == 0) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->playerModel()->IsNpc() && vars::combat::ignore_npc) {
+	if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
 		vars::stor::closestPlayer = NULL;
 	}
 	if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (LocalPlayer->IsTeamMate(TargetPlayer->userID()) && vars::combat::ignore_team) {
+	if (LocalPlayer->IsTeamMate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->health() < 0.2) {
+	if (TargetPlayer->GetHealth() < 0.2) {
 		vars::combat::lock_target = false;
 		vars::stor::closestPlayer = NULL;
 	}
@@ -364,11 +364,11 @@ void EntityThreadLoop() {
 					}
 				}
 			}*/
-			if (vars::players::chams && lol->health() > 0.2) {
+			if (vars::players::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (!lol->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(lol->userID())) {
+					if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
 						DoChams(multimesh, Color(0, 1, 0, 1));
 					}
 					else {

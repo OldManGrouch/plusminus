@@ -81,7 +81,7 @@ void SpamKnock(uintptr_t Door) {
 float LastPickup = 0.f;
 void PickupPlayer(BasePlayer* ent) {
 	typedef void(__stdcall* AssistPlayer)(BasePlayer*, BasePlayer*);
-	if (!LocalPlayer->IsTeamMate(ent->userID()) && vars::misc::revive_team_only) return;
+	if (!LocalPlayer->IsTeamMate(ent->GetSteamID()) && vars::misc::revive_team_only) return;
 	if (LocalPlayer->Time() > LastPickup + 0.5f) {
 		((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer);
 		LastPickup = LocalPlayer->Time();

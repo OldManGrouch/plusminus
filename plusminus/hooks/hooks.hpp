@@ -18,13 +18,10 @@ inline Projectile* __fastcall CreateProjectile(void* BaseProjectileA, void* pref
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
 	 
 	if (vars::weapons::thick_bullet) {
-		projectile->thickness() = 1.f;
+		projectile->thickness(1.f);
 	}
 	else {
-		projectile->thickness() = 0.1f;
-	}
-	if (vars::weapons::no_ricochet) {
-		projectile->ricochetChance() = 0.f;
+		projectile->thickness(0.1f);
 	}
 	// TO-DO: delay shot
 	return projectile;
@@ -74,7 +71,7 @@ Vector3 __fastcall GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, 
 				inputVec = playerDir;
 			}
 			if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-inputVec = heliDir;
+				inputVec = heliDir;
 			}
 		}
 		else {
@@ -270,7 +267,7 @@ uintptr_t __fastcall CreateEffect(Str strPrefab, uintptr_t effect) {
 	}
 	return original_createeffect(strPrefab, effect);
 }
-float GetRandomVelocity(ItemModProjectile* mod) {
+float GetRandomVelocity(uintptr_t mod) {
 	return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.45 : original_getrandomvelocity(mod);
 }
 void __fastcall AddPunch(uintptr_t a1, Vector3 a2, float duration) {

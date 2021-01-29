@@ -13,16 +13,16 @@ inline domovement original_domovement;
 void __fastcall Launch(Projectile* prdoj) {
 	Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
 	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
-	prdoj->gravityModifier() = GetGravity(ammo);
-	prdoj->invisible() = false;
+	prdoj->gravityModifier(GetGravity(ammo));
+	prdoj->invisible(false);
 	if (vars::weapons::no_spread) {
-		prdoj->mod()->projectileVelocitySpread() = 0.f;
+		write(prdoj->mod() + 0x38, 0.f, float);
 	}
 	return original_launch(prdoj);
 }
 bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
 	if (test->HitEntity() != null) {
-		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(test->HitEntity()->userID())) {
+		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(test->HitEntity()->GetSteamID())) {
 			return false;
 		}
 	}

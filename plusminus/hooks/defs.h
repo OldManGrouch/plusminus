@@ -22,7 +22,7 @@ inline isheadshot original_getisheadshot;
 typedef void(__fastcall* traceallthing)(uintptr_t, uintptr_t, uintptr_t);
 inline traceallthing original_traceall;
 
-typedef float(__fastcall* getrandvel)(ItemModProjectile*);
+typedef float(__fastcall* getrandvel)(uintptr_t);
 inline getrandvel original_getrandomvelocity;
 
 typedef bool(__fastcall* sendclienttick)(void*);

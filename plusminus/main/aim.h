@@ -105,7 +105,7 @@ Vector3 Prediction(BasePlayer* Player) {
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
-		Vector3 PredictVel = Player->playerModel()->NewVelocity() * BulletTime * 0.75f;
+		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
 		BonePos += PredictVel;
 		BonePos.y += (4.905f * BulletTime * BulletTime) * gravity;
 	}
@@ -125,15 +125,15 @@ void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
 void GoToTarget(BasePlayer* player) {
 	Vector3 Local = LocalPlayer->GetBoneByID(neck);
 	Vector3 PlayerPos = Prediction(player);
-	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->input()->bodyAngles();
+	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);
-	Vector2 AngleToAim = LocalPlayer->input()->bodyAngles() + Offset;
+	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
 	Normalize(AngleToAim.y, AngleToAim.x);
-	LocalPlayer->input()->bodyAngles() = AngleToAim;
+	LocalPlayer->SetVA(AngleToAim);
 }
 
 void Aim(BasePlayer* AimEntity) {
-	if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(AimEntity->userID())) {
+	if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(AimEntity->GetSteamID())) {
 		if (AimEntity && !LocalPlayer->IsMenu()) {
 			if (GetAsyncKeyState(vars::keys::aimkey)) GoToTarget(AimEntity);
 		}
