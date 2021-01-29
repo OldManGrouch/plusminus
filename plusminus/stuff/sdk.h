@@ -360,9 +360,3 @@ public:
 		}
 	}
 };
-class BaseHelicopter {
-public:
-	float GetHealth() {
-		return read(this + oHealth, float);
-	}
-};

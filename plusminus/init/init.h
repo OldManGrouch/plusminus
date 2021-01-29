@@ -85,7 +85,7 @@ void InitCheat() {
 	case 3: { b += 0.05f; g -= 0.05f; if (b >= 1) cases = 0; break; }
 	default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
 	}*/
-	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt) {
+	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->playerModel()->IsNpc() && vars::players::belt) {
 		const float Height = 275.f;
 		const float Width = 150.f;
 		POINT p;
@@ -121,7 +121,7 @@ void InitCheat() {
 			}
 			Pos += 15;
 		}
-		Renderer::FillRectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80 * (TargetPlayerA->GetHealth() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+		Renderer::FillRectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80 * (TargetPlayerA->health() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
 		float cPos = 125;
 		for (int i = 0; i < 7; i++) {

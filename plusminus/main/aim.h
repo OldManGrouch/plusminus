@@ -54,7 +54,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 		int ammo = active->LoadedAmmo();
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.4;
+			speed = GetBulletSpeed(tar, ammo) * 1.45;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);
@@ -63,7 +63,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 			speed = 250.f;
 		}
 		else if (!speed && vars::weapons::fast_bullets) {
-			speed = 250.f * 1.3;
+			speed = 250.f * 1.45;
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
@@ -92,7 +92,7 @@ Vector3 Prediction(BasePlayer* Player) {
 	if (Dist > 0.001f) {
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.4;
+			speed = GetBulletSpeed(tar, ammo) * 1.45;
 		}
 		else {
 			speed = GetBulletSpeed(tar, ammo);
@@ -101,11 +101,11 @@ Vector3 Prediction(BasePlayer* Player) {
 			speed = 250.f;
 		}
 		else if (!speed && vars::weapons::fast_bullets) {
-			speed = 250.f * 1.3;
+			speed = 250.f * 1.45;
 		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
-		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
+		Vector3 PredictVel = Player->playerModel()->NewVelocity() * BulletTime * 0.75f;
 		BonePos += PredictVel;
 		BonePos.y += (4.905f * BulletTime * BulletTime) * gravity;
 	}
@@ -125,15 +125,15 @@ void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
 void GoToTarget(BasePlayer* player) {
 	Vector3 Local = LocalPlayer->GetBoneByID(neck);
 	Vector3 PlayerPos = Prediction(player);
-	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
+	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->input()->bodyAngles();
 	Normalize(Offset.y, Offset.x);
-	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
+	Vector2 AngleToAim = LocalPlayer->input()->bodyAngles() + Offset;
 	Normalize(AngleToAim.y, AngleToAim.x);
-	LocalPlayer->SetVA(AngleToAim);
+	LocalPlayer->input()->bodyAngles() = AngleToAim;
 }
 
 void Aim(BasePlayer* AimEntity) {
-	if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(AimEntity->GetSteamID())) {
+	if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(AimEntity->userID())) {
 		if (AimEntity && !LocalPlayer->IsMenu()) {
 			if (GetAsyncKeyState(vars::keys::aimkey)) GoToTarget(AimEntity);
 		}

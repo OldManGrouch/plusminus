@@ -55,10 +55,10 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 	for (int i = 0; i <= EntityCount; i++)
 	{
 		BasePlayer* Player = (BasePlayer*)read(EntityBuffer + 0x20 + (i * 0x8), UINT64);
-		if (Player->IsDead()) continue;
-		if (vars::combat::ignore_sleepers && Player->IsSleeping()) continue;
-		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
-		if (vars::combat::ignore_npc && Player->IsNpc()) continue;
+		if (Player->health() < 0.2) continue;
+		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
+		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->userID())) continue;
+		if (vars::combat::ignore_npc && Player->playerModel()->IsNpc()) continue;
 		if (vars::combat::ignore_players) continue;
 
 		Vector3 pos = Player->GetBoneByID(neck);
@@ -93,10 +93,10 @@ float MaxMeleeDist(DWORD64 melee, bool localplayer) {
 Target TargetMeleeTest(BasePlayer* Player, DWORD64 melee) {
 	Target res = Target();
 
-	if (Player->GetHealth() < 0.2) return res;
-	if (vars::combat::ignore_npc && Player->IsNpc()) return res;
-	if (vars::combat::ignore_sleepers && Player->IsSleeping()) return res;
-	if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) return res;
+	if (Player->health() < 0.2) return res;
+	if (vars::combat::ignore_npc && Player->playerModel()->IsNpc()) return res;
+	if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
+	if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->userID())) return res;
 	typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
 
 	Vector3 prepos = Player->GetBoneByID(BoneList::head/*we dont care about bone*/);

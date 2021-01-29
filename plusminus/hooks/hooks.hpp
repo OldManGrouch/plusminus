@@ -270,6 +270,9 @@ uintptr_t __fastcall CreateEffect(Str strPrefab, uintptr_t effect) {
 	}
 	return original_createeffect(strPrefab, effect);
 }
+float GetRandomVelocity(ItemModProjectile* mod) {
+	return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.45 : original_getrandomvelocity(mod);
+}
 void __fastcall AddPunch(uintptr_t a1, Vector3 a2, float duration) {
 	a2 *= vars::weapons::recoil_control / 100.f;
 	return original_addpunch(a1, a2, duration);
@@ -330,6 +333,7 @@ inline void InitHook() {
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
+	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x391360), (void**)&original_getrandomvelocity, GetRandomVelocity);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, AddPunch);
 	HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, MoveTowards);
 	//HookFunction((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, DoMovement);

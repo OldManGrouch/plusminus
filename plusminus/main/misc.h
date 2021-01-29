@@ -13,26 +13,26 @@ void WeaponPatch() {
 	if (target.category == -2) {
 		weapon->NoSway();
 		weapon->FastBow();
-		weapon->SetBulletSpeed();
+		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 3) {
 		weapon->NoSway();
 		weapon->RapidFire();
-		weapon->SetBulletSpeed();
+		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 2) {
 		weapon->NoSway();
 		weapon->RapidFire();
 		weapon->SetAutomatic();
-		weapon->SetBulletSpeed();
+		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == -1) {
 		weapon->NoSway();
 		weapon->EokaTap();
-		weapon->SetBulletSpeed();
+		//weapon->SetBulletSpeed();
 		return;
 	}
 	
@@ -60,10 +60,6 @@ void MiscFuncs() {
 	}
 	LocalPlayer->SetFov();
 	LocalPlayer->PatchCamspeed();
-	//LocalPlayer->WalkWater();
-	if (vars::weapons::legit_norecoil) {
-		LocalPlayer->SetRA();
-	}
 	if (vars::misc::spiderman)
 		LocalPlayer->SpiderMan();
 	if (vars::misc::fakeadmin)

@@ -22,7 +22,7 @@ void __fastcall Launch(Projectile* prdoj) {
 }
 bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
 	if (test->HitEntity() != null) {
-		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(test->HitEntity()->GetSteamID())) {
+		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(test->HitEntity()->userID())) {
 			return false;
 		}
 	}

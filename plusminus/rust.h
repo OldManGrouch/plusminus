@@ -1,28 +1,77 @@
 ﻿class ItemModProjectile {
 public:
-	FIELD("Assembly-CSharp::Projectile::projectileSpread", projectileSpread, float);
-	FIELD("Assembly-CSharp::Projectile::projectileVelocity", projectileVelocity, float);
-	FIELD("Assembly-CSharp::Projectile::projectileVelocitySpread", projectileVelocitySpread, float);
+	FIELD("Assembly-CSharp::ItemModProjectile::projectileSpread", projectileSpread, float);
+	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocity", projectileVelocity, float);
+	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocitySpread", projectileVelocitySpread, float);
+};
+class PlayerInput {
+public:
+	FIELD("Assembly-CSharp::PlayerInput::bodyAngles", bodyAngles, Vector2);
 };
 class Projectile {
 public:
-	FIELD("Assembly-CSharp::Projectile::initialVelocity", initialVelocity, Vector3);
-	FIELD("Assembly-CSharp::Projectile::drag", drag, float);
 	FIELD("Assembly-CSharp::Projectile::gravityModifier", gravityModifier, float);
 	FIELD("Assembly-CSharp::Projectile::thickness", thickness, float);
-	FIELD("Assembly-CSharp::Projectile::initialDistance", initialDistance, float);
 	FIELD("Assembly-CSharp::Projectile::mod", mod, ItemModProjectile*);
-	FIELD("Assembly-CSharp::Projectile::remainInWorld", remainInWorld, bool);
-	FIELD("Assembly-CSharp::Projectile::stickProbability", stickProbability, float);
-	FIELD("Assembly-CSharp::Projectile::breakProbability", breakProbability, float);
-	FIELD("Assembly-CSharp::Projectile::conditionLoss", conditionLoss, float);
 	FIELD("Assembly-CSharp::Projectile::ricochetChance", ricochetChance, float);
-	FIELD("Assembly-CSharp::Projectile::penetrationPower", penetrationPower, float);
 	FIELD("Assembly-CSharp::Projectile::invisible", invisible, bool);
 	FIELD("Assembly-CSharp::Projectile::currentPosition", currentPosition, Vector3);
 };
-class BasePlayer {
+class BaseMovement {
 public:
+	FIELD("Assembly-CSharp::BaseMovement::bodyAngles", bodyAngles, Vector2);
+};
+class PlayerWalkMovement : public BaseMovement {
+public:
+	FIELD("Assembly-CSharp::PlayerWalkMovement::groundAngle", groundAngle, float);
+	FIELD("Assembly-CSharp::PlayerWalkMovement::groundAngleNew", groundAngleNew, float);
+	FIELD("Assembly-CSharp::PlayerWalkMovement::gravityMultiplier", gravityMultiplier, float);
+};
+class Object {
+public:
+};
+class Component : public Object {
+public:
+};
+class BaseNetworkable : public Component {
+public:
+};
+class BaseEntity : public BaseNetworkable {
+
+public:
+};
+class BaseCombatEntity : public BaseEntity {
+public:
+	FIELD("Assembly-CSharp::BaseCombatEntity::_health", health, float);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsHitNotification", sendsHitNotification, bool);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", sendsMeleeHitNotification, bool);
+	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", lastNotifyFrame, int);
+};
+class BaseHelicopter : public BaseCombatEntity {
+public:
+
+};
+class PlayerModel {
+public:
+	FIELD("Assembly-CSharp::PlayerModel::<IsNpc>k__BackingField", IsNpc, bool);
+	FIELD("Assembly-CSharp::PlayerModel::newVelocity", NewVelocity, Vector3);
+	Vector3 newVelocity() {
+		if (!this) return Vector3(0.f, 0.f, 0.f);
+		static auto off = OFFSET("Assembly-CSharp::PlayerModel::newVelocity");
+		return *reinterpret_cast<Vector3*>(this + off);
+	}
+	bool isNpc() {
+		if (!this) return false;
+		static auto off = OFFSET("Assembly-CSharp::PlayerModel::<IsNpc>k__BackingField");
+		return *reinterpret_cast<bool*>(this + off);
+	}
+};
+class BasePlayer : public BaseCombatEntity {
+public:
+	FIELD("Assembly-CSharp::BasePlayer::userID", userID, uint64_t);
+	FIELD("Assembly-CSharp::BasePlayer::input", input, PlayerInput*);
+	FIELD("Assembly-CSharp::BasePlayer::movement", movement, PlayerWalkMovement*);
+	FIELD("Assembly-CSharp::BasePlayer::playerModel", playerModel, PlayerModel*);
 	Vector3 GetPosition(DWORD64 transform) {
 		if (!transform) return Vector3{ 0.f, 0.f, 0.f };
 		{
@@ -68,9 +117,6 @@ public:
 			!strcmp(this->ClassName(), xorstr("Scientist")) ||
 			!strcmp(this->ClassName(), xorstr("HTNPlayer"));
 	}
-	float GetHealth() {
-		return read(this + oHealth, float);
-	}
 	void SetFov() {
 		auto klass = read(vars::stor::gBase + CO::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
@@ -85,23 +131,14 @@ public:
 		pUncStr Str = ((pUncStr)(read(this + oDisplayName, DWORD64)));
 		if (!Str) return L""; return Str->str;
 	}
-	Vector3 GetVelocity() {
-		DWORD64 PlayerModel = read(this + oPlayerModel, DWORD64);
-		return read(PlayerModel + oNewVelocity, Vector3);
-	}
 	bool HasFlags(int Flg) {
 		return (read(this + oPlayerFlags, int) & Flg);
 	}
-
 	Vector3 GetBoneByID(BoneList BoneID) {
 		return GetPosition(GetTransform(BoneID));
 	}
 	Quaternion GetRotationByID(BoneList BoneID) {
 		return GetRotation(GrabTransform(BoneID));
-	}
-	bool IsNpc() {
-		DWORD64 PlayerModel = read(this + oPlayerModel, DWORD64);
-		return read(PlayerModel + oIsNpc, bool);
 	}
 	int GetTeamSize() {
 		DWORD64 ClientTeam = read(this + oClientTeam, DWORD64);
@@ -125,25 +162,11 @@ public:
 		}
 		return ret;
 	}
-	bool IsDead() {
-		if (!this) return true;
-		return read(this + oLifeState, bool);;
-	}
-	bool IsSleeping() {
-		if (!this) return false;
-		return HasFlags(Sleeping);
-	}
-	DWORD64 GetSteamID() {
-		return read(this + oUserID, DWORD64);
-	}
+	
 	bool IsMenu() {
 		if (!this) return true;
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		return !(read(Input + oKeyFocus, bool));
-	}
-	void SetVA(const Vector2& VA) {
-		DWORD64 Input = read(this + oPlayerInput, DWORD64);
-		write(Input + oBodyAngles, VA, Vector2);
 	}
 	void AddFlag(int flag) {
 		DWORD64 mstate = read(this + oModelState, DWORD64);
@@ -155,25 +178,12 @@ public:
 		int flags = read(mstate + 0x24, int);
 		write(mstate + 0x24, flags &= flag, int);
 	}
-	void SetRA() {
-		DWORD64 Input = read(this + oPlayerInput, DWORD64);
-		Vector2 RA = read(Input + oRecoilAngles, Vector2);
-		write(Input + oRecoilAngles, Vector2(RA.x * vars::weapons::control_x, RA.y * vars::weapons::control_x), Vector2);
-	}
-	Vector2 GetVA() {
-		DWORD64 Input = read(this + oPlayerInput, DWORD64);
-		return read(Input + oBodyAngles, Vector2);
-	}
 	bool GetKeyState(ButtonS b) {
 		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
 		if (!Cur) return false;
 		int btn = read(Cur + 0x14, int);
 		return ((btn & (int)b) == (int)b);
-	}
-	Vector2 GetRA() {
-		DWORD64 Input = read(this + oPlayerInput, DWORD64);
-		return read(Input + oRecoilAngles, Vector2);
 	}
 	Item* GetWeaponInfo(int Id) {
 		DWORD64 Inventory = read(this + oInventory, DWORD64);
@@ -206,13 +216,11 @@ public:
 		write(this + oPlayerFlags, (Flags |= 4), int);
 	}
 	void SpiderMan() {
-		INT64 Movement = read(this + oMovement, UINT64);
-		write(Movement + oGroundAngle, 0.f, float);
-		write(Movement + oGroundAngleNew, 0.f, float);
+		this->movement()->groundAngle() = 0.f;
+		this->movement()->groundAngleNew() = 0.f;
 	}
 	void SetGravity(float val) {
-		DWORD64 Movement = read(this + oMovement, DWORD64);
-		write(Movement + oGravityMultiplier, val, float);
+		this->movement()->gravityMultiplier() = val;
 	}
 };
 class HitTest {
