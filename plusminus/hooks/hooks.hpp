@@ -125,14 +125,14 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 			}
 		}
 		else {
-		if (GetAsyncKeyState(vars::keys::psilent)) {
-			if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
-				inputVec = playerDir;
+			if (GetAsyncKeyState(vars::keys::psilent)) {
+				if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
+					inputVec = playerDir;
+				}
+				if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
+					inputVec = heliDir;
+				}
 			}
-			if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-				inputVec = heliDir;
-			}
-		}
 		}
 	}
 	if (vars::weapons::no_spread) {
@@ -255,6 +255,11 @@ std::string C4 = c_xor("C4");
 std::string Satchel = c_xor("Satchel");
 std::string IncenRocket = c_xor("Incendiary Rocket");
 std::string Rocket = c_xor("Rocket");
+
+std::wstring wC4 = xorstr(L"C4");
+std::wstring wSatchel = xorstr(L"Satchel");
+std::wstring wIncenRocket = xorstr(L"Incendiary Rocket");
+std::wstring wRocket = xorstr(L"Rocket");
 uintptr_t CreateEffect(pUncStr strPrefab, uintptr_t effect) {
 	auto effectName = strPrefab->str;
 	auto position = read(effect + 0x5C, Vector3);
@@ -262,19 +267,19 @@ uintptr_t CreateEffect(pUncStr strPrefab, uintptr_t effect) {
 		switch (RUNTIME_CRC32_W(effectName)) {
 		case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 			LogSystem::LogExplosion(C4, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%s explosion %.2f meters away from you."), C4, Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
 			LogSystem::LogExplosion(Satchel, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%s explosion %.2f meters away from you."), Satchel, Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
 			LogSystem::LogExplosion(IncenRocket, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%s explosion %.2f meters away from you."), IncenRocket, Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 			LogSystem::LogExplosion(Rocket, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%s explosion %.2f meters away from you."), Rocket, Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."),wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
 			break;
 		}
 	}

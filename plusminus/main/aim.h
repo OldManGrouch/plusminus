@@ -103,7 +103,9 @@ Vector3 Prediction(BasePlayer* Player) {
 		else if (!speed && vars::weapons::fast_bullets) {
 			speed = 250.f * 1.3;
 		}
-		speed *= active->GetStringBonusVelocity();
+		if (active->GetID() == 884424049 && vars::stuff::testBool) { // compound bow
+			speed *= active->GetStringBonusVelocity();
+		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
 		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;

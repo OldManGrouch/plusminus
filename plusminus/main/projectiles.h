@@ -15,6 +15,9 @@ void __fastcall Launch(Projectile* prdoj) {
 	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
 	prdoj->gravityModifier(GetGravity(ammo));
 	prdoj->invisible(false);
+	if (vars::stuff::debugtab) {
+		LogSystem::Log(StringFormat::format(c_wxor(L"%.2f"), read(prdoj->mod() + 0x34, float)), 5.f);
+	}
 	if (vars::weapons::no_spread) {
 		write(prdoj->mod() + 0x38, 0.f, float);
 	}

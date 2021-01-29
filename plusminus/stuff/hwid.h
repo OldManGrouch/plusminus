@@ -85,7 +85,7 @@ namespace hwid {
 		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // ffazs || Trixyyy
 	//	c_xor("{Apple27139-22866-13476-293449667}") ,
 		c_xor("{69c38fef-1749-4ceb-868c-94f51d60f8a7}") , // Lucky
-		//c_xor("{v1jr8308-u7vp-d83f-7a74-uts3q62cm56b}") ,
+		c_xor("{v1jr8308-u7vp-d83f-7a74-uts3q62cm56b}") , // leosh
 	////	c_xor("{b1f8993d-bbff-11ea-86d6-806e6f6e6963}") ,
 	//	c_xor("{5fffa4c0-29de-11eb-9669-806e6f6e6963}") ,
 		c_xor("{36alb5f597249dfe-295de99c3c970d85f1") , // skittlez
