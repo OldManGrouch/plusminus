@@ -69,7 +69,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 		float BulletTime = Dist / speed;
 		Vector3 vel;
 		if (vars::stor::closestHeli != NULL) {
-			vel = utils::GetWorldVelocity(vars::stor::closestHeli);
+			vel = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity();
 		}
 		else {
 			vel = Vector3(0, 0, 0);

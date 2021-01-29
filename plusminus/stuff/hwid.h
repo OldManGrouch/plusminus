@@ -1,7 +1,7 @@
 #include <vector>
 namespace hwid {
 	std::vector<std::string> list = { 
-		//c_xor("{dc931070-657d-4be4-9f14-630684586d28}") , 
+		c_xor("{dc931070-657d-4be4-9f14-630684586d28}") , 
 		c_xor("{Apple30975-14447-17784-1599711392}") , // Cherry trixy's friend || Harve
 		c_xor("{15936d6f-f57a-11ea-8b4a-806e6f6e6963}") , // Morango
 		c_xor("{4aafc28b-5ce9-11eb-8a83-806e6f6e6963}") , // mayoo_
@@ -72,7 +72,7 @@ namespace hwid {
 		//c_xor("{24af1b3a-5a36-11eb-a58c-806e6f6e6963}") ,
 		//c_xor("{Apple28460-28793-6227-135597203}") ,
 		//c_xor("{ebbb6152-0db2-11eb-a129-806e6f6e6963}") ,
-		////c_xor("{Apple13536-29784-23450-2176415012}") ,
+		c_xor("{Apple13536-29784-23450-2176415012}") , // Spac3y || winname user
 		c_xor("{90ba0ba2-ff2b-11ea-88bb-806e6f6e6963}") , // lazab
 		c_xor("{c13aa1eb-5f2b-11eb-b5e9-806e6f6e6963}") , // Jonas || Ganja
 		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,

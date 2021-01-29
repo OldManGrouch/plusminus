@@ -2,6 +2,7 @@
 #include "D:\+-\cheat\yayayeyeaya\plusminus\hooks/detours.h"
 int yeet = 0;
 void SendClientTick(BasePlayer* baseplayer) {
+	if (!LocalPlayer) return original_sendclienttick(baseplayer);
 	if (vars::misc::anti_aim) {
 		auto input = read(baseplayer + 0x4C8, uintptr_t);
 		auto state = read(input + 0x20, uintptr_t);
@@ -12,7 +13,55 @@ void SendClientTick(BasePlayer* baseplayer) {
 		}
 		write(current + 0x18, Vector3(100, yeet, 0), Vector3);
 	}
-	return original_sendclienttick(baseplayer);
+	typedef void(__stdcall* set_rayleigh)(float);
+	typedef void(__stdcall* OnLand)(BasePlayer*, float);
+	typedef void(__stdcall* DoAttack)(uintptr_t);
+	if (vars::misc::rayleigh_changer) {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
+	}
+	else {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
+	}
+	if (vars::misc::suicide) {
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
+	}
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
+		Item* weapon = LocalPlayer->GetActiveWeapon();
+		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
+		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
+		int contents = read(mag + 0x1C, int);
+		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
+			INPUT    Input = { 0 };
+			// left down 
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+			::SendInput(1, &Input, sizeof(INPUT));
+
+			// left up
+			::ZeroMemory(&Input, sizeof(INPUT));
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+			::SendInput(1, &Input, sizeof(INPUT));
+		}
+	}
+	EntityThreadLoop();
+	if (!waslagging && vars::misc::fake_lag) {
+		write(LocalPlayer + 0x5C8, 0.4f, float);
+		waslagging = true;
+	}
+	else if (waslagging && !vars::misc::fake_lag) {
+		write(LocalPlayer + 0x5C8, 0.05f, float);
+		waslagging = false;
+	}
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
+	WeaponPatch();
+	MiscFuncs();
+	((sendclienttick)original_sendclienttick)(baseplayer); // orig
+	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
+	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
 Projectile* CreateProjectile(void* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
@@ -92,57 +141,10 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 }
 bool waslagging = false;
 void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
-	if (!baseplayah) return;
-	typedef void(__stdcall* set_rayleigh)(float);
-	typedef void(__stdcall* OnLand)(BasePlayer*, float);
-	typedef void(__stdcall* DoAttack)(uintptr_t);
-	if (vars::misc::rayleigh_changer) {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
-	}
-	else {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
-	}
-	if (vars::misc::suicide) {
-		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
-	}
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
-		Item* weapon = LocalPlayer->GetActiveWeapon();
-		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
-		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
-		int contents = read(mag + 0x1C, int);
-		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
-			INPUT    Input = { 0 };
-			// left down 
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-			::SendInput(1, &Input, sizeof(INPUT));
-
-			// left up
-			::ZeroMemory(&Input, sizeof(INPUT));
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-			::SendInput(1, &Input, sizeof(INPUT));
-		}
-	}
-	EntityThreadLoop();
-	if (!waslagging && vars::misc::fake_lag) {
-		write(LocalPlayer + 0x5C8, 0.4f, float);
-		waslagging = true;
-	}
-	else if (waslagging && !vars::misc::fake_lag) {
-		write(LocalPlayer + 0x5C8, 0.05f, float);
-		waslagging = false;
-	}
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
-	WeaponPatch();
-	MiscFuncs();
+	
 	typedef void(__stdcall* ClientInput)(DWORD64, DWORD64);
 	((ClientInput)original_clientinput)(baseplayah, ModelState);
-	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
-	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
+	
 }
 typedef float(__stdcall* Total)(DWORD64);
 typedef int(__stdcall* get_frameCount)();

@@ -21,7 +21,7 @@ Weapon{-1367281941, xorstr("Waterpipe Shotgun"), { Ammo{{-727717969, -1685290200
 Weapon{-765183617, xorstr("Double Barrel Shotgun"), { Ammo{{-727717969, -1685290200}/*green, red*/, 100.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, 2 },
 Weapon{-41440462, xorstr("Spas-12 Shotgun"), { Ammo{{-727717969, -1685290200}/*green, red*/, 225.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, 2 },
 Weapon{795371088, xorstr("Pump Shotgun"), { Ammo{{-727717969, -1685290200}/*green, red*/, 225.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, 2 },
-Weapon{-75944661, xorstr("Eoka Pistol"), { Ammo{{-727717969, -1685290200}/*green, red*/, 100.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, -1 },
+Weapon{-75944661, xorstr("Eoka Pistol"), { Ammo{{-727717969, -1685290200}/*green, red*/, 225.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, -1 },
 
 
 Weapon{28201841, xorstr("M39 Rifle"), { Ammo{{-1211166256}/*normal 5.56*/, 469}, Ammo{{1712070256} /*HV 5.56*/, 563 }, Ammo{{-1321651331, 605467368}/*inc, ex 5.56*/, 281}}, 2 },
