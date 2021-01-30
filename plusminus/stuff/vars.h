@@ -17,6 +17,7 @@ namespace vars {
 		char ConfigName[0x100] = "cfg";
 	}
 	namespace keys {
+		int suicide = { 0x5A };
 		int longneck = { 0x4D };
 		int forcepos{ 0x4E };
 		int psilent{ 0x50 }; // P key
@@ -55,18 +56,15 @@ namespace vars {
 		bool ignore_npc = false;
 	}
 	namespace weapons {
+		bool no_recoil = false;
 		float recoil_control = 100.f;
 		bool fast_bullets = false;
 		bool penetrate = false;
 		bool minicopter_aim = false;
 		bool spoof_hitdistance = false;
 		float hitdistance = 100.f;
-		bool no_ricochet = false;
-		bool no_recoil = false;
+		
 		bool no_spread = false;
-		bool legit_norecoil = false;
-		float control_x = 0.f;
-		float control_y = 0.f;
 		bool automatic = false;
 		bool thick_bullet = false;
 		bool no_sway = false;
@@ -90,7 +88,9 @@ namespace vars {
 		bool weapon = false;
 		bool sleeperignore = false;
 		bool tracers = false;
+		int tracers_pos = 0;
 		bool targetline = false;
+		int targetline_pos = 0;
 		bool fillbox = false;
 	}
 	namespace npc {
@@ -180,6 +180,7 @@ namespace vars {
 		bool walker = false;
 		bool faster_healing = false;
 		bool suicide = false;
+		bool mass_suicide = false;
 		bool long_neck = false;
 		bool inf_jump = false;
 		bool insta_revive = false;
@@ -189,10 +190,12 @@ namespace vars {
 		float rayleigh = 10.f;
 		bool annoyer = false;
 		bool bright_ambient = false;
+		float bright_ambient_intensity = 1.f;
 		bool auto_pickup = false;
 		bool spoof_ladderstate = false;
 		bool anti_aim = false;
 		int anti_aim_speed = 10;
+		int anti_aim_yaw = false;
 		bool fake_lag = false;
 		bool silent_walk = false;
 		float fov = 90.f;

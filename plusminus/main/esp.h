@@ -443,7 +443,13 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				if (vars::players::tracers && !BP->HasFlags(16)) {
 					static float screenX = GetSystemMetrics(SM_CXSCREEN);
 					static float screenY = GetSystemMetrics(SM_CYSCREEN);
-					static Vector2 startPos = Vector2(screenX / 2.0f, screenY - 200.f);
+					static Vector2 startPos;
+					if (vars::players::tracers_pos == 0) {
+						startPos = Vector2(screenX / 2.f, screenY - 200.f);
+					}
+					if (vars::players::tracers_pos == 1) {
+						startPos = Vector2(screenX / 2, screenY / 2);
+					}
 					if ((int)BP->GetHealth() > 0) {
 						Renderer::Line(startPos, tempHead, color, 0.5f);
 					}

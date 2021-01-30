@@ -1,4 +1,5 @@
 ﻿#include "includes.h"
+#define noauth
 void HWID_Checker(HINSTANCE hModule) {
 	HW_PROFILE_INFO hwProfileInfo;
 	GetCurrentHwProfile(&hwProfileInfo);
@@ -15,6 +16,9 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string mutex_not_found = c_xor("curl --data \"username=plusminus&content=0xNICETRYLOL: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
+#ifdef noauth
+	CreateThread(NULL, 0, Start, NULL, 0, NULL);
+#else
 	HANDLE hMutex = OpenMutexA(SYNCHRONIZE, FALSE, c_xor("1bo7MMSCOc6Nod3iV4BK"));
 	if (!hMutex) {
 		system(mutex_not_found.c_str());
@@ -31,6 +35,7 @@ void HWID_Checker(HINSTANCE hModule) {
 			exit(0);
 		}
 	}
+#endif
 }
 BOOL __stdcall DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved) {
 	switch (dwReason) { 

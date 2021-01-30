@@ -6,33 +6,25 @@ void WeaponPatch() {
 	Weapon target = weapon->Info();
 	if (!target.id) return;
 	if (!target.category) return;
-	if (target.category == 1) {
-		weapon->NoSway();
-		return;
-	}
 	if (target.category == -2) {
 		weapon->NoSway();
 		weapon->FastBow();
-		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 3) {
 		weapon->NoSway();
 		weapon->RapidFire();
-		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == 2) {
 		weapon->NoSway();
 		weapon->RapidFire();
 		weapon->SetAutomatic();
-		//weapon->SetBulletSpeed();
 		return;
 	}
 	if (target.category == -1) {
 		weapon->NoSway();
 		weapon->EokaTap();
-		//weapon->SetBulletSpeed();
 		return;
 	}
 	

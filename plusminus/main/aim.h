@@ -120,11 +120,6 @@ void Normalize(float& Yaw, float& Pitch) {
 	if (Yaw < -360) Yaw += 360;
 	else if (Yaw > 360) Yaw -= 360;
 }
-void SmoothAngleOld(Vector2 src, Vector2& dst, float factor) {
-	Vector2 delta = dst - src;
-	Normalize(delta.x, delta.y);
-	dst = src + delta / factor;
-}
 void GoToTarget(BasePlayer* player) {
 	Vector3 Local = LocalPlayer->GetBoneByID(head);
 	Vector3 PlayerPos = Prediction(player);

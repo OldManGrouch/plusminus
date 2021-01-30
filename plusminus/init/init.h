@@ -54,7 +54,13 @@ void InitCheat() {
 	if (vars::stor::closestPlayer != NULL && vars::players::targetline) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
-		static Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
+		static Vector2 startPos;
+		if (vars::players::targetline_pos == 0) {
+			startPos = Vector2(screenX / 2.f, screenY - 200.f);
+		}
+		if (vars::players::targetline_pos == 1) {
+			startPos = Vector2(screenX / 2, screenY / 2);
+		}
 		Vector2 ScreenPos;
 		if (!(TargetPlayerA->GetBoneByID(spine1).x == 0 && TargetPlayerA->GetBoneByID(spine1).y == 0 && TargetPlayerA->GetBoneByID(spine1).z == 0)) {
 			if (utils::w2s(TargetPlayerA->GetBoneByID(head), ScreenPos))

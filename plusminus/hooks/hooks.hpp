@@ -1,6 +1,7 @@
 ﻿#include "hooks/defs.h"
 #include "D:\+-\cheat\yayayeyeaya\plusminus\hooks/detours.h"
 int yeet = 0;
+int yaw = 100;
 bool waslagging = false;
 void SendClientTick(BasePlayer* baseplayer) {
 	if (!LocalPlayer) return original_sendclienttick(baseplayer);
@@ -12,61 +13,19 @@ void SendClientTick(BasePlayer* baseplayer) {
 		if (yeet >= 999) {
 			yeet = 0;
 		}
-		write(current + 0x18, Vector3(100, yeet, 0), Vector3);
-	}
-	typedef void(__stdcall* set_rayleigh)(float);
-	typedef void(__stdcall* OnLand)(BasePlayer*, float);
-	typedef void(__stdcall* DoAttack)(uintptr_t);
-	if (vars::misc::rayleigh_changer) {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
-	}
-	else {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
-	}
-	if (vars::misc::suicide) {
-		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
-	}
-	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
-		Item* weapon = LocalPlayer->GetActiveWeapon();
-		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
-		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
-		int contents = read(mag + 0x1C, int);
-		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
-			INPUT    Input = { 0 };
-			// left down 
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-			::SendInput(1, &Input, sizeof(INPUT));
-
-			// left up
-			::ZeroMemory(&Input, sizeof(INPUT));
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-			::SendInput(1, &Input, sizeof(INPUT));
+		if (vars::misc::anti_aim_yaw == 0) {
+			yaw = 100;
 		}
+		if (vars::misc::anti_aim_yaw == 1) {
+			yaw = -100;
+		}
+		write(current + 0x18, Vector3(yaw, yeet, 0), Vector3);
 	}
-	EntityThreadLoop();
-	if (!waslagging && vars::misc::fake_lag) {
-		write(LocalPlayer + 0x5C8, 0.4f, float);
-		waslagging = true;
-	}
-	else if (waslagging && !vars::misc::fake_lag) {
-		write(LocalPlayer + 0x5C8, 0.05f, float);
-		waslagging = false;
-	}
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
-	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
-	WeaponPatch();
-	MiscFuncs();
 	((sendclienttick)original_sendclienttick)(baseplayer); // orig
-	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
-	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
+std::vector<uintptr_t> nigga;
 Projectile* CreateProjectile(void* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
-	 
 	if (vars::weapons::thick_bullet) {
 		projectile->thickness(1.f);
 	}
@@ -85,7 +44,7 @@ void UpdateAmbient(uintptr_t TOD_Sky) {
 		return original_updateambient(TOD_Sky);
 	}
 	RenderSettings::set_ambientMode(RenderSettings::AmbientMode::Flat);
-	RenderSettings::set_ambientIntensity(1.0f);
+	RenderSettings::set_ambientIntensity(1.f);
 	RenderSettings::set_ambientLight(Color({ 0.8f, 0.8f, 0.8f, 0.8f }));
 }
 void TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) {
@@ -142,10 +101,58 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 }
 
 void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
-	
+	if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
+	typedef void(__stdcall* set_rayleigh)(float);
+	typedef void(__stdcall* OnLand)(BasePlayer*, float);
+	typedef void(__stdcall* DoAttack)(uintptr_t);
+	if (vars::misc::rayleigh_changer) {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
+	}
+	else {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
+	}
+	if (vars::misc::mass_suicide)
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
+	if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0)
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
+		Item* weapon = LocalPlayer->GetActiveWeapon();
+		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
+		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
+		int contents = read(mag + 0x1C, int);
+		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
+			INPUT    Input = { 0 };
+			// left down 
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+			::SendInput(1, &Input, sizeof(INPUT));
+
+			// left up
+			::ZeroMemory(&Input, sizeof(INPUT));
+			Input.type = INPUT_MOUSE;
+			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+			::SendInput(1, &Input, sizeof(INPUT));
+		}
+	}
+	EntityThreadLoop();
+	if (!waslagging && vars::misc::fake_lag) {
+		write(LocalPlayer + 0x5C8, 0.4f, float);
+		waslagging = true;
+	}
+	else if (waslagging && !vars::misc::fake_lag) {
+		write(LocalPlayer + 0x5C8, 0.05f, float);
+		waslagging = false;
+	}
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
+	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
+	WeaponPatch();
+	MiscFuncs();
 	typedef void(__stdcall* ClientInput)(DWORD64, DWORD64);
 	((ClientInput)original_clientinput)(baseplayah, ModelState);
-	
+	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
+	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
 }
 typedef float(__stdcall* Total)(DWORD64);
 typedef int(__stdcall* get_frameCount)();
@@ -172,18 +179,12 @@ void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 }
 typedef void(__stdcall* UpgradeToGrade)(DWORD64, BuildingGrade, BasePlayer*);
 uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
-	auto ret = original_createorupdateentity(client, ent, sz);
-	if (!vars::misc::auto_upgrade)
-		return ret;
-	if (!LocalPlayer)
-		return ret;
-
 	uint32_t uid = read(read(ent + 0x18, uintptr_t) + 0x14, uint32_t);
 	static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
 	uintptr_t static_fieldss = reinterpret_cast<uintptr_t>(clazz->static_fields); // EntityRealm !!!
 	static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
 	uintptr_t found = reinterpret_cast<uintptr_t(__fastcall*)(uintptr_t, uint32_t)>(off)(static_fieldss, uid);
-	if (found) {
+	if (found && vars::misc::auto_upgrade && LocalPlayer) {
 		if (reinterpret_cast<Item*>(found)->ClassNameHash() == STATIC_CRC32("BuildingBlock")) {
 			switch (vars::misc::build_grade) {
 			case 0:
@@ -201,14 +202,14 @@ uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 			}
 		}
 	}
-	return ret;
+	return original_createorupdateentity(client, ent, sz);
 }
 bool get_isHeadshot(DWORD64 hitinfo) {
 	if (vars::misc::custom_hitsound) { return false; }
 	else { return original_getisheadshot(hitinfo); }
 }
 void ForcePositionTo(BasePlayer* pl, Vector3 pos) {
-	if (GetAsyncKeyState(vars::keys::forcepos)) { }
+	if (GetAsyncKeyState(vars::keys::forcepos)) {}
 	else { return original_forcepos(pl, pos); }
 }
 bool CanHoldItems(void* a1, void* a2) {
@@ -233,7 +234,7 @@ void SendProjectileAttack(void* a1, void* a2) {
 		if (vars::combat::hitbox_override) {
 			uint32_t bone;
 			if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
-			else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); } 
+			else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); }
 			write(Attack + 0x30, bone, uint32_t); // public uint hitBone;
 			write(Attack + 0x64, 16144115, uint32_t); // public uint hitPartID;
 		}
@@ -279,7 +280,7 @@ uintptr_t CreateEffect(pUncStr strPrefab, uintptr_t effect) {
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 			LogSystem::LogExplosion(Rocket, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."),wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."), wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
 			break;
 		}
 	}
@@ -289,14 +290,18 @@ float GetRandomVelocity(uintptr_t mod) {
 	return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.3 : original_getrandomvelocity(mod);
 }
 void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
-	a2 *= vars::weapons::recoil_control / 100.f;
+	if (vars::weapons::no_recoil) {
+		a2 *= vars::weapons::recoil_control / 100.f;
+	}
 	return original_addpunch(a1, a2, duration);
 }
 Vector3 MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
 	static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::SimulateAimcone(): Void");
 	if (CALLED_BY(ptr, 0x800)) {
-		a2 *= vars::weapons::recoil_control / 100.f;
-		maxDelta *= vars::weapons::recoil_control / 100.f;
+		if (vars::weapons::no_recoil) {
+			a2 *= vars::weapons::recoil_control / 100.f;
+			maxDelta *= vars::weapons::recoil_control / 100.f;
+		}
 	}
 	return original_movetowards(a1, a2, maxDelta);
 }
@@ -355,7 +360,7 @@ inline void InitHook() {
 	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateOrUpdateEntity), (void**)&original_createorupdateentity, CreateOrUpdateEntity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, UpdateAmbient);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, ForcePositionTo);

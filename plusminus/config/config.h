@@ -115,10 +115,10 @@ private:
 		SetupValue(vars::combat::ignore_npc, false, c_xor("Combat"), c_xor("IgnoreNpc"));
 		SetupValue(vars::combat::ignore_heli, false, c_xor("Combat"), c_xor("IgnoreHeli"));
 
+		SetupValue(vars::weapons::no_recoil, false, c_xor("Weapon"), c_xor("RecoilControl"));
 		SetupValue(vars::weapons::recoil_control, 100.f, c_xor("Weapon"), c_xor("RecoilControl"));
 		SetupValue(vars::weapons::no_spread, false, c_xor("Weapon"), c_xor("NoSpread"));
 		SetupValue(vars::weapons::no_sway, false, c_xor("Weapon"), c_xor("NoSway"));
-		SetupValue(vars::weapons::no_ricochet, false, c_xor("Weapon"), c_xor("NoRicochet"));
 		SetupValue(vars::weapons::rapid_fire, false, c_xor("Weapon"), c_xor("RapidFire"));
 		SetupValue(vars::weapons::automatic, false, c_xor("Weapon"), c_xor("Automatic"));
 		SetupValue(vars::weapons::thick_bullet, false, c_xor("Weapon"), c_xor("ThickBullets"));
@@ -137,7 +137,7 @@ private:
 		SetupValue(vars::players::skeleton, false, c_xor("Players"), c_xor("skeleton"));
 		SetupValue(vars::players::healthdist, false, c_xor("Players"), c_xor("healthdist"));
 		SetupValue(vars::players::healthbar, false, c_xor("Players"), c_xor("healthbar"));
-		SetupValue(vars::players::healthbarstyle, 0, c_xor("NPCs"), c_xor("healthbarstyle"));
+		SetupValue(vars::players::healthbarstyle, 0, c_xor("Players"), c_xor("healthbarstyle"));
 		SetupValue(vars::players::weapon, false, c_xor("Players"), c_xor("weapon"));
 		SetupValue(vars::players::tracers, false, c_xor("Players"), c_xor("tracers"));
 		SetupValue(vars::players::chams, false, c_xor("Players"), c_xor("chams"));
@@ -162,6 +162,8 @@ private:
 		SetupValue(vars::misc::silent_walk, false, c_xor("Misc"), c_xor("SilentWalk"));
 		SetupValue(vars::misc::spoof_ladderstate, false, c_xor("Misc"), c_xor("SpoofOnLadder"));
 		SetupValue(vars::misc::anti_aim, false, c_xor("Misc"), c_xor("AntiAim"));
+		SetupValue(vars::misc::anti_aim_speed, 25, c_xor("Misc"), c_xor("AntiAimSpeed"));
+		SetupValue(vars::misc::anti_aim_yaw, 0, c_xor("Misc"), c_xor("AntiAimYaw"));
 		SetupValue(vars::misc::hit_logs, false, c_xor("Misc"), c_xor("HitLogs"));
 		SetupValue(vars::misc::faster_healing, false, c_xor("Misc"), c_xor("FastHeal"));
 		SetupValue(vars::misc::fake_lag, false, c_xor("Misc"), c_xor("FakeLag"));

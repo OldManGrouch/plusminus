@@ -48,7 +48,7 @@ void EntityLoop() {
 		}
 	}
 	if (!initD) {
-		LogSystem::Log(c_wxor(L"Cheat loaded favorably!"), 5.f);
+		//LogSystem::Log(c_wxor(L"Cheat loaded favorably!"), 5.f);
 		initD = true;
 	}
 	float FOV = vars::combat::fov, CurFOV;

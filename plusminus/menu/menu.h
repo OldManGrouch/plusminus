@@ -114,6 +114,18 @@ namespace menu {
 		"Cornered",
 		"3D",
 	};
+	static const char* anti_aim_yaw[]{
+		"Down",
+		"Up",
+	};
+	static const char* target_tracer_pos[]{
+		"Classic",
+		"Middle",
+	};
+	static const char* tracer_pos[]{
+		"Classic",
+		"Middle",
+	};
 	bool tab_info_already_exist(std::vector<TabInfo> infos, unsigned int index) {
 		for (int i = 0; i < infos.size(); i++)
 			if (infos[i].index == index) return true;
@@ -222,10 +234,12 @@ namespace menu {
 		ImGui::Checkbox(xorstr("Ignore Sleeping"), &vars::combat::ignore_sleepers);
 	}
 	void weapons() {
-		ImGui::SliderFloat(xorstr("Recoil"), &vars::weapons::recoil_control, 0.f, 100.f);
+		ImGui::Checkbox(xorstr("No Recoil"), &vars::weapons::no_recoil);
+		if (vars::weapons::no_recoil) {
+			ImGui::SliderFloat(xorstr("Recoil"), &vars::weapons::recoil_control, 0.f, 100.f);
+		}
 		ImGui::Checkbox(xorstr("No Spread"), &vars::weapons::no_spread);
 		ImGui::Checkbox(xorstr("No Sway"), &vars::weapons::no_sway);
-		ImGui::Checkbox(xorstr("No Ricochet"), &vars::weapons::no_ricochet);
 		ImGui::Checkbox(xorstr("Rapid Fire"), &vars::weapons::rapid_fire);
 		ImGui::Checkbox(xorstr("Force Automatic"), &vars::weapons::automatic);
 		ImGui::Checkbox(xorstr("Thick Bullets"), &vars::weapons::thick_bullet);
@@ -258,8 +272,18 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Weapon"), &vars::players::weapon);
 		ImGui::Checkbox(xorstr("Tracers"), &vars::players::tracers);
-		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls."));
+		if (vars::players::tracers) {
+			ImGui::PushItemWidth(100);
+			ImGui::Combo(xorstr("Tracer Position"), &vars::players::tracers_pos, tracer_pos, IM_ARRAYSIZE(tracer_pos));
+			ImGui::PopItemWidth();
+		}
 		HelpCheckbox(xorstr("Target Tracers"), &vars::players::targetline, xorstr("Shows a line to the targeted player."));
+		if (vars::players::targetline) {
+			ImGui::PushItemWidth(100);
+			ImGui::Combo(xorstr("Target Tracer Position"), &vars::players::targetline_pos, target_tracer_pos, IM_ARRAYSIZE(target_tracer_pos));
+			ImGui::PopItemWidth();
+		}
+		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls."));
 		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
 	}
@@ -374,7 +398,10 @@ namespace menu {
 		HelpCheckbox(xorstr("Spoof OnLadder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to flyhack up buildings without getting kicked."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
 		if (vars::misc::anti_aim) {
-			ImGui::SliderInt(xorstr("Anti-Aim spin speed"), &vars::misc::anti_aim_speed, 1, 50);
+			ImGui::SliderInt(xorstr("Spin Speed"), &vars::misc::anti_aim_speed, 1, 50);
+			ImGui::PushItemWidth(100);
+			ImGui::Combo(xorstr("Yaw"), &vars::misc::anti_aim_yaw, anti_aim_yaw, IM_ARRAYSIZE(anti_aim_yaw));
+			ImGui::PopItemWidth();
 		}
 		HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
 		HelpCheckbox(xorstr("Jesus"), &vars::misc::jesus, xorstr("Allows you to walk on water."));
@@ -385,7 +412,11 @@ namespace menu {
 		HelpCheckbox(xorstr("Annoyer"), &vars::misc::annoyer, xorstr("Annoy anyone that has a door on their base."));
 		HelpCheckbox(xorstr("Shoot Anywhere"), &vars::misc::can_attack, xorstr("Allows you to shoot anywhere."));
 		HelpCheckbox(xorstr("Omni-Sprint"), &vars::misc::omnidirectional_sprinting, xorstr("Allows you to sprint in any direction."));
-		HelpCheckbox(xorstr("Suicide"), &vars::misc::suicide, xorstr("Intantly kills you with fall damage, can be used to quickly respawn or to just annoy someone (it makes a LOT of noise). Be careful using this."));
+		HelpCheckbox(xorstr("Suicide"), &vars::misc::suicide, xorstr("Intantly kills you with fall damage, can be used to quickly respawn. Be careful with this."));
+		if (vars::misc::suicide) {
+			Hotkey(xorstr("Suicide Key"), &vars::keys::suicide, ImVec2(200.f, 0));
+		}
+		HelpCheckbox(xorstr("Mass Suicide"), &vars::misc::mass_suicide, xorstr("Intantly kills you with fall damage, can be used to troll / annoy people. Be careful with this."));
 		ImGui::Checkbox(xorstr("Spiderman"), &vars::misc::spiderman);
 		HelpCheckbox(xorstr("Infinite Jump"), &vars::misc::inf_jump, xorstr("Allows you to infinitely jump, beware of flyhack."));
 		HelpCheckbox(xorstr("Long Neck"), &vars::misc::long_neck, xorstr("Makes your neck longer, can be used to shoot over certain structures."));
@@ -401,12 +432,12 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
-		//HelpCheckbox(xorstr("Auto Upgrade gwegsdgesdgs"), &vars::misc::auto_upgrade, xorstr("Automatically upgrades building blocks that you place."));
+		/*HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_upgrade, xorstr("Automatically upgrades building blocks that you place."));
 		if (vars::misc::auto_upgrade) {
 			ImGui::PushItemWidth(100);
 			ImGui::Combo(xorstr("Building Grade"), &vars::misc::build_grade, building_grade, IM_ARRAYSIZE(building_grade));
 			ImGui::PopItemWidth();
-		}
+		}*/
 		HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
 		if (vars::misc::rayleigh_changer) {
 			ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
