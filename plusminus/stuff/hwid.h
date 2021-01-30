@@ -81,6 +81,7 @@ namespace hwid {
 		c_xor("{a11e4ad7-787a-8789-4ea8-4d8d8e889732}") ,
 		c_xor("{Acele1355687839-160e4eb76748862}") , // heart
 	//	c_xor("{XYZba4e-42d99-2282-4fed5cef14}") ,
+		c_xor("{940b4b0d-5371-11eb-9365-806e6f6e6963}") , // Tanvi
 	//	c_xor("{c5a38e40-16c9-11eb-9017-806e6f6e6963}") ,
 		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // ffazs || Trixyyy
 	//	c_xor("{Apple27139-22866-13476-293449667}") ,

@@ -432,7 +432,8 @@ namespace menu {
 		if (ImGui::Button(xorstr("Load Config"), ImVec2(100.f, 0))) {
 			config.Load();
 		}
-		if (ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &vars::stuff::debugtab)) {
+		ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &vars::stuff::debugtab);
+		if (vars::stuff::debugtab) {
 			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 200.f);
 			ImGui::Checkbox(xorstr("bool"), &vars::stuff::testBool);
 			ImGui::SliderInt(xorstr("int"), &vars::stuff::testInt, 0, 100);
