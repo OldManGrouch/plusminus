@@ -177,6 +177,11 @@ void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 		}
 	}
 }
+void GlowUpdate(uintptr_t a1) {
+	std::vector<uintptr_t> objectsToRender = read(a1 + 0x18, std::vector<uintptr_t>);
+	objectsToRender.push_back(vars::stor::closestPlayer);
+	return original_glowupdate(a1);
+}
 typedef void(__stdcall* UpgradeToGrade)(DWORD64, BuildingGrade, BasePlayer*);
 uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 	uint32_t uid = read(read(ent + 0x18, uintptr_t) + 0x14, uint32_t);
@@ -338,6 +343,7 @@ void hk_(void* Function, void** Original, void* Detour, bool autoEnable = true) 
 		MH_EnableHook(Function);
 }
 inline void InitHook() {
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x64D6D0), (void**)&original_glowupdate, GlowUpdate);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, SetFlying);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, SendProjectileAttack);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);

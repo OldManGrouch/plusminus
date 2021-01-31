@@ -35,6 +35,9 @@
     <Filter Include="source\init">
       <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\rendering\framework">
+      <UniqueIdentifier>{6c1d0c4b-33d6-4351-a243-23ba21391a18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stuff/xorstr.hpp">
@@ -180,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="rust.h">
       <Filter>source\stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>source\rendering\framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -52,6 +52,9 @@ inline movetowards original_movetowards;
 typedef uintptr_t(__fastcall* createorupdent)(uintptr_t, uintptr_t, long);
 inline createorupdent original_createorupdateentity;
 
+typedef void(__fastcall* glowupd)(uintptr_t);
+inline glowupd original_glowupdate;
+
 typedef void(__fastcall* SetFlying_fn)(void*, void*);
 inline SetFlying_fn original_setflying{};
 

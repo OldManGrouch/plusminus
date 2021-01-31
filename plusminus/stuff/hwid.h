@@ -19,6 +19,7 @@ namespace hwid {
 		c_xor("{e949c641-48b5-11eb-825e-806e6f6e6963}") , // drew1
 		c_xor("{b32e2340-29ef-11eb-b449-806e6f6e6963}") , // kakje
 		c_xor("{191fe0d1-634a-11eb-adb6-806e6f6e6963}") , // pmlas || ! paul
+		c_xor("{d5062f40-5f9c-11e9-816a-806e6f6e6963}") , // Steel
 		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") , // Fluidum film || samuelito something
 		c_xor("{68ec154b-bee5-11ea-8f03-806e6f6e6963}") , // Shtanik
 		c_xor("{ebbb6152-0db2-11eb-a129-806e6f6e6963}") , // FWD || user

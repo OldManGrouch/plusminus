@@ -216,4 +216,7 @@ namespace vars {
 		float gap = 5.f;
 		float length = 5.f;
 	}
+	namespace colors {
+
+	}
 }

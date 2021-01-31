@@ -46,6 +46,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include <d3d11.h>
 #include "init/d3defs.h"
 #include "rendering/rendering.h"
+#include "framework.h"
 #include "menu/imgui/imgui_impl_win32.h"
 #include "menu/imgui/imgui_impl_dx11.h"
 #include "menu/imgui/imgui_internal.h"
