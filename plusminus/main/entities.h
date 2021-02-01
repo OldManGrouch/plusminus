@@ -127,45 +127,45 @@ void EntityLoop() {
 			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-						Skeleton(Player, D2D1::ColorF::LimeGreen);
+						Skeleton(Player, D2D1::ColorF(vars::colors::team_esp.x, vars::colors::team_esp.y, vars::colors::team_esp.z, vars::colors::team_esp.w));
 					}
 					else {
 						if (Player->GetHealth() < 0.2) {
-							Skeleton(Player, D2D1::ColorF::Red);
+							Skeleton(Player, D2D1::ColorF(vars::colors::dead_esp.x, vars::colors::dead_esp.y, vars::colors::dead_esp.z, vars::colors::dead_esp.w));
 						}
 						else {
-							Skeleton(Player, D2D1::ColorF::White);
+							Skeleton(Player, D2D1::ColorF(vars::colors::player_esp.x, vars::colors::player_esp.y, vars::colors::player_esp.z, vars::colors::player_esp.w));
 						}
 					}
 				}
 				else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
-					Skeleton(Player, D2D1::ColorF::Orange);
+					Skeleton(Player, D2D1::ColorF(vars::colors::sleeper_esp.x, vars::colors::sleeper_esp.y, vars::colors::sleeper_esp.z, vars::colors::sleeper_esp.w));
 				}
 			}
 			else if (vars::npc::skeleton && Player->IsNpc()) {
-				Skeleton(Player, D2D1::ColorF::Yellow);
+				Skeleton(Player, D2D1::ColorF(vars::colors::npc_esp.x, vars::colors::npc_esp.y, vars::colors::npc_esp.z, vars::colors::npc_esp.w));
 			}
 
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-						ESP(Player, LocalPlayer, D2D1::ColorF::LimeGreen);
+						ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::team_esp.x, vars::colors::team_esp.y, vars::colors::team_esp.z, vars::colors::team_esp.w));
 					}
 					else {
 						if (Player->GetHealth() < 0.2) {
-							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
+							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::dead_esp.x, vars::colors::dead_esp.y, vars::colors::dead_esp.z, vars::colors::dead_esp.w));
 						}
 						else {
-							ESP(Player, LocalPlayer, D2D1::ColorF::White);
+							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::player_esp.x, vars::colors::player_esp.y, vars::colors::player_esp.z, vars::colors::player_esp.w));
 						}
 					}
 				}
 				else {
-					ESP(Player, LocalPlayer, D2D1::ColorF::Orange);
+					ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::sleeper_esp.x, vars::colors::sleeper_esp.y, vars::colors::sleeper_esp.z, vars::colors::sleeper_esp.w));
 				}
 			}
 			else if (Player->IsNpc()) {
-				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
+				NPCESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::npc_esp.x, vars::colors::npc_esp.y, vars::colors::npc_esp.z, vars::colors::npc_esp.w));
 			}
 
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
@@ -369,14 +369,14 @@ void EntityThreadLoop() {
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (!lol->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
-						DoChams(multimesh, Color(0, 1, 0, 1));
+						DoChams(multimesh, Color(vars::colors::team_esp.x, vars::colors::team_esp.y, vars::colors::team_esp.z, vars::colors::team_esp.w));
 					}
 					else {
-						DoChams(multimesh, Color(1, 0, 0, 1));
+						DoChams(multimesh, Color(vars::colors::chams.x, vars::colors::chams.y, vars::colors::chams.z, vars::colors::chams.w));
 					}
 				}
 				else if (lol->HasFlags(16) && !vars::players::sleeperignore) {
-					DoChams(multimesh, Color(1, 0.5, 0, 1));
+					DoChams(multimesh, Color(vars::colors::sleeper_esp.x, vars::colors::sleeper_esp.y, vars::colors::sleeper_esp.z, vars::colors::sleeper_esp.w));
 				}
 			}
 			if (vars::misc::auto_revive || vars::misc::insta_revive) {

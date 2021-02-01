@@ -36,7 +36,16 @@ private:
 };
 
 #define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
-
+class ItemModProjectile {
+public:
+	FIELD("Assembly-CSharp::ItemModProjectile::numProjectiles", numProjectiles, int);
+	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocity", projectileVelocity, float);
+	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocitySpread", projectileVelocitySpread, float);
+	float GetRandomVelocity() {
+		typedef float(__fastcall* randomvelocity)(ItemModProjectile*);
+		return ((randomvelocity)(vars::stor::gBase + CO::GetRandomVelocity))(this);
+	}
+};
 class BaseEntity {
 public:
 	bool isClient() {
@@ -85,6 +94,39 @@ public:
 	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", sendsMeleeHitNotification, bool);
 	FIELD("Assembly-CSharp::BaseCombatEntity::sendsMeleeHitNotification", lastNotifyFrame, int);
 };
+class Type {
+public:
+	static Type* GetType() {
+		static auto off = METHOD("mscorlib::System::Type::GetType(String): Type");
+
+		return reinterpret_cast<Type * (__cdecl*)(Str)>(off)(Str(L"ItemModProjectile, Assembly-CSharp"));
+	}
+};
+class Component {
+public:
+	template<typename T = Component>
+	T* GetComponent(Type* type) {
+		if (!this || !type) return nullptr;
+
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::GetComponent(Type): Component");
+
+		return reinterpret_cast<T * (__fastcall*)(Component*, Type*)>(off)(this, type);
+	}
+};
+class ItemDefinition : public Component {
+public:
+	FIELD("Assembly-CSharp::ItemDefinition::itemid", itemid, int);
+};
+class BaseProjectile /*: public AttackEntity*/ {
+public:
+	class Magazine {
+	public:
+		FIELD("Assembly-CSharp::Magazine::ammoType", ammoType, ItemDefinition*);
+	};
+	FIELD("Assembly-CSharp::BaseProjectile::primaryMagazine", primaryMagazine, Magazine*);
+	FIELD("Assembly-CSharp::BaseProjectile::projectileVelocityScale", projectileVelocityScale, float);
+};
+
 class DamageTypeList {
 public:
 	enum class DamageType {

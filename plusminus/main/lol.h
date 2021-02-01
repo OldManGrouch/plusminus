@@ -102,5 +102,5 @@ void Test() {
 		Global::doneHits = 0;
 	}*/
 	Renderer::Rectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100, 5), D2D1::ColorF::Black, 1.f);
-	Renderer::FillRectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100 * (aa / MaxValue), 5), D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+	//Renderer::FillRectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100 * (aa / MaxValue), 5), D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 }

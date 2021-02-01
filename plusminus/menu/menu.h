@@ -283,9 +283,13 @@ namespace menu {
 			ImGui::Combo(xorstr("Target Tracer Position"), &vars::players::targetline_pos, target_tracer_pos, IM_ARRAYSIZE(target_tracer_pos));
 			ImGui::PopItemWidth();
 		}
-		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls."));
+		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls.")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
 		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
+		ImGui::ColorButton(xorstr("Players##Color"), vars::colors::player_esp); ImGui::SameLine(); ImGui::Text(xorstr("Player Color"));
+		ImGui::ColorButton(xorstr("Team##Color"), vars::colors::team_esp); ImGui::SameLine(); ImGui::Text(xorstr("Teammate Color"));
+		ImGui::ColorButton(xorstr("Sleepers##Color"), vars::colors::sleeper_esp); ImGui::SameLine(); ImGui::Text(xorstr("Sleeper Color"));
+		ImGui::ColorButton(xorstr("Dead##Color"), vars::colors::dead_esp); ImGui::SameLine(); ImGui::Text(xorstr("Dead Color"));
 	}
 	void npc() {
 		ImGui::Checkbox(xorstr("Name "), &vars::npc::name);
@@ -306,6 +310,7 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Weapon "), &vars::npc::weapon);
 		ImGui::Checkbox(xorstr("Tracers "), &vars::npc::tracers);
+		ImGui::ColorButton(xorstr("Npc##Color"), vars::colors::npc_esp); ImGui::SameLine(); ImGui::Text(xorstr("NPC Color"));
 	}
 	void visuals() {
 		ImGui::Checkbox(xorstr("Raids"), &vars::visuals::raid_esp);
@@ -465,7 +470,7 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &vars::stuff::debugtab);
 		if (vars::stuff::debugtab) {
-			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 200.f);
+			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 3.f);
 			ImGui::Checkbox(xorstr("bool"), &vars::stuff::testBool);
 			ImGui::SliderInt(xorstr("int"), &vars::stuff::testInt, 0, 100);
 			ImGui::InputText(xorstr("char"), vars::stuff::testChar, 0x100);

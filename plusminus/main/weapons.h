@@ -14,8 +14,8 @@ Weapon{1588298435, xorstr("Bolt Action Rifle"), { Ammo{{-1211166256}/*normal 5.5
 Weapon{-778367295, xorstr("L96 Rifle"), { Ammo{{-1211166256}/*normal 5.56*/, 375.f}, Ammo{{1712070256} /*HV 5.56*/, 1350 }, Ammo{{-1321651331, 605467368}/*inc, ex 5.56*/, 675}}, 2 },
 Weapon{-2069578888, xorstr("M249"), { Ammo{{-1211166256}/*normal 5.56*/, 375.f}, Ammo{{1712070256} /*HV 5.56*/, 585 }, Ammo{{-1321651331, 605467368}/*inc, ex 5.56*/, 293}}, 3 },
 
-Weapon{1318558775, xorstr("MP5A4"), { Ammo{{785728077}/*normal pistol*/, 300.f}, Ammo{{-1691396643} /*HV pistol*/, 320}, Ammo{{51984655} /*inc pistol*/, 180}}, 3 },
-Weapon{1796682209, xorstr("Custom SMG"), { Ammo{{785728077}/*normal pistol*/, 300.f}, Ammo{{-1691396643} /*HV pistol*/, 320}, Ammo{{51984655} /*inc pistol*/, 180}}, 3 },
+Weapon{1318558775, xorstr("MP5A4"), { Ammo{{785728077}/*normal pistol*/, 300.f}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 3 },
+Weapon{1796682209, xorstr("Custom SMG"), { Ammo{{785728077}/*normal pistol*/, 300.f}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 3 },
 
 Weapon{-1367281941, xorstr("Waterpipe Shotgun"), { Ammo{{-727717969, -1685290200}/*green, red*/, 225.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, 2 },
 Weapon{-765183617, xorstr("Double Barrel Shotgun"), { Ammo{{-727717969, -1685290200}/*green, red*/, 100.f}, Ammo{{588596902, -1036635990}/*gray, blue*/, 100}}, 2 },
@@ -34,7 +34,7 @@ Weapon{1443579727, xorstr("Hunting Bow"), { Ammo{{-1234735557}/*normal arrow*/, 
 Weapon{649912614, xorstr("Revolver"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 2 },
 Weapon{818877484, xorstr("Semi-Automatic Pistol"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 2 },
 Weapon{-852563019, xorstr("M92 Pistol"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 2 },
-Weapon{1373971859, xorstr("Python Revolver"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol 225*/, 210}}, 2 },
+Weapon{1373971859, xorstr("Python Revolver"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol 225*/, 225}}, 2 },
 Weapon{-1758372725, xorstr("Thompson"), { Ammo{{785728077}/*normal pistol*/, 300}, Ammo{{-1691396643} /*HV pistol*/, 400}, Ammo{{51984655} /*inc pistol*/, 225}}, 3 },
 
 Weapon{-1812555177, xorstr("LR-300 Assault Rifle"), { Ammo{{-1211166256}/*normal 5.56*/, 375}, Ammo{{1712070256} /*HV 5.56*/, 450 }, Ammo{{-1321651331, 605467368}/*inc, ex 5.56*/, 225}}, 3 },
@@ -43,7 +43,7 @@ Weapon{1545779598, xorstr("Assault Rifle"), { Ammo{{-1211166256}/*normal 5.56*/,
 
 
 Weapon{1090916276, xorstr("Pitchfork"), {Ammo{{0}, 25}}, 1 },
-Weapon{1540934679, xorstr("Wooden Spear"), {Ammo{{0}, 20}}, 1 },
+Weapon{1540934679, xorstr("Wooden Spear"), {Ammo{{0}, 25}}, 1 },
 Weapon{1814288539, xorstr("Bone Knife"), {Ammo{{0}, 20}}, 1 },
 Weapon{-363689972, xorstr("Snowball"), {Ammo{{0}, 20}}, 1 },
 Weapon{1789825282, xorstr("Candy Cane Club"), {Ammo{{0}, 20}}, 1 },
@@ -54,7 +54,7 @@ Weapon{-194509282, xorstr("Butcher Knife"), {Ammo{{0}, 20}}, 1 },
 Weapon{1326180354, xorstr("Salvaged Sword"), {Ammo{{0}, 20}}, 1 },
 Weapon{-1469578201, xorstr("Longsword"), {Ammo{{0}, 18}}, 1 },
 Weapon{-1978999529, xorstr("Salvaged Cleaver"), {Ammo{{0}, 18}}, 1 },
-Weapon{1602646136, xorstr("Stone Spear"), {Ammo{{0}, 25}}, 1 },
+Weapon{1602646136, xorstr("Stone Spear"), {Ammo{{0}, 30}}, 1 },
 Weapon{2040726127, xorstr("Combat Knife"), {Ammo{{0}, 30}}, 1 },
 Weapon{963906841, xorstr("Rock"), {Ammo{{0}, 18}}, 1 },
 

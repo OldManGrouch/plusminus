@@ -29,20 +29,18 @@ void WeaponPatch() {
 	}
 	
 }
-float aa = 0.f;
+float w_last_syringe = 0.f;
 void MiscFuncs() {
-	if (aa <= 21.f) {
-		aa += 0.1f; // count the timer up
-	}
 	Item* weapon = LocalPlayer->GetActiveWeapon(); // get active item
 	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && vars::misc::faster_healing) { // check item thru id
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity
 		write(Held + 0x278, 1.f, float); // disable animation cause it tries using the syringe and gives violations
 		bool deployed = read(Held + 0x188, bool); // check if is deployed
-		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && aa >= 21.f && deployed) { // check if fire button is down and if the timer has reached a specific number
+		float curtime = LocalPlayer->Time();
+		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) { // check if fire button is down and if the timer has reached a specific number
 			typedef void(__stdcall* ServerRPC)(DWORD64, Str); // define server rpc
 			((ServerRPC)(vars::stor::gBase + CO::ServerRPC))(Held, Str(xorstr(L"UseSelf"))); // call serverrpc
-			aa = 0.f; // reset the timer
+			w_last_syringe = curtime;
 		}
 	}
 	if (vars::misc::gravity) {

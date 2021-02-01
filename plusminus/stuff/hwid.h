@@ -11,28 +11,38 @@ namespace hwid {
 		c_xor("{1b7803eb-da69-11ea-a112-VmXJLbfL2MXp}") , // Gytis
 		c_xor("{6770ccba-5e67-11eb-a025-806e6f6e6963}") , // sent
 		c_xor("{04de4113-b270-11ea-bf8a-806e6f6e6963}") , // Willy
-		c_xor("{ec4c96f2-4ff3-11eb-8f02-806e6f6e6963}") , // Lukas Andrulis!
+		c_xor("{Katina5021-32473-15580-41222363}") , // Lukas Andrulis!
 		c_xor("{1e038f69-2ac3-11eb-b6d7-806e6f6e6963}") , // Reese
+		c_xor("{3b2a63d2-5ba9-11eb-a741-806e6f6e6963}") , // xy0
+		c_xor("{Apple27139-22866-13476-293449667}") , // lolxd
 		c_xor("{Apple12640-29747-31624-225401325}") , // bholl
 		c_xor("{f2729700-44f8-11eb-96c3-806e6f6e6963}") , // Tareq || OP Nil
 		c_xor("{772a82f9-243f-11eb-ab4e-806e6f6e6963}") , // Patrik || Chilion
 		c_xor("{e949c641-48b5-11eb-825e-806e6f6e6963}") , // drew1
+		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") , // koks69
+		c_xor("{beba3940-0093-11eb-8bf8-806e6f6e6963}") , // grill
 		c_xor("{b32e2340-29ef-11eb-b449-806e6f6e6963}") , // kakje
-		c_xor("{191fe0d1-634a-11eb-adb6-806e6f6e6963}") , // pmlas || ! paul
+		c_xor("{527fe517-2c96-11eb-a46e-806e6f6e6963}") , // RacAttack || kaden
+		c_xor("{e1581690-9787-11ea-ba22-806e6f6e6963}") , // olegs || Aut0ft
+		c_xor("{B59lAxc35998-292-108962307103567}6") , // pmlas || ! paul
 		c_xor("{d5062f40-5f9c-11e9-816a-806e6f6e6963}") , // Steel
 		c_xor("{91d13540-29f7-11eb-aba3-806e6f6e6963}") , // Fluidum film || samuelito something
 		c_xor("{68ec154b-bee5-11ea-8f03-806e6f6e6963}") , // Shtanik
 		c_xor("{ebbb6152-0db2-11eb-a129-806e6f6e6963}") , // FWD || user
 		c_xor("{f79de240-0082-11eb-85f1-806e6f6e6963}") , // SAJACK
+		c_xor("{be44d373-43bb-11eb-b738-806e6f6e6963}") , // Sakupen
 		c_xor("{ad063d05-5eac-11eb-8ea7-806e6f6e6963}") , // layde || MannyNoBrain
-		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // dzingagaming
 		c_xor("{e0ec89c0-2a3a-11eb-ba6e-806e6f6e6963}") , // arego 
 		c_xor("{aef3b484-2d63-11eb-8e22-806e6f6e6963}") , // evans 
 		c_xor("{186ecf40-96ab-11e9-84df-806e6f6e6963}") , // weeju
+		c_xor("{b293c59c-f1b2-4c18-bd04-e7d53d695196}") , // Savio
 		c_xor("{3a351acb-0189-4500-986d-d1e40f5ee732}") , // Lucky
 		c_xor("{2dba80c0-00da-11eb-b0f4-806e6f6e6963}") , // Mornz
 		c_xor("{2bdfe3b4-4862-11eb-b3fe-806e6f6e6963}") , // paul
 		c_xor("{c42035ee-08eb-11eb-bde0-806e6f6e6963}") , // tater || Dzingaarms
+
+		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // WTF?????????
+
 		c_xor("{f127d48f-6514-4845-bb36-b5239ecc3a9e}") , // bryce
 		c_xor("{71a79d40-605c-11eb-9b83-806e6f6e6963}") , // Jackt
 		c_xor("{d5eb2540-5ed3-11eb-abe0-806e6f6e6963}") , // Shark
@@ -58,7 +68,7 @@ namespace hwid {
 		c_xor("{8f86c2c0-4935-11eb-8993-806e6f6e6963}") , // todor || Zillaa
 		c_xor("{Apple16813-25497-5794-1134513140}") , // !Nutinurmom
 		c_xor("{89e8ff0c-464d-11eb-84e6-806e6f6e6963}") , // Allen || rootz
-		c_xor("{Apple10078-6437-31644-1638813775}") , // roadt || FlatMilk
+		c_xor("{Apple17558-13995-23585-1057714074}") , // roadt || FlatMilk
 		c_xor("{4a2a9472-4480-11eb-94c4-806e6f6e6963}") , // BZ
 		c_xor("{5a4efb4b-c744-11ea-aaf9-806e6f6e6963}") , // meydogg76
 		c_xor("{6fca8781-d0b8-11ea-b354-806e6f6e6963}") , // DREIK ON HIs fucking shadow pc
@@ -70,9 +80,10 @@ namespace hwid {
 		c_xor("{a4294740-f2c1-11ea-a848-806e6f6e6963}") , // nicki || Pattesutter
 		c_xor("{0e860a29-255e-11eb-a285-806e6f6e6963}") , // LegendOfMist || kgera
 		c_xor("{3b4d74e5-4c6d-11eb-8628-806e6f6e6963}") , // Jaylen
-		c_xor("{Pepz-65797-38314-7457-753897835}") , // Wavey || astro
+		c_xor("{Pepz-92181-31748-8459-143276276}") , // Wavey || astro
 		c_xor("{dppl957740-23844-538cb-acbc2a7}") , // JamesCharles the weirdo
 		c_xor("{0pplec34fb-582e9-48a5-e8f578bee7}") , // Bast
+		c_xor("{7d7230f7-5d13-11eb-a0d8-806e6f6e6963}") , // lisa- || SmokeSignals
 		c_xor("{a35337f7-4e2f-11eb-b234-806e6f6e6963}") , // Liam || smell
 		c_xor("{Apple13536-29784-23450-2176415012}") , // Spac3y || User
 		c_xor("{90ba0ba2-ff2b-11ea-88bb-806e6f6e6963}") , // lazab
@@ -80,10 +91,11 @@ namespace hwid {
 		c_xor("{cb5172c0-29ee-11eb-ae4b-806e6f6e6963}") ,
 		c_xor("{1cfdc633-cacd-11e9-8cdd-806e6f6e6963}") , // Dafydd || poge
 		c_xor("{a11e4ad7-787a-8789-4ea8-4d8d8e889732}") ,
+		c_xor("{6f539c40-59e7-11eb-b372-806e6f6e6963}") , // venom
+		c_xor("{c32b3520-61d9-11eb-8c42-806e6f6e6963}") , // gavin
 		c_xor("{Acele1355687839-160e4eb76748862}") , // heart
 		c_xor("{940b4b0d-5371-11eb-9365-806e6f6e6963}") , // Tanvi
 	    c_xor("{c5a38e40-16c9-11eb-9017-806e6f6e6963}") , // cigan123
-		c_xor("{0a0c1ac0-2a39-11eb-9773-806e6f6e6963}") , // ffazs || Trixyyy
 		c_xor("{69c38fef-1749-4ceb-868c-94f51d60f8a7}") , // Lucky
 		c_xor("{v1jr8308-u7vp-d83f-7a74-uts3q62cm56b}") , // leosh
 		c_xor("{36alb5f597249dfe-295de99c3c970d85f1") , // skittlez

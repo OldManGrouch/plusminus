@@ -1,8 +1,11 @@
 typedef void(__fastcall* SendProjectileAttack_fn)(void*, void*);
 inline SendProjectileAttack_fn original_sendprojectileattack{ };
 
-typedef Projectile* (__fastcall* create_projectile_fn)(void*, void*, Vector3, Vector3, Vector3);
+typedef Projectile* (__fastcall* create_projectile_fn)(uintptr_t, void*, Vector3, Vector3, Vector3);
 inline create_projectile_fn original_create_projectile{ };
+
+typedef Projectile* (__fastcall* create_melee_projectile_fn)(uintptr_t, Str, Vector3, Vector3, Vector3);
+inline create_melee_projectile_fn original_melee_create_projectile{ };
 
 typedef bool(__fastcall* can_attack_fn)(void*, void*);
 inline can_attack_fn original_canattack;

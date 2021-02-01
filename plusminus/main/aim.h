@@ -103,14 +103,58 @@ Vector3 Prediction(BasePlayer* Player) {
 		else if (!speed && vars::weapons::fast_bullets) {
 			speed = 250.f * 1.3;
 		}
-		if (active->GetID() == 884424049 && vars::stuff::testBool) { // compound bow
-			speed *= active->GetStringBonusVelocity();
-		}
 		float gravity = GetGravity(ammo);
 		float BulletTime = Dist / speed;
 		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
 		BonePos += PredictVel;
-		BonePos.y += (4.905f * BulletTime * BulletTime) * gravity;
+		float predicty = (4.905f * BulletTime * BulletTime) * gravity;
+
+		if (active->GetID() == 1443579727 || active->GetID() == 1953903201 || active->GetID() == 884424049) { // bow and nailgun
+			if (Dist <= 220.f) {
+				BonePos.y += predicty;
+			}
+			else if (Dist > 220.f && Dist <= 260.f) {
+				BonePos.y += 1.045f * predicty;
+			}
+			else if (Dist > 260.f && Dist <= 271.f) {
+				BonePos.y += 1.05f * predicty;
+			}
+			else if (Dist > 271.f && Dist <= 284.5f) {
+				BonePos.y += 1.06f * predicty;
+			}
+			else if (Dist > 284.5f && Dist <= 291.f) {
+				BonePos.y += 1.07f * predicty;
+			}
+			else if (Dist > 291.f) {
+				BonePos.y += 1.08f * predicty;
+			}
+		}
+		else if (active->GetID() == -75944661) { // eoka
+			if (Dist <= 180.f) {
+				BonePos.y += predicty;
+			}
+			else if (Dist > 180.f && Dist <= 220.f) {
+				BonePos.y += 1.5f * predicty;
+			}
+			else if (Dist > 220.f && Dist <= 240.f) {
+				BonePos.y += 2.1f * predicty;
+			}
+			else if (Dist > 240.f && Dist <= 255.f) {
+				BonePos.y += 2.5f * predicty;
+			}
+			else if (Dist > 255.f && Dist <= 265.f) {
+				BonePos.y += 3.0f * predicty;
+			}
+			else if (Dist > 265.f && Dist <= 273.f) {
+				BonePos.y += 3.5f * predicty;
+			}
+			else if (Dist > 273.f) {
+				BonePos.y += 3.8f * predicty;
+			}
+		}
+		else {
+			BonePos.y += predicty;
+		}
 	}
 	return BonePos;
 }

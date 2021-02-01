@@ -28,6 +28,7 @@
 #include "stuff/xorstr.hpp"
 #include "stuff/crt.h"
 #include <comdef.h>
+
 #include "menu/imgui/imgui.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #include <Lmcons.h>
@@ -41,6 +42,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "main/weapons.h"
 #include "stuff/sdk.h"
 #include "stuff/il2cpp.h"
+
 #include "rust.h"
 #include "main/targeting.h"
 #include <d3d11.h>
@@ -52,11 +54,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "menu/imgui/imgui_internal.h"
 #include "menu/imgui/imgui_elements.h"
 #include "hooks/minhook/include/MinHook.h"
+#include "logsystem.h"
 #include "main/aim.h"
 #include "main/misc.h"
 #include "main/lol.h"
 #include "main/esp.h"
-#include "logsystem.h"
+
 #include "main/entities.h"
 
 #include "main/projectiles.h"

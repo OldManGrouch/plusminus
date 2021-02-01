@@ -7,7 +7,7 @@ namespace vars {
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
-		float testFloat = 0.f;
+		float testFloat = 1.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		bool Panic = false;
@@ -217,6 +217,12 @@ namespace vars {
 		float length = 5.f;
 	}
 	namespace colors {
+		ImVec4 player_esp = { 1.0f, 1.0f, 1.0f, 1.0f };
+		ImVec4 team_esp = { 0.f, 1.0f, 0.f, 1.0f };
+		ImVec4 dead_esp = { 1.0f, 0.f, 0.f, 1.0f };
+		ImVec4 sleeper_esp = { 1.0f, 0.5f, 0.f, 1.0f };
+		ImVec4 chams = { 1.0f, 0.f, 0.f, 1.0f };
 
+		ImVec4 npc_esp = { 1.0f, 1.0f, 0.f, 1.0f };
 	}
 }
