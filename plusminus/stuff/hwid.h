@@ -14,6 +14,7 @@ namespace hwid {
 		c_xor("{Katina5021-32473-15580-41222363}") , // Lukas Andrulis!
 		c_xor("{1e038f69-2ac3-11eb-b6d7-806e6f6e6963}") , // Reese
 		c_xor("{3b2a63d2-5ba9-11eb-a741-806e6f6e6963}") , // xy0
+		c_xor("{2b2d3ddb-3b02-11eb-95bc-806e6f6e6963}") , // Crisp
 		c_xor("{Apple27139-22866-13476-293449667}") , // lolxd
 		c_xor("{Apple12640-29747-31624-225401325}") , // bholl
 		c_xor("{f2729700-44f8-11eb-96c3-806e6f6e6963}") , // Tareq || OP Nil
