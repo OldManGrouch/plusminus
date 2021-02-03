@@ -1,7 +1,7 @@
 #include <map>
 float GetFov(BasePlayer* Entity, BoneList Bone) {
 	Vector2 ScreenPos;
-	if (!utils::w2s(Entity->GetBoneByID(Bone), ScreenPos)) return 1000.f;
+	if (!utils::w2s(Entity->get_bone_pos(Bone), ScreenPos)) return 1000.f;
 	return Math::Calc2D_Dist(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), ScreenPos);
 }
 float GetFovHeli(Vector3 pos) {
@@ -84,10 +84,10 @@ Vector3 Prediction(BasePlayer* Player) {
 	Item* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
-	Vector3 BonePos = Player->GetBoneByID(head);
+	Vector3 BonePos = Player->get_bone_pos(head);
 	Vector3 Local;
-	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) { Local = LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0); }
-	else { Local = LocalPlayer->GetBoneByID(head); }
+	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) { Local = LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0); }
+	else { Local = LocalPlayer->get_bone_pos(head); }
 	float Dist = Math::Calc3D_Dist(Local, BonePos);
 	if (Dist > 0.001f) {
 		float speed;
@@ -165,7 +165,7 @@ void Normalize(float& Yaw, float& Pitch) {
 	else if (Yaw > 360) Yaw -= 360;
 }
 void GoToTarget(BasePlayer* player) {
-	Vector3 Local = LocalPlayer->GetBoneByID(head);
+	Vector3 Local = LocalPlayer->get_bone_pos(head);
 	Vector3 PlayerPos = Prediction(player);
 	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);

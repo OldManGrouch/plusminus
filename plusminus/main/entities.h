@@ -38,7 +38,7 @@ void EntityLoop() {
 					explPos, 
 					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"), 
 					explosion.name.c_str(), 
-					(int)Math::Calc3D_Dist(explosion.position, LocalPlayer->GetBoneByID(head)), 
+					(int)Math::Calc3D_Dist(explosion.position, LocalPlayer->get_bone_pos(head)), 
 					(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
 					D2D1::ColorF::Red, 
 					true, 
@@ -76,7 +76,7 @@ void EntityLoop() {
 	else { Renderer::String(Vector2(100, 85), xorstr(L"patrol heli: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
 	if (vars::stor::closestPlayer) {
 		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-		Vector3 playerPos = TargetPlayer->GetBoneByID(head);
+		Vector3 playerPos = TargetPlayer->get_bone_pos(head);
 		int playerX = playerPos.x;
 		int playerY = playerPos.y;
 		int playerZ = playerPos.z;
@@ -85,7 +85,7 @@ void EntityLoop() {
 	}
 	else { Renderer::String(Vector2(100, 100), xorstr(L"player: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
 	if (LocalPlayer) {
-		Vector3 localPos = LocalPlayer->GetBoneByID(head);
+		Vector3 localPos = LocalPlayer->get_bone_pos(head);
 		int localX = localPos.x;
 		int localY = localPos.y;
 		int localZ = localPos.z;
@@ -171,9 +171,9 @@ void EntityLoop() {
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
 			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
 			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
-			if (Player->GetBoneByID(head).x == 0 || Player->GetBoneByID(head).y == 0 || Player->GetBoneByID(head).z == 0) continue;
+			if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 			if (vars::combat::ignore_players) continue;
-			if (Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), Player->GetBoneByID(head)) > vars::combat::range) continue;
+			if (Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
 
 			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
 				FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
@@ -194,7 +194,7 @@ void EntityLoop() {
 				wchar_t buffer[256];
 				wchar_t buffera[256];
 				if (vars::visuals::patrol_heli) {
-					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos));
+					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos));
 					swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
 					Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
 					Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
@@ -289,7 +289,7 @@ void EntityLoop() {
 	}
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	/*targeting shit*/
-	if (TargetPlayer->GetBoneByID(head).x == 0 || TargetPlayer->GetBoneByID(head).y == 0 || TargetPlayer->GetBoneByID(head).z == 0) {
+	if (TargetPlayer->get_bone_pos(head).x == 0 || TargetPlayer->get_bone_pos(head).y == 0 || TargetPlayer->get_bone_pos(head).z == 0) {
 		vars::stor::closestPlayer = NULL;
 	}
 	if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
@@ -360,7 +360,7 @@ void EntityThreadLoop() {
 					if (texture) {
 						auto rect = il2cpp::game::get_rect(sprite);
 						il2cpp::game::set_color(Color(1, 1, 1, 1));
-						il2cpp::game::DrawTexture(Rect(lol->GetBoneByID(head).x, lol->GetBoneByID(head).y, rect.wid / 7, rect.hei / 7), texture);
+						il2cpp::game::DrawTexture(Rect(lol->get_bone_pos(head).x, lol->get_bone_pos(head).y, rect.wid / 7, rect.hei / 7), texture);
 					}
 				}
 			}*/
@@ -390,7 +390,7 @@ void EntityThreadLoop() {
 					PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (vars::combat::silent_melee && weaponmelee && Math::Calc3D_Dist(lol->GetBoneByID(head), LocalPlayer->GetBoneByID(head)) <= 3.5f) {
+			if (vars::combat::silent_melee && weaponmelee && Math::Calc3D_Dist(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
 				Target target = TargetMeleeTest((BasePlayer*)ent, active);
 				DoMeleeAttack(target, active, true);
 			}
@@ -410,7 +410,7 @@ void EntityThreadLoop() {
 		if (vars::weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->GetBoneByID(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f) { continue; }
+			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f) { continue; }
 			bool iskill = read(read(Object + 0x28, uintptr_t) + 0x15C, bool);
 			if (!iskill) {
 				target.entity = (BasePlayer*)ent;
@@ -432,7 +432,7 @@ void EntityThreadLoop() {
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
 			Target target = Target();
 			target.valid = true;
-			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->GetBoneByID(head).y, utils::GetEntityPosition(gameObject).z);
+			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z);
 			target.entity = (BasePlayer*)ent;
 			DoMeleeAttack(target, active, false);
 		}

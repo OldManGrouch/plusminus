@@ -211,6 +211,15 @@ public:
 	DWORD64 GetSteamID() {
 		return read(this + oUserID, DWORD64);
 	}
+	Quaternion GetRotation(DWORD64 transform) {
+		if (!transform) return Quaternion{ 0.f, 0.f, 0.f, 0.0f };
+		{
+			Quaternion pos = Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+			static auto get_rotation = reinterpret_cast<void(__fastcall*)(DWORD64, Quaternion&)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0xDD22A0); // 
+			get_rotation(transform, pos);
+			return pos;
+		}
+	}
 	Vector3 GetPosition(DWORD64 transform) {
 		if (!transform) return Vector3{ 0.f, 0.f, 0.f };
 		{
@@ -219,13 +228,6 @@ public:
 			get_position(transform, pos);
 			return pos;
 		}
-	}
-	typedef Quaternion(__stdcall* get_rotation)(DWORD64);
-	Quaternion GetRotation(DWORD64 transform) {
-		if (!transform) return Quaternion();
-		get_rotation original = (get_rotation)(vars::stor::gBase + CO::get_rotation);
-		Quaternion res = original(transform);
-		return res;
 	}
 	DWORD64 GetTransform(int bone) {
 		DWORD64 player_model = read(this + 0x118, DWORD64);// public Model model;_public class BaseEntity : BaseNetworkable, IProvider, ILerpTarget, IPrefabPreProcess // TypeDefIndex: 8714
@@ -258,11 +260,11 @@ public:
 	bool HasFlags(int Flg) {
 		return (read(this + oPlayerFlags, int) & Flg);
 	}
-	Vector3 GetBoneByID(BoneList BoneID) {
+	Vector3 get_bone_pos(BoneList BoneID) {
 		return GetPosition(GetTransform(BoneID));
 	}
-	Quaternion GetRotationByID(BoneList BoneID) {
-		return GetRotation(GrabTransform(BoneID));
+	Quaternion get_bone_rot(BoneList BoneID) {
+		return GetRotation(GetTransform(BoneID));
 	}
 	int GetTeamSize() {
 		DWORD64 ClientTeam = read(this + oClientTeam, DWORD64);

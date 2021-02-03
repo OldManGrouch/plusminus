@@ -26,14 +26,9 @@ void HWID_Checker(HINSTANCE hModule) {
 	}
 	else {
 		CloseHandle(hMutex);
-		if (hwid::sec::DBContainsHwid(lol)) {
-			system(success.c_str());
-			CreateThread(NULL, 0, Start, NULL, 0, NULL);
-		}
-		else {
-			system(fail.c_str());
-			exit(0);
-		}
+		system(success.c_str());
+		DisableThreadLibraryCalls(hModule);
+		CreateThread(NULL, 0, Start, NULL, 0, NULL);
 	}
 #endif
 }

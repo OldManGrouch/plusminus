@@ -62,8 +62,8 @@ void InitCheat() {
 			startPos = Vector2(screenX / 2, screenY / 2);
 		}
 		Vector2 ScreenPos;
-		if (!(TargetPlayerA->GetBoneByID(spine1).x == 0 && TargetPlayerA->GetBoneByID(spine1).y == 0 && TargetPlayerA->GetBoneByID(spine1).z == 0)) {
-			if (utils::w2s(TargetPlayerA->GetBoneByID(head), ScreenPos))
+		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
+			if (utils::w2s(TargetPlayerA->get_bone_pos(head), ScreenPos))
 				Renderer::Line(startPos, ScreenPos, D2D1::ColorF::Red, 1.f);
 		}
 	}

@@ -5,9 +5,9 @@ namespace otherEsp {
 				DWORD64 gameObject = read(ObjectClass + 0x30, DWORD64);
 				Vector2 screen_Pos;
 				if (utils::w2s(utils::GetEntityPosition(gameObject), screen_Pos)) {
-					if ((int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
+					if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
 						wchar_t distance[64];
-						_swprintf(distance, L"[%d m]", (int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), utils::GetEntityPosition(gameObject)));
+						_swprintf(distance, L"[%d m]", (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
 						wchar_t text[64];
 						_swprintf(text, targettext);
 						Renderer::String({ screen_Pos.x, screen_Pos.y }, text, color, true, true);
@@ -25,13 +25,13 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bradley = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				int health = read(bradley + oHealth, float);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t buffer[256];
 					wchar_t buffera[256];
-					swprintf(buffer, xorstr(L"Bradley APC [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos));
+					swprintf(buffer, xorstr(L"Bradley APC [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos));
 					swprintf(buffera, xorstr(L"[%d HP]"), health);
 					if (health > 0.2) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
@@ -49,7 +49,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 corpse = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t cName[0x100];
@@ -71,7 +71,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 cupboard = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t TCName[0x100];
@@ -94,7 +94,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -116,7 +116,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -136,7 +136,7 @@ namespace otherEsp {
 		if (strstr(buff, xorstr("c4_explosion.prefab"))) {
 			DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 			Vector3 pos = utils::GetEntityPosition(object);
-			int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+			int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 			Vector2 screen;
 			if (utils::w2s(pos, screen)) {
 				wchar_t explosionc4[0x100];
@@ -152,7 +152,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 stash = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t sName[0x100];
@@ -182,7 +182,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 crate = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t crateName[0x100];
@@ -218,7 +218,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 item = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), pos);
+				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t itemName[0x100];
@@ -254,7 +254,7 @@ void Skeleton(BasePlayer* BasePlayer, D2D1::ColorF color) {
 
 	//get bones screen pos
 	for (int j = 0; j < 15; j++) {
-		if (!utils::w2s(BasePlayer->GetBoneByID(Bones[j]), BonesPos[j]))
+		if (!utils::w2s(BasePlayer->get_bone_pos(Bones[j]), BonesPos[j]))
 			return;
 	}
 	for (int j = 0; j < 15; j += 3) {
@@ -293,21 +293,21 @@ inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 
 	IsDucked ducked = (IsDucked)(vars::stor::gBase + CO::IsDucked);
 	if (ducked(player)) {
-		bounds.center = player->GetBoneByID(l_foot).midPoint(player->GetBoneByID(r_foot)) + Vector3(0.0f, 0.55f, 0.0f);
+		bounds.center = player->get_bone_pos(l_foot).midPoint(player->get_bone_pos(r_foot)) + Vector3(0.0f, 0.55f, 0.0f);
 		bounds.extents = Vector3(0.4f, 0.65f, 0.4f);
 	}
 	else {
 		if (player->HasFlags(PlayerFlags::Wounded) || player->HasFlags(PlayerFlags::Sleeping)) {
-			bounds.center = player->GetBoneByID(pelvis);
+			bounds.center = player->get_bone_pos(pelvis);
 			bounds.extents = Vector3(0.9f, 0.2f, 0.4f);
 		}
 		else {
-			bounds.center = player->GetBoneByID(l_foot).midPoint(player->GetBoneByID(r_foot)) + Vector3(0.0f, 0.85f, 0.0f);
+			bounds.center = player->get_bone_pos(l_foot).midPoint(player->get_bone_pos(r_foot)) + Vector3(0.0f, 0.85f, 0.0f);
 			bounds.extents = Vector3(0.4f, 0.9f, 0.4f);
 		}
 	}
 	
-	float y = Math::EulerAngles(player->GetRotationByID(head)).y;
+	float y = Math::EulerAngles(player->get_bone_rot(head)).y;
 	Vector3 center = bounds.center;
 	Vector3 extents = bounds.extents;
 	Vector3 frontTopLeft = Math::RotatePoint(center, Vector3(center.x - extents.x, center.y + extents.y, center.z - extents.z), y);
@@ -346,17 +346,17 @@ inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 	if (vars::players::sleeperignore && BP->HasFlags(16)) return;
 	Vector2 tempFeetR, tempFeetL;
-	if (utils::w2s(BP->GetBoneByID(r_foot), tempFeetR) && utils::w2s(BP->GetBoneByID(l_foot), tempFeetL)) {
+	if (utils::w2s(BP->get_bone_pos(r_foot), tempFeetR) && utils::w2s(BP->get_bone_pos(l_foot), tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
 		Vector2 tempHead;
-		if (utils::w2s(BP->GetBoneByID(jaw) + Vector3(0.f, 0.16f, 0.f), tempHead)) {
+		if (utils::w2s(BP->get_bone_pos(jaw) + Vector3(0.f, 0.16f, 0.f), tempHead)) {
 			Vector2 tempFeet = (tempFeetR + tempFeetL) / 2.f;
 			float Entity_h = tempHead.y - tempFeet.y;
 			float w = Entity_h / 4;
 			float Entity_x = tempFeet.x - w;
 			float Entity_y = tempFeet.y;
 			float Entity_w = Entity_h / 2;
-			Vector3 middlePointWorld = BP->GetBoneByID(l_foot).midPoint(BP->GetBoneByID(r_foot));
+			Vector3 middlePointWorld = BP->get_bone_pos(l_foot).midPoint(BP->get_bone_pos(r_foot));
 			int CurPos = 0;
 			int CurPos2 = 0;
 			Vector2 middlePointPlayerTop;
@@ -406,7 +406,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::players::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->GetBoneByID(head), BP->GetBoneByID(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, s, color, true, true);
 					CurPos += 15;
 				}
@@ -414,7 +414,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 100.f;
 					if (vars::players::healthbarstyle == 0) {
-						if ((int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BP->GetBoneByID(head)) < 201) {
+						if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}
@@ -460,17 +460,17 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 }
 void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 	Vector2 tempFeetR, tempFeetL;
-	if (utils::w2s(BP->GetBoneByID(r_foot), tempFeetR) && utils::w2s(BP->GetBoneByID(l_foot), tempFeetL)) {
+	if (utils::w2s(BP->get_bone_pos(r_foot), tempFeetR) && utils::w2s(BP->get_bone_pos(l_foot), tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
 		Vector2 tempHead;
-		if (utils::w2s(BP->GetBoneByID(jaw) + Vector3(0.f, 0.16f, 0.f), tempHead)) {
+		if (utils::w2s(BP->get_bone_pos(jaw) + Vector3(0.f, 0.16f, 0.f), tempHead)) {
 			Vector2 tempFeet = (tempFeetR + tempFeetL) / 2.f;
 			float Entity_h = tempHead.y - tempFeet.y;
 			float w = Entity_h / 4;
 			float Entity_x = tempFeet.x - w;
 			float Entity_y = tempFeet.y;
 			float Entity_w = Entity_h / 2;
-			Vector3 middlePointWorld = BP->GetBoneByID(l_foot).midPoint(BP->GetBoneByID(r_foot));
+			Vector3 middlePointWorld = BP->get_bone_pos(l_foot).midPoint(BP->get_bone_pos(r_foot));
 			int CurPos = 0;
 			int CurPos2 = 0;
 			Vector2 middlePointPlayerTop;
@@ -507,7 +507,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::npc::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->GetBoneByID(head), BP->GetBoneByID(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, s, color, true, true);
 					CurPos2 += 15;
 				}
@@ -515,7 +515,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 150.f;
 					if (vars::npc::healthbarstyle == 0) {
-						if ((int)Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), BP->GetBoneByID(head)) < 201) {
+						if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}

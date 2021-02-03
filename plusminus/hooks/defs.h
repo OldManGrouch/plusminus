@@ -10,7 +10,7 @@ inline create_melee_projectile_fn original_melee_create_projectile{ };
 typedef bool(__fastcall* can_attack_fn)(void*, void*);
 inline can_attack_fn original_canattack;
 
-typedef void(__fastcall* clientinput_fn)(DWORD64, DWORD64);
+typedef void(__fastcall* clientinput_fn)(BasePlayer*, DWORD64);
 inline clientinput_fn original_clientinput;
 
 typedef void(__fastcall* dohitnotify)(BaseCombatEntity*, HitInfo*);

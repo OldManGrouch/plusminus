@@ -14,7 +14,7 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	DWORD64 staticHitTest = read(vars::stor::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
 	DWORD64 newHitTest = il2cpp::il2cpp_object_new(staticHitTest);
 
-	DWORD64 trans; Ray ray = Ray(LocalPlayer->GetBoneByID(neck), (target.position - LocalPlayer->GetBoneByID(neck)).Normalized());
+	DWORD64 trans; Ray ray = Ray(LocalPlayer->get_bone_pos(neck), (target.position - LocalPlayer->get_bone_pos(neck)).Normalized());
 	if (!target.entity) return;
 	if (transform) { trans = target.entity->GrabTransform(head); }
 	else { trans = utils::GetTransform((DWORD64)target.entity); } if (!trans) return;

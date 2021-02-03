@@ -63,13 +63,13 @@ pUncStr Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
 }
 Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-	Vector3 heliDir = (HeliPrediction(LocalPlayer->GetBoneByID(head)) - LocalPlayer->GetBoneByID(head)).Normalized();
+	Vector3 heliDir = (HeliPrediction(LocalPlayer->get_bone_pos(head)) - LocalPlayer->get_bone_pos(head)).Normalized();
 	Vector3 playerDir;
 	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
-		playerDir = (Prediction(TargetPlayer) - (LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0))).Normalized();
+		playerDir = (Prediction(TargetPlayer) - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
 	}
 	else {
-		playerDir = (Prediction(TargetPlayer) - LocalPlayer->GetBoneByID(head)).Normalized();
+		playerDir = (Prediction(TargetPlayer) - LocalPlayer->get_bone_pos(head)).Normalized();
 	}
 	if (vars::combat::psilent) {
 		if (!vars::combat::psilentonkey) {
@@ -97,7 +97,7 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 	return original_aimconedirection(aimCone, inputVec, anywhereInside);
 }
 
-void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
+void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
 	if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
 	typedef void(__stdcall* set_rayleigh)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
@@ -118,7 +118,7 @@ void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 		int contents = read(mag + 0x1C, int);
-		if (contents > 0 && utils::LineOfSight(TargetPlayer->GetBoneByID(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->GetBoneByID(head) + Vector3(0, 1.15, 0) : LocalPlayer->GetBoneByID(head))) {
+		if (contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer->get_bone_pos(head))) {
 			INPUT    Input = { 0 };
 			// left down 
 			Input.type = INPUT_MOUSE;
@@ -146,7 +146,7 @@ void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 	il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 	WeaponPatch();
 	MiscFuncs();
-	typedef void(__stdcall* ClientInput)(DWORD64, DWORD64);
+	typedef void(__stdcall* ClientInput)(BasePlayer*, DWORD64);
 	((ClientInput)original_clientinput)(baseplayah, ModelState);
 	if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
 	if (vars::misc::silent_walk) LocalPlayer->RemoveFlag(ModelStateFlag::OnGround);
@@ -154,24 +154,24 @@ void ClientInput(DWORD64 baseplayah, DWORD64 ModelState) {
 typedef float(__stdcall* Total)(DWORD64);
 typedef int(__stdcall* get_frameCount)();
 void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
-	if (entity->sendsHitNotification() && info->Initiator() == LocalPlayer && !(entity == info->Initiator())) {
-		if (((get_frameCount)(vars::stor::gBase + CO::get_frameCount))() != entity->lastNotifyFrame()) {
-			entity->lastNotifyFrame() = ((get_frameCount)(vars::stor::gBase + 0x14E81F0))();
-			if (entity->isClient() && info->Initiator() == LocalPlayer) {
-				auto* player = reinterpret_cast<BasePlayer*>(entity);
-				if (entity->IsPlayer()) {
-					if (vars::misc::hit_logs) {
-						LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), player->GetName(), info->damageTypes()->Total()), 5.f);
-					}
-					if (vars::misc::custom_hitsound) {
+	if (vars::misc::hit_logs) {
+		LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), info->damageTypes()->Total()), 5.f);
+	}
+	if (vars::misc::custom_hitsound) {
+		if (entity->sendsHitNotification() && info->Initiator() == LocalPlayer && !(entity == info->Initiator())) {
+			if (((get_frameCount)(vars::stor::gBase + CO::get_frameCount))() != entity->lastNotifyFrame()) {
+				entity->lastNotifyFrame() = ((get_frameCount)(vars::stor::gBase + 0x14E81F0))();
+				if (entity->isClient() && info->Initiator() == LocalPlayer) {
+					auto* player = reinterpret_cast<BasePlayer*>(entity);
+					if (entity->IsPlayer()) {
 						PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
-					}
-					else {
-						return original_dohitnotify(entity, info);
 					}
 				}
 			}
 		}
+	}
+	else {
+		return original_dohitnotify(entity, info);
 	}
 }
 void GlowUpdate(uintptr_t a1) { // TO-DO: PLAYER GLOW
@@ -270,19 +270,19 @@ uintptr_t CreateEffect(pUncStr strPrefab, uintptr_t effect) {
 		switch (RUNTIME_CRC32_W(effectName)) {
 		case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 			LogSystem::LogExplosion(C4, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
 			LogSystem::LogExplosion(Satchel, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
 			LogSystem::LogExplosion(IncenRocket, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
 			break;
 		case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 			LogSystem::LogExplosion(Rocket, position);
-			LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."), wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->GetBoneByID(head), position)), 15.f);
+			LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."), wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
 			break;
 		}
 	}
@@ -330,7 +330,7 @@ void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = fa
 Vector3 get_position(DWORD64 playereyes) {
 	if (vars::misc::long_neck) {
 		if (GetAsyncKeyState(vars::keys::longneck)) {
-			return Vector3(LocalPlayer->GetBoneByID(head)) + Vector3(0, 1.15, 0);
+			return Vector3(LocalPlayer->get_bone_pos(head)) + Vector3(0, 1.15, 0);
 		}
 	}
 	return original_geteyepos(playereyes);

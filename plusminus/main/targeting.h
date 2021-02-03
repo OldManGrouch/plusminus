@@ -32,7 +32,7 @@ float GetFov(Vector2 Pos) {
 }
 float GetFov(BasePlayer* Entity) {
 	Vector2 ScreenPos;
-	if (!utils::w2s(Entity->GetBoneByID(neck), ScreenPos)) return 1000.f;
+	if (!utils::w2s(Entity->get_bone_pos(neck), ScreenPos)) return 1000.f;
 	return GetFov(ScreenPos);
 }
 float GetFov(Vector3 Pos) {
@@ -61,7 +61,7 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 		if (vars::combat::ignore_npc && Player->IsNpc()) continue;
 		if (vars::combat::ignore_players) continue;
 
-		Vector3 pos = Player->GetBoneByID(neck);
+		Vector3 pos = Player->get_bone_pos(neck);
 		Target res = Target();
 		res.valid = true;
 		float dst = Math::Calc3D_Dist(from, pos);
@@ -99,7 +99,7 @@ Target TargetMeleeTest(BasePlayer* Player, DWORD64 melee) {
 	if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) return res;
 	typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
 
-	Vector3 prepos = Player->GetBoneByID(BoneList::head/*we dont care about bone*/);
+	Vector3 prepos = Player->get_bone_pos(BoneList::head/*we dont care about bone*/);
 
 	Vector3 closest_entity = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(LocalPlayer, prepos);
 	Vector3 closest_local = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(Player, closest_entity);
@@ -123,7 +123,7 @@ Target TargetMeleeTest(BasePlayer* Player, DWORD64 melee) {
 	res.valid = utils::LineOfSight(closest_local, target);
 	if (!res.valid) return res;
 
-	Vector3 lppos = LocalPlayer->GetBoneByID(neck);
+	Vector3 lppos = LocalPlayer->get_bone_pos(neck);
 	res.valid = utils::LineOfSight(lppos, target);
 	if (!res.valid) return res;
 
