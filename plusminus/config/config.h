@@ -115,7 +115,7 @@ private:
 		SetupValue(vars::combat::ignore_npc, false, c_xor("Combat"), c_xor("IgnoreNpc"));
 		SetupValue(vars::combat::ignore_heli, false, c_xor("Combat"), c_xor("IgnoreHeli"));
 
-		SetupValue(vars::weapons::no_recoil, false, c_xor("Weapon"), c_xor("RecoilControl"));
+		SetupValue(vars::weapons::no_recoil, false, c_xor("Weapon"), c_xor("NoRecoil"));
 		SetupValue(vars::weapons::recoil_control, 100.f, c_xor("Weapon"), c_xor("RecoilControl"));
 		SetupValue(vars::weapons::no_spread, false, c_xor("Weapon"), c_xor("NoSpread"));
 		SetupValue(vars::weapons::no_sway, false, c_xor("Weapon"), c_xor("NoSway"));
@@ -169,6 +169,7 @@ private:
 		SetupValue(vars::misc::fake_lag, false, c_xor("Misc"), c_xor("FakeLag"));
 		SetupValue(vars::misc::fakeadmin, false, c_xor("Misc"), c_xor("FakeAdmin"));
 		SetupValue(vars::misc::annoyer, false, c_xor("Misc"), c_xor("Annoyer"));
+		SetupValue(vars::misc::suicide, false, c_xor("Misc"), c_xor("Suicide"));
 		SetupValue(vars::misc::can_attack, false, c_xor("Misc"), c_xor("ShootAnywhere"));
 		SetupValue(vars::misc::omnidirectional_sprinting, false, c_xor("Misc"), c_xor("OmniSprint"));
 		SetupValue(vars::misc::spiderman, false, c_xor("Misc"), c_xor("SpiderMan"));
@@ -229,6 +230,7 @@ private:
 		SetupValue(vars::keys::aimkey, 0x58, c_xor("Keys"), c_xor("aimKey"));
 		SetupValue(vars::keys::gravitykey, 0x04, c_xor("Keys"), c_xor("gravityKey"));
 		SetupValue(vars::keys::forcepos, 0x4E, c_xor("Keys"), c_xor("froc"));
+		SetupValue(vars::keys::suicide, 0x5A, c_xor("Keys"), c_xor("suicide"));
 		SetupValue(vars::keys::psilent, 0x50, c_xor("Keys"), c_xor("pSilent"));
 		SetupValue(vars::keys::longneck, 0x4D, c_xor("Keys"), c_xor("neck"));
 

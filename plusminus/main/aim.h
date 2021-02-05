@@ -109,7 +109,8 @@ Vector3 Prediction(BasePlayer* Player) {
 		BonePos += PredictVel;
 		float predicty = (4.905f * BulletTime * BulletTime) * gravity;
 
-		if (active->GetID() == 1443579727 || active->GetID() == 1953903201 || active->GetID() == 884424049) { // bow and nailgun
+		if ((active->GetID() == 1443579727 || active->GetID() == 1953903201 || active->GetID() == 884424049) 
+			&& active->LoadedAmmo() != -1023065463/*hv arrow*/) { // bow and nailgun and compound
 			if (Dist <= 220.f) {
 				BonePos.y += predicty;
 			}

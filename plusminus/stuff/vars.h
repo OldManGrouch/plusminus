@@ -224,5 +224,7 @@ namespace vars {
 		ImVec4 chams = { 1.0f, 0.f, 0.f, 1.0f };
 
 		ImVec4 npc_esp = { 1.0f, 1.0f, 0.f, 1.0f };
+
+		ImVec4 ambient_color = { 0.8f, 0.8f, 0.8f, 0.8f };
 	}
 }

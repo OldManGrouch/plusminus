@@ -1,5 +1,6 @@
 ﻿#include "hooks/defs.h"
 int yeet = 0;
+int flick = 0;
 int yaw = 100;
 bool waslagging = false;
 void SendClientTick(BasePlayer* baseplayer) {
@@ -10,8 +11,16 @@ void SendClientTick(BasePlayer* baseplayer) {
 		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
 		yeet += vars::misc::anti_aim_speed;
 		if (yeet >= 999) {
+			yeet = 0;                              // PERFECT SPIN
+		}
+		/*yeet += vars::misc::anti_aim_speed;
+		if (yeet >= 999) {
+			flick = vars::stuff::testFloat;
 			yeet = 0;
 		}
+		else {
+			flick = 0;
+		}*/
 		if (vars::misc::anti_aim_yaw == 0) {
 			yaw = 100;
 		}
@@ -20,7 +29,7 @@ void SendClientTick(BasePlayer* baseplayer) {
 		}
 		write(current + 0x18, Vector3(yaw, yeet, 0), Vector3);
 	}
-	((sendclienttick)original_sendclienttick)(baseplayer); // orig
+	return original_sendclienttick(baseplayer);
 }
 Projectile* CreateProjectile(uintptr_t BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
 	Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
@@ -99,18 +108,11 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 
 void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
 	if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
-	typedef void(__stdcall* set_rayleigh)(float);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	typedef void(__stdcall* DoAttack)(uintptr_t);
-	if (vars::misc::rayleigh_changer) {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh_changer);
-	}
-	else {
-		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(1.f);
-	}
 	if (vars::misc::mass_suicide)
 		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
-	if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0)
+	if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu())
 		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
@@ -155,19 +157,13 @@ typedef float(__stdcall* Total)(DWORD64);
 typedef int(__stdcall* get_frameCount)();
 void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 	if (vars::misc::hit_logs) {
-		LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), info->damageTypes()->Total()), 5.f);
+		if (entity->IsPlayer()) {
+			LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), info->damageTypes()->Total()), 5.f);
+		}
 	}
 	if (vars::misc::custom_hitsound) {
-		if (entity->sendsHitNotification() && info->Initiator() == LocalPlayer && !(entity == info->Initiator())) {
-			if (((get_frameCount)(vars::stor::gBase + CO::get_frameCount))() != entity->lastNotifyFrame()) {
-				entity->lastNotifyFrame() = ((get_frameCount)(vars::stor::gBase + 0x14E81F0))();
-				if (entity->isClient() && info->Initiator() == LocalPlayer) {
-					auto* player = reinterpret_cast<BasePlayer*>(entity);
-					if (entity->IsPlayer()) {
-						PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
-					}
-				}
-			}
+		if (entity->IsPlayer()) {
+			PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
 		}
 	}
 	else {
@@ -204,7 +200,7 @@ uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
 			}
 		}
 	}
-	return original_createorupdateentity(client, ent, sz);
+	((createorupdent)original_createorupdateentity)(client, ent, sz);
 }
 bool get_isHeadshot(DWORD64 hitinfo) {
 	if (vars::misc::custom_hitsound) { return false; }

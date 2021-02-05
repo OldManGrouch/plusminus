@@ -20,9 +20,36 @@ void FindMatrix() {
 		}
 	}
 }
+int x = 0;
+int Drehungswinkel = 0;
+void SwastikaCrosshair() {
+
+	POINT Screen; int oodofdfo = vars::stuff::ScreenWidth, jbjfdbdsf = vars::stuff::ScreenHeight; Screen.x = oodofdfo; Screen.y = jbjfdbdsf;
+	//Middle POINT
+	POINT Middle; Middle.x = (int)(Screen.x / 2); Middle.y = (int)(Screen.y / 2);
+	int a = (int)(Screen.y / 2 / 30);
+	float gamma = atan(a / a);
+
+	
+
+	int i = 0;
+	while (i < 4) {
+		std::vector <int> p;
+		p.push_back(a * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[0]		p0_A.x
+		p.push_back(a * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[1]		p0_A.y
+		p.push_back((a / cos(gamma)) * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[2]		p0_B.x
+		p.push_back((a / cos(gamma)) * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[3]		p0_B.y
+
+		Renderer::Line(Vector2(Middle.x, Middle.y), Vector2(Middle.x + p[0], Middle.y - p[1]), D2D1::ColorF::Red);
+		Renderer::Line(Vector2(Middle.x + p[0], Middle.y - p[1]), Vector2(Middle.x + p[2], Middle.y - p[3]), D2D1::ColorF::Red);
+
+		i++;
+	}
+}
 float timee = 120.f;
 bool initD = false;
 void EntityLoop() {
+	//SwastikaCrosshair();
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
 		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
@@ -280,10 +307,16 @@ void EntityLoop() {
 		if (tag == 6 || tag == 5 || tag == 20011) {
 			DWORD64 objectclass = read(gameobject + 0x30, DWORD64);
 			DWORD64	entity = read(objectclass + 0x18, DWORD64);
-			if (tag == 20011 && vars::misc::custom_time) {
-				DWORD64 dome = read(entity + 0x28, DWORD64);
+			if (tag == 20011) {
+				DWORD64 dome = read(entity + 0x28, DWORD64); // TOD_Sky
 				DWORD64 todCycle = read(dome + 0x38, DWORD64);
-				write(todCycle + 0x10, vars::misc::time, float);
+				DWORD64 todAtmosphere = read(dome + 0x48, DWORD64);
+				if (vars::misc::custom_time) {
+					write(todCycle + 0x10, vars::misc::time, float);
+				}
+				if (vars::misc::rayleigh_changer) {
+					write(todAtmosphere + 0x10, vars::misc::rayleigh, float);
+				}
 			}
 		}
 	}

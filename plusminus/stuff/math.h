@@ -66,6 +66,13 @@ namespace Math {
 			d0 = c0 + c1;
 		return d0;
 	}
+	float BOG_TO_GRD(float BOG) {
+		return (180 / M_PI) * BOG;
+	}
+
+	float GRD_TO_BOG(float GRD) {
+		return (M_PI / 180) * GRD;
+	}
 	static double Tail(double x) {
 		if (1 <= x) return 1 == x ? 0x3.243f6a8885a308d313198a2e03707344ap-1 + Tiny : Infinity - Infinity;
 		static const double p01 = 0.2145993335526539017488949;

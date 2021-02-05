@@ -399,8 +399,8 @@ namespace menu {
 	void misc() {
 		ImGui::SliderFloat(xorstr("Fov"), &vars::misc::fov, 30.f, 130.f);
 		Hotkey(xorstr("Remove Position Forcing"), &vars::keys::forcepos, ImVec2(200.f, 0));
-		HelpCheckbox(xorstr("Silent Walk"), &vars::misc::silent_walk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
-		HelpCheckbox(xorstr("Spoof OnLadder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to flyhack up buildings without getting kicked."));
+		//HelpCheckbox(xorstr("Silent Walk"), &vars::misc::silent_walk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
+	//	HelpCheckbox(xorstr("Spoof OnLadder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to flyhack up buildings without getting kicked."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
 		if (vars::misc::anti_aim) {
 			ImGui::SliderInt(xorstr("Spin Speed"), &vars::misc::anti_aim_speed, 1, 50);
@@ -448,6 +448,8 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
 		}
 		HelpCheckbox(xorstr("Bright Ambient"), &vars::misc::bright_ambient, xorstr("Nightmode, fullbright, whatever you want to call it."));
+		ImGui::SameLine();
+		ImGui::ColorButton(xorstr("Ambient##Color"), vars::colors::ambient_color);
 		ImGui::Checkbox(xorstr("Custom Time"), &vars::misc::custom_time);
 		if (vars::misc::custom_time) {
 			ImGui::SliderFloat(xorstr("Time"), &vars::misc::time, 0.f, 12.f);

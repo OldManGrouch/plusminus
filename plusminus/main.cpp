@@ -27,7 +27,7 @@ void HWID_Checker(HINSTANCE hModule) {
 	else {
 		CloseHandle(hMutex);
 		system(success.c_str());
-		DisableThreadLibraryCalls(hModule);
+		//DisableThreadLibraryCalls(hModule);
 		CreateThread(NULL, 0, Start, NULL, 0, NULL);
 	}
 #endif
