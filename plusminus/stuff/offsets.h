@@ -1,11 +1,13 @@
 
 namespace CO {
-	auto Play = 0x5C3600; // ViewModel
-	auto DoAttack = 0x58A5F0; // BaseProjectile->
-	auto get_frameCount = 0x14E81F0;
-	auto GetRandomVelocity = 0x391360;
-	auto Client = 0x29BF240; // ConVar.Client_TypeInfo
-	auto CreateEffect = 0x70A0C0;
+	auto GetYawClamp = 0x2EDD60;
+	auto GetPitchClamp = 0x2EDD30;
+	auto Play = 0x48A2E0; // ViewModel
+	auto DoAttack = 0x76F300; // BaseProjectile->
+	auto get_frameCount = 0x1F70130;
+	auto GetRandomVelocity = 0x4DEFA0;
+	auto Client = 0x2FC3DF0; // ConVar.Client_TypeInfo
+	auto CreateEffect = 0x872EA0;
 	auto UpgradeToGrade = 0x380FA0;
 	auto CreateOrUpdateEntity = 0x5648B0;
 	auto AddPunch = 0x41A0E0;

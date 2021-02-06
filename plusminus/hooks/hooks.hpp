@@ -282,7 +282,7 @@ void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
 }
 Vector2 GetPitchClamp(DWORD64 basemountable) {
 	if (vars::misc::unlock_angles) {
-		return Vector2(360, 360);
+		return Vector2(9999, 9999);
 	}
 	else {
 		return original_getpitchclamp(basemountable);
@@ -290,7 +290,7 @@ Vector2 GetPitchClamp(DWORD64 basemountable) {
 }
 Vector2 GetYawClamp(DWORD64 basemountable) {
 	if (vars::misc::unlock_angles) {
-		return Vector2(360, 360);
+		return Vector2(9999, 9999);
 	}
 	else {
 		return original_getpitchclamp(basemountable);
@@ -324,7 +324,8 @@ void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = fa
 }
 void Play(DWORD64 viewmodel, pUncStr name) {
 	if (vars::weapons::remove_attack_anim) {
-		if (name->str != L"attack") {
+		static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::DoAttack(): Void");
+		if (!CALLED_BY(ptr, 0x800) || LocalPlayer->GetActiveWeapon()->GetID() == -75944661) {
 			return original_viewmodelplay(viewmodel, name);
 		}
 	}
@@ -362,8 +363,8 @@ inline void InitHook() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, CreateEffect);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, Play);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x286190), (void**)&original_getpitchclamp, GetPitchClamp);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2861C0), (void**)&original_getyawclamp, GetYawClamp);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetPitchClamp), (void**)&original_getpitchclamp, GetPitchClamp);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetYawClamp), (void**)&original_getyawclamp, GetYawClamp);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);
