@@ -10,17 +10,10 @@ void SendClientTick(BasePlayer* baseplayer) {
 		auto state = read(input + 0x20, uintptr_t);
 		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
 		yeet += vars::misc::anti_aim_speed;
-		if (yeet >= 999) {
-			yeet = 0;                              // PERFECT SPIN
-		}
-		/*yeet += vars::misc::anti_aim_speed;
-		if (yeet >= 999) {
-			flick = vars::stuff::testFloat;
+		if (yeet > 999) { // reset number
 			yeet = 0;
 		}
-		else {
-			flick = 0;
-		}*/
+
 		if (vars::misc::anti_aim_yaw == 0) {
 			yaw = 100;
 		}
@@ -45,21 +38,37 @@ bool CanAttack(void* a1, void* a2) {
 	if (vars::misc::can_attack) return true;
 	return original_canattack(a1, a2);
 }
+
 void UpdateAmbient(uintptr_t TOD_Sky) {
 	if (!vars::misc::bright_ambient) {
 		return original_updateambient(TOD_Sky);
 	}
+	//static int cases = 0;
+	//static float r = 1.00f, g = 0.00f, b = 1.00f;
+	//switch (cases) {
+	//case 0: { r -= 0.05f; if (r <= 0) cases += 1; break; }
+	//case 1: { g += 0.05f; b -= 0.05f; if (g >= 1) cases += 1; break; }
+	//case 2: { r += 0.05f; if (r >= 1) cases += 1; break; }                       // RAINBOW
+	//case 3: { b += 0.05f; g -= 0.05f; if (b >= 1) cases = 0; break; }
+	//default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
+	//}
 	RenderSettings::set_ambientMode(RenderSettings::AmbientMode::Flat);
-	RenderSettings::set_ambientIntensity(1.f);
-	RenderSettings::set_ambientLight(Color({ 0.8f, 0.8f, 0.8f, 0.8f }));
+	RenderSettings::set_ambientIntensity(3.f);
+	RenderSettings::set_ambientLight(Color({ vars::colors::ambient_color.x, vars::colors::ambient_color.y, vars::colors::ambient_color.z, 1 }));
 }
-void TraceAll(uintptr_t test, uintptr_t traces, uintptr_t layerMask) {
+void TraceAll(HitTest* test, uintptr_t traces, uintptr_t layerMask) {
 	if (vars::weapons::penetrate) {
-		layerMask &= ~Tree;
-		layerMask &= ~Deployed;
-		layerMask &= ~Water;
+		layerMask &= ~LayerMasks::Tree;
+		layerMask &= ~LayerMasks::Deployed;
+		layerMask &= ~LayerMasks::Water;
 	}
-	return original_traceall(test, traces, layerMask);
+	if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
+		layerMask &= ~LayerMasks::Player_Server;
+		layerMask &= ~LayerMasks::Player_Model_Rendering;                                           // why no work ?
+		layerMask &= ~LayerMasks::Player_Movement;
+		layerMask &= ~LayerMasks::AI;
+	}
+	return original_traceall(test, traces, layerMask); 
 }
 pUncStr Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
 	if (options->IsFromServer()) {
@@ -107,15 +116,21 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 }
 
 void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
-	if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	typedef void(__stdcall* DoAttack)(uintptr_t);
+	typedef void(__stdcall* set_rayleigh)(float);
+	if (vars::misc::rayleigh_changer) {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
+	}
+	else {
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
+	}
 	if (vars::misc::mass_suicide)
 		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu())
 		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent) {
+	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer->IsMenu()) {
 		Item* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 		DWORD64 mag = read(basepr + 0x2A0, DWORD64);
@@ -169,38 +184,6 @@ void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 	else {
 		return original_dohitnotify(entity, info);
 	}
-}
-void GlowUpdate(uintptr_t a1) { // TO-DO: PLAYER GLOW
-	//std::vector<uintptr_t> objectsToRender = read(a1 + 0x18, std::vector<uintptr_t>);
-	//objectsToRender.push_back(vars::stor::closestPlayer);
-	return original_glowupdate(a1);
-}
-typedef void(__stdcall* UpgradeToGrade)(DWORD64, BuildingGrade, BasePlayer*);
-uintptr_t CreateOrUpdateEntity(uintptr_t client, uintptr_t ent, long sz) {
-	uint32_t uid = read(read(ent + 0x18, uintptr_t) + 0x14, uint32_t);
-	static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
-	uintptr_t static_fieldss = reinterpret_cast<uintptr_t>(clazz->static_fields); // EntityRealm !!!
-	static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
-	uintptr_t found = reinterpret_cast<uintptr_t(__fastcall*)(uintptr_t, uint32_t)>(off)(static_fieldss, uid);
-	if (found && vars::misc::auto_upgrade && LocalPlayer) {
-		if (reinterpret_cast<Item*>(found)->ClassNameHash() == STATIC_CRC32("BuildingBlock")) {
-			switch (vars::misc::build_grade) {
-			case 0:
-				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Wood, LocalPlayer);
-				break;
-			case 1:
-				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Stone, LocalPlayer);
-				break;
-			case 2:
-				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::Metal, LocalPlayer);
-				break;
-			case 3:
-				((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(found, BuildingGrade::TopTier, LocalPlayer);
-				break;
-			}
-		}
-	}
-	((createorupdent)original_createorupdateentity)(client, ent, sz);
 }
 bool get_isHeadshot(DWORD64 hitinfo) {
 	if (vars::misc::custom_hitsound) { return false; }
@@ -297,6 +280,22 @@ void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
 	}
 	return original_addpunch(a1, a2, duration);
 }
+Vector2 GetPitchClamp(DWORD64 basemountable) {
+	if (vars::misc::unlock_angles) {
+		return Vector2(360, 360);
+	}
+	else {
+		return original_getpitchclamp(basemountable);
+	}
+}
+Vector2 GetYawClamp(DWORD64 basemountable) {
+	if (vars::misc::unlock_angles) {
+		return Vector2(360, 360);
+	}
+	else {
+		return original_getpitchclamp(basemountable);
+	}
+}
 Vector3 MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
 	static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::SimulateAimcone(): Void");
 	if (CALLED_BY(ptr, 0x800)) {
@@ -323,6 +322,16 @@ void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = fa
 		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
 	}
 }
+void Play(DWORD64 viewmodel, pUncStr name) {
+	if (vars::weapons::remove_attack_anim) {
+		if (name->str != L"attack") {
+			return original_viewmodelplay(viewmodel, name);
+		}
+	}
+	else {
+		return original_viewmodelplay(viewmodel, name);
+	}
+}
 Vector3 get_position(DWORD64 playereyes) {
 	if (vars::misc::long_neck) {
 		if (GetAsyncKeyState(vars::keys::longneck)) {
@@ -331,7 +340,7 @@ Vector3 get_position(DWORD64 playereyes) {
 	}
 	return original_geteyepos(playereyes);
 }
-void __fastcall SetFlying(void* a1, void* a2) {}
+void __fastcall SetFlying(void* a1, bool a2) {}
 
 void hk_(void* Function, void** Original, void* Detour, bool autoEnable = true) {
 	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) { std::cout << (xorstr("Failed to initialize MinHook")) << std::endl; return; }
@@ -348,11 +357,13 @@ inline void InitHook() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, HandleJumping);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
-//	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2808A0), (void**)&original_melee_create_projectile, MeleeCreateProjectile);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, CreateEffect);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, Play);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x286190), (void**)&original_getpitchclamp, GetPitchClamp);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2861C0), (void**)&original_getyawclamp, GetYawClamp);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);
@@ -364,9 +375,4 @@ inline void InitHook() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, ForcePositionTo);
-
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x64D6D0), (void**)&original_glowupdate, GlowUpdate);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohitt, DoHit);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, DoMovement);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateOrUpdateEntity), (void**)&original_createorupdateentity, CreateOrUpdateEntity);
 }

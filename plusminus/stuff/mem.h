@@ -18,3 +18,4 @@ void Write(DWORD64 address, T data) {
 
 
 #define CALLED_BY(func,off) (reinterpret_cast<std::uint64_t>(_ReturnAddress()) > func && reinterpret_cast<std::uint64_t>(_ReturnAddress()) < func + off)
+#define CALLED_BY_A(func) (reinterpret_cast<std::uint64_t>(_ReturnAddress()) > func)

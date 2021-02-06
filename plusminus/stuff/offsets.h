@@ -1,5 +1,7 @@
 
 namespace CO {
+	auto Play = 0x5C3600; // ViewModel
+	auto DoAttack = 0x58A5F0; // BaseProjectile->
 	auto get_frameCount = 0x14E81F0;
 	auto GetRandomVelocity = 0x391360;
 	auto Client = 0x29BF240; // ConVar.Client_TypeInfo

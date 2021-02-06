@@ -38,12 +38,12 @@
     <Filter Include="source\rendering\framework">
       <UniqueIdentifier>{6c1d0c4b-33d6-4351-a243-23ba21391a18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\stuff\sdk">
+      <UniqueIdentifier>{9345b5da-4641-4db4-80a2-18474cef01bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stuff/xorstr.hpp">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
-    <ClInclude Include="stuff/il2cpp.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
     <ClInclude Include="hooks/minhook\src\buffer.h">
@@ -121,9 +121,6 @@
     <ClInclude Include="main/targeting.h">
       <Filter>source\main</Filter>
     </ClInclude>
-    <ClInclude Include="stuff/sdk.h">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="stuff/utilities.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
@@ -181,11 +178,17 @@
     <ClInclude Include="crc32.hpp">
       <Filter>source\stuff</Filter>
     </ClInclude>
-    <ClInclude Include="rust.h">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="framework.h">
       <Filter>source\rendering\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="rust.h">
+      <Filter>source\stuff\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="stuff/sdk.h">
+      <Filter>source\stuff\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="stuff/il2cpp.h">
+      <Filter>source\stuff\sdk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

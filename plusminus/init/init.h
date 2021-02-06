@@ -82,15 +82,7 @@ void InitCheat() {
 	if (vars::misc::fov < 30) { vars::misc::fov = 80; } // limit graph fov
 	if (vars::combat::smooth_factor <= 0) { vars::combat::smooth_factor = 1; }
 	if (vars::weapons::hitdistance < 300) { vars::weapons::hitdistance = 300; }
-	/*static int cases = 0;
-	static float r = 1.00f, g = 0.00f, b = 1.00f;
-	switch (cases) {
-	case 0: { r -= 0.05f; if (r <= 0) cases += 1; break; }
-	case 1: { g += 0.05f; b -= 0.05f; if (g >= 1) cases += 1; break; }
-	case 2: { r += 0.05f; if (r >= 1) cases += 1; break; }                       // RAINBOW
-	case 3: { b += 0.05f; g -= 0.05f; if (b >= 1) cases = 0; break; }
-	default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
-	}*/
+	
 	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt) {
 		const float Height = 275.f;
 		const float Width = 150.f;

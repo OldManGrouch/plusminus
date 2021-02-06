@@ -63,7 +63,7 @@ namespace vars {
 		bool minicopter_aim = false;
 		bool spoof_hitdistance = false;
 		float hitdistance = 100.f;
-		
+		bool remove_attack_anim = false;
 		bool no_spread = false;
 		bool automatic = false;
 		bool thick_bullet = false;
@@ -170,6 +170,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool unlock_angles = false;
 		bool auto_upgrade = false;
 		int build_grade = 0;
 		bool hit_logs = false;
@@ -187,6 +188,7 @@ namespace vars {
 		bool auto_revive = false;
 		bool revive_team_only = false;
 		bool rayleigh_changer = false;
+		bool sky_removals = false;
 		float rayleigh = 10.f;
 		bool annoyer = false;
 		bool bright_ambient = false;

@@ -119,6 +119,7 @@ private:
 		SetupValue(vars::weapons::recoil_control, 100.f, c_xor("Weapon"), c_xor("RecoilControl"));
 		SetupValue(vars::weapons::no_spread, false, c_xor("Weapon"), c_xor("NoSpread"));
 		SetupValue(vars::weapons::no_sway, false, c_xor("Weapon"), c_xor("NoSway"));
+		SetupValue(vars::weapons::remove_attack_anim, false, c_xor("Weapon"), c_xor("NoAttackAnim"));
 		SetupValue(vars::weapons::rapid_fire, false, c_xor("Weapon"), c_xor("RapidFire"));
 		SetupValue(vars::weapons::automatic, false, c_xor("Weapon"), c_xor("Automatic"));
 		SetupValue(vars::weapons::thick_bullet, false, c_xor("Weapon"), c_xor("ThickBullets"));

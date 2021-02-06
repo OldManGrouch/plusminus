@@ -240,6 +240,7 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("No Spread"), &vars::weapons::no_spread);
 		ImGui::Checkbox(xorstr("No Sway"), &vars::weapons::no_sway);
+		ImGui::Checkbox(xorstr("No Attack Animation"), &vars::weapons::remove_attack_anim);
 		ImGui::Checkbox(xorstr("Rapid Fire"), &vars::weapons::rapid_fire);
 		ImGui::Checkbox(xorstr("Force Automatic"), &vars::weapons::automatic);
 		ImGui::Checkbox(xorstr("Thick Bullets"), &vars::weapons::thick_bullet);
@@ -286,10 +287,10 @@ namespace menu {
 		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls.")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
 		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
-		ImGui::ColorButton(xorstr("Players##Color"), vars::colors::player_esp); ImGui::SameLine(); ImGui::Text(xorstr("Player Color"));
+		/*ImGui::ColorButton(xorstr("Players##Color"), vars::colors::player_esp); ImGui::SameLine(); ImGui::Text(xorstr("Player Color"));
 		ImGui::ColorButton(xorstr("Team##Color"), vars::colors::team_esp); ImGui::SameLine(); ImGui::Text(xorstr("Teammate Color"));
 		ImGui::ColorButton(xorstr("Sleepers##Color"), vars::colors::sleeper_esp); ImGui::SameLine(); ImGui::Text(xorstr("Sleeper Color"));
-		ImGui::ColorButton(xorstr("Dead##Color"), vars::colors::dead_esp); ImGui::SameLine(); ImGui::Text(xorstr("Dead Color"));
+		ImGui::ColorButton(xorstr("Dead##Color"), vars::colors::dead_esp); ImGui::SameLine(); ImGui::Text(xorstr("Dead Color"));*/
 	}
 	void npc() {
 		ImGui::Checkbox(xorstr("Name "), &vars::npc::name);
@@ -400,7 +401,7 @@ namespace menu {
 		ImGui::SliderFloat(xorstr("Fov"), &vars::misc::fov, 30.f, 130.f);
 		Hotkey(xorstr("Remove Position Forcing"), &vars::keys::forcepos, ImVec2(200.f, 0));
 		//HelpCheckbox(xorstr("Silent Walk"), &vars::misc::silent_walk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
-	//	HelpCheckbox(xorstr("Spoof OnLadder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to flyhack up buildings without getting kicked."));
+	    HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
 		if (vars::misc::anti_aim) {
 			ImGui::SliderInt(xorstr("Spin Speed"), &vars::misc::anti_aim_speed, 1, 50);
@@ -415,6 +416,7 @@ namespace menu {
 		HelpCheckbox(xorstr("FakeLag"), &vars::misc::fake_lag, xorstr("Makes it looks like you're lagging on other people's screens."));
 		HelpCheckbox(xorstr("FakeAdmin"), &vars::misc::fakeadmin, xorstr("Allows you to use certain admin-only commands like 'debugcamera' and 'noclip'. Note: bypasses rustberg's and arabrust's anti-fakeadmin. If you can't move in debugcamera, type 'camspeed 1' in console."));
 		HelpCheckbox(xorstr("Annoyer"), &vars::misc::annoyer, xorstr("Annoy anyone that has a door on their base."));
+		HelpCheckbox(xorstr("Unlock Angles"), &vars::misc::unlock_angles, xorstr("Unlocks angles."));
 		HelpCheckbox(xorstr("Shoot Anywhere"), &vars::misc::can_attack, xorstr("Allows you to shoot anywhere."));
 		HelpCheckbox(xorstr("Omni-Sprint"), &vars::misc::omnidirectional_sprinting, xorstr("Allows you to sprint in any direction."));
 		HelpCheckbox(xorstr("Suicide"), &vars::misc::suicide, xorstr("Intantly kills you with fall damage, can be used to quickly respawn. Be careful with this."));
@@ -433,7 +435,9 @@ namespace menu {
 		HelpCheckbox(xorstr("AutoCollect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
 		HelpCheckbox(xorstr("AutoRevive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
 		if (vars::misc::auto_revive) {
+			ImGui::SameLine(50.f, 1.f);
 			ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
+			ImGui::Spacing();
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
@@ -443,13 +447,13 @@ namespace menu {
 			ImGui::Combo(xorstr("Building Grade"), &vars::misc::build_grade, building_grade, IM_ARRAYSIZE(building_grade));
 			ImGui::PopItemWidth();
 		}*/
+		//HelpCheckbox(xorstr("Sky Removals"), &vars::misc::sky_removals, xorstr("Removes stuff like the sun and fog."));
 		HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
 		if (vars::misc::rayleigh_changer) {
 			ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
 		}
 		HelpCheckbox(xorstr("Bright Ambient"), &vars::misc::bright_ambient, xorstr("Nightmode, fullbright, whatever you want to call it."));
-		ImGui::SameLine();
-		ImGui::ColorButton(xorstr("Ambient##Color"), vars::colors::ambient_color);
+		ImGui::SameLine(); ImGui::ColorButton(xorstr("Ambient##Color"), vars::colors::ambient_color);
 		ImGui::Checkbox(xorstr("Custom Time"), &vars::misc::custom_time);
 		if (vars::misc::custom_time) {
 			ImGui::SliderFloat(xorstr("Time"), &vars::misc::time, 0.f, 12.f);

@@ -477,7 +477,7 @@ public:
 	bool MultiHit() { return read(this + 0x64, bool); }
 	bool BestHit() { return read(this + 0x65, bool); }
 	bool DidHit() { return read(this + 0x66, bool); }
-	BasePlayer* HitEntity() { return read(this + 0x88, BasePlayer*); }
+	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
 };
 Matrix4x4* pViewMatrix = nullptr;
 BasePlayer* LocalPlayer = nullptr;
@@ -516,7 +516,7 @@ namespace utils {
 	}
 	bool LineOfSight(Vector3 a, Vector3 b) {
 		typedef bool(__stdcall* LOS)(Vector3, Vector3, int, float);
-		bool result = ((LOS)(vars::stor::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608, 0.f);
+		bool result = ((LOS)(vars::stor::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608 | 2097152, 0.f);
 		return result;
 	}
 	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {

@@ -310,12 +310,16 @@ void EntityLoop() {
 			if (tag == 20011) {
 				DWORD64 dome = read(entity + 0x28, DWORD64); // TOD_Sky
 				DWORD64 todCycle = read(dome + 0x38, DWORD64);
-				DWORD64 todAtmosphere = read(dome + 0x48, DWORD64);
+				DWORD64 todAtm = read(dome + 0x48, DWORD64);
+				DWORD64 todDay = read(dome + 0x50, DWORD64);
+				DWORD64 todSun = read(dome + 0x60, DWORD64);
+				
 				if (vars::misc::custom_time) {
 					write(todCycle + 0x10, vars::misc::time, float);
 				}
-				if (vars::misc::rayleigh_changer) {
-					write(todAtmosphere + 0x10, vars::misc::rayleigh, float);
+				if (vars::misc::bright_ambient) {
+					write(todDay + 0x50, 1.f, float);
+					write(todDay + 0x54, 1.f, float);
 				}
 			}
 		}
