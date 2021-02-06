@@ -44,7 +44,7 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 	Target lowest = Target();
 
 	if (!oPlayerList) {
-		DWORD64 val = read(vars::stor::gBase + CO::BasePlayer, DWORD64);
+		DWORD64 val = read(vars::stor::gBase + COS::BasePlayer, DWORD64);
 		DWORD64 st = read(val + 0xB8, DWORD64);
 		oPlayerList = read(st + 0x8, DWORD64);
 	}
@@ -81,7 +81,7 @@ Target FindProjectileTarget(Vector3 from, float traveldist) {
 float MaxMeleeDist(DWORD64 melee, bool localplayer) {
 	float pad = 0.1f;
 	typedef float(__stdcall* RetF)();
-	float time = ((RetF)(vars::stor::gBase + CO::get_time))();
+	float time = ((RetF)(vars::stor::gBase + COS::get_time))();
 
 	float desyncTime = max(time - LocalPlayer->Time() - 0.0325f, 0.f);
 	float res = pad + desyncTime * 5.5f;
@@ -101,8 +101,8 @@ Target TargetMeleeTest(BasePlayer* Player, DWORD64 melee) {
 
 	Vector3 prepos = Player->get_bone_pos(BoneList::head/*we dont care about bone*/);
 
-	Vector3 closest_entity = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(LocalPlayer, prepos);
-	Vector3 closest_local = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(Player, closest_entity);
+	Vector3 closest_entity = ((CPoint)(vars::stor::gBase + COS::utils::ClosestPoint))(LocalPlayer, prepos);
+	Vector3 closest_local = ((CPoint)(vars::stor::gBase + COS::utils::ClosestPoint))(Player, closest_entity);
 	float disttoentity = MaxMeleeDist(melee, false);
 	float distfromlocal = MaxMeleeDist(melee, true);
 

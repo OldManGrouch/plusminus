@@ -43,7 +43,7 @@ public:
 	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocitySpread", projectileVelocitySpread, float);
 	float GetRandomVelocity() {
 		typedef float(__fastcall* randomvelocity)(ItemModProjectile*);
-		return ((randomvelocity)(vars::stor::gBase + CO::GetRandomVelocity))(this);
+		return ((randomvelocity)(vars::stor::gBase + COS::GetRandomVelocity))(this);
 	}
 };
 class BaseEntity {
@@ -244,12 +244,12 @@ public:
 	
 	
 	void SetFov() {
-		auto klass = read(vars::stor::gBase + CO::ConvarGraphics, DWORD64);
+		auto klass = read(vars::stor::gBase + COS::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x18, vars::misc::fov, float);
 	}
 	void PatchCamspeed() {
-		auto klass = read(vars::stor::gBase + CO::Client, DWORD64);
+		auto klass = read(vars::stor::gBase + COS::Client, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x2C, 1.f, float);
 	}
@@ -478,6 +478,13 @@ public:
 	bool BestHit() { return read(this + 0x65, bool); }
 	bool DidHit() { return read(this + 0x66, bool); }
 	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
+	Str* HitMaterial() { return read(this + 0xC0, Str*); }
+
+	uintptr_t BuildAttackMessage() {
+		typedef uintptr_t(__stdcall* BuildAttackMessage)(HitTest*);
+		uintptr_t result = ((BuildAttackMessage)(vars::stor::gBase + 0x51A270))(this);
+		return result;
+	}
 };
 Matrix4x4* pViewMatrix = nullptr;
 BasePlayer* LocalPlayer = nullptr;
@@ -501,43 +508,43 @@ namespace utils {
 	}
 	Vector3 ClosestPoint(BasePlayer* player, Vector3 vec) {
 		typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
-		Vector3 result = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(player, vec);
+		Vector3 result = ((CPoint)(vars::stor::gBase + COS::utils::ClosestPoint))(player, vec);
 		return result;
 	}
 	Vector3 GetWorldVelocity(uintptr_t entity) {
 		typedef Vector3(__stdcall* GetWorldVelocity)(uintptr_t);
-		Vector3 result = ((GetWorldVelocity)(vars::stor::gBase + CO::utils::GetWorldVelocity))(entity);
+		Vector3 result = ((GetWorldVelocity)(vars::stor::gBase + COS::utils::GetWorldVelocity))(entity);
 		return result;
 	}
 	Vector3 TransformToPoint(DWORD64 Transform, Vector3 CurPos) {
 		typedef Vector3(__stdcall* ITP)(DWORD64, Vector3);
-		Vector3 result = ((ITP)(vars::stor::gBase + CO::utils::InverseTransformPoint))(Transform, CurPos);
+		Vector3 result = ((ITP)(vars::stor::gBase + COS::utils::InverseTransformPoint))(Transform, CurPos);
 		return result;
 	}
 	bool LineOfSight(Vector3 a, Vector3 b) {
 		typedef bool(__stdcall* LOS)(Vector3, Vector3, int, float);
-		bool result = ((LOS)(vars::stor::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608 | 2097152, 0.f);
+		bool result = ((LOS)(vars::stor::gBase + COS::utils::LineOfSight))(a, b, 2162688 | 8388608 | 2097152, 0.f);
 		return result;
 	}
 	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {
 		typedef DWORD64(__stdcall* FindBone)(DWORD64, Str);
-		DWORD64 result = ((FindBone)(vars::stor::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);
+		DWORD64 result = ((FindBone)(vars::stor::gBase + COS::utils::FindBone))(TargetEntity, TargetBone);
 		return result;
 	}
 	DWORD64 GetTransform(DWORD64 entity) {
 		typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-		DWORD64 result = ((GetTransform)(vars::stor::gBase + CO::get_transform))(entity);
+		DWORD64 result = ((GetTransform)(vars::stor::gBase + COS::get_transform))(entity);
 		return result;
 	}
 	uintptr_t ShaderFind(Str name) {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
-		uintptr_t result = ((ShaderFind)(vars::stor::gBase + CO::ShaderFind))(name);
+		uintptr_t result = ((ShaderFind)(vars::stor::gBase + COS::ShaderFind))(name);
 		return result;
 	}
 	namespace StringPool {
 		uint32_t Get(Str str) {
 			typedef uint32_t(__stdcall* Get)(Str);
-			uint32_t result = ((Get)(vars::stor::gBase + CO::utils::StringPool::Get))(str);
+			uint32_t result = ((Get)(vars::stor::gBase + COS::utils::StringPool::Get))(str);
 			return result;
 		}
 	}

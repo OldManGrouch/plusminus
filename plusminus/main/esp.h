@@ -160,7 +160,7 @@ namespace otherEsp {
 					wchar_t sDist[0x100];
 					_swprintf(sNameH, xorstr(L"Stash [Hidden]"));
 					_swprintf(sName, xorstr(L"Stash"));
-					if (((IsHidden)(vars::stor::gBase + CO::IsHidden))(stash)) {
+					if (((IsHidden)(vars::stor::gBase + COS::IsHidden))(stash)) {
 						Renderer::String({ screen.x, screen.y }, sNameH, D2D1::ColorF::Yellow, true, true);
 					}
 					else {
@@ -190,8 +190,8 @@ namespace otherEsp {
 					uintptr_t timerText = read(crate + 0x440, uintptr_t);
 					auto* m_Text = reinterpret_cast<pUncStr>(read(timerText + 0xD0, DWORD64));
 					D2D1::ColorF color = D2D1::ColorF::OrangeRed;
-					if (!((IsFullyHacked)(vars::stor::gBase + CO::IsFullyHacked))(crate)) {
-						if (((IsBeingHacked)(vars::stor::gBase + CO::IsBeingHacked))(crate)) {
+					if (!((IsFullyHacked)(vars::stor::gBase + COS::IsFullyHacked))(crate)) {
+						if (((IsBeingHacked)(vars::stor::gBase + COS::IsBeingHacked))(crate)) {
 							color = D2D1::ColorF::LightGoldenrodYellow;
 							_swprintf(crateName, xorstr(L"Chinook Crate | %s"), m_Text->str);
 						}
@@ -291,7 +291,7 @@ typedef bool(__stdcall* IsDucked)(BasePlayer*);
 inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 	CBounds bounds = CBounds();
 
-	IsDucked ducked = (IsDucked)(vars::stor::gBase + CO::IsDucked);
+	IsDucked ducked = (IsDucked)(vars::stor::gBase + COS::IsDucked);
 	if (ducked(player)) {
 		bounds.center = player->get_bone_pos(l_foot).midPoint(player->get_bone_pos(r_foot)) + Vector3(0.0f, 0.55f, 0.0f);
 		bounds.extents = Vector3(0.4f, 0.65f, 0.4f);

@@ -84,7 +84,7 @@ void EntityLoop() {
 		FindMatrix();
 	}
 	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
+	BaseNetworkable = read(vars::stor::gBase + COS::BaseNetworkable, DWORD64);
 	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
 	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
 	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
@@ -237,7 +237,7 @@ void EntityLoop() {
 		}
 		if (yeetus) {
 			typedef void(__stdcall* Pick)(DWORD64, Str);
-			((Pick)(vars::stor::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
+			((Pick)(vars::stor::gBase + COS::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
 			printf("attempting to yeet\n");
 			yeetus = false;
 		}
@@ -368,7 +368,7 @@ void EntityThreadLoop() {
 		FindMatrix();
 	}
 	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
+	BaseNetworkable = read(vars::stor::gBase + COS::BaseNetworkable, DWORD64);
 	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
 	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
 	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);

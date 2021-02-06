@@ -30,8 +30,11 @@ float GetGravity(int ammoid) {
 }
 
 
-float GetBulletSpeed(Weapon tar, int ammo)
+float GetBulletSpeed()
 {
+	Item* active = LocalPlayer->GetActiveWeapon();
+	Weapon tar = active->Info();
+	int ammo = active->LoadedAmmo();
 	if (ammo == 0) return tar.ammo[0].speed; //melee
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
@@ -54,10 +57,10 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 		int ammo = active->LoadedAmmo();
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.3;
+			speed = GetBulletSpeed() * 1.3;
 		}
 		else {
-			speed = GetBulletSpeed(tar, ammo);
+			speed = GetBulletSpeed();
 		}
 		if (!speed && !vars::weapons::fast_bullets) {
 			speed = 250.f;
@@ -92,10 +95,10 @@ Vector3 Prediction(BasePlayer* Player) {
 	if (Dist > 0.001f) {
 		float speed;
 		if (vars::weapons::fast_bullets) {
-			speed = GetBulletSpeed(tar, ammo) * 1.3;
+			speed = GetBulletSpeed() * 1.3;
 		}
 		else {
-			speed = GetBulletSpeed(tar, ammo);
+			speed = GetBulletSpeed();
 		}
 		if (!speed && !vars::weapons::fast_bullets) {
 			speed = 250.f;
