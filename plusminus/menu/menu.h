@@ -435,9 +435,7 @@ namespace menu {
 		HelpCheckbox(xorstr("AutoCollect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
 		HelpCheckbox(xorstr("AutoRevive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
 		if (vars::misc::auto_revive) {
-			ImGui::SameLine(50.f, 1.f);
 			ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
-			ImGui::Spacing();
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));

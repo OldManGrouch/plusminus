@@ -20,11 +20,18 @@ void __fastcall Launch(Projectile* prdoj) {
 	}
 	return original_launch(prdoj);
 }
+typedef float(__stdcall* Clamp01)(float);
+
 bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 norm) {
-	if (test->HitEntity() != null) {
+	/*if (test->HitEntity() != null) {
 		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
 			return false;
 		}
-	}
-	return original_dohitt(proj, test, point, norm);
+	}*/
+	//return original_dohitt(proj, test, point, norm);
+	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+	proj->currentVelocity((TargetPlayer->get_bone_pos(head) - proj->currentPosition()) * 10.f);
+	proj->currentPosition(proj->currentVelocity().Normalized() * 0.001f);
+	proj->integrity(((Clamp01)(vars::stor::gBase + 0x1743C40))(proj->integrity() - 0.1f));
+	return true;
 }

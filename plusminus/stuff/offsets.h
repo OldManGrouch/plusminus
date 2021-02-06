@@ -8,71 +8,145 @@ namespace CO {
 	auto GetRandomVelocity = 0x4DEFA0;
 	auto Client = 0x2FC3DF0; // ConVar.Client_TypeInfo
 	auto CreateEffect = 0x872EA0;
-	auto UpgradeToGrade = 0x380FA0;
-	auto CreateOrUpdateEntity = 0x5648B0;
-	auto AddPunch = 0x41A0E0;
-	auto MoveTowards = 0x1AB6F50;
-	auto Jump = 0x6CDFA0;
-	auto Total = 0x434190;
-	auto IsDucked = 0x29A930;
-	auto get_rotation = 0x1AB3680;
-	auto PropertyToId = 0x14DFB10;
-	auto set_grassDistance = 0x667AB0;
-	auto VisUpdateUsingCulling = 0x2AA2E0;
-	auto SetInt = 0x1398010;
-	auto SetColor = 0x1397C20;
-	auto get_shader = 0x1398A80;
-	auto get_material = 0x14DD870;
-	auto get_Renderers = 0x324770;
-	auto ShaderFind = 0x14DF9F0;
-	auto OnLand = 0x29D0B0; // BasePlayer->OnLand
-	auto get_position = 0x6237E0; // playereyes->get_position
-	auto IsBeingHacked = 0x2FB350;
-	auto IsFullyHacked = 0x417CC0;
-	auto ForceToPos = 0x295E30;
-	auto UpdateAmbient = 0xA22730; // protected void UpdateAmbient() { } || TOD_Sky
-	auto set_rayleigh = 0x673C80;
-	auto BasePlayer = 0x29BF798; // BasePlayer_TypeInfo
-	auto AssistPlayer = 0x29C9F0; // public void Menu_AssistPlayer(BasePlayer player) { }
-	auto Launch = 0x2B1F00; // internal void Launch() { }
-	auto KnockDoor = 0x463850; // public void Menu_KnockDoor(BasePlayer player) { }
-	auto OpenDoor = 0x4638D0; // public void Menu_OpenDoor(BasePlayer player) { }
-	auto OpenHatch = 0x463920; // public void Menu_ToggleHatch(BasePlayer player) { }
-	auto IsHidden = 0x284A60; // public class StashContainer : StorageContainer
-	auto get_isHeadshot = 0x41F690; // public bool get_isHeadshot() { }
-	auto DoHitNotify = 0x2E7C20; // public void DoHitNotify(HitInfo info) { }
-	auto GetSkinColor = 0x348E60; // internal Color GetSkinColor(float skinNumber) { }
-	auto StartAttackCooldown = 0x2DD660; // protected void StartAttackCooldown(float cooldown) { }
-	auto ProcessAttack = 0x281E70; // protected virtual void ProcessAttack(HitTest hit) { }
-	auto get_transform = 0x145E370; // public Transform get_transform() { } | UnityEngine::Component
-	auto HitTest = 0x29BEE10; // HitTest_TypeInfo
-	auto get_time = 0x14E8310; // public static float get_time() { }
-	auto ServerRPC = 0x2F4310;
-	auto TraceAll = 0x5F33D0; // public static void TraceAll(HitTest test, List<TraceInfo> traces, int layerMask = -5) { }
-	auto BaseNetworkable = 0x29BF3E0; // BaseNetworkable_TypeInfo
-	auto SendProjectileAttack = 0x2A6510; // public void SendProjectileAttack(PlayerProjectileAttack attack) { }
-	auto GetModifiedAimConeDirection = 0x788A40; // public static Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = True) { }
-	auto set_flying = 0x17DCEB0; // public void set_flying(bool value) { } 
-	auto CanAttack = 0x28EE70; // public bool CanAttack() { }
-	auto SendClientTick = 0x2A5E50; // internal void SendClientTick() { }
-	auto HandleRunning = 0x6CDD10; // private void HandleRunning(ModelState state, bool wantsRun) { }
-	auto HandleJumping = 0x6CDBF0;
-	auto CreateProjectile = 0x58A450; // private Projectile CreateProjectile(string prefabPath, Vector3 pos, Vector3 forward, Vector3 velocity) { }
-	auto CanHoldItems = 0x2855A0; // public virtual bool CanHoldItems() { }
-	auto Run = 0x1B88400; // public static string Run(ConsoleSystem.Option options, string strCommand, object[] args) { }
-	auto DoMovement = 0x2B0440; // private void DoMovement(float deltaTime) { }
-	auto DoHit = 0x2AFD30; // private bool DoHit(HitTest test, Vector3 point, Vector3 normal) { }
-	auto ClientInput = 0x290AC0; // internal virtual void ClientInput(InputState state) { }
-	auto ConvarGraphics = 0x29BE5D0; // ConVar.Graphics_TypeInfo
-	auto TODSky = 0x29C1238;// TOD_Sky_TypeInfo
+	auto UpgradeToGrade = 0x462B70;
+	auto CreateOrUpdateEntity = 0x6DDC70;
+	auto AddPunch = 0x514AA0;
+	auto MoveTowards = 0x1F76B60;
+	auto Jump = 0xB36A50;
+	auto Total = 0x3D45B0;
+	auto IsDucked = 0x302720;
+	auto PropertyToId = 0x1831DC0;
+	auto VisUpdateUsingCulling = 0x311FE0;
+	auto SetInt = 0x1742C30;
+	auto SetColor = 0x1742840;
+	auto get_shader = 0x17436A0;
+	auto get_material = 0x182FAF0;
+	auto get_Renderers = 0x3F07C0;
+	auto ShaderFind = 0x1831CA0;
+	auto OnLand = 0x304E60; // BasePlayer->OnLand
+	auto get_position = 0x6C44F0; // playereyes->get_position
+	auto IsBeingHacked = 0x2E1340;
+	auto IsFullyHacked = 0x2E1B90;
+	auto ForceToPos = 0x2FD9D0;
+	auto UpdateAmbient = 0xC3ABB0; // protected void UpdateAmbient() { } || TOD_Sky
+	auto set_rayleigh = 0x7FEDD0;
+	auto BasePlayer = 0x2FC4408; // BasePlayer_TypeInfo
+	auto AssistPlayer = 0x3047A0; // public void Menu_AssistPlayer(BasePlayer player) { }
+	auto Launch = 0x53A0C0; // internal void Launch() { }
+	auto KnockDoor = 0x86AC70; // public void Menu_KnockDoor(BasePlayer player) { }
+	auto OpenDoor = 0x86ACF0; // public void Menu_OpenDoor(BasePlayer player) { }
+	auto OpenHatch = 0x86AD40; // public void Menu_ToggleHatch(BasePlayer player) { }
+	auto IsHidden = 0x2EC610; // public class StashContainer : StorageContainer
+	auto get_isHeadshot = 0x51A050; // public bool get_isHeadshot() { }
+	auto DoHitNotify = 0x3C2530; // public void DoHitNotify(HitInfo info) { }
+	auto GetSkinColor = 0x43B120; // internal Color GetSkinColor(float skinNumber) { }
+	auto StartAttackCooldown = 0x3B7CD0; // protected void StartAttackCooldown(float cooldown) { }
+	auto ProcessAttack = 0x2E9A20; // protected virtual void ProcessAttack(HitTest hit) { }
+	auto get_transform = 0x172F550; // public Transform get_transform() { } | UnityEngine::Component
+	auto HitTest = 0x2FC3670; // HitTest_TypeInfo
+	auto get_time = 0x1F70250; // public static float get_time() { }
+	auto ServerRPC = 0x3CEE10;
+	auto TraceAll = 0x93DD30; // public static void TraceAll(HitTest test, List<TraceInfo> traces, int layerMask = -5) { }
+	auto BaseNetworkable = 0x2FC3FC8; // BaseNetworkable_TypeInfo
+	auto SendProjectileAttack = 0x30E270; // public void SendProjectileAttack(PlayerProjectileAttack attack) { }
+	auto GetModifiedAimConeDirection = 0x9159C0; // public static Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = True) { }
+	auto set_flying = 0x1C58240; // public void set_flying(bool value) { } 
+	auto CanAttack = 0x2F6A10; // public bool CanAttack() { }
+	auto SendClientTick = 0x30DBB0; // internal void SendClientTick() { }
+	auto HandleRunning = 0xB367C0; // private void HandleRunning(ModelState state, bool wantsRun) { }
+	auto HandleJumping = 0xB366A0;
+	auto CreateProjectile = 0x76F160; // private Projectile CreateProjectile(string prefabPath, Vector3 pos, Vector3 forward, Vector3 velocity) { }
+	auto CanHoldItems = 0x2ED150; // public virtual bool CanHoldItems() { }
+	auto Run = 0x204C360; // public static string Run(ConsoleSystem.Option options, string strCommand, object[] args) { }
+	auto DoMovement = 0x538600; // private void DoMovement(float deltaTime) { }
+	auto DoHit = 0x537EF0; // private bool DoHit(HitTest test, Vector3 point, Vector3 normal) { }
+	auto ClientInput = 0x2F8660; // internal virtual void ClientInput(InputState state) { }
+	auto ConvarGraphics = 0x2FC2CF8; // ConVar.Graphics_TypeInfo
+	auto TODSky = 0x2FC61F8;// TOD_Sky_TypeInfo
 	namespace utils {
-		auto ClosestPoint = 0x2EB360; // public Vector3 ClosestPoint(Vector3 position) { }
-		auto GetWorldVelocity = 0x2EF410; // public Vector3 GetWorldVelocity() { }
-		auto InverseTransformPoint = 0x1AB1E50; // public Vector3 InverseTransformPoint(Vector3 position) { }
-		auto LineOfSight = 0x3B73C0; // public static bool LineOfSight(Vector3 p0, Vector3 p1, int layerMask, float padding = 0) { }
-		auto FindBone = 0x2EC690; // public virtual Transform FindBone(string strName) { }
+		auto ClosestPoint = 0x3C5C60; // public Vector3 ClosestPoint(Vector3 position) { }
+		auto GetWorldVelocity = 0x3C9D10; // public Vector3 GetWorldVelocity() { }
+		auto InverseTransformPoint = 0x1F71780; // public Vector3 InverseTransformPoint(Vector3 position) { }
+		auto LineOfSight = 0x503110; // public static bool LineOfSight(Vector3 p0, Vector3 p1, int layerMask, float padding = 0) { }
+		auto FindBone = 0x3C6F90; // public virtual Transform FindBone(string strName) { }
 		namespace StringPool {
-			auto Get = 0x6B20B0; // public static uint Get(string str) { }
+			auto Get = 0x8EECB0; // public static uint Get(string str) { }
+		}
+	}
+	void init() {
+
+	}
+}
+namespace COS {
+	auto GetYawClamp = 0x2EDD60;
+	auto GetPitchClamp = 0x2EDD30;
+	auto Play = 0x48A2E0; // ViewModel
+	auto get_frameCount = 0x1F70950;
+	auto GetRandomVelocity = 0x4DEFA0;
+	auto Client = 0x2FC3E30; // ConVar.Client_TypeInfo
+	auto CreateEffect = 0x8736C0;
+	auto UpgradeToGrade = 0x462B70;
+	auto CreateOrUpdateEntity = 0x6DE490;
+	auto AddPunch = 0x514AA0;
+	auto MoveTowards = 0x1F77380;
+	auto Jump = 0xB37270;
+	auto Total = 0x3D45B0;
+	auto IsDucked = 0x302720;
+	auto PropertyToId = 0x18325E0;
+	auto VisUpdateUsingCulling = 0x311FE0;
+	auto SetInt = 0x1743450;
+	auto SetColor = 0x1743060;
+	auto get_shader = 0x1743EC0;
+	auto get_material = 0x1830310;
+	auto get_Renderers = 0x3F07C0;
+	auto ShaderFind = 0x18324C0;
+	auto OnLand = 0x304E60; // BasePlayer->OnLand
+	auto get_position = 0x6C4D10; // playereyes->get_position
+	auto IsBeingHacked = 0x2E1340;
+	auto IsFullyHacked = 0x2E1B90;
+	auto ForceToPos = 0x2FD9D0;
+	auto UpdateAmbient = 0xC3B3D0; // protected void UpdateAmbient() { } || TOD_Sky
+	auto set_rayleigh = 0x7FF5F0;
+	auto BasePlayer = 0x2FC4448; // BasePlayer_TypeInfo
+	auto AssistPlayer = 0x3047A0; // public void Menu_AssistPlayer(BasePlayer player) { }
+	auto Launch = 0x53A0C0; // internal void Launch() { }
+	auto KnockDoor = 0x86B490; // public void Menu_KnockDoor(BasePlayer player) { }
+	auto OpenDoor = 0x86B510; // public void Menu_OpenDoor(BasePlayer player) { }
+	auto OpenHatch = 0x86B560; // public void Menu_ToggleHatch(BasePlayer player) { }
+	auto IsHidden = 0x2EC610; // public class StashContainer : StorageContainer
+	auto get_isHeadshot = 0x51A050; // public bool get_isHeadshot() { }
+	auto DoHitNotify = 0x3C2530; // public void DoHitNotify(HitInfo info) { }
+	auto GetSkinColor = 0x43B120; // internal Color GetSkinColor(float skinNumber) { }
+	auto StartAttackCooldown = 0x3B7CD0; // protected void StartAttackCooldown(float cooldown) { }
+	auto ProcessAttack = 0x2E9A20; // protected virtual void ProcessAttack(HitTest hit) { }
+	auto get_transform = 0x172FD70; // public Transform get_transform() { } | UnityEngine::Component
+	auto HitTest = 0x2FC36B0; // HitTest_TypeInfo
+	auto get_time = 0x1F70A70; // public static float get_time() { }
+	auto ServerRPC = 0x3CEE10;
+	auto TraceAll = 0x93E550; // public static void TraceAll(HitTest test, List<TraceInfo> traces, int layerMask = -5) { }
+	auto BaseNetworkable = 0x2FC4010; // BaseNetworkable_TypeInfo
+	auto SendProjectileAttack = 0x30E270; // public void SendProjectileAttack(PlayerProjectileAttack attack) { }
+	auto GetModifiedAimConeDirection = 0x9161E0; // public static Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = True) { }
+	auto set_flying = 0x1C58A60; // public void set_flying(bool value) { } 
+	auto CanAttack = 0x2F6A10; // public bool CanAttack() { }
+	auto SendClientTick = 0x30DBB0; // internal void SendClientTick() { }
+	auto HandleRunning = 0xB36FE0; // private void HandleRunning(ModelState state, bool wantsRun) { }
+	auto HandleJumping = 0xB36EC0;
+	auto CreateProjectile = 0x76F980; // private Projectile CreateProjectile(string prefabPath, Vector3 pos, Vector3 forward, Vector3 velocity) { }
+	auto CanHoldItems = 0x2ED150; // public virtual bool CanHoldItems() { }
+	auto Run = 0x204CB80; // public static string Run(ConsoleSystem.Option options, string strCommand, object[] args) { }
+	auto DoMovement = 0x538600; // private void DoMovement(float deltaTime) { }
+	auto DoHit = 0x537EF0; // private bool DoHit(HitTest test, Vector3 point, Vector3 normal) { }
+	auto ClientInput = 0x2F8660; // internal virtual void ClientInput(InputState state) { }
+	auto ConvarGraphics = 0x2FC2D38; // ConVar.Graphics_TypeInfo
+	namespace utils {
+		auto ClosestPoint = 0x3C5C60; // public Vector3 ClosestPoint(Vector3 position) { }
+		auto GetWorldVelocity = 0x3C9D10; // public Vector3 GetWorldVelocity() { }
+		auto InverseTransformPoint = 0x1F71FA0; // public Vector3 InverseTransformPoint(Vector3 position) { }
+		auto LineOfSight = 0x503110; // public static bool LineOfSight(Vector3 p0, Vector3 p1, int layerMask, float padding = 0) { }
+		auto FindBone = 0x3C6F90; // public virtual Transform FindBone(string strName) { }
+		namespace StringPool {
+			auto Get = 0x8EF4D0; // public static uint Get(string str) { }
 		}
 	}
 	void init() {
@@ -87,7 +161,7 @@ namespace CO {
 #define oIsNpc 0x2C0// private bool <IsNpc>k__BackingField;
 #define oPlayerFlags 0x5F8// public BasePlayer.PlayerFlags playerFlags;
 #define oUserID 0x640// public ulong userID;
-#define oDisplayName 0x650// protected string _displayName
+#define oDisplayName 0x658// protected string _displayName
 #define oClientTickInterval 0x5C8// public float clientTickInterval;
 #define oClActiveItem 0x570// private uint clActiveItem; 
 #define oInventory 0x608// public PlayerInventory inventory;
