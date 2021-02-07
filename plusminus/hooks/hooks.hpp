@@ -336,6 +336,26 @@ void HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
 }
+void Launch(Projectile* prdoj) {
+	Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
+	int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
+	prdoj->gravityModifier(GetGravity(ammo));
+	prdoj->invisible(false);
+	if (vars::weapons::no_spread) {
+		write(prdoj->mod() + 0x38, 0.f, float);
+	}
+	return original_launch(prdoj);
+}
+bool DoWaterHit(Projectile* proj, HitTest* test, Vector3 pos) {
+	LogSystem::Log(c_wxor(L"DoWaterHit"), 5.f);
+	if (vars::stuff::testBool) {
+		proj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - proj->currentPosition()) * 3);
+		return true;
+	}
+	else {
+		return original_dowaterhit(proj, test, pos);
+	}
+}
 void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
 	if (vars::misc::inf_jump) {
 		if (!wantsJump) {

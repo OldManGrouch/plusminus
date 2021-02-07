@@ -44,7 +44,6 @@
     <ClInclude Include="hooks/minhook\src\HDE\table32.h" />
     <ClInclude Include="hooks/minhook\src\HDE\table64.h" />
     <ClInclude Include="hooks/minhook\src\trampoline.h" />
-    <ClInclude Include="main/projectiles.h" />
     <ClInclude Include="rendering/rendering.h" />
     <ClInclude Include="stuff/sdk.h" />
     <ClInclude Include="stuff/utilities.h" />

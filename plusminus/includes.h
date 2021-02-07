@@ -61,8 +61,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "main/esp.h"
 
 #include "main/entities.h"
-
-#include "main/projectiles.h"
 #include "hooks/hooks.hpp"
 
 
