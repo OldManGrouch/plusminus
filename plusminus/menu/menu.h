@@ -202,7 +202,6 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		if (vars::combat::always_heli_rotor) { vars::combat::hitbox_override = false; }
-		HelpCheckbox(xorstr("Tree Reflect"), &vars::combat::tree_reflect, xorstr("a"));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
@@ -409,6 +408,7 @@ namespace menu {
 			ImGui::PushItemWidth(100);
 			ImGui::Combo(xorstr("Yaw"), &vars::misc::anti_aim_yaw, anti_aim_yaw, IM_ARRAYSIZE(anti_aim_yaw));
 			ImGui::PopItemWidth();
+			ImGui::Checkbox(xorstr("Indicator"), &vars::misc::anti_aim_indicator);
 		}
 		HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
 		HelpCheckbox(xorstr("Jesus"), &vars::misc::jesus, xorstr("Allows you to walk on water."));
@@ -417,7 +417,7 @@ namespace menu {
 		HelpCheckbox(xorstr("FakeLag"), &vars::misc::fake_lag, xorstr("Makes it looks like you're lagging on other people's screens."));
 		HelpCheckbox(xorstr("FakeAdmin"), &vars::misc::fakeadmin, xorstr("Allows you to use certain admin-only commands like 'debugcamera' and 'noclip'. Note: bypasses rustberg's and arabrust's anti-fakeadmin. If you can't move in debugcamera, type 'camspeed 1' in console."));
 		HelpCheckbox(xorstr("Annoyer"), &vars::misc::annoyer, xorstr("Annoy anyone that has a door on their base."));
-		HelpCheckbox(xorstr("Unlock Angles"), &vars::misc::unlock_angles, xorstr("Unlocks angles."));
+	//	HelpCheckbox(xorstr("Unlock Angles"), &vars::misc::unlock_angles, xorstr("Unlocks angles."));
 		HelpCheckbox(xorstr("Shoot Anywhere"), &vars::misc::can_attack, xorstr("Allows you to shoot anywhere."));
 		HelpCheckbox(xorstr("Omni-Sprint"), &vars::misc::omnidirectional_sprinting, xorstr("Allows you to sprint in any direction."));
 		HelpCheckbox(xorstr("Suicide"), &vars::misc::suicide, xorstr("Intantly kills you with fall damage, can be used to quickly respawn. Be careful with this."));

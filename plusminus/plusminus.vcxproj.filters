@@ -118,9 +118,6 @@
     <ClInclude Include="main/targeting.h">
       <Filter>source\main</Filter>
     </ClInclude>
-    <ClInclude Include="stuff/utilities.h">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="menu/menu.h">
       <Filter>source\menu</Filter>
     </ClInclude>

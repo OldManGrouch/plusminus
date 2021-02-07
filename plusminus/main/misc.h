@@ -39,7 +39,7 @@ void MiscFuncs() {
 		float curtime = LocalPlayer->Time();
 		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) { // check if fire button is down and if the timer has reached a specific number
 			typedef void(__stdcall* ServerRPC)(DWORD64, Str); // define server rpc
-			((ServerRPC)(vars::stor::gBase + COS::ServerRPC))(Held, Str(xorstr(L"UseSelf"))); // call serverrpc
+			((ServerRPC)(vars::stor::gBase + CO::ServerRPC))(Held, Str(xorstr(L"UseSelf"))); // call serverrpc
 			w_last_syringe = curtime;
 		}
 	}

@@ -173,9 +173,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
-		bool unlock_angles = false;
-		bool auto_upgrade = false;
-		int build_grade = 0;
+		bool anti_aim_indicator = false;
 		bool hit_logs = false;
 		bool auto_farm_ore = false;
 		bool auto_farm_tree = false;
@@ -191,11 +189,9 @@ namespace vars {
 		bool auto_revive = false;
 		bool revive_team_only = false;
 		bool rayleigh_changer = false;
-		bool sky_removals = false;
 		float rayleigh = 10.f;
 		bool annoyer = false;
 		bool bright_ambient = false;
-		float bright_ambient_intensity = 1.f;
 		bool auto_pickup = false;
 		bool spoof_ladderstate = false;
 		bool anti_aim = false;

@@ -240,6 +240,9 @@ private:
 		SetupValue(vars::crosshair::gap, 5.f, c_xor("Crosshair"), c_xor("Gap"));
 		SetupValue(vars::crosshair::length, 5.f, c_xor("Crosshair"), c_xor("Length"));
 		SetupValue(vars::crosshair::dot, false, c_xor("Crosshair"), c_xor("Dot"));
+
+		SetupValue(indicator_x, 100.f, c_xor("a"), c_xor("x"));
+		SetupValue(indicator_y, 100.f, c_xor("a"), c_xor("y"));
 	}
 
 	std::string szPath = "";

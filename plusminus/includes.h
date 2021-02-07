@@ -3,7 +3,7 @@
 #define ALLOC_CONS 0
 #define StrA
 #define StrW
-
+#define rusticaland
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -35,7 +35,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/hwid.h"
 
 #include "stuff/mem.h"
-#include "stuff/utilities.h"
 #include "stuff/structs.h"
 #include "stuff/math.h"
 #include "stuff/vars.h"

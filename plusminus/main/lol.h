@@ -8,10 +8,10 @@ typedef DWORD64(__stdcall* GetTransform)(DWORD64);
 void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	if (!target.valid || !Held) return;
 
-	if (read(Held + 0x230, float) >= ((get_time)(vars::stor::gBase + COS::get_time))()) { return; }
+	if (read(Held + 0x230, float) >= ((get_time)(vars::stor::gBase + CO::get_time))()) { return; }
 	if (read(Held + 0x23C, float) < read(Held + 0x1D8, float)) { return; }
 
-	DWORD64 staticHitTest = read(vars::stor::gBase + COS::HitTest, DWORD64); if (!staticHitTest) return;
+	DWORD64 staticHitTest = read(vars::stor::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
 	DWORD64 newHitTest = il2cpp::il2cpp_object_new(staticHitTest);
 
 	DWORD64 trans; Ray ray = Ray(LocalPlayer->get_bone_pos(neck), (target.position - LocalPlayer->get_bone_pos(neck)).Normalized());
@@ -26,8 +26,8 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	write(newHitTest + 0x90, utils::TransformToPoint(trans, target.position), Vector3);
 	write(newHitTest + 0x9C, Vector3(0, 0, 0), Vector3);
 	write(newHitTest + 0x68, read(Held + 0x268, DWORD64), DWORD64);
-	((StartAttackCooldown)(vars::stor::gBase + COS::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
-	return ((ProcessAttack)(vars::stor::gBase + COS::ProcessAttack))(Held, newHitTest);
+	((StartAttackCooldown)(vars::stor::gBase + CO::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
+	return ((ProcessAttack)(vars::stor::gBase + CO::ProcessAttack))(Held, newHitTest);
 }
 typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
@@ -44,19 +44,19 @@ void DoChams(uintptr_t target, Color col) {
 	if (!vars::players::chams) return;
 	if (target) {
 		if (!property) {
-			property = ((PropertyToId)(vars::stor::gBase + COS::PropertyToId))(Str(xorstr(L"_Color")));
+			property = ((PropertyToId)(vars::stor::gBase + CO::PropertyToId))(Str(xorstr(L"_Color")));
 		}
-		auto mainRendList = ((get_Renderers)(vars::stor::gBase + COS::get_Renderers))(target);
+		auto mainRendList = ((get_Renderers)(vars::stor::gBase + CO::get_Renderers))(target);
 		for (int idx = 0; idx < mainRendList->get_size(); idx++) {
 			uintptr_t renderer = mainRendList->get_value(idx);
 			if (renderer) {
-				uintptr_t material = ((get_material)(vars::stor::gBase + COS::get_material))(renderer);
-				if (shader != ((get_shader)(vars::stor::gBase + COS::get_shader))(material)) {
+				uintptr_t material = ((get_material)(vars::stor::gBase + CO::get_material))(renderer);
+				if (shader != ((get_shader)(vars::stor::gBase + CO::get_shader))(material)) {
 					if (!shader) 
 						shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 					il2cpp::unity::set_shader(material, shader);
-					((SetColorInt)(vars::stor::gBase + COS::SetColor))(material, property, col);
-					((SetInt)(vars::stor::gBase + COS::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
+					((SetColorInt)(vars::stor::gBase + CO::SetColor))(material, property, col);
+					((SetInt)(vars::stor::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
 				}
 			}
 		}
@@ -66,15 +66,15 @@ float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
 void SpamKnock(uintptr_t Door) {
 	typedef void(__stdcall* DoorFunction)(uintptr_t, BasePlayer*);
 	if (LocalPlayer->Time() > LastKnock + 0.5f) {
-		((DoorFunction)(vars::stor::gBase + COS::KnockDoor))(Door, LocalPlayer);
+		((DoorFunction)(vars::stor::gBase + CO::KnockDoor))(Door, LocalPlayer);
 		LastKnock = LocalPlayer->Time();
 	}
 	if (LocalPlayer->Time() > LastOpen + 0.1f) {
-		((DoorFunction)(vars::stor::gBase + COS::OpenDoor))(Door, LocalPlayer);
+		((DoorFunction)(vars::stor::gBase + CO::OpenDoor))(Door, LocalPlayer);
 		LastOpen = LocalPlayer->Time();
 	}
 	if (LocalPlayer->Time() > LastHatch + 0.1f) {
-		((DoorFunction)(vars::stor::gBase + COS::OpenHatch))(Door, LocalPlayer);
+		((DoorFunction)(vars::stor::gBase + CO::OpenHatch))(Door, LocalPlayer);
 		LastHatch = LocalPlayer->Time();
 	}
 }
@@ -83,13 +83,13 @@ void PickupPlayer(BasePlayer* ent) {
 	typedef void(__stdcall* AssistPlayer)(BasePlayer*, BasePlayer*);
 	if (!LocalPlayer->IsTeamMate(ent->GetSteamID()) && vars::misc::revive_team_only) return;
 	if (LocalPlayer->Time() > LastPickup + 0.5f) {
-		((AssistPlayer)(vars::stor::gBase + COS::AssistPlayer))(ent, LocalPlayer);
+		((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer);
 		LastPickup = LocalPlayer->Time();
 	}
 }
 void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
-	return ((Pick)(vars::stor::gBase + COS::ServerRPC))(item, Str(xorstr(L"Pickup")));
+	return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
 }
 void DoIcon() {
 	

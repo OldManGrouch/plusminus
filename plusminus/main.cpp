@@ -1,5 +1,5 @@
 ﻿#include "includes.h"
-#define noauth
+//#define noauth
 void HWID_Checker(HINSTANCE hModule) {
 	HW_PROFILE_INFO hwProfileInfo;
 	GetCurrentHwProfile(&hwProfileInfo);

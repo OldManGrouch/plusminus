@@ -152,15 +152,15 @@ void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
 	typedef void(__stdcall* DoAttack)(uintptr_t);
 	typedef void(__stdcall* set_rayleigh)(float);
 	if (vars::misc::rayleigh_changer) {
-		((set_rayleigh)(vars::stor::gBase + COS::set_rayleigh))(vars::misc::rayleigh);
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
 	}
 	else {
-		((set_rayleigh)(vars::stor::gBase + COS::set_rayleigh))(vars::misc::rayleigh);
+		((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
 	}
 	if (vars::misc::mass_suicide)
-		((OnLand)(vars::stor::gBase + COS::OnLand))(LocalPlayer, -50);
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu())
-		((OnLand)(vars::stor::gBase + COS::OnLand))(LocalPlayer, -50);
+		((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 	auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer->IsMenu()) {
 		Item* weapon = LocalPlayer->GetActiveWeapon();
@@ -341,7 +341,7 @@ void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = fa
 			return;
 		}
 		typedef void(__stdcall* Jump)(void*, void*, bool);
-		((Jump)(vars::stor::gBase + COS::Jump))(a1, a2, jumpInDirection);
+		((Jump)(vars::stor::gBase + CO::Jump))(a1, a2, jumpInDirection);
 	}
 	else {
 		return original_handleJumping(a1, a2, wantsJump, jumpInDirection);
@@ -375,28 +375,28 @@ void hk_(void* Function, void** Original, void* Detour, bool autoEnable = true) 
 		MH_EnableHook(Function);
 }
 inline void InitHook() {
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::set_flying), (void**)&original_setflying, SetFlying);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::SendProjectileAttack), (void**)&original_sendprojectileattack, SendProjectileAttack);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CanAttack), (void**)&original_canattack, CanAttack);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::HandleRunning), (void**)&original_handleRunning, HandleRunning);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::HandleJumping), (void**)&original_handleJumping, HandleJumping);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Run), (void**)&original_consolerun, Run);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CreateEffect), (void**)&original_createeffect, CreateEffect);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::get_position), (void**)&original_geteyepos, get_position);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Play), (void**)&original_viewmodelplay, Play);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::TraceAll), (void**)&original_traceall, TraceAll);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::AddPunch), (void**)&original_addpunch, AddPunch);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::MoveTowards), (void**)&original_movetowards, MoveTowards);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Launch), (void**)&original_launch, Launch);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::UpdateAmbient), (void**)&original_updateambient, UpdateAmbient);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::ClientInput), (void**)&original_clientinput, ClientInput);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::get_isHeadshot), (void**)&original_getisheadshot, get_isHeadshot);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::ForceToPos), (void**)&original_forcepos, ForcePositionTo);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, SetFlying);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, SendProjectileAttack);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, CanAttack);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, SendClientTick);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, HandleRunning);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, HandleJumping);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, GetModifiedAimConeDirection);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, CreateProjectile);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, CanHoldItems);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, Run);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, CreateEffect);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, get_position);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, Play);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, TraceAll);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, AddPunch);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, MoveTowards);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, Launch);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, UpdateAmbient);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, ClientInput);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, DoHitNotify);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, get_isHeadshot);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, ForcePositionTo);
 }

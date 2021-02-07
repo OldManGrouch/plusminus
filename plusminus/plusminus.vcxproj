@@ -46,7 +46,6 @@
     <ClInclude Include="hooks/minhook\src\trampoline.h" />
     <ClInclude Include="rendering/rendering.h" />
     <ClInclude Include="stuff/sdk.h" />
-    <ClInclude Include="stuff/utilities.h" />
     <ClInclude Include="stuff/mem.h" />
     <ClInclude Include="stuff/math.h" />
     <ClInclude Include="init/present.h" />
