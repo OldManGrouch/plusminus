@@ -243,10 +243,10 @@ public:
 	}
 	
 	
-	void SetFov() {
+	void SetFov(float val) {
 		auto klass = read(vars::stor::gBase + COS::ConvarGraphics, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
-		write(static_fields + 0x18, vars::misc::fov, float);
+		write(static_fields + 0x18, val, float);
 	}
 	void PatchCamspeed() {
 		auto klass = read(vars::stor::gBase + COS::Client, DWORD64);

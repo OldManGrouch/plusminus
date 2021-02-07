@@ -400,6 +400,7 @@ namespace menu {
 	void misc() {
 		ImGui::SliderFloat(xorstr("Fov"), &vars::misc::fov, 30.f, 130.f);
 		Hotkey(xorstr("Remove Position Forcing"), &vars::keys::forcepos, ImVec2(200.f, 0));
+		Hotkey(xorstr("Zoom"), &vars::keys::zoom, ImVec2(200.f, 0));
 		//HelpCheckbox(xorstr("Silent Walk"), &vars::misc::silent_walk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
 	    HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
@@ -484,8 +485,14 @@ namespace menu {
 }
 void DrawMenu() {
 	menu::style();
-	
-	ImGui::SetNextWindowSize(ImVec2(500, 0));
+	switch (menu::tab_index) {
+	case 5:
+		ImGui::SetNextWindowSize(ImVec2(500, 550));
+		break;
+	default:
+		ImGui::SetNextWindowSize(ImVec2(500, 0));
+		break;
+	}
 	if (ImGui::Begin("##menu", 0, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) {
 		menu::cursor_pos = ImGui::GetCursorPosDD();
 		ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetWindowPos(), ImGui::GetWindowPos() + ImVec2(118, ImGui::GetWindowHeight()), ImColor(51, 51, 51, 128), ImGui::GetStyle().FrameRounding, ImDrawCornerFlags_All);

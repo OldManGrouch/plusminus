@@ -4,7 +4,7 @@ inline SendProjectileAttack_fn original_sendprojectileattack{ };
 typedef void(__fastcall* launch)(Projectile*);
 inline launch original_launch;
 
-typedef bool(__fastcall* dowaterhit)(Projectile*, HitTest*, Vector3);
+typedef bool(__fastcall* dowaterhit)(Projectile*, HitTest*, Vector3, Vector3);
 inline dowaterhit original_dowaterhit;
 
 typedef Projectile* (__fastcall* create_projectile_fn)(uintptr_t, void*, Vector3, Vector3, Vector3);
@@ -69,6 +69,9 @@ inline viewmodelPlay original_viewmodelplay{ };
 
 typedef bool(__fastcall* refr)(Projectile*, uint32_t, Vector3, Vector3, float);
 inline refr original_refract{ };
+
+typedef bool(__fastcall* refre)(Projectile*, uint32_t, Vector3, Vector3);
+inline refre original_reflect{ };
 
 typedef Vector2(__fastcall* pitchclamp)(DWORD64);
 inline pitchclamp original_getpitchclamp{ };

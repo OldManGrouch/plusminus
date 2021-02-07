@@ -93,6 +93,24 @@ namespace Renderer {
 	__forceinline void FillRoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad) {
 		SolidColor->SetColor(Clr); Canvas->FillRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y}, Rad, Rad }, SolidColor);
 	}
+	__forceinline void CosTanSinLine(float flAngle, float range, int x, int y, int LineLength, const D2D1::ColorF& Clr) {
+		float nigga = flAngle;
+		nigga += 45.f;//cant remember wht this is here for tbh (this doesnt mess it up though)
+
+		float flYaw = (nigga) * (PI / 180.0);
+
+		float viewcosyawzzzzzzz = cos(flYaw);
+		float viewsinyawzzzzzzz = sin(flYaw);
+
+		float x2 = range * (-viewcosyawzzzzzzz) + range * viewsinyawzzzzzzz;
+		float y2 = range * (-viewcosyawzzzzzzz) - range * viewsinyawzzzzzzz;
+
+		int posonscreenX = x + int(x2 / range * (LineLength));
+		int posonscreenY = y + int(y2 / range * (LineLength));
+
+		Line(Vector2(x, y), Vector2(posonscreenX, posonscreenY), Clr);
+		FillCircle(Vector2(posonscreenX, posonscreenY), Clr, 4);//P.S this is the small dot at the end of each line!!!!!!!!!XD
+	}
 	__forceinline void FillGradientRoundedRectangle(const Vector2& Dot, const Vector2& WidthHeight, const D2D1::ColorF& Clr, float Radius, float per) {
 		auto kek_g = 1.f - per; auto kek_r = 1.f - kek_g;
 		ID2D1GradientStopCollection* pGradientStops = NULL;

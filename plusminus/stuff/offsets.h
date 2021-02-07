@@ -30,6 +30,7 @@ namespace CO {
 	auto ForceToPos = 0x2FD9D0;
 	auto UpdateAmbient = 0xC3ABB0; // protected void UpdateAmbient() { } || TOD_Sky
 	auto set_rayleigh = 0x7FEDD0;
+	auto Refract = 0x53A770;
 	auto BasePlayer = 0x2FC4408; // BasePlayer_TypeInfo
 	auto AssistPlayer = 0x3047A0; // public void Menu_AssistPlayer(BasePlayer player) { }
 	auto Launch = 0x53A0C0; // internal void Launch() { }
@@ -94,6 +95,7 @@ namespace COS {
 	auto IsDucked = 0x302720;
 	auto PropertyToId = 0x18325E0;
 	auto VisUpdateUsingCulling = 0x311FE0;
+	auto Refract = 0x53A770;
 	auto SetInt = 0x1743450;
 	auto SetColor = 0x1743060;
 	auto get_shader = 0x1743EC0;

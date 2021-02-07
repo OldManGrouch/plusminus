@@ -20,7 +20,7 @@ void FindMatrix() {
 		}
 	}
 }
-int x = 0;
+int xd = 0;
 int Drehungswinkel = 0;
 void SwastikaCrosshair() {
 
@@ -46,9 +46,32 @@ void SwastikaCrosshair() {
 		i++;
 	}
 }
+float x = 100;
+float y = 100;
 float timee = 120.f;
 bool initD = false;
 void EntityLoop() {
+	int radius = 80;
+	float range = 5;
+	int LineLength = 50;
+
+	if (vars::misc::anti_aim) {
+		POINT p;
+		if (GetCursorPos(&p)) {
+			if (p.x >= x - radius && p.x <= x + radius) {
+				if (p.y >= y - radius && p.y <= y + radius) {
+					if (GetAsyncKeyState(VK_LBUTTON)) {
+						x = p.x;
+						y = p.y;
+					}
+				}
+			}
+		}
+		Renderer::FillCircle(Vector2(x, y), D2D1::ColorF(0.13, 0.13, 0.13, 0.6), radius);//this draws that grey circle u see :]
+		float origyaw = vars::stuff::anti_aim_;
+		Renderer::CosTanSinLine(origyaw, range, x, y, LineLength, D2D1::ColorF::Red);//this the function from b4 btw
+	}
+
 	//SwastikaCrosshair();
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {

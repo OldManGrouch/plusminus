@@ -4,6 +4,7 @@ bool yeetus = false;
 #define null NULL
 namespace vars {
 	namespace stuff {
+		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
@@ -17,6 +18,7 @@ namespace vars {
 		char ConfigName[0x100] = "cfg";
 	}
 	namespace keys {
+		int zoom = { 0x42 };
 		int suicide = { 0x5A };
 		int longneck = { 0x4D };
 		int forcepos{ 0x4E };

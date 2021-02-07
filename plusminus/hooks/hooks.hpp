@@ -10,7 +10,7 @@ void SendClientTick(BasePlayer* baseplayer) {
 		auto state = read(input + 0x20, uintptr_t);
 		auto current = read(state + 0x10, uintptr_t); if (!current) { return original_sendclienttick(baseplayer); }
 		yeet += vars::misc::anti_aim_speed;
-		if (yeet > 999) { // reset number
+		if (yeet >= 999) { // reset number
 			yeet = 0;
 		}
 
@@ -21,6 +21,7 @@ void SendClientTick(BasePlayer* baseplayer) {
 			yaw = -100;
 		}
 		write(current + 0x18, Vector3(yaw, yeet, 0), Vector3);
+		
 	}
 	return original_sendclienttick(baseplayer);
 }
@@ -111,12 +112,12 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 
 	Vector3 target = TargetPlayer->get_bone_pos(head);
 	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
-		Prediction(LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-		playerDir = (target - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
+		//Prediction(LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+		playerDir = (Prediction(TargetPlayer) - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
 	}
 	else {
-		Prediction(LocalPlayer->get_bone_pos(head), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-		playerDir = (target - LocalPlayer->get_bone_pos(head)).Normalized();
+		//Prediction(LocalPlayer->get_bone_pos(head), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+		playerDir = (Prediction(TargetPlayer) - LocalPlayer->get_bone_pos(head)).Normalized();
 	}
 
 	if (vars::combat::psilent) {
@@ -146,6 +147,7 @@ Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhe
 }
 
 void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
+	vars::stuff::anti_aim_ = yeet;
 	typedef void(__stdcall* OnLand)(BasePlayer*, float);
 	typedef void(__stdcall* DoAttack)(uintptr_t);
 	typedef void(__stdcall* set_rayleigh)(float);
@@ -301,10 +303,6 @@ uintptr_t CreateEffect(pUncStr strPrefab, uintptr_t effect) {
 	return original_createeffect(strPrefab, effect);
 }
 float GetRandomVelocity(uintptr_t mod) {
-	if (vars::stuff::debugtab) {
-		//LogSystem::Log(StringFormat::format(c_wxor(L"wep:%d ammo:%d | %.2f"), LocalPlayer->GetActiveWeapon()->GetID(), LocalPlayer->GetActiveWeapon()->LoadedAmmo(), original_getrandomvelocity(mod)), 5.f);
-	}
-	//LogSystem::Log(StringFormat::format(c_wxor(L"%.2f"), original_getrandomvelocity(mod)), 5.f);
 	return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.3 : original_getrandomvelocity(mod);
 }
 void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
@@ -323,15 +321,6 @@ Vector3 MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
 	}
 	return original_movetowards(a1, a2, maxDelta);
 }
-bool Refract(Projectile* proj, uint32_t seed, Vector3 a, Vector3 b, float resistance) {
-	if (vars::combat::tree_reflect) {
-		proj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - proj->currentPosition()) * 3);
-		return true;
-	}
-	else {
-		return original_refract(proj, seed, a, b, resistance);
-	}
-}
 void HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
 	return original_handleRunning(a1, a2, wantsRun);
@@ -345,16 +334,6 @@ void Launch(Projectile* prdoj) {
 		write(prdoj->mod() + 0x38, 0.f, float);
 	}
 	return original_launch(prdoj);
-}
-bool DoWaterHit(Projectile* proj, HitTest* test, Vector3 pos) {
-	LogSystem::Log(c_wxor(L"DoWaterHit"), 5.f);
-	if (vars::stuff::testBool) {
-		proj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - proj->currentPosition()) * 3);
-		return true;
-	}
-	else {
-		return original_dowaterhit(proj, test, pos);
-	}
 }
 void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
 	if (vars::misc::inf_jump) {
@@ -408,9 +387,7 @@ inline void InitHook() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Run), (void**)&original_consolerun, Run);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CreateEffect), (void**)&original_createeffect, CreateEffect);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::get_position), (void**)&original_geteyepos, get_position);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::DoHit), (void**)&original_dohit, DoHit);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Play), (void**)&original_viewmodelplay, Play);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x53A770), (void**)&original_refract, Refract);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::TraceAll), (void**)&original_traceall, TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);
