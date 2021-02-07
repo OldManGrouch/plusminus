@@ -3,7 +3,7 @@
 #define ALLOC_CONS 0
 #define StrA
 #define StrW
-#define rusticaland
+//#define rusticaland
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
