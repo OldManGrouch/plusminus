@@ -32,6 +32,7 @@ namespace vars {
 		uintptr_t closestHeliObj = NULL;
 	}
 	namespace combat {
+		bool tree_reflect = false;
 		bool magicbollet = false;
 		bool always_heli_rotor = false;
 		bool hitbox_override = false;

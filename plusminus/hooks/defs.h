@@ -61,6 +61,9 @@ inline consoleRun original_consolerun{ };
 typedef void(__fastcall* viewmodelPlay)(DWORD64, pUncStr);
 inline viewmodelPlay original_viewmodelplay{ };
 
+typedef bool(__fastcall* refr)(Projectile*, uint32_t, Vector3, Vector3, float);
+inline refr original_refract{ };
+
 typedef Vector2(__fastcall* pitchclamp)(DWORD64);
 inline pitchclamp original_getpitchclamp{ };
 

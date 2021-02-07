@@ -43,7 +43,7 @@ bool __fastcall DoHit(Projectile* proj, HitTest* test, Vector3 point, Vector3 no
 			write(playerProjectileAttack + 0x20, proj->currentVelocity(), Vector3); // playerAttack
 			write(playerProjectileAttack + 0x2C, proj->traveledDistance(), float); // playerAttack
 			write(playerProjectileAttack + 0x30, proj->traveledTime(), float); // playerAttack
-			((SendProjectileAttackC)(vars::stor::gBase + CO::SendProjectileAttack))(proj->owner(), playerProjectileAttack);
+			((SendProjectileAttackC)(vars::stor::gBase + COS::SendProjectileAttack))(proj->owner(), playerProjectileAttack);
 			proj->sentPosition(proj->currentPosition());
 		}
 		return result;

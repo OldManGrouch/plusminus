@@ -238,6 +238,9 @@ void VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
 void SendProjectileAttack(void* a1, void* a2) {
 	uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 	uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
+	/*if (vars::combat::tree_reflect) {
+		write(a2 + 0x20, Vector3(0, 0, 0), Vector3);
+	}*/
 	if (vars::weapons::spoof_hitdistance) {
 		write(a2 + 0x2C, vars::weapons::hitdistance, float);
 	}
@@ -310,22 +313,6 @@ void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
 	}
 	return original_addpunch(a1, a2, duration);
 }
-Vector2 GetPitchClamp(DWORD64 basemountable) {
-	if (vars::misc::unlock_angles) {
-		return Vector2(9999, 9999);
-	}
-	else {
-		return original_getpitchclamp(basemountable);
-	}
-}
-Vector2 GetYawClamp(DWORD64 basemountable) {
-	if (vars::misc::unlock_angles) {
-		return Vector2(9999, 9999);
-	}
-	else {
-		return original_getpitchclamp(basemountable);
-	}
-}
 Vector3 MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
 	static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::SimulateAimcone(): Void");
 	if (CALLED_BY(ptr, 0x800)) {
@@ -335,6 +322,15 @@ Vector3 MoveTowards(Vector3 a1, Vector3 a2, float maxDelta) {
 		}
 	}
 	return original_movetowards(a1, a2, maxDelta);
+}
+bool Refract(Projectile* proj, uint32_t seed, Vector3 a, Vector3 b, float resistance) {
+	if (vars::combat::tree_reflect) {
+		proj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - proj->currentPosition()) * 3);
+		return true;
+	}
+	else {
+		return original_refract(proj, seed, a, b, resistance);
+	}
 }
 void HandleRunning(void* a1, void* a2, bool wantsRun) {
 	if (vars::misc::omnidirectional_sprinting) wantsRun = true;
@@ -392,10 +388,9 @@ inline void InitHook() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Run), (void**)&original_consolerun, Run);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::CreateEffect), (void**)&original_createeffect, CreateEffect);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::get_position), (void**)&original_geteyepos, get_position);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::DoHit), (void**)&original_dohit, DoHit);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::DoHit), (void**)&original_dohit, DoHit);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::Play), (void**)&original_viewmodelplay, Play);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetPitchClamp), (void**)&original_getpitchclamp, GetPitchClamp);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetYawClamp), (void**)&original_getyawclamp, GetYawClamp);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x53A770), (void**)&original_refract, Refract);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, VisUpdateUsingCulling);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::TraceAll), (void**)&original_traceall, TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + COS::GetRandomVelocity), (void**)&original_getrandomvelocity, GetRandomVelocity);

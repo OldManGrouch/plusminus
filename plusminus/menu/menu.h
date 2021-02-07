@@ -202,7 +202,7 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		if (vars::combat::always_heli_rotor) { vars::combat::hitbox_override = false; }
-		//ImGui::Checkbox(xorstr("boolet"), &vars::combat::magicbollet);
+		HelpCheckbox(xorstr("Tree Reflect"), &vars::combat::tree_reflect, xorstr("a"));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
