@@ -143,7 +143,7 @@ DWORD __stdcall Start(LPVOID) {
 	DetourAttach(&(LPVOID&)phookD3D11Present, (PBYTE)hookD3D11Present);
 	DetourTransactionCommit();
 
-	InitHook();
+	hk__();
 	DWORD dwOld;
 	VirtualProtect(phookD3D11Present, 2, PAGE_EXECUTE_READWRITE, &dwOld);
 	while (true) {

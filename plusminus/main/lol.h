@@ -62,6 +62,14 @@ void DoChams(uintptr_t target, Color col) {
 		}
 	}
 }
+float LastDrink = 0.f;
+void MagicDrink() {
+	typedef void(__stdcall* Drink)(BasePlayer*, BasePlayer*);
+	if (LocalPlayer->Time() > LastDrink + 1.5f) {
+		((Drink)(vars::stor::gBase + 0x2FCDC0))(LocalPlayer, LocalPlayer);
+		LastDrink = LocalPlayer->Time();
+	}
+}
 float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
 void SpamKnock(uintptr_t Door) {
 	typedef void(__stdcall* DoorFunction)(uintptr_t, BasePlayer*);
@@ -104,3 +112,29 @@ void Test() {
 	Renderer::Rectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100, 5), D2D1::ColorF::Black, 1.f);
 	//Renderer::FillRectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100 * (aa / MaxValue), 5), D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 }
+//double CalcBulletDrop(double height, double DepthPlayerTarget, float velocity, float gravity) {
+//	double pitch = (Vector3::my_atan2(height, DepthPlayerTarget));
+//	double BulletVelocityXY = velocity * Vector3::my_cos(pitch);
+//	double Time = DepthPlayerTarget / BulletVelocityXY;
+//	double TotalVerticalDrop = (0.5f * gravity * Time * Time);
+//	return TotalVerticalDrop * 10;
+//}
+//#define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
+//void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
+//	float Dist = Math::Calc3D_Dist(target, local);
+//	float BulletTime = Dist / bulletspeed;
+//
+//	Vector3 vel = Vector3(targetvel.x, 0, targetvel.z) * 0.75f;
+//
+//	Vector3 PredictVel = vel * BulletTime;
+//
+//	target += PredictVel;
+//
+//	double height = target.y - local.y;
+//	Vector3 dir = target - local;
+//	float DepthPlayerTarget = Vector3::my_sqrt(powFFFFFFFFFFFFFFFFFFFFFF(dir.x) + powFFFFFFFFFFFFFFFFFFFFFF(dir.z));
+//
+//	float drop = CalcBulletDrop(height, DepthPlayerTarget, bulletspeed, gravity);
+//
+//	target.y += drop;
+//}

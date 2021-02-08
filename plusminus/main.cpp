@@ -1,5 +1,5 @@
 ﻿#include "includes.h"
-//#define noauth
+#define noauth
 void HWID_Checker(HINSTANCE hModule) {
 	HW_PROFILE_INFO hwProfileInfo;
 	GetCurrentHwProfile(&hwProfileInfo);
@@ -27,7 +27,6 @@ void HWID_Checker(HINSTANCE hModule) {
 	else {
 		CloseHandle(hMutex);
 		system(success.c_str());
-		//DisableThreadLibraryCalls(hModule);
 		CreateThread(NULL, 0, Start, NULL, 0, NULL);
 	}
 #endif

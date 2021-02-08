@@ -74,18 +74,28 @@ namespace otherEsp {
 				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
+					int pos = 15;
 					wchar_t TCName[0x100];
 					wchar_t TCDist[0x100];
-					int upkeep = read(cupboard + 0x500, float);
-					_swprintf(TCName, xorstr(L"Tool Cupboard | %d min."), upkeep);
+					int upkeep = read(cupboard + 0x55C, float);
+					list<uintptr_t>* authedPly = read(cupboard + 0x55C, list<uintptr_t>*);
+					_swprintf(TCName, xorstr(L"Tool Cupboard | %d hours"), upkeep / 60);
 					Renderer::String({ screen.x, screen.y }, TCName, D2D1::ColorF::YellowGreen, true, true);
 					if (vars::visuals::base::show_distance) {
 						_swprintf(TCDist, xorstr(L"[%d m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), TCDist, D2D1::ColorF::YellowGreen, true, true);
+						pos += 15;
+					}
+					for (int idx = 0; idx < authedPly->get_size(); idx++) {
+						wchar_t plyName[0x100];
+						uintptr_t instance = authedPly->get_value(idx);
+						auto* plyNameR = reinterpret_cast<pUncStr>(read(instance + 0x18, DWORD64));
+						_swprintf(plyName, xorstr(L"%s"), plyNameR->str);
+						Renderer::String(screen + Vector2(0, pos), plyName, D2D1::ColorF::YellowGreen, true, true);
+						pos += 15;
 					}
 				}
 			}
-
 		}
 	}
 	void sleepingbag(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
@@ -129,19 +139,6 @@ namespace otherEsp {
 						Renderer::String(screen + Vector2(0, 15), bagDist, D2D1::ColorF::OliveDrab, true, true);
 					}
 				}
-			}
-		}
-	}
-	void explo(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		if (strstr(buff, xorstr("c4_explosion.prefab"))) {
-			DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-			Vector3 pos = utils::GetEntityPosition(object);
-			int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
-			Vector2 screen;
-			if (utils::w2s(pos, screen)) {
-				wchar_t explosionc4[0x100];
-				_swprintf(explosionc4, xorstr(L"C4 Explosion [%d]"), distance);
-				Renderer::String({ screen.x, screen.y }, explosionc4, D2D1::ColorF::Red, true, true);
 			}
 		}
 	}
