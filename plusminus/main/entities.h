@@ -20,18 +20,32 @@ void FindMatrix() {
 		}
 	}
 }
+void Radar(BasePlayer* BP, BasePlayer* LP) {
+	Vector3 local = LP->get_bone_pos(head);
+	Vector3 ply = BP->get_bone_pos(head);
+	float dist = Math::Calc3D_Dist(local, ply);
+	float y = local.x - ply.x;
+	float x = local.z - ply.z;
+
+	Vector3 eulerAngles = Math::EulerAngles(LP->get_bone_rot(spine1));
+	float num = atan2(y, x) * 57.29578f - eulerAngles.y;
+	float PointPos_X = dist * cos(num * 0.0174532924f);
+	float PointPos_Y = dist * sin(num * 0.0174532924f);
+	PointPos_X = PointPos_X * (vars::visuals::radar::size / 75.f) / 2.f;
+	PointPos_Y = PointPos_Y * (vars::visuals::radar::size / 75.f) / 2.f;
+	//Renderer::Circle(Vector2(vars::visuals::radar::x, vars::visuals::radar::y), D2D1::ColorF, vars::visuals::radar::size);
+
+	/*PLAYER*/Renderer::FillCircle(Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y), D2D1::ColorF::White, 2.5f);
+	Renderer::Line(Vector2(vars::visuals::radar::x, vars::visuals::radar::y - vars::visuals::radar::size / 4.f), Vector2(vars::visuals::radar::x, vars::visuals::radar::y + vars::visuals::radar::size / 4.f), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
+	Renderer::Line(Vector2(vars::visuals::radar::x - vars::visuals::radar::size / 4.f, vars::visuals::radar::y), Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 4.f, vars::visuals::radar::y), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
+}
 int xd = 0;
 int Drehungswinkel = 0;
 void SwastikaCrosshair() {
-
 	POINT Screen; int oodofdfo = vars::stuff::ScreenWidth, jbjfdbdsf = vars::stuff::ScreenHeight; Screen.x = oodofdfo; Screen.y = jbjfdbdsf;
-	//Middle POINT
 	POINT Middle; Middle.x = (int)(Screen.x / 2); Middle.y = (int)(Screen.y / 2);
 	int a = (int)(Screen.y / 2 / 30);
 	float gamma = atan(a / a);
-
-	
-
 	int i = 0;
 	while (i < 4) {
 		std::vector <int> p;
@@ -39,21 +53,14 @@ void SwastikaCrosshair() {
 		p.push_back(a * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[1]		p0_A.y
 		p.push_back((a / cos(gamma)) * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[2]		p0_B.x
 		p.push_back((a / cos(gamma)) * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[3]		p0_B.y
-
 		Renderer::Line(Vector2(Middle.x, Middle.y), Vector2(Middle.x + p[0], Middle.y - p[1]), D2D1::ColorF::Red);
 		Renderer::Line(Vector2(Middle.x + p[0], Middle.y - p[1]), Vector2(Middle.x + p[2], Middle.y - p[3]), D2D1::ColorF::Red);
-
 		i++;
 	}
 }
-
 float timee = 120.f;
 bool initD = false;
 void EntityLoop() {
-	
-
-	
-
 	//SwastikaCrosshair();
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
@@ -177,7 +184,7 @@ void EntityLoop() {
 			else if (vars::npc::skeleton && Player->IsNpc()) {
 				Skeleton(Player, D2D1::ColorF(vars::colors::npc_esp.x, vars::colors::npc_esp.y, vars::colors::npc_esp.z, vars::colors::npc_esp.w));
 			}
-
+			
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
@@ -188,6 +195,7 @@ void EntityLoop() {
 							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::dead_esp.x, vars::colors::dead_esp.y, vars::colors::dead_esp.z, vars::colors::dead_esp.w));
 						}
 						else {
+							Radar(Player, LocalPlayer);
 							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::player_esp.x, vars::colors::player_esp.y, vars::colors::player_esp.z, vars::colors::player_esp.w));
 						}
 					}

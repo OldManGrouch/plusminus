@@ -323,6 +323,11 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("Length"), &vars::crosshair::length, 0.f, 50.f);
 			ImGui::Checkbox(xorstr("Dot"), &vars::crosshair::dot);
 		}
+		if (ImGui::CollapsingHeader(xorstr("Radar"))) {
+			ImGui::SliderFloat(xorstr("Size"), &vars::visuals::radar::size, 5.f, 400.f);
+			ImGui::SliderFloat(xorstr("X"), &vars::visuals::radar::x, 5.f, 1000.f);
+			ImGui::SliderFloat(xorstr("Y"), &vars::visuals::radar::y, 5.f, 1000.f);
+		}
 		if (ImGui::CollapsingHeader(xorstr("Ores"))) {
 			ImGui::Checkbox(xorstr("Stone"), &vars::ores::stone);
 			ImGui::Checkbox(xorstr("Sulfur"), &vars::ores::sulfur);
@@ -475,7 +480,7 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &vars::stuff::debugtab);
 		if (vars::stuff::debugtab) {
-			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 3.f);
+			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 500.f);
 			ImGui::Checkbox(xorstr("bool"), &vars::stuff::testBool);
 			ImGui::SliderInt(xorstr("int"), &vars::stuff::testInt, 0, 100);
 			ImGui::InputText(xorstr("char"), vars::stuff::testChar, 0x100);

@@ -8,7 +8,7 @@ namespace vars {
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
-		float testFloat = 1.f;
+		float testFloat = 270.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		bool Panic = false;
@@ -120,7 +120,11 @@ namespace vars {
 		bool raid_esp = false;
 		bool bradley_apc = false;
 		bool patrol_heli = false;
-
+		namespace radar {
+			float size = 100.f;
+			float x = 300.f;
+			float y = 300.f;
+		}
 		namespace base {
 			bool tc = false;
 			bool sleeping_bag = false;
