@@ -18,6 +18,10 @@ namespace hk {
 				return original_UnregisterFromVisibility(pl, dist, vis);
 			}
 		}
+		void SetTimedLootAction(DWORD64 a1, uint32_t a2, DWORD64 action) {
+			write(a1 + 0xF8, Vector2(5, 5), Vector2);
+			return original_settimedlootaction(a1, a2, action);
+		}
 		std::string C4 = c_xor("C4");
 		std::string Satchel = c_xor("Satchel");
 		std::string IncenRocket = c_xor("Incendiary Rocket");
@@ -55,10 +59,6 @@ namespace hk {
 		void HandleRunning(void* a1, void* a2, bool wantsRun) {
 			if (vars::misc::omnidirectional_sprinting) wantsRun = true;
 			return original_handleRunning(a1, a2, wantsRun);
-		}
-		void DoViewmodelImpact(DWORD64 ent, HitTest* test) {
-			if (!vars::weapons::remove_attack_anim)
-				return original_doviewmodelimpact(ent, test);
 		}
 		void HandleJumping(void* a1, void* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
 			if (vars::misc::inf_jump) {
@@ -373,5 +373,5 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x2E91A0), (void**)&original_doviewmodelimpact, hk::misc::DoViewmodelImpact);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x4D9670), (void**)&original_settimedlootaction, hk::misc::SetTimedLootAction);
 }

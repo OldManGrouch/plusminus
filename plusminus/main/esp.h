@@ -2,29 +2,32 @@ namespace radar {
 	float range = 161.1f;
 	float size = 121.f;
 
-	float mid_x = vars::visuals::radar::x + size / 2;
-	float mid_y = vars::visuals::radar::y + size / 2;
+	
 	void radar_bg() {
+		float mid_x = vars::visuals::radar::x + size / 2;
+		float mid_y = vars::visuals::radar::y + size / 2;
 		POINT p;
 		if (GetCursorPos(&p)) {
 			if (p.x >= mid_x - size && p.x <= mid_x + size) {
 				if (p.y >= mid_y - size && p.y <= mid_y + size) {
 					if (GetAsyncKeyState(VK_LBUTTON)) {
-						vars::visuals::radar::x = p.x + size / 2;
-						vars::visuals::radar::y = p.y + size / 2;
+						vars::visuals::radar::x = p.x;
+						vars::visuals::radar::y = p.y;
 					}
 				}
 			}
 		}
-		Renderer::FillCircle(Vector2(mid_x, mid_y), D2D1::ColorF(0.11, 0.11, 0.11, 0.5f), size);
+		Renderer::FillCircle(Vector2(mid_x, mid_y), D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f), size);
+		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), size);
 		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF::Red, 2.5f);
 	}
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-
+		float mid_x = vars::visuals::radar::x + size / 2;
+		float mid_y = vars::visuals::radar::y + size / 2;
+		Vector3 local = LocalPlayer->get_bone_pos(head);
 		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) return;
-			Vector3 local = LocalPlayer->get_bone_pos(head);
 			Vector3 ply = Player->get_bone_pos(head);
 			float dist = Math::Calc3D_Dist(local, ply);
 			float y = local.x - ply.x;
@@ -61,6 +64,27 @@ namespace radar {
 				else if (Player->IsNpc() && (vars::npc::box || vars::npc::name || vars::npc::tracers || vars::npc::healthbar)) {
 					Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
 				}
+			}
+		}
+		else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
+			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
+			uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
+			uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
+			Vector3 pos = read(VisualState + 0x90, Vector3);
+			float y = local.x - pos.x;
+			float x = local.z - pos.z;
+
+			float dist = Math::Calc3D_Dist(local, pos);
+			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
+			float PointPos_X = dist * cos(num * 0.0174532924f);
+			float PointPos_Y = dist * sin(num * 0.0174532924f);
+			PointPos_X = PointPos_X * (size / range) / 2.f;
+			PointPos_Y = PointPos_Y * (size / range) / 2.f;
+
+			Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
+			if (vars::visuals::patrol_heli) {
+				Renderer::FillCircle(point, D2D1::ColorF(0.5f, 0.54f, 1.f), 2.5f);
 			}
 		}
 	}
@@ -144,8 +168,8 @@ namespace otherEsp {
 					int pos = 15;
 					wchar_t TCName[0x100];
 					wchar_t TCDist[0x100];
-					int upkeep = read(cupboard + 0x55C, float);
-					list<uintptr_t>* authedPly = read(cupboard + 0x55C, list<uintptr_t>*);
+					int upkeep = read(cupboard + 0x558, float);
+					
 					_swprintf(TCName, xorstr(L"Tool Cupboard | %d hours"), upkeep / 60);
 					Renderer::String({ screen.x, screen.y }, TCName, D2D1::ColorF::YellowGreen, true, true);
 					if (vars::visuals::base::show_distance) {
@@ -153,14 +177,15 @@ namespace otherEsp {
 						Renderer::String(screen + Vector2(0, 15), TCDist, D2D1::ColorF::YellowGreen, true, true);
 						pos += 15;
 					}
-					for (int idx = 0; idx < authedPly->get_size(); idx++) {
-						wchar_t plyName[0x100];
-						uintptr_t instance = authedPly->get_value(idx);
-						auto* plyNameR = reinterpret_cast<pUncStr>(read(instance + 0x18, DWORD64));
-						_swprintf(plyName, xorstr(L"%s"), plyNameR->str);
-						Renderer::String(screen + Vector2(0, pos), plyName, D2D1::ColorF::YellowGreen, true, true);
-						pos += 15;
-					}
+					uintptr_t authedPly = read(cupboard + 0x568, uintptr_t);
+					list<PlayerNameID*>* authedPly_list = read(authedPly + 0x10, list<PlayerNameID*>*);
+					authedPly_list->for_each([&](PlayerNameID* authorizedPlayer, int32_t idx) {
+						if (authorizedPlayer) {
+							auto user = authorizedPlayer->username();
+							Renderer::String(screen + Vector2(0, pos), user, D2D1::ColorF::YellowGreen, true, true);
+							pos += 15;
+						}
+						});
 				}
 			}
 		}

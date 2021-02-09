@@ -122,7 +122,7 @@ void InitCheat() {
 		Renderer::FillRectangle({ vars::players::beltx, vars::players::belty }, { Width, Height }, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
 		Renderer::Rectangle({ vars::players::beltx, vars::players::belty }, { Width, Height }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
 		Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 10 }, TargetPlayerA->GetName(), D2D1::ColorF::White, true, true);
-		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF::White, 1);
+		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
 		float Pos = 0;
 		for (int i = 0; i < 6; i++) {
 			Item* ActWeapon = TargetPlayerA->GetWeaponInfo(i);

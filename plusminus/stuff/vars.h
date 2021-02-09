@@ -122,8 +122,6 @@ namespace vars {
 		bool patrol_heli = false;
 		bool radar_ = false;
 		namespace radar {
-			float range = 161.1f;
-			float size = 121.f;
 			float x = 300.f;
 			float y = 300.f;
 		}

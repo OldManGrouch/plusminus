@@ -20,7 +20,7 @@ void FindMatrix() {
 		}
 	}
 }
-
+bool inited = false;
 float timee = 120.f;
 void EntityLoop() {
 	if (vars::visuals::radar_) {
@@ -52,8 +52,15 @@ void EntityLoop() {
 	}
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
+	typedef uintptr_t(__stdcall* CurrentVersionInfo)();
+	typedef int(__stdcall* get_Number)(uintptr_t);
 	if (!pViewMatrix || !mfound) {
+		
 		FindMatrix();
+	}
+	if (!inited) {
+		LogSystem::Log(c_wxor(L"Cheat loaded!"), 5.f);
+		inited = true;
 	}
 	DWORD64 BaseNetworkable;
 	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
@@ -180,22 +187,12 @@ void EntityLoop() {
 				}
 			}
 		}
-		if (yeetus) {
-			typedef void(__stdcall* Pick)(DWORD64, Str);
-			((Pick)(vars::stor::gBase + CO::ServerRPC))(ent, Str(xorstr(L"BuyItem")));
-			printf("attempting to yeet\n");
-			yeetus = false;
-		}
 		if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 				PickupItem(ent);
 			}
-		}
-		//Item* weapon = LocalPlayer->GetActiveWeapon(); // get active item
-		if (weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) {
-			//Test();
 		}
 		otherEsp::bradley(ObjectClass, Object, buff);
 		otherEsp::corpse(ObjectClass, Object, buff);

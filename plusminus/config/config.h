@@ -129,7 +129,7 @@ private:
 		SetupValue(vars::weapons::fastbow, false, c_xor("Weapon"), c_xor("FastBow"));
 		SetupValue(vars::weapons::penetrate, false, c_xor("Weapon"), c_xor("Penetrate"));
 		SetupValue(vars::weapons::spoof_hitdistance, false, c_xor("Weapon"), c_xor("SpoofHitDistance"));
-		SetupValue(vars::weapons::hitdistance, false, c_xor("Weapon"), c_xor("HitDistance"));
+		SetupValue(vars::weapons::hitdistance, 300.f, c_xor("Weapon"), c_xor("HitDistance"));
 		
 		SetupValue(vars::players::name, false, c_xor("Players"), c_xor("name"));
 		SetupValue(vars::players::box, false, c_xor("Players"), c_xor("box"));
@@ -165,6 +165,7 @@ private:
 		SetupValue(vars::misc::anti_aim, false, c_xor("Misc"), c_xor("AntiAim"));
 		SetupValue(vars::misc::anti_aim_speed, 25, c_xor("Misc"), c_xor("AntiAimSpeed"));
 		SetupValue(vars::misc::anti_aim_yaw, 0, c_xor("Misc"), c_xor("AntiAimYaw"));
+		SetupValue(vars::misc::anti_aim_indicator, false, c_xor("Misc"), c_xor("AntiAimIndicator"));
 		SetupValue(vars::misc::hit_logs, false, c_xor("Misc"), c_xor("HitLogs"));
 		SetupValue(vars::misc::faster_healing, false, c_xor("Misc"), c_xor("FastHeal"));
 		SetupValue(vars::misc::fake_lag, false, c_xor("Misc"), c_xor("FakeLag"));
@@ -199,6 +200,7 @@ private:
 		SetupValue(vars::ores::draw_distance, 300.f, c_xor("ores"), c_xor("oreDrawDistance"));
 		SetupValue(vars::ores::show_distance, false, c_xor("ores"), c_xor("showCollectables"));
 
+		SetupValue(vars::visuals::radar_, false, c_xor("visuals"), c_xor("Radar"));
 		SetupValue(vars::visuals::raid_esp, false, c_xor("visuals"), c_xor("Raids"));
 		SetupValue(vars::visuals::patrol_heli, false, c_xor("visuals"), c_xor("PatrolHeli"));
 		SetupValue(vars::visuals::vehicles::minicopter, false, c_xor("visuals"), c_xor("Minicopter"));
@@ -243,6 +245,9 @@ private:
 
 		SetupValue(indicator_x, 100.f, c_xor("a"), c_xor("x"));
 		SetupValue(indicator_y, 100.f, c_xor("a"), c_xor("y"));
+
+		SetupValue(vars::visuals::radar::x, 100.f, c_xor("b"), c_xor("x"));
+		SetupValue(vars::visuals::radar::y, 100.f, c_xor("b"), c_xor("y"));
 	}
 
 	std::string szPath = "";

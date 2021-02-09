@@ -83,8 +83,8 @@ namespace hk_defs {
 	typedef void(__fastcall* HandleRunning_fn)(void*, void*, bool);
 	inline HandleRunning_fn original_handleRunning{ };
 
-	typedef void(__fastcall* viewmodelimpact)(DWORD64, HitTest*);
-	inline viewmodelimpact original_doviewmodelimpact{ };
+	typedef void(__fastcall* lootact)(DWORD64, uint32_t, DWORD64);
+	inline lootact original_settimedlootaction{ };
 
 	typedef void(__fastcall* handlejumping)(void*, void*, bool, bool);
 	inline handlejumping original_handleJumping{ };

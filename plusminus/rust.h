@@ -187,6 +187,17 @@ public:
 	FIELD("Assembly-CSharp::HitInfo::ProjectileVelocity", ProjectileVelocity, Vector3);
 	FIELD("Assembly-CSharp::HitInfo::damageTypes", damageTypes, DamageTypeList*);
 };
+class PlayerNameID {
+public:
+	wchar_t* username() {
+		auto username = (pUncStr)(*reinterpret_cast<uintptr_t*>((uintptr_t)this + 0x18));
+		return username->str;
+	}
+
+	unsigned long user_id() {
+		return *reinterpret_cast<unsigned long*>((uintptr_t)this + 0x20);
+	}
+};
 class PlayerEyes {
 public:
 	Quaternion get_rotation() {
