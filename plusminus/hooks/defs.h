@@ -23,6 +23,9 @@ namespace hk_defs {
 	typedef void(__fastcall* lateupd)(uintptr_t);
 	inline lateupd original_updateambient{ };
 
+	typedef void(__fastcall* jmp)(uintptr_t, uintptr_t, bool);
+	inline jmp original_jump{ };
+
 	typedef bool(__fastcall* isheadshot)(DWORD64);
 	inline isheadshot original_getisheadshot{ };
 

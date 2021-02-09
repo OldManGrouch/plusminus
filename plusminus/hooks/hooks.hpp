@@ -6,6 +6,28 @@ bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
 	namespace misc {
+		void Jump(uintptr_t playerwalkmovement, uintptr_t modelstate, bool indirection) {
+			bool climbing = read(playerwalkmovement + 0x132, bool);
+			bool sliding = read(playerwalkmovement + 0x134, bool);
+			bool st = (climbing = (sliding = false));
+
+			typedef bool(__stdcall* get_jumped)(uintptr_t);
+			bool get_jmpd = ((get_jumped)(vars::stor::gBase + 0x1C58990))(modelstate);
+			bool st2 = (get_jmpd = true);
+
+			write(playerwalkmovement + 0x130, st, bool);
+			write(playerwalkmovement + 0x138, st2, bool);
+			write(playerwalkmovement + 0xC0, Time::time(), float);
+			write(playerwalkmovement + 0xA8, null, uintptr_t);
+
+			typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
+			typedef Vector3(__stdcall* get_velocity)(uintptr_t);
+			uintptr_t rigid = read(playerwalkmovement + 0x90, uintptr_t);
+			//this.body.velocity += Vector3.Lerp(this.Owner.eyes.BodyForward() * 9f, Vector3.zero, this.modify.drag);
+			Vector3 targetVel = ((get_velocity)(vars::stor::gBase + 0x2040880))(modelstate);
+			Vector3 targetVel2 = NotVector3::Lerp(LocalPlayer->eyes()->BodyForward(), Vector3(0, 0, 0), read(read(playerwalkmovement + 0x12C, uintptr_t) + 0x0, float));
+			((set_velocity)(vars::stor::gBase + 0x2040DA0))(modelstate, targetVel + targetVel2);
+		}
 		void ForcePositionTo(BasePlayer* pl, Vector3 pos) {
 			if (GetAsyncKeyState(vars::keys::forcepos)) {}
 			else { return original_forcepos(pl, pos); }
@@ -369,6 +391,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);

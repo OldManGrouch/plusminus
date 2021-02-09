@@ -208,3 +208,8 @@ namespace Math {
 
 	}
 }
+namespace NotVector3 {
+	Vector3 Lerp(Vector3 a, Vector3 b, float t) {
+		return a + (b - a) * t;
+	}
+}
