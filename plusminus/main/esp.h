@@ -1,21 +1,22 @@
 namespace radar {
 	float range = 161.1f;
 	float size = 121.f;
+
+	float mid_x = vars::visuals::radar::x + size / 2;
+	float mid_y = vars::visuals::radar::y + size / 2;
 	void radar_bg() {
-		float mid_x = vars::visuals::radar::x + size / 2;
-		float mid_y = vars::visuals::radar::y + size / 2;
 		POINT p;
 		if (GetCursorPos(&p)) {
 			if (p.x >= mid_x - size && p.x <= mid_x + size) {
 				if (p.y >= mid_y - size && p.y <= mid_y + size) {
 					if (GetAsyncKeyState(VK_LBUTTON)) {
-						vars::visuals::radar::x = p.x;
-						vars::visuals::radar::y = p.y;
+						vars::visuals::radar::x = p.x + size / 2;
+						vars::visuals::radar::y = p.y + size / 2;
 					}
 				}
 			}
 		}
-		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF(0.13, 0.13, 0.13, 0.3), size);
+		Renderer::FillCircle(Vector2(mid_x, mid_y), D2D1::ColorF(0.11, 0.11, 0.11, 0.5f), size);
 		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF::Red, 2.5f);
 	}
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
@@ -38,30 +39,29 @@ namespace radar {
 
 			Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
 
-			if (!Player->IsNpc()) {
-				if (!Player->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-						Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
-					}
-					else {
-						if (Player->GetHealth() < 0.2) {
-							Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
+			if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < size) {
+				if (!Player->IsNpc()) {
+					if (!Player->HasFlags(16)) {
+						if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+							Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 						}
 						else {
-							Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+							if (Player->GetHealth() < 0.2) {
+								Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
+							}
+							else {
+								Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+							}
 						}
 					}
+					else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
+						Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
+					}
 				}
-				else {
-					Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
+				else if (Player->IsNpc() && (vars::npc::box || vars::npc::name || vars::npc::tracers || vars::npc::healthbar)) {
+					Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
 				}
 			}
-			else if (Player->IsNpc()) {
-				Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
-			}
-
-			//Renderer::Line(Vector2(vars::visuals::radar::x, vars::visuals::radar::y - vars::visuals::radar::size / 4.f), Vector2(vars::visuals::radar::x, vars::visuals::radar::y + vars::visuals::radar::size / 4.f), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
-			//Renderer::Line(Vector2(vars::visuals::radar::x - vars::visuals::radar::size / 4.f, vars::visuals::radar::y), Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 4.f, vars::visuals::radar::y), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
 		}
 	}
 }
