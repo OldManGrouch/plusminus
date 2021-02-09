@@ -120,8 +120,10 @@ namespace vars {
 		bool raid_esp = false;
 		bool bradley_apc = false;
 		bool patrol_heli = false;
+		bool radar_ = false;
 		namespace radar {
-			float size = 100.f;
+			float range = 161.1f;
+			float size = 121.f;
 			float x = 300.f;
 			float y = 300.f;
 		}

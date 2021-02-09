@@ -1,3 +1,70 @@
+namespace radar {
+	float range = 161.1f;
+	float size = 121.f;
+	void radar_bg() {
+		float mid_x = vars::visuals::radar::x + size / 2;
+		float mid_y = vars::visuals::radar::y + size / 2;
+		POINT p;
+		if (GetCursorPos(&p)) {
+			if (p.x >= mid_x - size && p.x <= mid_x + size) {
+				if (p.y >= mid_y - size && p.y <= mid_y + size) {
+					if (GetAsyncKeyState(VK_LBUTTON)) {
+						vars::visuals::radar::x = p.x;
+						vars::visuals::radar::y = p.y;
+					}
+				}
+			}
+		}
+		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF(0.13, 0.13, 0.13, 0.3), size);
+		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF::Red, 2.5f);
+	}
+	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
+
+		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
+			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+			if (!read(Player + 0x4A8, DWORD64)) return;
+			Vector3 local = LocalPlayer->get_bone_pos(head);
+			Vector3 ply = Player->get_bone_pos(head);
+			float dist = Math::Calc3D_Dist(local, ply);
+			float y = local.x - ply.x;
+			float x = local.z - ply.z;
+
+			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
+			float PointPos_X = dist * cos(num * 0.0174532924f);
+			float PointPos_Y = dist * sin(num * 0.0174532924f);
+			PointPos_X = PointPos_X * (size / range) / 2.f;
+			PointPos_Y = PointPos_Y * (size / range) / 2.f;
+
+			Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
+
+			if (!Player->IsNpc()) {
+				if (!Player->HasFlags(16)) {
+					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+						Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
+					}
+					else {
+						if (Player->GetHealth() < 0.2) {
+							Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
+						}
+						else {
+							Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+						}
+					}
+				}
+				else {
+					Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
+				}
+			}
+			else if (Player->IsNpc()) {
+				Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
+			}
+
+			//Renderer::Line(Vector2(vars::visuals::radar::x, vars::visuals::radar::y - vars::visuals::radar::size / 4.f), Vector2(vars::visuals::radar::x, vars::visuals::radar::y + vars::visuals::radar::size / 4.f), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
+			//Renderer::Line(Vector2(vars::visuals::radar::x - vars::visuals::radar::size / 4.f, vars::visuals::radar::y), Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 4.f, vars::visuals::radar::y), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
+		}
+	}
+}
 namespace otherEsp {
 	void miscvis(DWORD64 ObjectClass, char* buff, bool boolean, bool showDistance, float drawDistance, const char* substring, const wchar_t* targettext, D2D1::ColorF color) {
 		if (boolean) {

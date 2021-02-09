@@ -1,5 +1,6 @@
 #ifdef rusticaland
 namespace CO {
+	auto get_rotation = 0x6C5060;
 	auto GetYawClamp = 0x2EDD60;
 	auto GetPitchClamp = 0x2EDD30;
 	auto Play = 0x48A2E0; // ViewModel
@@ -78,6 +79,7 @@ namespace CO {
 }
 #else
 namespace CO {
+	auto get_rotation = 0x6C4840;
 	auto GetYawClamp = 0x2EDD60;
 	auto GetPitchClamp = 0x2EDD30;
 	auto Play = 0x48A2E0; // ViewModel

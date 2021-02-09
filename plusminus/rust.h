@@ -187,8 +187,18 @@ public:
 	FIELD("Assembly-CSharp::HitInfo::ProjectileVelocity", ProjectileVelocity, Vector3);
 	FIELD("Assembly-CSharp::HitInfo::damageTypes", damageTypes, DamageTypeList*);
 };
+class PlayerEyes {
+public:
+	Quaternion get_rotation() {
+		typedef Quaternion(__stdcall* get_rotation)(PlayerEyes*);
+		Quaternion result = ((get_rotation)(vars::stor::gBase + CO::get_rotation))(this);
+		return result;
+	}
+};
 class BasePlayer : public BaseCombatEntity {
 public:
+	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
+
 	void SetVA(const Vector2& VA) {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		write(Input + oBodyAngles, VA, Vector2);
@@ -479,12 +489,6 @@ public:
 	bool DidHit() { return read(this + 0x66, bool); }
 	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
 	Str* HitMaterial() { return read(this + 0xC0, Str*); }
-
-	uintptr_t BuildAttackMessage() {
-		typedef uintptr_t(__stdcall* BuildAttackMessage)(HitTest*);
-		uintptr_t result = ((BuildAttackMessage)(vars::stor::gBase + 0x51A270))(this);
-		return result;
-	}
 };
 Matrix4x4* pViewMatrix = nullptr;
 BasePlayer* LocalPlayer = nullptr;

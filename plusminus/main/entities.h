@@ -20,48 +20,12 @@ void FindMatrix() {
 		}
 	}
 }
-void Radar(BasePlayer* BP, BasePlayer* LP) {
-	Vector3 local = LP->get_bone_pos(head);
-	Vector3 ply = BP->get_bone_pos(head);
-	float dist = Math::Calc3D_Dist(local, ply);
-	float y = local.x - ply.x;
-	float x = local.z - ply.z;
 
-	Vector3 eulerAngles = Math::EulerAngles(LP->get_bone_rot(spine1));
-	float num = atan2(y, x) * 57.29578f - eulerAngles.y;
-	float PointPos_X = dist * cos(num * 0.0174532924f);
-	float PointPos_Y = dist * sin(num * 0.0174532924f);
-	PointPos_X = PointPos_X * (vars::visuals::radar::size / 75.f) / 2.f;
-	PointPos_Y = PointPos_Y * (vars::visuals::radar::size / 75.f) / 2.f;
-	//Renderer::Circle(Vector2(vars::visuals::radar::x, vars::visuals::radar::y), D2D1::ColorF, vars::visuals::radar::size);
-
-	/*PLAYER*/Renderer::FillCircle(Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y), D2D1::ColorF::White, 2.5f);
-	Renderer::Line(Vector2(vars::visuals::radar::x, vars::visuals::radar::y - vars::visuals::radar::size / 4.f), Vector2(vars::visuals::radar::x, vars::visuals::radar::y + vars::visuals::radar::size / 4.f), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
-	Renderer::Line(Vector2(vars::visuals::radar::x - vars::visuals::radar::size / 4.f, vars::visuals::radar::y), Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 4.f, vars::visuals::radar::y), D2D1::ColorF(0.14f, 0.14f, 0.14f, 0.5f), 1.f);
-}
-int xd = 0;
-int Drehungswinkel = 0;
-void SwastikaCrosshair() {
-	POINT Screen; int oodofdfo = vars::stuff::ScreenWidth, jbjfdbdsf = vars::stuff::ScreenHeight; Screen.x = oodofdfo; Screen.y = jbjfdbdsf;
-	POINT Middle; Middle.x = (int)(Screen.x / 2); Middle.y = (int)(Screen.y / 2);
-	int a = (int)(Screen.y / 2 / 30);
-	float gamma = atan(a / a);
-	int i = 0;
-	while (i < 4) {
-		std::vector <int> p;
-		p.push_back(a * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[0]		p0_A.x
-		p.push_back(a * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[1]		p0_A.y
-		p.push_back((a / cos(gamma)) * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[2]		p0_B.x
-		p.push_back((a / cos(gamma)) * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[3]		p0_B.y
-		Renderer::Line(Vector2(Middle.x, Middle.y), Vector2(Middle.x + p[0], Middle.y - p[1]), D2D1::ColorF::Red);
-		Renderer::Line(Vector2(Middle.x + p[0], Middle.y - p[1]), Vector2(Middle.x + p[2], Middle.y - p[3]), D2D1::ColorF::Red);
-		i++;
-	}
-}
 float timee = 120.f;
-bool initD = false;
 void EntityLoop() {
-	//SwastikaCrosshair();
+	if (vars::visuals::radar_) {
+		radar::radar_bg();
+	}
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
 		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
@@ -86,10 +50,6 @@ void EntityLoop() {
 			}
 		}
 	}
-	if (!initD) {
-		//LogSystem::Log(c_wxor(L"Cheat loaded favorably!"), 5.f);
-		initD = true;
-	}
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
 	if (!pViewMatrix || !mfound) {
@@ -104,37 +64,6 @@ void EntityLoop() {
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
 	Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
-	/*if (vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-		Vector3 heliPos = read(vars::stor::closestHeliObj + 0x90, Vector3);
-		int heliX = heliPos.x;
-		int heliY = heliPos.y;
-		int heliZ = heliPos.z;
-		std::wstring heliPosition = L"patrol heli: " + std::to_wstring(heliX) + L" " + std::to_wstring(heliY) + L" " + std::to_wstring(heliZ);
-		Renderer::String(Vector2(100, 85), heliPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
-	}
-	else { Renderer::String(Vector2(100, 85), xorstr(L"patrol heli: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
-	if (vars::stor::closestPlayer) {
-		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-		Vector3 playerPos = TargetPlayer->get_bone_pos(head);
-		int playerX = playerPos.x;
-		int playerY = playerPos.y;
-		int playerZ = playerPos.z;
-		std::wstring playerPosition = L"player: " + std::to_wstring(playerX) + L" " + std::to_wstring(playerY) + L" " + std::to_wstring(playerZ);
-		Renderer::String(Vector2(100, 100), playerPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
-	}
-	else { Renderer::String(Vector2(100, 100), xorstr(L"player: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }
-	if (LocalPlayer) {
-		Vector3 localPos = LocalPlayer->get_bone_pos(head);
-		int localX = localPos.x;
-		int localY = localPos.y;
-		int localZ = localPos.z;
-		std::wstring localPosition = L"local: " + std::to_wstring(localX) + L" " + std::to_wstring(localY) + L" " + std::to_wstring(localZ);
-		Renderer::String(Vector2(100, 115), localPosition.c_str(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true);
-	}
-	else { Renderer::String(Vector2(100, 115), xorstr(L"local: NULL"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true); }*/
-
-	
-
 	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
 	for (int i = 0; i <= EntityCount; i++) {
 		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
@@ -148,6 +77,9 @@ void EntityLoop() {
 		char* classname = weapon->ClassName();
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
 		BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+		if (vars::visuals::radar_) {
+			radar::radar_logic(ObjectClass, Object, buff);
+		}
 		if (strstr(buff, xorstr("Local"))) {
 			Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
@@ -166,46 +98,46 @@ void EntityLoop() {
 			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-						Skeleton(Player, D2D1::ColorF(vars::colors::team_esp.x, vars::colors::team_esp.y, vars::colors::team_esp.z, vars::colors::team_esp.w));
+						Skeleton(Player, D2D1::ColorF::Lime);
 					}
 					else {
 						if (Player->GetHealth() < 0.2) {
-							Skeleton(Player, D2D1::ColorF(vars::colors::dead_esp.x, vars::colors::dead_esp.y, vars::colors::dead_esp.z, vars::colors::dead_esp.w));
+							Skeleton(Player, D2D1::ColorF::Red);
 						}
 						else {
-							Skeleton(Player, D2D1::ColorF(vars::colors::player_esp.x, vars::colors::player_esp.y, vars::colors::player_esp.z, vars::colors::player_esp.w));
+							Skeleton(Player, D2D1::ColorF::White);
 						}
 					}
 				}
 				else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
-					Skeleton(Player, D2D1::ColorF(vars::colors::sleeper_esp.x, vars::colors::sleeper_esp.y, vars::colors::sleeper_esp.z, vars::colors::sleeper_esp.w));
+					Skeleton(Player, D2D1::ColorF::Orange);
 				}
 			}
 			else if (vars::npc::skeleton && Player->IsNpc()) {
-				Skeleton(Player, D2D1::ColorF(vars::colors::npc_esp.x, vars::colors::npc_esp.y, vars::colors::npc_esp.z, vars::colors::npc_esp.w));
+				Skeleton(Player, D2D1::ColorF::Yellow);
 			}
 			
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-						ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::team_esp.x, vars::colors::team_esp.y, vars::colors::team_esp.z, vars::colors::team_esp.w));
+						ESP(Player, LocalPlayer, D2D1::ColorF::Lime);
 					}
 					else {
 						if (Player->GetHealth() < 0.2) {
-							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::dead_esp.x, vars::colors::dead_esp.y, vars::colors::dead_esp.z, vars::colors::dead_esp.w));
+							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
 						}
 						else {
-							Radar(Player, LocalPlayer);
-							ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::player_esp.x, vars::colors::player_esp.y, vars::colors::player_esp.z, vars::colors::player_esp.w));
+							
+							ESP(Player, LocalPlayer, D2D1::ColorF::White);
 						}
 					}
 				}
 				else {
-					ESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::sleeper_esp.x, vars::colors::sleeper_esp.y, vars::colors::sleeper_esp.z, vars::colors::sleeper_esp.w));
+					ESP(Player, LocalPlayer, D2D1::ColorF::Orange);
 				}
 			}
 			else if (Player->IsNpc()) {
-				NPCESP(Player, LocalPlayer, D2D1::ColorF(vars::colors::npc_esp.x, vars::colors::npc_esp.y, vars::colors::npc_esp.z, vars::colors::npc_esp.w));
+				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
 			}
 
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
