@@ -384,6 +384,15 @@ void EntityThreadLoop() {
 			target.entity = (BasePlayer*)ent;
 			DoMeleeAttack(target, active, false);
 		}
+		if (vars::misc::auto_grade && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
+			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
+			uintptr_t obj = read(Object + 0x28, uintptr_t);
+			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
+			if (vars::misc::auto_grade) {
+				AutoGrade(obj);
+			}
+		}
 		//========================================================================================================================================================================================
 		/*Target target = Target();
 		if (vars::weapons::SilentTree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {

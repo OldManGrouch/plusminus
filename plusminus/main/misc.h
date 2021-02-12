@@ -55,8 +55,6 @@ void MiscFuncs() {
 		LocalPlayer->SetFov(vars::misc::fov);
 	}
 	LocalPlayer->PatchCamspeed();
-	if (vars::misc::spiderman)
-		LocalPlayer->SpiderMan();
 	if (vars::misc::fakeadmin)
 		LocalPlayer->FakeAdmin();
 }

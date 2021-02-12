@@ -7,26 +7,33 @@ using namespace hk_defs;
 namespace hk {
 	namespace misc {
 		void Jump(uintptr_t playerwalkmovement, uintptr_t modelstate, bool indirection) {
-			bool climbing = read(playerwalkmovement + 0x132, bool);
-			bool sliding = read(playerwalkmovement + 0x134, bool);
-			bool st = (climbing = (sliding = false));
+			if (vars::misc::better_jump) {
+				bool climbing = read(playerwalkmovement + 0x132, bool);
+				bool sliding = read(playerwalkmovement + 0x134, bool);
+				bool st = (climbing = (sliding = false));
 
-			typedef bool(__stdcall* get_jumped)(uintptr_t);
-			bool get_jmpd = ((get_jumped)(vars::stor::gBase + 0x1C58990))(modelstate);
-			bool st2 = (get_jmpd = true);
+				typedef bool(__stdcall* get_jumped)(uintptr_t);
+				bool get_jmpd = ((get_jumped)(vars::stor::gBase + CO::get_jumped))(modelstate);
+				bool st2 = (get_jmpd = true);
 
-			write(playerwalkmovement + 0x130, st, bool);
-			write(playerwalkmovement + 0x138, st2, bool);
-			write(playerwalkmovement + 0xC0, Time::time(), float);
-			write(playerwalkmovement + 0xA8, null, uintptr_t);
+				write(playerwalkmovement + 0x130, st, bool);
+				write(playerwalkmovement + 0x138, st2, bool);
+				write(playerwalkmovement + 0xC0, Time::time(), float);
+				write(playerwalkmovement + 0xA8, null, uintptr_t);
 
-			typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
-			typedef Vector3(__stdcall* get_velocity)(uintptr_t);
-			uintptr_t rigid = read(playerwalkmovement + 0x90, uintptr_t);
-			//this.body.velocity += Vector3.Lerp(this.Owner.eyes.BodyForward() * 9f, Vector3.zero, this.modify.drag);
-			Vector3 targetVel = ((get_velocity)(vars::stor::gBase + 0x2040880))(modelstate);
-			Vector3 targetVel2 = NotVector3::Lerp(LocalPlayer->eyes()->BodyForward(), Vector3(0, 0, 0), read(read(playerwalkmovement + 0x12C, uintptr_t) + 0x0, float));
-			((set_velocity)(vars::stor::gBase + 0x2040DA0))(modelstate, targetVel + targetVel2);
+				typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
+				typedef Vector3(__stdcall* get_velocity)(uintptr_t);
+				uintptr_t rigid = read(playerwalkmovement + 0x90, uintptr_t);
+				//this.body.velocity += Vector3.Lerp(this.Owner.eyes.BodyForward() * 9f, Vector3.zero, this.modify.drag);
+				Vector3 targetVel = ((get_velocity)(vars::stor::gBase + CO::get_velocity))(rigid);
+
+				((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, targetVel + Vector3(0, 10, 0));
+			}
+			else { return original_jump(playerwalkmovement, modelstate, indirection); }
+		}
+		void OnLand(BasePlayer* ply, float fVel) {
+			if (!vars::misc::no_fall)
+				return original_onland(ply, fVel);
 		}
 		void ForcePositionTo(BasePlayer* pl, Vector3 pos) {
 			if (GetAsyncKeyState(vars::keys::forcepos)) {}
@@ -40,9 +47,9 @@ namespace hk {
 				return original_UnregisterFromVisibility(pl, dist, vis);
 			}
 		}
-		void SetTimedLootAction(DWORD64 a1, uint32_t a2, DWORD64 action) {
-			write(a1 + 0xF8, Vector2(5, 5), Vector2);
-			return original_settimedlootaction(a1, a2, action);
+		DWORD64 CalculateLootDelay(DWORD64 a1, float a2) {
+			a2 = vars::stuff::testFloat;
+			return original_calculatelootdelay(a1, a2);
 		}
 		std::string C4 = c_xor("C4");
 		std::string Satchel = c_xor("Satchel");
@@ -396,5 +403,6 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x4D9670), (void**)&original_settimedlootaction, hk::misc::SetTimedLootAction);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x4D9930), (void**)&original_calculatelootdelay, hk::misc::CalculateLootDelay);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::OnLand), (void**)&original_onland, hk::misc::OnLand);
 }

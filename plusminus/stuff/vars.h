@@ -177,6 +177,8 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool better_jump = false;
+		bool no_fall = false;
 		bool anti_aim_indicator = false;
 		bool hit_logs = false;
 		bool auto_farm_ore = false;
@@ -184,6 +186,8 @@ namespace vars {
 		bool can_attack = false;
 		bool jesus = false;
 		bool walker = false;
+		bool auto_grade = false;
+		int grade_ = 0;
 		bool faster_healing = false;
 		bool suicide = false;
 		bool mass_suicide = false;
@@ -207,7 +211,6 @@ namespace vars {
 		bool gravity = false;
 		float gravity_modifier = 0.f;
 		bool custom_hitsound = false;
-		bool spiderman = false;
 		bool omnidirectional_sprinting = false;
 		bool fakeadmin = false;
 		bool custom_time = false;

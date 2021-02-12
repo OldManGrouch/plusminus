@@ -1,5 +1,5 @@
 ﻿#include "includes.h"
-//#define noauth
+#define noauth
 #pragma comment(lib, "ntdll.lib")
 
 extern "C" NTSTATUS NTAPI RtlAdjustPrivilege(ULONG Privilege, BOOLEAN Enable, BOOLEAN CurrentThread, PBOOLEAN OldValue);

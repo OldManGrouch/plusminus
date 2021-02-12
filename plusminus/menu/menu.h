@@ -425,8 +425,9 @@ namespace menu {
 			Hotkey(xorstr("Suicide Key"), &vars::keys::suicide, ImVec2(200.f, 0));
 		}
 		HelpCheckbox(xorstr("Mass Suicide"), &vars::misc::mass_suicide, xorstr("Intantly kills you with fall damage, can be used to troll / annoy people. Be careful with this."));
-		ImGui::Checkbox(xorstr("Spiderman"), &vars::misc::spiderman);
+		ImGui::Checkbox(xorstr("No Fall Damage"), &vars::misc::no_fall);
 		HelpCheckbox(xorstr("Infinite Jump"), &vars::misc::inf_jump, xorstr("Allows you to infinitely jump, beware of flyhack."));
+		HelpCheckbox(xorstr("BetterJump"), &vars::misc::better_jump, xorstr("Makes your jumps smoother."));
 		HelpCheckbox(xorstr("Long Neck"), &vars::misc::long_neck, xorstr("Makes your neck longer, can be used to shoot over certain structures."));
 		if (vars::misc::long_neck) {
 			Hotkey(xorstr("Long Neck Key"), &vars::keys::longneck, ImVec2(200.f, 0));

@@ -226,6 +226,21 @@ public:
 		return result;
 	}
 };
+class BuildingBlock {
+public:
+	bool IsUpgradeBlocked() {
+		typedef bool(__stdcall* IsUpgradeBlocked)(BuildingBlock*);
+		return ((IsUpgradeBlocked)(vars::stor::gBase + 0x461890))(this);
+	}
+	bool CanAffordUpgrade(BuildingGrade i, BasePlayer* ply) {
+		typedef bool(__stdcall* CanAffordUpgrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
+		return ((CanAffordUpgrade)(vars::stor::gBase + 0x45F3D0))(this, i, ply);
+	}
+	void UpgradeToGrade(BuildingGrade i, BasePlayer* ply) {
+		typedef void(__stdcall* UpgradeToGrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
+		((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(this, i, ply);
+	}
+};
 class BasePlayer : public BaseCombatEntity {
 public:
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
@@ -381,11 +396,6 @@ public:
 	void FakeAdmin() {
 		int Flags = read(this + oPlayerFlags, int);
 		write(this + oPlayerFlags, (Flags |= 4), int);
-	}
-	void SpiderMan() {
-		DWORD64 Movement = read(this + oMovement, DWORD64);
-		write(Movement + oGroundAngle, 0.f, float);
-		write(Movement + oGroundAngleNew, 0.f, float);
 	}
 	void SetGravity(float val) {
 		DWORD64 Movement = read(this + oMovement, DWORD64);

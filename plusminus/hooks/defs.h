@@ -86,8 +86,11 @@ namespace hk_defs {
 	typedef void(__fastcall* HandleRunning_fn)(void*, void*, bool);
 	inline HandleRunning_fn original_handleRunning{ };
 
-	typedef void(__fastcall* lootact)(DWORD64, uint32_t, DWORD64);
-	inline lootact original_settimedlootaction{ };
+	typedef DWORD64(__fastcall* lootact)(DWORD64, float);
+	inline lootact original_calculatelootdelay{ };
+
+	typedef void(__fastcall* onland)(BasePlayer*, float);
+	inline onland original_onland{ };
 
 	typedef void(__fastcall* handlejumping)(void*, void*, bool, bool);
 	inline handlejumping original_handleJumping{ };

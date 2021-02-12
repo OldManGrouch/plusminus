@@ -24,67 +24,69 @@ namespace radar {
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		float mid_x = vars::visuals::radar::x + size / 2;
 		float mid_y = vars::visuals::radar::y + size / 2;
-		Vector3 local = LocalPlayer->get_bone_pos(head);
-		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
-			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
-			if (!read(Player + 0x4A8, DWORD64)) return;
-			Vector3 ply = Player->get_bone_pos(head);
-			float dist = Math::Calc3D_Dist(local, ply);
-			float y = local.x - ply.x;
-			float x = local.z - ply.z;
+		if (LocalPlayer) {
+			Vector3 local = LocalPlayer->get_bone_pos(head);
+			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
+				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+				if (!read(Player + 0x4A8, DWORD64)) return;
+				Vector3 ply = Player->get_bone_pos(head);
+				float dist = Math::Calc3D_Dist(local, ply);
+				float y = local.x - ply.x;
+				float x = local.z - ply.z;
 
-			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
-			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
-			float PointPos_X = dist * cos(num * 0.0174532924f);
-			float PointPos_Y = dist * sin(num * 0.0174532924f);
-			PointPos_X = PointPos_X * (size / range) / 2.f;
-			PointPos_Y = PointPos_Y * (size / range) / 2.f;
+				Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
+				float PointPos_X = dist * cos(num * 0.0174532924f);
+				float PointPos_Y = dist * sin(num * 0.0174532924f);
+				PointPos_X = PointPos_X * (size / range) / 2.f;
+				PointPos_Y = PointPos_Y * (size / range) / 2.f;
 
-			Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
+				Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
 
-			if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < size) {
-				if (!Player->IsNpc()) {
-					if (!Player->HasFlags(16)) {
-						if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
-							Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
-						}
-						else {
-							if (Player->GetHealth() < 0.2) {
-								Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
+				if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < size) {
+					if (!Player->IsNpc()) {
+						if (!Player->HasFlags(16)) {
+							if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
-								Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+								if (Player->GetHealth() < 0.2) {
+									Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
+								}
+								else {
+									Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+								}
 							}
 						}
+						else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
+							Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
+						}
 					}
-					else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
-						Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
+					else if (Player->IsNpc() && (vars::npc::box || vars::npc::name || vars::npc::tracers || vars::npc::healthbar)) {
+						Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
 					}
-				}
-				else if (Player->IsNpc() && (vars::npc::box || vars::npc::name || vars::npc::tracers || vars::npc::healthbar)) {
-					Renderer::FillCircle(point, D2D1::ColorF::Yellow, 2.5f);
 				}
 			}
-		}
-		else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
-			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
-			uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
-			uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
-			Vector3 pos = read(VisualState + 0x90, Vector3);
-			float y = local.x - pos.x;
-			float x = local.z - pos.z;
+			else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
+				uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
+				uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
+				uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
+				Vector3 pos = read(VisualState + 0x90, Vector3);
+				float y = local.x - pos.x;
+				float x = local.z - pos.z;
 
-			float dist = Math::Calc3D_Dist(local, pos);
-			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
-			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
-			float PointPos_X = dist * cos(num * 0.0174532924f);
-			float PointPos_Y = dist * sin(num * 0.0174532924f);
-			PointPos_X = PointPos_X * (size / range) / 2.f;
-			PointPos_Y = PointPos_Y * (size / range) / 2.f;
+				float dist = Math::Calc3D_Dist(local, pos);
+				Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
+				float PointPos_X = dist * cos(num * 0.0174532924f);
+				float PointPos_Y = dist * sin(num * 0.0174532924f);
+				PointPos_X = PointPos_X * (size / range) / 2.f;
+				PointPos_Y = PointPos_Y * (size / range) / 2.f;
 
-			Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
-			if (vars::visuals::patrol_heli) {
-				Renderer::FillCircle(point, D2D1::ColorF(0.5f, 0.54f, 1.f), 2.5f);
+				Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
+				if (vars::visuals::patrol_heli) {
+					Renderer::FillCircle(point, D2D1::ColorF(0.5f, 0.54f, 1.f), 2.5f);
+				}
 			}
 		}
 	}

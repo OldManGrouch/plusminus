@@ -62,12 +62,15 @@ void DoChams(uintptr_t target, Color col) {
 		}
 	}
 }
-float LastDrink = 0.f;
-void MagicDrink() {
-	typedef void(__stdcall* Drink)(BasePlayer*, BasePlayer*);
-	if (LocalPlayer->Time() > LastDrink + 1.5f) {
-		((Drink)(vars::stor::gBase + 0x2FCDC0))(LocalPlayer, LocalPlayer);
-		LastDrink = LocalPlayer->Time();
+float LastGrade = 0.f;
+void AutoGrade(uintptr_t buildingblocc) {
+	BuildingBlock* block = reinterpret_cast<BuildingBlock*>(buildingblocc);
+	if (LocalPlayer->Time() > LastGrade + 1.f 
+		&& block->CanAffordUpgrade((BuildingGrade)vars::misc::grade_, LocalPlayer) 
+		&& !block->IsUpgradeBlocked()) {
+
+		block->UpgradeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer);
+		LastGrade = LocalPlayer->Time();
 	}
 }
 float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
@@ -98,19 +101,6 @@ void PickupPlayer(BasePlayer* ent) {
 void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
 	return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
-}
-void DoIcon() {
-	
-}
-float MaxValue = 21.f;
-void Test() {
-	/*ValueD += 0.02f;
-	if (ValueD > MaxValue) {
-		ValueD = 0;
-		Global::doneHits = 0;
-	}*/
-	Renderer::Rectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100, 5), D2D1::ColorF::Black, 1.f);
-	//Renderer::FillRectangle(Vector2((vars::stuff::ScreenWidth / 2) - 50, vars::stuff::ScreenHeight - 200), Vector2(100 * (aa / MaxValue), 5), D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 }
 //double CalcBulletDrop(double height, double DepthPlayerTarget, float velocity, float gravity) {
 //	double pitch = (Vector3::my_atan2(height, DepthPlayerTarget));

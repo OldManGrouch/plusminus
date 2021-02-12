@@ -1,5 +1,8 @@
 #ifdef rusticaland
 namespace CO {
+	auto get_jumped = 0x1C58990;
+	auto get_velocity = 0x2040880;
+	auto set_velocity = 0x2040DA0;
 	auto get_rotation = 0x6C5060;
 	auto GetYawClamp = 0x2EDD60;
 	auto GetPitchClamp = 0x2EDD30;
@@ -79,6 +82,9 @@ namespace CO {
 }
 #else
 namespace CO {
+	auto get_jumped = 0x1C58170;
+	auto get_velocity = 0x2040060;
+	auto set_velocity = 0x2040580;
 	auto get_rotation = 0x6C4840;
 	auto GetYawClamp = 0x2EDD60;
 	auto GetPitchClamp = 0x2EDD30;

@@ -172,13 +172,14 @@ private:
 		SetupValue(vars::misc::fakeadmin, false, c_xor("Misc"), c_xor("FakeAdmin"));
 		SetupValue(vars::misc::annoyer, false, c_xor("Misc"), c_xor("Annoyer"));
 		SetupValue(vars::misc::suicide, false, c_xor("Misc"), c_xor("Suicide"));
+		SetupValue(vars::misc::no_fall, false, c_xor("Misc"), c_xor("NoFall"));
 		SetupValue(vars::misc::can_attack, false, c_xor("Misc"), c_xor("ShootAnywhere"));
 		SetupValue(vars::misc::omnidirectional_sprinting, false, c_xor("Misc"), c_xor("OmniSprint"));
-		SetupValue(vars::misc::spiderman, false, c_xor("Misc"), c_xor("SpiderMan"));
 		SetupValue(vars::misc::long_neck, false, c_xor("Misc"), c_xor("LongNeck"));
 		SetupValue(vars::misc::walker, false, c_xor("Misc"), c_xor("IgnoreCollision"));
 		SetupValue(vars::misc::jesus, false, c_xor("Misc"), c_xor("Jesus"));
 		SetupValue(vars::misc::inf_jump, false, c_xor("Misc"), c_xor("InfiniteJump"));
+		SetupValue(vars::misc::better_jump, false, c_xor("Misc"), c_xor("BetterJump"));
 		SetupValue(vars::misc::custom_hitsound, false, c_xor("Misc"), c_xor("CustomHitsound"));
 		SetupValue(vars::misc::auto_pickup, false, c_xor("Misc"), c_xor("AutoCollect"));
 		SetupValue(vars::misc::auto_revive, false, c_xor("Misc"), c_xor("AutoAssist"));
