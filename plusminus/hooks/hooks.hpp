@@ -40,7 +40,7 @@ namespace hk {
 			else { return original_forcepos(pl, pos); }
 		}
 		void VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
-			if (vars::players::chams) {
+			if (vars::players::chams && vars::players::chams_xqz) {
 				return original_UnregisterFromVisibility(pl, 2.f, true);
 			}
 			else {

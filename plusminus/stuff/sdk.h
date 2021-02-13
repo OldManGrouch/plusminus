@@ -230,15 +230,7 @@ namespace ModelStateFlag {
 	int Relaxed = 1024;
 	int OnPhone = 2048;
 }
-enum class BuildingGrade {
-	None = -1,
-	Twigs,
-	Wood,
-	Stone,
-	Metal,
-	TopTier,
-	Count
-};
+
 typedef struct _UncStr {
 	char stub[0x10];
 	int len;

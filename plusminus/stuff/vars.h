@@ -78,6 +78,7 @@ namespace vars {
 	}
 	namespace players {
 		bool chams = false;
+		bool chams_xqz = false;
 		bool belt = false;
 		float beltx = 50.f;
 		float belty = 50.f;

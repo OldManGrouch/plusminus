@@ -141,7 +141,15 @@ public:
 	FIELD("Assembly-CSharp::BaseProjectile::primaryMagazine", primaryMagazine, Magazine*);
 	FIELD("Assembly-CSharp::BaseProjectile::projectileVelocityScale", projectileVelocityScale, float);
 };
-
+enum class BuildingGrade {
+	None = -1,
+	Twigs,
+	Wood,
+	Stone,
+	Metal,
+	TopTier,
+	Count
+};
 class DamageTypeList {
 public:
 	enum class DamageType {
@@ -226,21 +234,7 @@ public:
 		return result;
 	}
 };
-class BuildingBlock {
-public:
-	bool IsUpgradeBlocked() {
-		typedef bool(__stdcall* IsUpgradeBlocked)(BuildingBlock*);
-		return ((IsUpgradeBlocked)(vars::stor::gBase + 0x461890))(this);
-	}
-	bool CanAffordUpgrade(BuildingGrade i, BasePlayer* ply) {
-		typedef bool(__stdcall* CanAffordUpgrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
-		return ((CanAffordUpgrade)(vars::stor::gBase + 0x45F3D0))(this, i, ply);
-	}
-	void UpgradeToGrade(BuildingGrade i, BasePlayer* ply) {
-		typedef void(__stdcall* UpgradeToGrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
-		((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(this, i, ply);
-	}
-};
+
 class BasePlayer : public BaseCombatEntity {
 public:
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
@@ -400,6 +394,25 @@ public:
 	void SetGravity(float val) {
 		DWORD64 Movement = read(this + oMovement, DWORD64);
 		write(Movement + oGravityMultiplier, val, float);
+	}
+};
+class BuildingBlock {
+public:
+	bool IsUpgradeBlocked() {
+		typedef bool(__stdcall* IsUpgradeBlocked)(BuildingBlock*);
+		return ((IsUpgradeBlocked)(vars::stor::gBase + CO::IsUpgradeBlocked))(this);
+	}
+	bool CanChangeToGrade(BuildingGrade i, BasePlayer* ply) {
+		typedef bool(__stdcall* CanChangeToGrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
+		return ((CanChangeToGrade)(vars::stor::gBase + CO::CanChangeToGrade))(this, i, ply);
+	}
+	bool CanAffordUpgrade(BuildingGrade i, BasePlayer* ply) {
+		typedef bool(__stdcall* CanAffordUpgrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
+		return ((CanAffordUpgrade)(vars::stor::gBase + CO::CanAffordUpgrade))(this, i, ply);
+	}
+	void UpgradeToGrade(BuildingGrade i, BasePlayer* ply) {
+		typedef void(__stdcall* UpgradeToGrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
+		((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(this, i, ply);
 	}
 };
 class Projectile {

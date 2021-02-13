@@ -1,5 +1,8 @@
 #ifdef rusticaland
 namespace CO {
+	auto CanAffordUpgrade = 0x45F3D0;
+	auto CanChangeToGrade = 0x45F5A0;
+	auto IsUpgradeBlocked = 0x461890;
 	auto get_jumped = 0x1C58990;
 	auto get_velocity = 0x2040880;
 	auto set_velocity = 0x2040DA0;

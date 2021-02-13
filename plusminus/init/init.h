@@ -83,6 +83,7 @@ void InitCheat() {
 	if (vars::combat::fov > (kek.y - 3)) { vars::combat::fov = (kek.y - 3); } // limit fov
 	if (vars::misc::fov < 30) { vars::misc::fov = 80; } // limit graph fov
 	if (vars::combat::smooth_factor <= 0) { vars::combat::smooth_factor = 1; }
+	if (vars::misc::grade_ > 4) { vars::misc::grade_ = 4; }
 	if (indicator_x < 100) { indicator_x = 150; }
 	if (indicator_y < 100) { indicator_y = 150; }
 	if (vars::weapons::hitdistance < 300) { vars::weapons::hitdistance = 300; }

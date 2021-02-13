@@ -32,6 +32,7 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
+typedef void(__stdcall* UpdateRenderers)(uintptr_t, uintptr_t);
 typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
 typedef void(__stdcall* SetColorInt)(uintptr_t, int, Color);
 typedef void(__stdcall* SetColorStr)(uintptr_t, Str, Color);
@@ -43,6 +44,7 @@ int property;
 void DoChams(uintptr_t target, Color col) {
 	if (!vars::players::chams) return;
 	if (target) {
+	//	((UpdateRenderers)(vars::stor::gBase + 0x43DC30))(target, null);
 		if (!property) {
 			property = ((PropertyToId)(vars::stor::gBase + CO::PropertyToId))(Str(xorstr(L"_Color")));
 		}
@@ -56,7 +58,9 @@ void DoChams(uintptr_t target, Color col) {
 						shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 					il2cpp::unity::set_shader(material, shader);
 					((SetColorInt)(vars::stor::gBase + CO::SetColor))(material, property, col);
-					((SetInt)(vars::stor::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
+					if (vars::players::chams_xqz) {
+						((SetInt)(vars::stor::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
+					}
 				}
 			}
 		}
@@ -65,10 +69,11 @@ void DoChams(uintptr_t target, Color col) {
 float LastGrade = 0.f;
 void AutoGrade(uintptr_t buildingblocc) {
 	BuildingBlock* block = reinterpret_cast<BuildingBlock*>(buildingblocc);
-	if (LocalPlayer->Time() > LastGrade + 1.f 
+	//LogSystem::Log(c_wxor(L"xd"), 5.f);
+	if (LocalPlayer->Time() > LastGrade + 0.35f 
 		&& block->CanAffordUpgrade((BuildingGrade)vars::misc::grade_, LocalPlayer) 
+		&& block->CanChangeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer)
 		&& !block->IsUpgradeBlocked()) {
-
 		block->UpgradeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer);
 		LastGrade = LocalPlayer->Time();
 	}

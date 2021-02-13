@@ -100,6 +100,7 @@ namespace menu {
 		"Bottom",
 	};
 	static const char* building_grade[]{
+		"Twig",
 		"Wood",
 		"Stone",
 		"Metal",
@@ -441,6 +442,12 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
+		HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_grade, xorstr("Will automatically upgrade any building blocks near you. Doesn't require a hammer."));
+		if (vars::misc::auto_grade) {
+			ImGui::PushItemWidth(100);
+			ImGui::Combo(xorstr("Building Grade"), &vars::misc::grade_, building_grade, IM_ARRAYSIZE(building_grade));
+			ImGui::PopItemWidth();
+		}
 		HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
 		if (vars::misc::rayleigh_changer) {
 			ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
