@@ -91,7 +91,7 @@ namespace hk {
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 					LogSystem::LogExplosion(Rocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"l%s explosion %.2f meters away from you."), wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str(), Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), position)), 15.f);
 					break;
 				}
 			}
@@ -223,18 +223,17 @@ namespace hk {
 			return original_consolerun(options, strCommand, args);
 		}
 		void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
-			if (vars::misc::hit_logs) {
-				if (entity->IsPlayer()) {
+			if (entity->IsPlayer()) {
+				if (vars::misc::hit_logs) {
 					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), info->damageTypes()->Total()), 5.f);
 				}
-			}
-			if (vars::misc::custom_hitsound) {
-				if (entity->IsPlayer()) {
+				if (vars::misc::custom_hitsound) {
 					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
 				}
 			}
 			else {
-				return original_dohitnotify(entity, info);
+				if (!vars::misc::custom_hitsound)
+					return original_dohitnotify(entity, info);
 			}
 		}
 		bool get_isHeadshot(DWORD64 hitinfo) {

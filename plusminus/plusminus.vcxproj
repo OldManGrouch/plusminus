@@ -8,7 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crc32.hpp" />
-    <ClInclude Include="framework.h" />
     <ClInclude Include="hooks/defs.h" />
     <ClInclude Include="logsystem.h" />
     <ClInclude Include="rust.h" />
