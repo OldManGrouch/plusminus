@@ -62,6 +62,7 @@ public:
 
 	static inline std::vector<LogEntry> logs = std::vector<LogEntry>();
 	static inline std::vector<Explosion> loggedExplosions = std::vector<Explosion>();
+	static inline std::vector<BasePlayer*> visiblePlayers = std::vector<BasePlayer*>();
 
 	static void Log(std::wstring message, float duration) {
 		if (logs.size() >= max_entries)

@@ -54,6 +54,10 @@ void MiscFuncs() {
 	else {
 		LocalPlayer->SetFov(vars::misc::fov);
 	}
+	if (vars::misc::spiderman) {
+		ULONG64 Movement = read(LocalPlayer + oMovement, ULONG64);
+		write(Movement + 0xB8, 0.f, float);
+	}
 	LocalPlayer->PatchCamspeed();
 	if (vars::misc::fakeadmin)
 		LocalPlayer->FakeAdmin();

@@ -142,6 +142,7 @@ private:
 		SetupValue(vars::players::weapon, false, c_xor("Players"), c_xor("weapon"));
 		SetupValue(vars::players::tracers, false, c_xor("Players"), c_xor("tracers"));
 		SetupValue(vars::players::chams, false, c_xor("Players"), c_xor("chams"));
+		SetupValue(vars::players::chams_xqz, false, c_xor("Players"), c_xor("chams_xqz"));
 		SetupValue(vars::players::targetline, false, c_xor("Players"), c_xor("targetline"));
 		SetupValue(vars::players::belt, false, c_xor("Players"), c_xor("belt"));
 		SetupValue(vars::players::beltx, 300.f, c_xor("Players"), c_xor("beltx"));
@@ -178,11 +179,14 @@ private:
 		SetupValue(vars::misc::long_neck, false, c_xor("Misc"), c_xor("LongNeck"));
 		SetupValue(vars::misc::walker, false, c_xor("Misc"), c_xor("IgnoreCollision"));
 		SetupValue(vars::misc::jesus, false, c_xor("Misc"), c_xor("Jesus"));
+		SetupValue(vars::misc::spiderman, false, c_xor("Misc"), c_xor("Spiderman"));
 		SetupValue(vars::misc::inf_jump, false, c_xor("Misc"), c_xor("InfiniteJump"));
 		SetupValue(vars::misc::better_jump, false, c_xor("Misc"), c_xor("BetterJump"));
 		SetupValue(vars::misc::custom_hitsound, false, c_xor("Misc"), c_xor("CustomHitsound"));
 		SetupValue(vars::misc::auto_pickup, false, c_xor("Misc"), c_xor("AutoCollect"));
 		SetupValue(vars::misc::auto_revive, false, c_xor("Misc"), c_xor("AutoAssist"));
+		SetupValue(vars::misc::auto_grade, false, c_xor("Misc"), c_xor("AutoGrade"));
+		SetupValue(vars::misc::grade_, 1, c_xor("Misc"), c_xor("Grade"));
 		SetupValue(vars::misc::insta_revive, false, c_xor("Misc"), c_xor("InstaRevive"));
 		SetupValue(vars::misc::revive_team_only, false, c_xor("Misc"), c_xor("AssistTeamOnly"));
 		SetupValue(vars::misc::auto_farm_ore, false, c_xor("Misc"), c_xor("SilentOre"));
@@ -249,6 +253,11 @@ private:
 
 		SetupValue(vars::visuals::radar::x, 100.f, c_xor("b"), c_xor("x"));
 		SetupValue(vars::visuals::radar::y, 100.f, c_xor("b"), c_xor("y"));
+
+		SetupValue(vars::colors::ambient_color.x, 0.8f, c_xor("colors"), c_xor("ambient x"));
+		SetupValue(vars::colors::ambient_color.y, 0.8f, c_xor("colors"), c_xor("ambient y"));
+		SetupValue(vars::colors::ambient_color.z, 0.8f, c_xor("colors"), c_xor("ambient z"));
+		SetupValue(vars::colors::ambient_color.w, 0.8f, c_xor("colors"), c_xor("ambient w"));
 	}
 
 	std::string szPath = "";

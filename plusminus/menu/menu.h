@@ -284,7 +284,10 @@ namespace menu {
 			ImGui::Combo(xorstr("Target Tracer Position"), &vars::players::targetline_pos, target_tracer_pos, IM_ARRAYSIZE(target_tracer_pos));
 			ImGui::PopItemWidth();
 		}
-		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes through walls.")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
+		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
+		if (vars::players::chams) {
+			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);
+		}
 		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
 		/*ImGui::ColorButton(xorstr("Players##Color"), vars::colors::player_esp); ImGui::SameLine(); ImGui::Text(xorstr("Player Color"));
@@ -403,7 +406,7 @@ namespace menu {
 		Hotkey(xorstr("Remove Position Forcing"), &vars::keys::forcepos, ImVec2(200.f, 0));
 		Hotkey(xorstr("Zoom"), &vars::keys::zoom, ImVec2(200.f, 0));
 		//HelpCheckbox(xorstr("Silent Walk"), &vars::misc::silent_walk, xorstr("You're like flying with noclip, but on the ground... But you're not flying."));
-	    HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
+		HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
 		if (vars::misc::anti_aim) {
 			ImGui::SliderInt(xorstr("Spin Speed"), &vars::misc::anti_aim_speed, 1, 50);
@@ -427,6 +430,7 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Mass Suicide"), &vars::misc::mass_suicide, xorstr("Intantly kills you with fall damage, can be used to troll / annoy people. Be careful with this."));
 		ImGui::Checkbox(xorstr("No Fall Damage"), &vars::misc::no_fall);
+		ImGui::Checkbox(xorstr("Spiderman"), &vars::misc::spiderman);
 		HelpCheckbox(xorstr("Infinite Jump"), &vars::misc::inf_jump, xorstr("Allows you to infinitely jump, beware of flyhack."));
 		HelpCheckbox(xorstr("BetterJump"), &vars::misc::better_jump, xorstr("Makes your jumps smoother."));
 		HelpCheckbox(xorstr("Long Neck"), &vars::misc::long_neck, xorstr("Makes your neck longer, can be used to shoot over certain structures."));
@@ -435,8 +439,8 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("InstaRevive"), &vars::misc::insta_revive, xorstr("Instantly picks a downed person."));
 		HelpCheckbox(xorstr("Custom Hitsound"), &vars::misc::custom_hitsound, xorstr("When you hit a player, your custom hitsound will play. Make a new folder in C disk called 'plusminus', and put your hitsound inside of there. It has to be in a .wav format and called 'hit'"));
-		HelpCheckbox(xorstr("AutoCollect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
-		HelpCheckbox(xorstr("AutoRevive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
+		HelpCheckbox(xorstr("Auto Collect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
+		HelpCheckbox(xorstr("Auto Revive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
 		if (vars::misc::auto_revive) {
 			ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
 		}

@@ -23,6 +23,12 @@ void FindMatrix() {
 bool inited = false;
 float timee = 120.f;
 void EntityLoop() {
+	/*int ff = 50;
+	for (int a = 0; a < LogSystem::visiblePlayers.size(); a++) {
+		BasePlayer* act = LogSystem::visiblePlayers.at(a);
+		Renderer::String(Vector2(250, ff), act->GetName(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+		ff += 15;
+	}*/
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
@@ -55,7 +61,6 @@ void EntityLoop() {
 	typedef uintptr_t(__stdcall* CurrentVersionInfo)();
 	typedef int(__stdcall* get_Number)(uintptr_t);
 	if (!pViewMatrix || !mfound) {
-		
 		FindMatrix();
 	}
 	if (!inited) {
@@ -344,6 +349,9 @@ void EntityThreadLoop() {
 					}
 				}
 			}*/
+			/*if (utils::LineOfSight(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head))) {
+				LogSystem::visiblePlayers.push_back(lol);
+			}*/
 			if (vars::players::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
@@ -397,6 +405,7 @@ void EntityThreadLoop() {
 		//========================================================================================================================================================================================
 		Target target = Target();
 		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+			vars::stuff::tree = ent;
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f) { continue; }

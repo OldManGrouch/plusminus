@@ -4,6 +4,7 @@ bool yeetus = false;
 #define null NULL
 namespace vars {
 	namespace stuff {
+		uintptr_t tree = 0;
 		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;
@@ -178,6 +179,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool spiderman = false;
 		bool better_jump = false;
 		bool no_fall = false;
 		bool anti_aim_indicator = false;

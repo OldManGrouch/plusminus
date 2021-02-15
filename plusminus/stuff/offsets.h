@@ -80,7 +80,7 @@ namespace CO {
 		}
 	}
 	void init() {
-
+		//HandleRunning = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
 	}
 }
 #else

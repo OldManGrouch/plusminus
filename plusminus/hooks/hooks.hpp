@@ -5,6 +5,22 @@ int yaw = 100;
 bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
+	namespace proj {
+		void DoMovement(Projectile* prj, float deltaTime) {
+			Vector3 vel = prj->currentVelocity();
+			if (vars::stuff::testBool) {
+				if (vars::stor::closestPlayer != null) {
+					if (!utils::LineOfSight(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head), prj->currentPosition())) {
+						prj->currentVelocity(Vector3(0, 0, 0));
+					}
+					else {
+						prj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition()) * 2);
+					}
+				}
+			}
+			return original_domovement(prj, deltaTime);
+		}
+	}
 	namespace misc {
 		void Jump(uintptr_t playerwalkmovement, uintptr_t modelstate, bool indirection) {
 			if (vars::misc::better_jump) {
@@ -27,7 +43,7 @@ namespace hk {
 				//this.body.velocity += Vector3.Lerp(this.Owner.eyes.BodyForward() * 9f, Vector3.zero, this.modify.drag);
 				Vector3 targetVel = ((get_velocity)(vars::stor::gBase + CO::get_velocity))(rigid);
 
-				((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, targetVel + Vector3(0, 10, 0));
+				((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(targetVel.x, 10, targetVel.z));
 			}
 			else { return original_jump(playerwalkmovement, modelstate, indirection); }
 		}
@@ -36,8 +52,8 @@ namespace hk {
 				return original_onland(ply, fVel);
 		}
 		void ForcePositionTo(BasePlayer* pl, Vector3 pos) {
-			if (GetAsyncKeyState(vars::keys::forcepos)) {}
-			else { return original_forcepos(pl, pos); }
+			if (!GetAsyncKeyState(vars::keys::forcepos))
+				return original_forcepos(pl, pos);
 		}
 		void VisUpdateUsingCulling(BasePlayer* pl, float dist, bool vis) {
 			if (vars::players::chams && vars::players::chams_xqz) {
@@ -46,10 +62,6 @@ namespace hk {
 			else {
 				return original_UnregisterFromVisibility(pl, dist, vis);
 			}
-		}
-		DWORD64 CalculateLootDelay(DWORD64 a1, float a2) {
-			a2 = vars::stuff::testFloat;
-			return original_calculatelootdelay(a1, a2);
 		}
 		std::string C4 = c_xor("C4");
 		std::string Satchel = c_xor("Satchel");
@@ -198,7 +210,7 @@ namespace hk {
 			//default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
 			//}
 			RenderSettings::set_ambientMode(RenderSettings::AmbientMode::Flat);
-			RenderSettings::set_ambientIntensity(3.f);
+			RenderSettings::set_ambientIntensity(6.f);
 			RenderSettings::set_ambientLight(Color({ vars::colors::ambient_color.x, vars::colors::ambient_color.y, vars::colors::ambient_color.z, 1 }));
 		}
 		pUncStr Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
@@ -401,8 +413,8 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::proj::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x4D9930), (void**)&original_calculatelootdelay, hk::misc::CalculateLootDelay);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::OnLand), (void**)&original_onland, hk::misc::OnLand);
 }

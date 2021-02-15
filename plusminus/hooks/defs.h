@@ -47,6 +47,9 @@ namespace hk_defs {
 	typedef void(__fastcall* crrfrawef)(BasePlayer*, Vector3);
 	inline crrfrawef original_forcepos{ };
 
+	typedef void(__fastcall* domovement)(Projectile*, float);
+	inline domovement original_domovement{ };
+
 	typedef Vector3(__fastcall* modifiedaimconedirection)(float, Vector3, bool);
 	inline modifiedaimconedirection original_aimconedirection{ };
 

@@ -543,6 +543,18 @@ public:
 	bool DidHit() { return read(this + 0x66, bool); }
 	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
 	Str* HitMaterial() { return read(this + 0xC0, Str*); }
+
+	Vector3 HitPointWorld() {
+		if (!this) return Vector3();
+		static auto off = METHOD("Assembly-CSharp::HitTest::HitPointWorld(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
+	}
+
+	Vector3 HitNormalWorld() {
+		if (!this) return Vector3();
+		static auto off = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
+	}
 };
 Matrix4x4* pViewMatrix = nullptr;
 BasePlayer* LocalPlayer = nullptr;
