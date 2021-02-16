@@ -23,12 +23,10 @@ void FindMatrix() {
 bool inited = false;
 float timee = 120.f;
 void EntityLoop() {
-	/*int ff = 50;
-	for (int a = 0; a < LogSystem::visiblePlayers.size(); a++) {
-		BasePlayer* act = LogSystem::visiblePlayers.at(a);
-		Renderer::String(Vector2(250, ff), act->GetName(), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
-		ff += 15;
-	}*/
+	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
+	if (bn) Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+	else Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
@@ -58,43 +56,34 @@ void EntityLoop() {
 	}
 	float FOV = vars::combat::fov, CurFOV;
 	bool LP_isValid = false;
-	typedef uintptr_t(__stdcall* CurrentVersionInfo)();
-	typedef int(__stdcall* get_Number)(uintptr_t);
 	if (!pViewMatrix || !mfound) {
 		FindMatrix();
 	}
 	if (!inited) {
-		LogSystem::Log(c_wxor(L"Cheat loaded!"), 5.f);
+		LogSystem::Log(c_wxor(L"Cheat loaded!"), 7.5f);
 		inited = true;
 	}
-	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
-	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
-	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
-	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
-	DWORD64 ClientEntities_values = read(ClientEntities_list + 0x28, DWORD64);
+	uintptr_t ClientEntities_values = read(read(read(read(bn + 0xB8, uintptr_t), uintptr_t) + 0x10, uintptr_t) + 0x28, uintptr_t);
 	if (!ClientEntities_values) return;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
-	Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
-	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);
+	uintptr_t EntityBuffer = read(ClientEntities_values + 0x18, uintptr_t);
 	for (int i = 0; i <= EntityCount; i++) {
-		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
-		DWORD64 Object = read(Entity + 0x10, DWORD64); if (Object <= 100000) continue;
-		DWORD64 ObjectClass = read(Object + 0x30, DWORD64); if (ObjectClass <= 100000) continue;
+		uintptr_t Entity = read(EntityBuffer + 0x20 + (i * 0x8), uintptr_t); if (Entity <= 100000) continue;
+		uintptr_t Object = read(Entity + 0x10, uintptr_t); if (Object <= 100000) continue;
+		uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
-		DWORD64 ent = read(Object + 0x28, UINT64);
 		Item* weapon = LocalPlayer->GetActiveWeapon();
-		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
+		uintptr_t active = read(weapon + oHeldEntity, uintptr_t);
 		char* classname = weapon->ClassName();
 		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
-		BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+		BasePlayer* Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
 		if (vars::visuals::radar_) {
 			radar::radar_logic(ObjectClass, Object, buff);
 		}
 		if (strstr(buff, xorstr("Local"))) {
-			Player = (BasePlayer*)read(Object + 0x28, DWORD64);
-			if (!read(Player + 0x4A8, DWORD64)) continue;
+			Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
+			if (!read(Player + 0x4A8, uintptr_t)) continue;
 			if (Player != LocalPlayer) {
 				mfound = false;
 			}
@@ -102,6 +91,7 @@ void EntityLoop() {
 			LP_isValid = true;
 
 		}
+		if (!LocalPlayer) return;
 		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 			
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
@@ -164,7 +154,7 @@ void EntityLoop() {
 			}
 
 		}
-		if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
+		else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
 			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
 			uintptr_t BaseEntity = read(BaseObject + 0x18, uintptr_t);
 			uintptr_t Helicopter = read(BaseEntity + 0x28, uintptr_t);
@@ -192,11 +182,11 @@ void EntityLoop() {
 				}
 			}
 		}
-		if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
+		else if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
-				PickupItem(ent);
+				PickupItem(read(Object + 0x28, DWORD64));
 			}
 		}
 		
@@ -239,10 +229,10 @@ void EntityLoop() {
 		miscvis(ObjectClass, buff, vars::visuals::base::boxes, vars::visuals::base::show_distance, vars::visuals::base::draw_distance, xorstr("box.wooden.large.prefab"), xorstr(L"Box"), D2D1::ColorF::RosyBrown);
 		// ---------------------------------------------------------
 		miscvis(ObjectClass, buff, vars::visuals::animals::bear, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("bear.prefab"), xorstr(L"Bear"), D2D1::ColorF::SaddleBrown);
-		miscvis(ObjectClass, buff, vars::visuals::animals::wolf, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/wolf/wolf.prefab"), xorstr(L"Wolf"), D2D1::ColorF::LightSlateGray);
+		miscvis(ObjectClass, buff, vars::visuals::animals::wolf, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("wolf.prefab"), xorstr(L"Wolf"), D2D1::ColorF::LightSlateGray);
 		miscvis(ObjectClass, buff, vars::visuals::animals::pig, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("boar.prefab"), xorstr(L"Pig"), D2D1::ColorF::DarkRed);
-		miscvis(ObjectClass, buff, vars::visuals::animals::chicken, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/chicken/chicken.prefab"), xorstr(L"Chicken"), D2D1::ColorF::YellowGreen);
-		miscvis(ObjectClass, buff, vars::visuals::animals::deer, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("agents/horse/horse.prefab"), xorstr(L"Horse"), D2D1::ColorF::SandyBrown);
+		miscvis(ObjectClass, buff, vars::visuals::animals::chicken, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("chicken.prefab"), xorstr(L"Chicken"), D2D1::ColorF::YellowGreen);
+		miscvis(ObjectClass, buff, vars::visuals::animals::deer, vars::visuals::animals::show_distance, vars::visuals::animals::draw_distance, xorstr("horse.prefab"), xorstr(L"Horse"), D2D1::ColorF::SandyBrown);
 		// ---------------------------------------------------------
 		miscvis(ObjectClass, buff, true, false, 2000.f, vars::stuff::testChar, xorstr(L"TESTITEM"), D2D1::ColorF::LimeGreen);
 	}
@@ -312,11 +302,11 @@ void EntityLoop() {
 }
 
 void EntityThreadLoop() {
-	if (!pViewMatrix || !mfound) {
-		FindMatrix();
-	}
 	DWORD64 BaseNetworkable;
 	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
+
+	if (!LocalPlayer) return;
+
 	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
 	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
 	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
@@ -383,7 +373,7 @@ void EntityThreadLoop() {
 				DoMeleeAttack(target, active, true);
 			}
 		}
-		if (vars::misc::auto_farm_ore && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
+		else if (vars::misc::auto_farm_ore && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
@@ -393,7 +383,7 @@ void EntityThreadLoop() {
 			target.entity = (BasePlayer*)ent;
 			DoMeleeAttack(target, active, false);
 		}
-		if (vars::misc::auto_grade && m_strstr(buff, xorstr("building"))) {
+		else if (vars::misc::auto_grade && m_strstr(buff, xorstr("building"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			uintptr_t obj = read(Object + 0x28, uintptr_t);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
@@ -414,7 +404,7 @@ void EntityThreadLoop() {
 				target.entity = (BasePlayer*)ent;
 			}
 		}
-		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr(buff, xorstr("tree"))) {
+		else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr(buff, xorstr("tree"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
@@ -435,7 +425,7 @@ void EntityThreadLoop() {
 			DoMeleeAttack(target, active, false);
 		}*/
 		//========================================================================================================================================================================================
-		if (vars::misc::annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
+		else if (vars::misc::annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (ent && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {

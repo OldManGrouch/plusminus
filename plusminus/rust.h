@@ -8,7 +8,7 @@ enum UnmanagedCallingConvention {
 template<typename t_Function>
 class UnmanagedPointer {
 public:
-
+	
 	template<typename... t_FunctionParameters>
 	auto operator()(t_FunctionParameters... params) {
 		using result_type = decltype(std::declval<t_Function>()(std::declval<t_FunctionParameters>()...));
@@ -71,6 +71,7 @@ public:
 	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::RenderSettings::set_ambientIntensity(Single): Void", set_ambientIntensity, void(float));
 	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::RenderSettings::set_ambientLight(Color): Void", set_ambientLight, void(Color));
 };
+
 class BaseCombatEntity : public BaseEntity {
 public:
 	const char* ClassName() {
@@ -396,6 +397,13 @@ public:
 		write(Movement + oGravityMultiplier, val, float);
 	}
 };
+class LocalPlayer {
+public:
+	static BasePlayer* Entity() {
+		static auto clazz = CLASS("Assembly-CSharp::LocalPlayer");
+		return *reinterpret_cast<BasePlayer**>(std::uint64_t(clazz->static_fields));
+	}
+};
 class BuildingBlock {
 public:
 	bool IsUpgradeBlocked() {
@@ -611,11 +619,16 @@ namespace utils {
 		uintptr_t result = ((ShaderFind)(vars::stor::gBase + CO::ShaderFind))(name);
 		return result;
 	}
-	namespace StringPool {
-		uint32_t Get(Str str) {
-			typedef uint32_t(__stdcall* Get)(Str);
-			uint32_t result = ((Get)(vars::stor::gBase + CO::utils::StringPool::Get))(str);
-			return result;
+	class StringPool {
+	public:
+		static uint32_t Get(const char* str) {
+			static auto off = METHOD("Assembly-CSharp::StringPool::Get(String): UInt32");
+			return reinterpret_cast<uint32_t(__fastcall*)(il2cpp::String*)>(off)(il2cpp::String::New(str));
 		}
-	}
+
+		static il2cpp::String* Get(uint32_t i) {
+			static auto off = METHOD("Assembly-CSharp::StringPool::Get(UInt32): String");
+			return reinterpret_cast<il2cpp::String * (__fastcall*)(uint32_t)>(off)(i);
+		}
+	};
 }

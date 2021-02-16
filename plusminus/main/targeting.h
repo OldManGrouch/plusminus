@@ -1,3 +1,13 @@
+class OreTarget {
+public:
+	bool valid;
+	DWORD64 entity;
+	Vector3 position;
+	float dist = 10000.f;
+	bool operator<(const OreTarget& b) {
+		return this->dist < b.dist;
+	}
+};
 class Target {
 public:
 	bool valid;
@@ -40,6 +50,38 @@ float GetFov(Vector3 Pos) {
 	if (!utils::w2s(Pos, ScreenPos)) return 1000.f;
 	return GetFov(ScreenPos);
 }
+OreTarget FindOreTarget(Vector3 from) {
+	OreTarget lowest = OreTarget();
+
+	if (!oPlayerList) {
+		DWORD64 val = read(vars::stor::gBase + CO::BasePlayer, DWORD64);
+		DWORD64 st = read(val + 0xB8, DWORD64);
+		oPlayerList = read(st + 0x8, DWORD64);
+	}
+	UINT64 ClientEntities_values = read(oPlayerList + 0x28, UINT64);
+	if (!ClientEntities_values) return lowest;
+	int EntityCount = read(ClientEntities_values + 0x10, int);
+	UINT64 EntityBuffer = read(ClientEntities_values + 0x18, UINT64);
+	for (int i = 0; i <= EntityCount; i++) {
+		uintptr_t Entity = read(EntityBuffer + 0x20 + (i * 0x8), uintptr_t); if (Entity <= 100000) continue;
+		uintptr_t Object = read(Entity + 0x10, uintptr_t); if (Object <= 100000) continue;
+		uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
+		OreTarget res = OreTarget();
+		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
+		char* buff = name->stub;
+		if (strstr(buff, xorstr("ore.prefab"))) {
+			float dist = Math::Calc3D_Dist(utils::GetEntityPosition(read(ObjectClass + 0x30, DWORD64)), from);
+			if (dist > 5) {
+				res.valid = true;
+				res.dist = dist;
+				res.entity = read(Object + 0x28, DWORD64);
+				res.position = utils::GetEntityPosition(read(ObjectClass + 0x30, DWORD64));
+				if (res < lowest) lowest = res;
+			}
+		}
+	}
+	return lowest;
+}
 Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = vars::combat::range, float silent_traveldist = 0.f, bool visible = false) {
 	Target lowest = Target();
 
@@ -52,8 +94,7 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 	if (!ClientEntities_values) return lowest;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
 	UINT64 EntityBuffer = read(ClientEntities_values + 0x18, UINT64);
-	for (int i = 0; i <= EntityCount; i++)
-	{
+	for (int i = 0; i <= EntityCount; i++) {
 		BasePlayer* Player = (BasePlayer*)read(EntityBuffer + 0x20 + (i * 0x8), UINT64);
 		if (Player->GetHealth() < 0.2) continue;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
@@ -81,7 +122,7 @@ Target FindProjectileTarget(Vector3 from, float traveldist) {
 float MaxMeleeDist(DWORD64 melee, bool localplayer) {
 	float pad = 0.1f;
 	typedef float(__stdcall* RetF)();
-	float time = ((RetF)(vars::stor::gBase + CO::get_time))();
+	float time = Time::time();
 
 	float desyncTime = max(time - LocalPlayer->Time() - 0.0325f, 0.f);
 	float res = pad + desyncTime * 5.5f;

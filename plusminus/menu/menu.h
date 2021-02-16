@@ -317,7 +317,7 @@ namespace menu {
 		ImGui::ColorButton(xorstr("Npc##Color"), vars::colors::npc_esp); ImGui::SameLine(); ImGui::Text(xorstr("NPC Color"));
 	}
 	void visuals() {
-		ImGui::Checkbox(xorstr("Radar"), &vars::visuals::radar_);
+		
 		ImGui::Checkbox(xorstr("Raids"), &vars::visuals::raid_esp);
 		ImGui::Checkbox(xorstr("Patrol Heli"), &vars::visuals::patrol_heli);
 		ImGui::Checkbox(xorstr("Bradley APC"), &vars::visuals::bradley_apc);
@@ -327,6 +327,13 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("Gap"), &vars::crosshair::gap, 0.f, 50.f);
 			ImGui::SliderFloat(xorstr("Length"), &vars::crosshair::length, 0.f, 50.f);
 			ImGui::Checkbox(xorstr("Dot"), &vars::crosshair::dot);
+		}
+		if (ImGui::CollapsingHeader(xorstr("Radar"))) {
+			ImGui::Checkbox(xorstr("Radar"), &vars::visuals::radar_);
+			if (vars::visuals::radar_) {
+				ImGui::SliderFloat(xorstr("Size"), &vars::visuals::radar::size, 5.f, 400.f);
+				ImGui::SliderFloat(xorstr("Range"), &vars::visuals::radar::range, 5.f, 400.f);
+			}
 		}
 		if (ImGui::CollapsingHeader(xorstr("Ores"))) {
 			ImGui::Checkbox(xorstr("Stone"), &vars::ores::stone);

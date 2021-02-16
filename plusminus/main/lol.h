@@ -8,7 +8,7 @@ typedef DWORD64(__stdcall* GetTransform)(DWORD64);
 void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	if (!target.valid || !Held) return;
 
-	if (read(Held + 0x230, float) >= ((get_time)(vars::stor::gBase + CO::get_time))()) { return; }
+	if (read(Held + 0x230, float) >= Time::time()) { return; }
 	if (read(Held + 0x23C, float) < read(Held + 0x1D8, float)) { return; }
 
 	DWORD64 staticHitTest = read(vars::stor::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
@@ -107,29 +107,3 @@ void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
 	return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
 }
-//double CalcBulletDrop(double height, double DepthPlayerTarget, float velocity, float gravity) {
-//	double pitch = (Vector3::my_atan2(height, DepthPlayerTarget));
-//	double BulletVelocityXY = velocity * Vector3::my_cos(pitch);
-//	double Time = DepthPlayerTarget / BulletVelocityXY;
-//	double TotalVerticalDrop = (0.5f * gravity * Time * Time);
-//	return TotalVerticalDrop * 10;
-//}
-//#define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
-//void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
-//	float Dist = Math::Calc3D_Dist(target, local);
-//	float BulletTime = Dist / bulletspeed;
-//
-//	Vector3 vel = Vector3(targetvel.x, 0, targetvel.z) * 0.75f;
-//
-//	Vector3 PredictVel = vel * BulletTime;
-//
-//	target += PredictVel;
-//
-//	double height = target.y - local.y;
-//	Vector3 dir = target - local;
-//	float DepthPlayerTarget = Vector3::my_sqrt(powFFFFFFFFFFFFFFFFFFFFFF(dir.x) + powFFFFFFFFFFFFFFFFFFFFFF(dir.z));
-//
-//	float drop = CalcBulletDrop(height, DepthPlayerTarget, bulletspeed, gravity);
-//
-//	target.y += drop;
-//}

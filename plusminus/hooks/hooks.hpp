@@ -5,20 +5,15 @@ int yaw = 100;
 bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
-	namespace proj {
-		void DoMovement(Projectile* prj, float deltaTime) {
-			Vector3 vel = prj->currentVelocity();
-			if (vars::stuff::testBool) {
-				if (vars::stor::closestPlayer != null) {
-					if (!utils::LineOfSight(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head), prj->currentPosition())) {
-						prj->currentVelocity(Vector3(0, 0, 0));
-					}
-					else {
-						prj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition()) * 2);
-					}
-				}
+	namespace exploit {
+		bool Refract(Projectile* prj, uint32_t seed, Vector3 point, Vector3 norm, float resistance) {
+			if (vars::combat::tree_reflect) {
+				prj->penetrationPower(99.f);
+				prj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition()) * 2);
 			}
-			return original_domovement(prj, deltaTime);
+			else {
+				return original_refract(prj, seed, point, norm, resistance);
+			}
 		}
 	}
 	namespace misc {
@@ -144,10 +139,12 @@ namespace hk {
 		}
 		void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
 			vars::stuff::anti_aim_ = yeet;
+			if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
 			typedef void(__stdcall* OnLand)(BasePlayer*, float);
 			typedef void(__stdcall* DoAttack)(uintptr_t);
 			typedef void(__stdcall* set_rayleigh)(float);
 			if (vars::misc::rayleigh_changer) {
+				//write(read(LocalPlayer + 0x588, uintptr_t) + 0x28, MountPoses::SitMinicopter_Pilot, int);
 				((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
 			}
 			else {
@@ -225,15 +222,17 @@ namespace hk {
 		void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 			if (entity->IsPlayer()) {
 				if (vars::misc::hit_logs) {
-					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), info->damageTypes()->Total()), 5.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), utils::StringPool::Get(info->HitBone())->buffer, info->damageTypes()->Total()), 5.f);
 				}
 				if (vars::misc::custom_hitsound) {
 					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
 				}
+				else {
+					return original_dohitnotify(entity, info);
+				}
 			}
 			else {
-				if (!vars::misc::custom_hitsound)
-					return original_dohitnotify(entity, info);
+				return original_dohitnotify(entity, info);
 			}
 		}
 		bool get_isHeadshot(DWORD64 hitinfo) {
@@ -254,6 +253,7 @@ namespace hk {
 	}
 	namespace combat {
 		float GetRandomVelocity(uintptr_t mod) {
+			LogSystem::Log(StringFormat::format(c_wxor(L"%.2f"), original_getrandomvelocity(mod)), 3.5f);
 			return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.3 : original_getrandomvelocity(mod);
 		}
 		void AddPunch(uintptr_t a1, Vector3 a2, float duration) {
@@ -275,8 +275,9 @@ namespace hk {
 		void Launch(Projectile* prdoj) {
 			Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
 			int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
-			prdoj->gravityModifier(GetGravity(ammo));
+			//prdoj->gravityModifier(GetGravity(ammo));
 			prdoj->invisible(false);
+			LogSystem::Log(StringFormat::format(c_wxor(L"%.2f %d"), prdoj->gravityModifier(), LocalPlayer->GetActiveWeapon()->LoadedAmmo()), 3.5f);
 			if (vars::weapons::no_spread) {
 				write(prdoj->mod() + 0x38, 0.f, float);
 			}
@@ -298,8 +299,8 @@ namespace hk {
 			if (vars::combat::hitbox_override || vars::combat::always_heli_rotor) {
 				if (vars::combat::hitbox_override) {
 					uint32_t bone;
-					if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(Str(xorstr(L"head"))); }
-					else { bone = utils::StringPool::Get(Str(xorstr(L"spine4"))); }
+					if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(c_xor("head")); }
+					else { bone = utils::StringPool::Get(c_xor("spine4")); }
 					write(Attack + 0x30, bone, uint32_t); // public uint hitBone;
 					write(Attack + 0x64, 16144115, uint32_t); // public uint hitPartID;
 				}
@@ -345,12 +346,12 @@ namespace hk {
 
 			Vector3 target = TargetPlayer->get_bone_pos(head);
 			if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
-				//Prediction(LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (Prediction(TargetPlayer) - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
+				a::Prediction(LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+				playerDir = (target - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
 			}
 			else {
-				//Prediction(LocalPlayer->get_bone_pos(head), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (Prediction(TargetPlayer) - LocalPlayer->get_bone_pos(head)).Normalized();
+				a::Prediction(LocalPlayer->get_bone_pos(head), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+				playerDir = (target - LocalPlayer->get_bone_pos(head)).Normalized();
 			}
 
 			if (vars::combat::psilent) {
@@ -410,9 +411,9 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x53A770), (void**)&original_refract, hk::exploit::Refract);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::proj::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::OnLand), (void**)&original_onland, hk::misc::OnLand);

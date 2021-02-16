@@ -1,4 +1,32 @@
 #include <map>
+namespace a {
+	double CalcBulletDrop(double height, double DepthPlayerTarget, float velocity, float gravity) {
+		double pitch = (Vector3::my_atan2(height, DepthPlayerTarget));
+		double BulletVelocityXY = velocity * Vector3::my_cos(pitch);
+		double Time = DepthPlayerTarget / BulletVelocityXY;
+		double TotalVerticalDrop = (0.5f * gravity * Time * Time);
+		return TotalVerticalDrop * 10;
+	}
+#define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
+	void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
+		float Dist = Math::Calc3D_Dist(target, local);
+		float BulletTime = Dist / bulletspeed;
+
+		Vector3 vel = Vector3(targetvel.x, 0, targetvel.z) * 0.75f;
+
+		Vector3 PredictVel = vel * BulletTime;
+
+		target += PredictVel;
+
+		double height = target.y - local.y;
+		Vector3 dir = target - local;
+		float DepthPlayerTarget = Vector3::my_sqrt(powFFFFFFFFFFFFFFFFFFFFFF(dir.x) + powFFFFFFFFFFFFFFFFFFFFFF(dir.z));
+
+		float drop = CalcBulletDrop(height, DepthPlayerTarget, bulletspeed, gravity);
+
+		target.y += drop;
+	}
+}
 float GetFov(BasePlayer* Entity, BoneList Bone) {
 	Vector2 ScreenPos;
 	if (!utils::w2s(Entity->get_bone_pos(Bone), ScreenPos)) return 1000.f;

@@ -51,7 +51,7 @@ namespace CO {
 	auto ProcessAttack = 0x2E9A20; // protected virtual void ProcessAttack(HitTest hit) { }
 	auto get_transform = 0x172FD70; // public Transform get_transform() { } | UnityEngine::Component
 	auto HitTest = 0x2FC36B0; // HitTest_TypeInfo
-	auto get_time = 0x1F70A70; // public static float get_time() { }
+	//auto get_time = 0x1F70A70; // public static float get_time() { }
 	auto ServerRPC = 0x3CEE10;
 	auto TraceAll = 0x93E550; // public static void TraceAll(HitTest test, List<TraceInfo> traces, int layerMask = -5) { }
 	auto BaseNetworkable = 0x2FC4010; // BaseNetworkable_TypeInfo
@@ -78,9 +78,6 @@ namespace CO {
 		namespace StringPool {
 			auto Get = 0x8EF4D0; // public static uint Get(string str) { }
 		}
-	}
-	void init() {
-		//HandleRunning = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
 	}
 }
 #else
@@ -162,9 +159,6 @@ namespace CO {
 		namespace StringPool {
 			auto Get = 0x8EECB0; // public static uint Get(string str) { }
 		}
-	}
-	void init() {
-
 	}
 }
 #endif

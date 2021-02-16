@@ -251,8 +251,10 @@ private:
 		SetupValue(indicator_x, 100.f, c_xor("a"), c_xor("x"));
 		SetupValue(indicator_y, 100.f, c_xor("a"), c_xor("y"));
 
-		SetupValue(vars::visuals::radar::x, 100.f, c_xor("b"), c_xor("x"));
-		SetupValue(vars::visuals::radar::y, 100.f, c_xor("b"), c_xor("y"));
+		SetupValue(vars::visuals::radar::x, 100.f, c_xor("Radar"), c_xor("x"));
+		SetupValue(vars::visuals::radar::y, 100.f, c_xor("Radar"), c_xor("y"));
+		SetupValue(vars::visuals::radar::size, 100.f, c_xor("Radar"), c_xor("size"));
+		SetupValue(vars::visuals::radar::range, 100.f, c_xor("Radar"), c_xor("range"));
 
 		SetupValue(vars::colors::ambient_color.x, 0.8f, c_xor("colors"), c_xor("ambient x"));
 		SetupValue(vars::colors::ambient_color.y, 0.8f, c_xor("colors"), c_xor("ambient y"));

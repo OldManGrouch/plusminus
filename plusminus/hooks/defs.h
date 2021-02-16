@@ -26,6 +26,9 @@ namespace hk_defs {
 	typedef void(__fastcall* jmp)(uintptr_t, uintptr_t, bool);
 	inline jmp original_jump{ };
 
+	typedef bool(__fastcall* rerf)(Projectile*, uint32_t, Vector3, Vector3, float);
+	inline rerf original_refract{ };
+
 	typedef bool(__fastcall* isheadshot)(DWORD64);
 	inline isheadshot original_getisheadshot{ };
 
@@ -46,9 +49,6 @@ namespace hk_defs {
 
 	typedef void(__fastcall* crrfrawef)(BasePlayer*, Vector3);
 	inline crrfrawef original_forcepos{ };
-
-	typedef void(__fastcall* domovement)(Projectile*, float);
-	inline domovement original_domovement{ };
 
 	typedef Vector3(__fastcall* modifiedaimconedirection)(float, Vector3, bool);
 	inline modifiedaimconedirection original_aimconedirection{ };
@@ -74,23 +74,11 @@ namespace hk_defs {
 	typedef void(__fastcall* viewmodelPlay)(DWORD64, pUncStr);
 	inline viewmodelPlay original_viewmodelplay{ };
 
-	typedef bool(__fastcall* refre)(Projectile*, uint32_t, Vector3, Vector3);
-	inline refre original_reflect{ };
-
-	typedef Vector2(__fastcall* pitchclamp)(DWORD64);
-	inline pitchclamp original_getpitchclamp{ };
-
-	typedef Vector2(__fastcall* yawclamp)(DWORD64);
-	inline yawclamp original_getyawclamp{ };
-
 	typedef bool(__fastcall* cancan)(void*, void*);
 	inline cancan original_canholditems{ };
 
 	typedef void(__fastcall* HandleRunning_fn)(void*, void*, bool);
 	inline HandleRunning_fn original_handleRunning{ };
-
-	typedef DWORD64(__fastcall* lootact)(DWORD64, float);
-	inline lootact original_calculatelootdelay{ };
 
 	typedef void(__fastcall* onland)(BasePlayer*, float);
 	inline onland original_onland{ };

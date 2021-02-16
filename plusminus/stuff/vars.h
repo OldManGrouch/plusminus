@@ -35,7 +35,7 @@ namespace vars {
 		uintptr_t closestHeliObj = NULL;
 	}
 	namespace combat {
-		bool tree_reflect = false;
+		bool tree_reflect = true;
 		bool magicbollet = false;
 		bool always_heli_rotor = false;
 		bool hitbox_override = false;
@@ -126,6 +126,8 @@ namespace vars {
 		namespace radar {
 			float x = 300.f;
 			float y = 300.f;
+			float range = 160.f;
+			float size = 120.f;
 		}
 		namespace base {
 			bool tc = false;

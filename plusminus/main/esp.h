@@ -1,29 +1,55 @@
 namespace radar {
-	float range = 161.1f;
-	float size = 121.f;
+	//float range = vars::visuals::radar::range/*161.1f*/;
+	//float size = vars::visuals::radar::size/*121.5f*/;
 
-	
+	void do_dot(DWORD64 ObjectClass, DWORD64 Object, char* buff, char* target, D2D1::ColorF clr) {
+		Vector3 local = LocalPlayer->get_bone_pos(head);
+		if (strstr(buff, target)) {
+			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
+			uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
+			uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
+			Vector3 pos = read(VisualState + 0x90, Vector3);
+			float y = local.x - pos.x;
+			float x = local.z - pos.z;
+
+			float dist = Math::Calc3D_Dist(local, pos);
+			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
+			float PointPos_X = dist * cos(num * 0.0174532924f);
+			float PointPos_Y = dist * sin(num * 0.0174532924f);
+			PointPos_X = PointPos_X * (vars::visuals::radar::size / vars::visuals::radar::range) / 2.f;
+			PointPos_Y = PointPos_Y * (vars::visuals::radar::size / vars::visuals::radar::range) / 2.f;
+
+			float mid_x = vars::visuals::radar::x + vars::visuals::radar::size / 2;
+			float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
+
+			Vector2 point = Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y);
+			if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
+				Renderer::FillCircle(point, clr, 2.5f);
+			}
+		}
+	}
 	void radar_bg() {
-		float mid_x = vars::visuals::radar::x + size / 2;
-		float mid_y = vars::visuals::radar::y + size / 2;
+		float mid_x = vars::visuals::radar::x + vars::visuals::radar::size / 2;
+		float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
 		POINT p;
 		if (GetCursorPos(&p)) {
-			if (p.x >= mid_x - size && p.x <= mid_x + size) {
-				if (p.y >= mid_y - size && p.y <= mid_y + size) {
+			if (p.x >= mid_x - vars::visuals::radar::size && p.x <= mid_x + vars::visuals::radar::size) {
+				if (p.y >= mid_y - vars::visuals::radar::size && p.y <= mid_y + vars::visuals::radar::size) {
 					if (GetAsyncKeyState(VK_LBUTTON)) {
-						vars::visuals::radar::x = p.x;
-						vars::visuals::radar::y = p.y;
+						vars::visuals::radar::x = p.x - (vars::visuals::radar::size / 2);
+						vars::visuals::radar::y = p.y - (vars::visuals::radar::size / 2);
 					}
 				}
 			}
 		}
-		Renderer::FillCircle(Vector2(mid_x, mid_y), D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f), size);
-		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), size);
+		Renderer::FillCircle(Vector2(mid_x, mid_y), D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f), vars::visuals::radar::size);
+		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), vars::visuals::radar::size);
 		Renderer::Circle(Vector2(mid_x, mid_y), D2D1::ColorF::Red, 2.5f);
 	}
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		float mid_x = vars::visuals::radar::x + size / 2;
-		float mid_y = vars::visuals::radar::y + size / 2;
+		float mid_x = vars::visuals::radar::x + vars::visuals::radar::size / 2;
+		float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
 		if (LocalPlayer) {
 			Vector3 local = LocalPlayer->get_bone_pos(head);
 			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
@@ -38,12 +64,12 @@ namespace radar {
 				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
 				float PointPos_X = dist * cos(num * 0.0174532924f);
 				float PointPos_Y = dist * sin(num * 0.0174532924f);
-				PointPos_X = PointPos_X * (size / range) / 2.f;
-				PointPos_Y = PointPos_Y * (size / range) / 2.f;
+				PointPos_X = PointPos_X * (vars::visuals::radar::size / vars::visuals::radar::range) / 2.f;
+				PointPos_Y = PointPos_Y * (vars::visuals::radar::size / vars::visuals::radar::range) / 2.f;
 
-				Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
+				Vector2 point = Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y);
 
-				if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < size) {
+				if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
 						if (!Player->HasFlags(16)) {
 							if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
@@ -67,26 +93,8 @@ namespace radar {
 					}
 				}
 			}
-			else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
-				uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
-				uintptr_t Transform = read(BaseObject + 0x8, uintptr_t);
-				uintptr_t VisualState = read(Transform + 0x38, uintptr_t);
-				Vector3 pos = read(VisualState + 0x90, Vector3);
-				float y = local.x - pos.x;
-				float x = local.z - pos.z;
-
-				float dist = Math::Calc3D_Dist(local, pos);
-				Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
-				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
-				float PointPos_X = dist * cos(num * 0.0174532924f);
-				float PointPos_Y = dist * sin(num * 0.0174532924f);
-				PointPos_X = PointPos_X * (size / range) / 2.f;
-				PointPos_Y = PointPos_Y * (size / range) / 2.f;
-
-				Vector2 point = Vector2(vars::visuals::radar::x + size / 2.f + PointPos_X, vars::visuals::radar::y + size / 2.f + PointPos_Y);
-				if (vars::visuals::patrol_heli) {
-					Renderer::FillCircle(point, D2D1::ColorF(0.5f, 0.54f, 1.f), 2.5f);
-				}
+			if (vars::visuals::patrol_heli) {
+				do_dot(ObjectClass, Object, buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"), D2D1::ColorF(0.5f, 0.54f, 1.f));
 			}
 		}
 	}
@@ -398,7 +406,7 @@ inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 		}
 	}
 	
-	float y = Math::EulerAngles(player->get_bone_rot(head)).y;
+	float y = Math::EulerAngles(player->eyes()->get_rotation()).y;
 	Vector3 center = bounds.center;
 	Vector3 extents = bounds.extents;
 	Vector3 frontTopLeft = Math::RotatePoint(center, Vector3(center.x - extents.x, center.y + extents.y, center.z - extents.z), y);

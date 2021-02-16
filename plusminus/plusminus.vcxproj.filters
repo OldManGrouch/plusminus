@@ -14,9 +14,6 @@
     <Filter Include="source\main">
       <UniqueIdentifier>{67caad19-5894-490a-9d69-dbb22224f72b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\config">
-      <UniqueIdentifier>{a98b6faf-df0e-4ddd-918d-79af078d4b2a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\hooks">
       <UniqueIdentifier>{bf6a9dc9-dc11-4200-9d44-a2ee2b6790d3}</UniqueIdentifier>
     </Filter>
@@ -130,9 +127,6 @@
     <ClInclude Include="main/misc.h">
       <Filter>source\main</Filter>
     </ClInclude>
-    <ClInclude Include="config/config.h">
-      <Filter>source\config</Filter>
-    </ClInclude>
     <ClInclude Include="init/d3defs.h">
       <Filter>source\init</Filter>
     </ClInclude>
@@ -177,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="stuff/il2cpp.h">
       <Filter>source\stuff\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="config/config.h">
+      <Filter>source\main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

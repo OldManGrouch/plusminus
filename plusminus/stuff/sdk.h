@@ -33,7 +33,36 @@ const unsigned short Crc16Table[256] = {
 0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
 0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
 };
-
+enum MountPoses {
+	// Token: 0x0400248C RID: 9356
+	Chair,
+	// Token: 0x0400248D RID: 9357
+	Driving,
+	// Token: 0x0400248E RID: 9358
+	Horseback,
+	// Token: 0x0400248F RID: 9359
+	HeliUnarmed,
+	// Token: 0x04002490 RID: 9360
+	HeliArmed,
+	// Token: 0x04002491 RID: 9361
+	HandMotorBoat,
+	// Token: 0x04002492 RID: 9362
+	MotorBoatPassenger,
+	// Token: 0x04002493 RID: 9363
+	SitGeneric,
+	// Token: 0x04002494 RID: 9364
+	SitRaft,
+	// Token: 0x04002495 RID: 9365
+	StandDrive,
+	// Token: 0x04002496 RID: 9366
+	SitShootingGeneric,
+	// Token: 0x04002497 RID: 9367
+	SitMinicopter_Pilot,
+	// Token: 0x04002498 RID: 9368
+	SitMinicopter_Passenger,
+	// Token: 0x04002499 RID: 9369
+	Standing = 128
+};
 enum BoneList : int {
 	l_hip = 1,
 	l_knee,
