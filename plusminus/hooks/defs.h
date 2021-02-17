@@ -26,8 +26,11 @@ namespace hk_defs {
 	typedef void(__fastcall* jmp)(uintptr_t, uintptr_t, bool);
 	inline jmp original_jump{ };
 
-	typedef bool(__fastcall* rerf)(Projectile*, uint32_t, Vector3, Vector3, float);
-	inline rerf original_refract{ };
+	typedef void(__fastcall* rerf)(Projectile*, float);
+	inline rerf original_domovement{ };
+
+	typedef void(__fastcall* thr)(uintptr_t);
+	inline thr original_throw{ };
 
 	typedef bool(__fastcall* isheadshot)(DWORD64);
 	inline isheadshot original_getisheadshot{ };
@@ -55,6 +58,9 @@ namespace hk_defs {
 
 	typedef void(__fastcall* addpunch)(uintptr_t, Vector3, float);
 	inline addpunch original_addpunch{ };
+
+	typedef void(__fastcall* ong)(uintptr_t);
+	inline ong original_ongui{ };
 
 	typedef uintptr_t(__fastcall* createff)(pUncStr, uintptr_t);
 	inline createff original_createeffect{ };

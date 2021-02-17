@@ -5,7 +5,7 @@ typedef void(__stdcall* ProcessAttack)(DWORD64, DWORD64);
 typedef float(__stdcall* get_time)();
 typedef void(__stdcall* StartAttackCooldown)(DWORD64, float);
 typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
+void DoMeleeAttack(Target target, DWORD64 Held, bool transform, bool tree = false, DWORD64 obj = 0) {
 	if (!target.valid || !Held) return;
 
 	if (read(Held + 0x230, float) >= Time::time()) { return; }
@@ -16,8 +16,13 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 
 	DWORD64 trans; Ray ray = Ray(LocalPlayer->get_bone_pos(neck), (target.position - LocalPlayer->get_bone_pos(neck)).Normalized());
 	if (!target.entity) return;
-	if (transform) { trans = target.entity->GrabTransform(head); }
-	else { trans = utils::GetTransform((DWORD64)target.entity); } if (!trans) return;
+	if (transform) { 
+		trans = target.entity->GrabTransform(head); 
+	}
+	else { 
+		trans = utils::GetTransform((DWORD64)target.entity);
+		
+	} if (!trans) return;
 	write(newHitTest + 0x34, 1000.f, float);
 	write(newHitTest + 0xB0, trans, DWORD64);
 	write(newHitTest + 0x14, ray, Ray);
@@ -32,12 +37,8 @@ void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 typedef list<uintptr_t>*(__stdcall* get_Renderers)(uintptr_t);
 typedef uintptr_t(__stdcall* get_material)(uintptr_t);
 typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
-typedef void(__stdcall* UpdateRenderers)(uintptr_t, uintptr_t);
 typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
 typedef void(__stdcall* SetColorInt)(uintptr_t, int, Color);
-typedef void(__stdcall* SetColorStr)(uintptr_t, Str, Color);
-typedef void(__stdcall* SetFloat)(uintptr_t, Str, float);
-typedef void(__stdcall* EnableKeyword)(uintptr_t, Str);
 typedef int(__stdcall* PropertyToId)(Str);
 uintptr_t shader;
 int property;

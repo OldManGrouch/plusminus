@@ -30,6 +30,12 @@ void EntityLoop() {
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
+	OreTarget tr = FindOreTarget(LocalPlayer->get_bone_pos(head));
+	Vector2 screen;
+	if (utils::w2s(tr.position, screen) && tr.valid) {
+		Renderer::Line(Vector2(1000, 300), screen, D2D1::ColorF::GhostWhite);
+	}
+	
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
 		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
@@ -344,6 +350,9 @@ void EntityThreadLoop() {
 			}*/
 			if (vars::players::chams && lol->GetHealth() > 0.2) {
 				uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
+				if (vars::stuff::testBool) { // TO-DO
+					//reinterpret_cast<void(_fastcall*)(uintptr_t, bool)>(vars::stor::gBase + 0xB2F840)(playermodel, true);
+				}
 				uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 				if (!lol->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
@@ -394,24 +403,25 @@ void EntityThreadLoop() {
 		}
 		//========================================================================================================================================================================================
 		Target target = Target();
-		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
 			vars::stuff::tree = ent;
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
+			target.position = utils::GetEntityPosition(gameObject);
+		}
+		else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
+			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f) { continue; }
+			
 			bool iskill = read(read(Object + 0x28, uintptr_t) + 0x15C, bool);
 			if (!iskill) {
 				target.entity = (BasePlayer*)ent;
 			}
-		}
-		else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr(buff, xorstr("tree"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
 			target.valid = true;
-			target.position = utils::GetEntityPosition(gameObject);
 			if (target.entity) {
-				DoMeleeAttack(target, active, false);
+				DoMeleeAttack(target, active, false, true, gameObject);
 			}
 		}
 		/*if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {

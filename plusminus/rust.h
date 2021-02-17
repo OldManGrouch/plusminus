@@ -397,6 +397,10 @@ public:
 		write(Movement + oGravityMultiplier, val, float);
 	}
 };
+class GUILayoutOption {
+public:
+
+};
 class LocalPlayer {
 public:
 	static BasePlayer* Entity() {
@@ -421,6 +425,63 @@ public:
 	void UpgradeToGrade(BuildingGrade i, BasePlayer* ply) {
 		typedef void(__stdcall* UpgradeToGrade)(BuildingBlock*, BuildingGrade, BasePlayer*);
 		((UpgradeToGrade)(vars::stor::gBase + CO::UpgradeToGrade))(this, i, ply);
+	}
+};
+
+class Transform {
+public:
+	Vector3 InverseTransformPoint(Vector3 position) {
+		if (!this) return Vector3::Zero();
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformPoint(Vector3): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
+	}
+
+	Vector3 InverseTransformDirection(Vector3 position) {
+		if (!this) return Vector3::Zero();
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformDirection(Vector3): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
+	}
+};
+class HitTest {
+public:
+	Ray AttackRay() { return read(this + 0x14, Ray); }
+	float Radius() { return read(this + 0x2C, float); }
+	float Forgiveness() { return read(this + 0x30, float); }
+	float MaxDistance() { return read(this + 0x34, float); }
+	uintptr_t RayHit() { return read(this + 0x38, uintptr_t); }
+	bool MultiHit() { return read(this + 0x64, bool); }
+	bool BestHit() { return read(this + 0x65, bool); }
+	bool DidHit() { return read(this + 0x66, bool); }
+	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
+	Str* HitMaterial() { return read(this + 0xC0, Str*); }
+
+	void HitEntity(BaseEntity* en) { write(this + 0x88, en, BaseEntity*); }
+
+	FIELD("Assembly-CSharp::HitTest::AttackRay", AttackRayd, Ray);
+	FIELD("Assembly-CSharp::HitTest::Radius", Radiusd, float);
+	FIELD("Assembly-CSharp::HitTest::Forgiveness", Forgivenessd, float);
+	FIELD("Assembly-CSharp::HitTest::MaxDistance", MaxDistanced, float);
+	FIELD("Assembly-CSharp::HitTest::MultiHit", MultiHitd, bool);
+	FIELD("Assembly-CSharp::HitTest::BestHit", BestHitd, bool);
+	FIELD("Assembly-CSharp::HitTest::DidHit", DidHitd, bool);
+	FIELD("Assembly-CSharp::HitTest::ignoreEntity", ignoreEntity, BaseEntity*);
+	FIELD("Assembly-CSharp::HitTest::HitPoint", HitPoint, Vector3);
+	FIELD("Assembly-CSharp::HitTest::HitNormal", HitNormal, Vector3);
+	FIELD("Assembly-CSharp::HitTest::HitMaterial", HitMateriald, il2cpp::String*);
+	FIELD("Assembly-CSharp::HitTest::HitDistance", HitDistance, float);
+	FIELD("Assembly-CSharp::HitTest::HitTransform", HitTransform, Transform*);
+	FIELD("Assembly-CSharp::HitTest::HitPart", HitPart, uint32_t);
+
+	Vector3 HitPointWorld() {
+		if (!this) return Vector3();
+		static auto off = METHOD("Assembly-CSharp::HitTest::HitPointWorld(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
+	}
+
+	Vector3 HitNormalWorld() {
+		if (!this) return Vector3();
+		static auto off = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
 	}
 };
 class Projectile {
@@ -538,30 +599,15 @@ public:
 	void cleanupAction(uintptr_t a) { write(this + 0x190, a, uintptr_t); }
 	void hitTest(uintptr_t a) { write(this + 0x198, a, uintptr_t); }
 	void swimRandom(float a) { write(this + 0x1A0, a, float); }
-};
-class HitTest {
-public:
-	Ray AttackRay() { return read(this + 0x14, Ray); }
-	float Radius() { return read(this + 0x2C, float); }
-	float Forgiveness() { return read(this + 0x30, float); }
-	float MaxDistance() { return read(this + 0x34, float); }
-	uintptr_t RayHit() { return read(this + 0x38, uintptr_t); }
-	bool MultiHit() { return read(this + 0x64, bool); }
-	bool BestHit() { return read(this + 0x65, bool); }
-	bool DidHit() { return read(this + 0x66, bool); }
-	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
-	Str* HitMaterial() { return read(this + 0xC0, Str*); }
 
-	Vector3 HitPointWorld() {
-		if (!this) return Vector3();
-		static auto off = METHOD("Assembly-CSharp::HitTest::HitPointWorld(): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
+	bool DoHit(HitTest* test, Vector3 point, Vector3 normal) {
+		static auto off = METHOD("Assembly-CSharp::Projectile::DoHit(HitTest,Vector3,Vector3): Boolean");
+		return reinterpret_cast<bool(__fastcall*)(Projectile*, HitTest*, Vector3, Vector3)>(off)(this, test, point, normal);
 	}
-
-	Vector3 HitNormalWorld() {
-		if (!this) return Vector3();
-		static auto off = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
+	bool isAuthoritative() {
+		if (!this) return false;
+		static auto off = METHOD("Assembly-CSharp::Projectile::get_isAuthoritative(): Boolean");
+		return reinterpret_cast<bool(__fastcall*)(Projectile*)>(off)(this);
 	}
 };
 Matrix4x4* pViewMatrix = nullptr;
@@ -583,6 +629,9 @@ namespace utils {
 		uintptr_t plyVis = read(entity + 0x8, uintptr_t); if (!plyVis) return { 0,0,0 };
 		uintptr_t visualState = read(plyVis + 0x38, uintptr_t); if (!visualState) return { 0,0,0 };
 		return read(visualState + 0x90, Vector3);
+	}
+	uintptr_t GetEntityTransform(std::uint64_t entity) {
+		return read(entity + 0x8, uintptr_t);
 	}
 	Vector3 ClosestPoint(BasePlayer* player, Vector3 vec) {
 		typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);

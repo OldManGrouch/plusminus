@@ -70,14 +70,15 @@ OreTarget FindOreTarget(Vector3 from) {
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
 		if (strstr(buff, xorstr("ore.prefab"))) {
-			float dist = Math::Calc3D_Dist(utils::GetEntityPosition(read(ObjectClass + 0x30, DWORD64)), from);
-			if (dist > 5) {
+			uintptr_t a = read(ObjectClass + 0x30, UINT64);
+			float dist = Math::Calc3D_Dist(utils::GetEntityPosition(a), from);
+			//if (dist > 5) {
 				res.valid = true;
 				res.dist = dist;
 				res.entity = read(Object + 0x28, DWORD64);
-				res.position = utils::GetEntityPosition(read(ObjectClass + 0x30, DWORD64));
+				res.position = utils::GetEntityPosition(a);
 				if (res < lowest) lowest = res;
-			}
+			//}
 		}
 	}
 	return lowest;

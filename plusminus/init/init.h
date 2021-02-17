@@ -93,7 +93,7 @@ void InitCheat() {
 		if (GetCursorPos(&p)) {
 			if (p.x >= indicator_x - radius && p.x <= indicator_x + radius) {
 				if (p.y >= indicator_y - radius && p.y <= indicator_y + radius) {
-					if (GetAsyncKeyState(VK_LBUTTON)) {
+					if (GetAsyncKeyState(VK_LBUTTON) && show) {
 						indicator_x = p.x;
 						indicator_y = p.y;
 					}

@@ -82,6 +82,9 @@ namespace CO {
 }
 #else
 namespace CO {
+	auto CanAffordUpgrade = 0x45F3D0;
+	auto CanChangeToGrade = 0x45F5A0;
+	auto IsUpgradeBlocked = 0x461890;
 	auto get_jumped = 0x1C58170;
 	auto get_velocity = 0x2040060;
 	auto set_velocity = 0x2040580;

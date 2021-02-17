@@ -36,7 +36,7 @@ namespace radar {
 		if (GetCursorPos(&p)) {
 			if (p.x >= mid_x - vars::visuals::radar::size && p.x <= mid_x + vars::visuals::radar::size) {
 				if (p.y >= mid_y - vars::visuals::radar::size && p.y <= mid_y + vars::visuals::radar::size) {
-					if (GetAsyncKeyState(VK_LBUTTON)) {
+					if (GetAsyncKeyState(VK_LBUTTON) && show) {
 						vars::visuals::radar::x = p.x - (vars::visuals::radar::size / 2);
 						vars::visuals::radar::y = p.y - (vars::visuals::radar::size / 2);
 					}

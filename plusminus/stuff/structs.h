@@ -6,6 +6,7 @@ public:
 	
 	Vector3() { x = y = z = 0.0f; }
 	Vector3(float X, float Y, float Z) { x = X; y = Y; z = Z; }
+	static Vector3 Zero() { return Vector3(0.0f, 0.0f, 0.0f); }
 	float operator[](int i) const { return ((float*)this)[i]; }
 	Vector3& operator-=(float v) { x -= v; y -= v; z -= v; return *this; }
 	Vector3 operator*(float v) const { return Vector3(x * v, y * v, z * v); }
@@ -654,8 +655,4 @@ public:
 		}
 		str[size] = 0;
 	}
-};
-struct TreeMarkerDataMarkerLocation {
-	Vector3 LocalPosition;
-	Vector3 LocalNormal;
 };
