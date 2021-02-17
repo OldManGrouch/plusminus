@@ -215,6 +215,7 @@ namespace menu {
 				Hotkey(xorstr("pSilent Key"), &vars::keys::psilent, ImVec2(120.f, 0));
 			}
 		}
+		
 		ImGui::Checkbox(xorstr("Memory Aim"), &vars::combat::aimbot);
 		if (vars::combat::aimbot) {
 			//ImGui::Checkbox(xorstr("Smooth"), &vars::combat::Smooth);
@@ -223,6 +224,7 @@ namespace menu {
 			}
 			Hotkey(xorstr("Aiming Key"), &vars::keys::aimkey, ImVec2(120.f, 0));
 		}
+		HelpCheckbox(xorstr("Visualize Prediction"), &vars::combat::visualize_prediction, xorstr("Shows a little red circle indicating where the prediction is predicting."));
 		ImGui::Checkbox(xorstr("Visualize Targeting Fov"), &vars::combat::visualize_fov);
 		ImGui::SliderFloat(xorstr("Targeting Fov"), &vars::combat::fov, 20.f, 1000.f);
 		ImGui::SliderFloat(xorstr("Max Targeting Distance"), &vars::combat::range, 0.f, 400.f);

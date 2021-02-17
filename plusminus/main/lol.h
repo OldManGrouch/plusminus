@@ -5,7 +5,7 @@ typedef void(__stdcall* ProcessAttack)(DWORD64, DWORD64);
 typedef float(__stdcall* get_time)();
 typedef void(__stdcall* StartAttackCooldown)(DWORD64, float);
 typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-void DoMeleeAttack(Target target, DWORD64 Held, bool transform, bool tree = false, DWORD64 obj = 0) {
+void DoMeleeAttack(Target target, DWORD64 Held, bool transform) {
 	if (!target.valid || !Held) return;
 
 	if (read(Held + 0x230, float) >= Time::time()) { return; }

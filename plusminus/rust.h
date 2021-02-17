@@ -444,30 +444,19 @@ public:
 };
 class HitTest {
 public:
-	Ray AttackRay() { return read(this + 0x14, Ray); }
-	float Radius() { return read(this + 0x2C, float); }
-	float Forgiveness() { return read(this + 0x30, float); }
-	float MaxDistance() { return read(this + 0x34, float); }
-	uintptr_t RayHit() { return read(this + 0x38, uintptr_t); }
-	bool MultiHit() { return read(this + 0x64, bool); }
-	bool BestHit() { return read(this + 0x65, bool); }
-	bool DidHit() { return read(this + 0x66, bool); }
-	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
-	Str* HitMaterial() { return read(this + 0xC0, Str*); }
-
 	void HitEntity(BaseEntity* en) { write(this + 0x88, en, BaseEntity*); }
 
-	FIELD("Assembly-CSharp::HitTest::AttackRay", AttackRayd, Ray);
-	FIELD("Assembly-CSharp::HitTest::Radius", Radiusd, float);
-	FIELD("Assembly-CSharp::HitTest::Forgiveness", Forgivenessd, float);
-	FIELD("Assembly-CSharp::HitTest::MaxDistance", MaxDistanced, float);
-	FIELD("Assembly-CSharp::HitTest::MultiHit", MultiHitd, bool);
-	FIELD("Assembly-CSharp::HitTest::BestHit", BestHitd, bool);
-	FIELD("Assembly-CSharp::HitTest::DidHit", DidHitd, bool);
+	FIELD("Assembly-CSharp::HitTest::AttackRay", AttackRay, Ray);
+	FIELD("Assembly-CSharp::HitTest::Radius", Radius, float);
+	FIELD("Assembly-CSharp::HitTest::Forgiveness", Forgiveness, float);
+	FIELD("Assembly-CSharp::HitTest::MaxDistance", MaxDistance, float);
+	FIELD("Assembly-CSharp::HitTest::MultiHit", MultiHit, bool);
+	FIELD("Assembly-CSharp::HitTest::BestHit", BestHit, bool);
+	FIELD("Assembly-CSharp::HitTest::DidHit", DidHit, bool);
 	FIELD("Assembly-CSharp::HitTest::ignoreEntity", ignoreEntity, BaseEntity*);
 	FIELD("Assembly-CSharp::HitTest::HitPoint", HitPoint, Vector3);
 	FIELD("Assembly-CSharp::HitTest::HitNormal", HitNormal, Vector3);
-	FIELD("Assembly-CSharp::HitTest::HitMaterial", HitMateriald, il2cpp::String*);
+	FIELD("Assembly-CSharp::HitTest::HitMaterial", HitMaterial, il2cpp::String*);
 	FIELD("Assembly-CSharp::HitTest::HitDistance", HitDistance, float);
 	FIELD("Assembly-CSharp::HitTest::HitTransform", HitTransform, Transform*);
 	FIELD("Assembly-CSharp::HitTest::HitPart", HitPart, uint32_t);

@@ -52,6 +52,7 @@ namespace vars {
 		float range = 300.f;
 		float fov = 100.f;
 		bool visualize_fov = false;
+		bool visualize_prediction = false;
 		bool lock_target = false;
 		bool ignore_players = false;
 		bool ignore_heli = false;

@@ -392,7 +392,7 @@ void EntityThreadLoop() {
 			target.entity = (BasePlayer*)ent;
 			DoMeleeAttack(target, active, false);
 		}
-		else if (vars::misc::auto_grade && m_strstr(buff, xorstr("building"))) {
+		else if (vars::misc::auto_grade && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			uintptr_t obj = read(Object + 0x28, uintptr_t);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
@@ -421,7 +421,7 @@ void EntityThreadLoop() {
 			}
 			target.valid = true;
 			if (target.entity) {
-				DoMeleeAttack(target, active, false, true, gameObject);
+				DoMeleeAttack(target, active, false);
 			}
 		}
 		/*if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {

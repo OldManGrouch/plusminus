@@ -24,7 +24,7 @@ namespace hk {
 					uintptr_t transform = utils::GetTransform(vars::stor::closestHeli);
 
 					HitTest* hitTest = reinterpret_cast<HitTest*>(prj->hitTest());
-					hitTest->DidHitd() = true;
+					hitTest->DidHit() = true;
 					BaseEntity* e = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli);
 					hitTest->HitEntity(e);
 					hitTest->HitTransform() = reinterpret_cast<Transform*>(transform);
@@ -183,8 +183,6 @@ namespace hk {
 				((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
 			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu())
 				((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
-			typedef void(__stdcall* Sphere)(Vector3, float, Color, float, bool);
-			((Sphere)(vars::stor::gBase + 0xDC69F0))(Vector3::Zero(), 5.f, Color(1, 0, 0, 1), 5.f, true);
 			auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer->IsMenu()) {
 				Item* weapon = LocalPlayer->GetActiveWeapon();
@@ -220,6 +218,7 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
+			LocalPlayer->AddFlag(ModelStateFlag::OnGround);
 			typedef void(__stdcall* ClientInput)(BasePlayer*, DWORD64);
 			((ClientInput)original_clientinput)(baseplayah, ModelState);
 			if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
@@ -446,7 +445,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x538600), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xB2DD70), (void**)&original_throw, hk::misc::Throw);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xB2DD70), (void**)&original_throw, hk::misc::Throw);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);

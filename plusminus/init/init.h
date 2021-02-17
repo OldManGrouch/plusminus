@@ -64,9 +64,18 @@ void InitCheat() {
 			startPos = Vector2(screenX / 2, screenY / 2);
 		}
 		Vector2 ScreenPos;
+
+		
+		Vector2 t;
 		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
-			if (utils::w2s(TargetPlayerA->get_bone_pos(head), ScreenPos))
+			if (utils::w2s(TargetPlayerA->get_bone_pos(head), ScreenPos)) {
 				Renderer::Line(startPos, ScreenPos, D2D1::ColorF::Red, 1.f);
+				if (vars::combat::visualize_prediction) {
+					if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo())), t)) {
+						Renderer::Circle(t, D2D1::ColorF::Red, 4.5f);
+					}
+				}
+			}
 		}
 	}
 	//DoIcon();

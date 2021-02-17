@@ -26,6 +26,11 @@ namespace a {
 
 		target.y += drop;
 	}
+	Vector3 get_aim_point(float speed, float gravity) {
+		Vector3 ret = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
+		Prediction(LocalPlayer->get_bone_pos(head), ret, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), speed, gravity);
+		return ret;
+	}
 }
 float GetFov(BasePlayer* Entity, BoneList Bone) {
 	Vector2 ScreenPos;
