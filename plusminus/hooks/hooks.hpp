@@ -135,9 +135,9 @@ namespace hk {
 					
 					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized();
 					direction = direction * speed;
-					typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
-					uintptr_t rigid = read(movement + 0x90, uintptr_t);
-					((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(0, -10, 0));
+					//typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
+					//uintptr_t rigid = read(movement + 0x90, uintptr_t);
+					//((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(0, -10, 0));
 					write(movement + 0x34, direction, Vector3);
 				}
 			}
@@ -322,11 +322,11 @@ namespace hk {
 						if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(c_xor("head")); }
 						else { bone = utils::StringPool::Get(c_xor("spine4")); }
 						write(Attack + 0x30, bone, uint32_t);
-						write(Attack + 0x64, 16144115, uint32_t);
+						//write(Attack + 0x68, utils::StringPool::Get(c_xor("Water")), uint32_t);
 					}
 				}
 				if (vars::combat::always_heli_rotor) {
-					if (entity->ClassNameHash() == STATIC_CRC32("BaseHelicopter")) {
+					if (entity->ClassNameHash() != STATIC_CRC32("BasePlayer")) {
 						int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 						if (health <= 5000) {
 							write(Attack + 0x30, utils::StringPool::Get(c_xor("tail_rotor_col")), uint32_t);

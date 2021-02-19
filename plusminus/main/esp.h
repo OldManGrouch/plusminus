@@ -60,7 +60,7 @@ namespace radar {
 				float y = local.x - ply.x;
 				float x = local.z - ply.z;
 
-				Vector3 eulerAngles = Math::EulerAngles(/*LocalPlayer->eyes()->get_rotation()*/pViewMatrix->GetRotation());
+				Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation()/*pViewMatrix->GetRotation()*/);
 				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
 				float PointPos_X = dist * cos(num * 0.0174532924f);
 				float PointPos_Y = dist * sin(num * 0.0174532924f);

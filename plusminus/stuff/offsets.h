@@ -1,5 +1,6 @@
 #ifdef rusticaland
 namespace CO {
+	auto RebuildAll = 0xB2BCF0;
 	auto GetMaxSpeed = 0x2FF040;
 	auto DoFixedUpdate = 0xB35070;
 	auto CanAffordUpgrade = 0x45F3D0;

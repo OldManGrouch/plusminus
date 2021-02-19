@@ -10,7 +10,7 @@ namespace vars {
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
-		float testFloat = 1.f;
+		float testFloat = 4.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		bool Panic = false;

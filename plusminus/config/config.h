@@ -260,6 +260,10 @@ private:
 		SetupValue(vars::colors::ambient_color.y, 0.8f, c_xor("colors"), c_xor("ambient y"));
 		SetupValue(vars::colors::ambient_color.z, 0.8f, c_xor("colors"), c_xor("ambient z"));
 		SetupValue(vars::colors::ambient_color.w, 0.8f, c_xor("colors"), c_xor("ambient w"));
+		SetupValue(vars::colors::chams.x, 1, c_xor("colors"), c_xor("chams x"));
+		SetupValue(vars::colors::chams.y, 0, c_xor("colors"), c_xor("chams y"));
+		SetupValue(vars::colors::chams.z, 0, c_xor("colors"), c_xor("chams z"));
+		SetupValue(vars::colors::chams.w, 1, c_xor("colors"), c_xor("chams w"));
 	}
 
 	std::string szPath = "";
