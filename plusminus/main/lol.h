@@ -108,3 +108,31 @@ void PickupItem(DWORD64 item) {
 	typedef void(__stdcall* Pick)(DWORD64, Str);
 	return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
 }
+/*float flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
+			float flyhackDistanceVertical = 0.f;
+			bool inAir = false;
+			inAir = (!LocalPlayer->OnLadder() && !LocalPlayer->IsSwimming() && !LocalPlayer->IsOnGround());
+
+			if (inAir) {
+				bool flag = false;
+
+				Vector3 vector4 = LocalPlayer->get_bone_pos(r_foot).midPoint(LocalPlayer->get_bone_pos(l_foot)) - oldPos;
+
+				if (vector4.y >= 0.f) {
+					flyhackDistanceVertical += vector4.y;
+					flag = true;
+				}
+				if (flag) {
+					float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+					float num6 = LocalPlayer->GetJumpHeight() + num5;
+					if (flyhackDistanceVertical > num6) {
+						vars::stuff::gongetflyhack = true;
+					}
+					else {
+						vars::stuff::gongetflyhack = false;
+					}
+				}
+			}
+			else {
+				flyhackDistanceVertical = 0.f;
+			}*/

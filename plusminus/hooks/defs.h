@@ -5,6 +5,12 @@ namespace hk_defs {
 	typedef void(__fastcall* launch)(Projectile*);
 	inline launch original_launch;
 
+	typedef void(__fastcall* dfixd)(uintptr_t, uintptr_t);
+	inline dfixd original_dofixedupdate;
+
+	typedef bool(__fastcall* dhit)(Projectile*, HitTest*, Vector3, Vector3);
+	inline dhit original_dohit;
+
 	typedef Projectile* (__fastcall* create_projectile_fn)(uintptr_t, void*, Vector3, Vector3, Vector3);
 	inline create_projectile_fn original_create_projectile{ };
 

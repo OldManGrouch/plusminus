@@ -50,7 +50,7 @@ namespace radar {
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		float mid_x = vars::visuals::radar::x + vars::visuals::radar::size / 2;
 		float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
-		if (LocalPlayer) {
+		if (LocalPlayer && pViewMatrix) {
 			Vector3 local = LocalPlayer->get_bone_pos(head);
 			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
@@ -60,7 +60,7 @@ namespace radar {
 				float y = local.x - ply.x;
 				float x = local.z - ply.z;
 
-				Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
+				Vector3 eulerAngles = Math::EulerAngles(/*LocalPlayer->eyes()->get_rotation()*/pViewMatrix->GetRotation());
 				float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
 				float PointPos_X = dist * cos(num * 0.0174532924f);
 				float PointPos_Y = dist * sin(num * 0.0174532924f);

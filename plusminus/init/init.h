@@ -43,15 +43,28 @@ void InitCheat() {
 			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
 		}
 	}
-	// yeet
-	
-	//printf("%ls \n", vars::stuff::dlldirectory.c_str());
+	if (vars::stuff::gongetflyhack) {
+		wchar_t trgt[64];
+		_swprintf(trgt, xorstr(L"flyhack moment LOl"), TargetPlayerA->GetName());
+		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::OrangeRed, true, true);
+	}
 	if (vars::combat::lock_target) {
 		wchar_t trgt[64];
 		if (vars::stor::closestPlayer != NULL) {
 			_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->GetName());
 		}
 		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::PaleVioletRed, true, true);
+	}
+	if (vars::ores::closest_ore) {
+		static float screenX = GetSystemMetrics(SM_CXSCREEN);
+		static float screenY = GetSystemMetrics(SM_CYSCREEN);
+		Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
+
+		OreTarget tr1 = FindOreTarget(LocalPlayer->get_bone_pos(head));
+		Vector2 screen;
+		if (utils::w2s(tr1.position, screen) && tr1.valid) {
+			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
+		}
 	}
 	if (vars::stor::closestPlayer != NULL && vars::players::targetline) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
@@ -120,7 +133,7 @@ void InitCheat() {
 		if (GetCursorPos(&p)) {
 			if (p.x >= vars::players::beltx && p.x <= vars::players::beltx + Width) {
 				if (p.y >= vars::players::belty && p.y <= vars::players::belty + Height) {
-					if (GetAsyncKeyState(VK_LBUTTON)) {
+					if (GetAsyncKeyState(VK_LBUTTON) && show) {
 						vars::players::beltx = p.x - (Width / 2);
 						vars::players::belty = p.y - (Height / 2);
 					}
@@ -132,7 +145,7 @@ void InitCheat() {
 		Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 10 }, TargetPlayerA->GetName(), D2D1::ColorF::White, true, true);
 		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
 		float Pos = 0;
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < TargetPlayerA->item_list_b()->get_size(); i++) { //
 			Item* ActWeapon = TargetPlayerA->GetWeaponInfo(i);
 			if (ActWeapon) {
 				const wchar_t* ActiveItem = ActWeapon->GetName();
@@ -144,15 +157,12 @@ void InitCheat() {
 					}
 				}
 			}
-			else {
-				Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, xorstr(L"-----"), D2D1::ColorF::White, true, true);
-			}
 			Pos += 15;
 		}
 		Renderer::FillRectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80 * (TargetPlayerA->GetHealth() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
 		float cPos = 125;
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < TargetPlayerA->item_list_w()->get_size(); i++) { // clothes
 			Item* ActWeapon = TargetPlayerA->GetClothesInfo(i);
 			if (ActWeapon) {
 				const wchar_t* ActiveItem = ActWeapon->GetName();
@@ -163,9 +173,6 @@ void InitCheat() {
 						Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
 					}
 				}
-			}
-			else {
-				Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, xorstr(L"-----"), D2D1::ColorF::White, true, true);
 			}
 			cPos += 15;
 		}

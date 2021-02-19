@@ -198,11 +198,9 @@ namespace menu {
 	void combat() {
 		HelpCheckbox(xorstr("Hitbox Override"), &vars::combat::hitbox_override, xorstr("Even if you hit a person in the body, the bullet will teleport to the head (depending on the headshot percentage)."));
 		if (vars::combat::hitbox_override) {
-			vars::combat::always_heli_rotor = false;
 			ImGui::SliderInt(xorstr("Headshot Percentage"), &vars::combat::hs_percentage, 0, 100);
 		}
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
-		if (vars::combat::always_heli_rotor) { vars::combat::hitbox_override = false; }
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
@@ -292,10 +290,6 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
-		/*ImGui::ColorButton(xorstr("Players##Color"), vars::colors::player_esp); ImGui::SameLine(); ImGui::Text(xorstr("Player Color"));
-		ImGui::ColorButton(xorstr("Team##Color"), vars::colors::team_esp); ImGui::SameLine(); ImGui::Text(xorstr("Teammate Color"));
-		ImGui::ColorButton(xorstr("Sleepers##Color"), vars::colors::sleeper_esp); ImGui::SameLine(); ImGui::Text(xorstr("Sleeper Color"));
-		ImGui::ColorButton(xorstr("Dead##Color"), vars::colors::dead_esp); ImGui::SameLine(); ImGui::Text(xorstr("Dead Color"));*/
 	}
 	void npc() {
 		ImGui::Checkbox(xorstr("Name "), &vars::npc::name);
@@ -338,6 +332,7 @@ namespace menu {
 			}
 		}
 		if (ImGui::CollapsingHeader(xorstr("Ores"))) {
+			ImGui::Checkbox(xorstr("Ore Path"), &vars::ores::closest_ore);
 			ImGui::Checkbox(xorstr("Stone"), &vars::ores::stone);
 			ImGui::Checkbox(xorstr("Sulfur"), &vars::ores::sulfur);
 			ImGui::Checkbox(xorstr("Metal"), &vars::ores::metal);
@@ -453,6 +448,7 @@ namespace menu {
 		if (vars::misc::auto_revive) {
 			ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
 		}
+		HelpCheckbox(xorstr("FarmBot [beta]"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
 		HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_grade, xorstr("Will automatically upgrade any building blocks near you. Doesn't require a hammer."));

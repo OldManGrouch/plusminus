@@ -27,19 +27,26 @@ void WeaponPatch() {
 		weapon->EokaTap();
 		return;
 	}
+	if (weapon->GetID() == 442886268) {
+		weapon->SetAutomatic();
+		DWORD64 heldentity = read(weapon + oHeldEntity, DWORD64);
+		write(heldentity + oRepeatDelay, 0.01f, float);
+		return;
+	}
 	
 }
 float w_last_syringe = 0.f;
 void MiscFuncs() {
-	Item* weapon = LocalPlayer->GetActiveWeapon(); // get active item
-	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && vars::misc::faster_healing) { // check item thru id
-		DWORD64 Held = read(weapon + oHeldEntity, DWORD64); // get held entity
-	//	write(Held + 0x278, 1.f, float); // disable animation cause it tries using the syringe and gives violations
-		bool deployed = read(Held + 0x188, bool); // check if is deployed
+	if (w_last_syringe = 0.f) {
+		w_last_syringe = LocalPlayer->Time();
+	}
+	Item* weapon = LocalPlayer->GetActiveWeapon();
+	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && vars::misc::faster_healing) {
+		DWORD64 Held = read(weapon + oHeldEntity, DWORD64);
+		bool deployed = read(Held + 0x188, bool);
 		float curtime = LocalPlayer->Time();
-		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) { // check if fire button is down and if the timer has reached a specific number
-			typedef void(__stdcall* ServerRPC)(DWORD64, Str); // define server rpc
-			((ServerRPC)(vars::stor::gBase + CO::ServerRPC))(Held, Str(xorstr(L"UseSelf"))); // call serverrpc
+		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) {
+			reinterpret_cast<void(_stdcall*)(DWORD64, Str)>(vars::stor::gBase + CO::ServerRPC)(Held, Str(xorstr(L"UseSelf")));
 			w_last_syringe = curtime;
 		}
 	}

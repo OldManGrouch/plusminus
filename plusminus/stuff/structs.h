@@ -15,6 +15,7 @@ public:
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
 	Vector3 operator-(const Vector3& v) const { return Vector3(x - v.x, y - v.y, z - v.z); }
 	bool operator==(const Vector3& b) const { return x == b.x && y == b.y && z == b.z; }
+	bool operator!=(const Vector3& b) const { return x != b.x && y != b.y && z != b.z; }
 	Vector3& operator-=(const Vector3& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
 	Vector3 operator+(const Vector3& v) const { return Vector3(x + v.x, y + v.y, z + v.z); }
 	inline float Length() { return sqrtf(x * x + y * y + z * z); }
@@ -609,17 +610,7 @@ struct Ray {
 };
 
 
-struct Matrix4x4 {
-	union {
-		struct {
-			float        _11, _12, _13, _14;
-			float        _21, _22, _23, _24;
-			float        _31, _32, _33, _34;
-			float        _41, _42, _43, _44;
 
-		}; float m[4][4];
-	};
-};
 enum class EventType : int {
 	MouseDown = 0,
 	MouseUp = 1,

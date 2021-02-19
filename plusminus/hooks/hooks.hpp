@@ -6,47 +6,8 @@ bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
 	namespace exploit {
-		void OnGUI(uintptr_t a1) {
-			typedef void(__stdcall* BeginArea)(Rect);
-			typedef void(__stdcall* EndArea)();
-			typedef bool(__stdcall* Toggle)(bool, Str, uintptr_t);
-			((BeginArea)(vars::stor::gBase + 0x18984E0))(Rect(100, 100, 500, 500));
-			//vars::visuals::patrol_heli = ((Toggle)(vars::stor::gBase + 0x189AA10))(vars::visuals::patrol_heli, Str(L"niggamoment"), 1);
-			((EndArea)(vars::stor::gBase + 0x1899A10))();
-			return original_ongui(a1);
-		}
-		void DoMovement(Projectile* prj, float delt) {
-			if (vars::stor::closestHeli != null && prj->isAuthoritative()
-				&& utils::LineOfSight(read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0), prj->currentPosition())) {
-
-				if (Math::Calc3D_Dist(read(vars::stor::closestHeliObj + 0x90, Vector3), prj->currentPosition()) <= 
-					Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), read(vars::stor::closestHeliObj + 0x90, Vector3)) / 14) {
-					uintptr_t transform = utils::GetTransform(vars::stor::closestHeli);
-
-					HitTest* hitTest = reinterpret_cast<HitTest*>(prj->hitTest());
-					hitTest->DidHit() = true;
-					BaseEntity* e = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli);
-					hitTest->HitEntity(e);
-					hitTest->HitTransform() = reinterpret_cast<Transform*>(transform);
-					//hitTest->HitMateriald() = il2cpp::String::New("Flesh");
-
-					hitTest->HitPoint() = reinterpret_cast<Transform*>(transform)->InverseTransformPoint(prj->currentPosition());
-					hitTest->HitNormal() = reinterpret_cast<Transform*>(transform)->InverseTransformDirection(prj->currentPosition());
-
-					hitTest->AttackRay() = Ray(prj->currentPosition(), read(vars::stor::closestHeliObj + 0x90, Vector3) - prj->currentPosition());
-					prj->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());
-					return;
-				}
-			}
-			return original_domovement(prj, delt);
-		}
 	}
 	namespace misc {
-		void Throw(uintptr_t a1) {
-			if (!vars::weapons::remove_attack_anim) {
-				return original_throw(a1);
-			}
-		}
 		void Jump(uintptr_t playerwalkmovement, uintptr_t modelstate, bool indirection) {
 			if (vars::misc::better_jump) {
 				bool climbing = read(playerwalkmovement + 0x132, bool);
@@ -166,23 +127,38 @@ namespace hk {
 			}
 			return original_sendclienttick(baseplayer);
 		}
+		void DoFixedUpdate(uintptr_t movement, uintptr_t modelstate) {
+			float speed = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetMaxSpeed)(LocalPlayer);
+			if (vars::misc::farmbot) {
+				OreTarget closest = FindOreTarget(LocalPlayer->get_bone_pos(head));
+				if (closest.valid) {
+					
+					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized();
+					direction = direction * speed;
+					typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
+					uintptr_t rigid = read(movement + 0x90, uintptr_t);
+					((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(0, -10, 0));
+					write(movement + 0x34, direction, Vector3);
+				}
+			}
+			original_dofixedupdate(movement, modelstate);
+		}
 		void ClientInput(BasePlayer* baseplayah, DWORD64 ModelState) {
 			vars::stuff::anti_aim_ = yeet;
 			if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
-			typedef void(__stdcall* OnLand)(BasePlayer*, float);
-			typedef void(__stdcall* DoAttack)(uintptr_t);
 			typedef void(__stdcall* set_rayleigh)(float);
 			if (vars::misc::rayleigh_changer) {
-				//write(read(LocalPlayer + 0x588, uintptr_t) + 0x28, MountPoses::SitMinicopter_Pilot, int);
 				((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
 			}
 			else {
 				((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
 			}
-			if (vars::misc::mass_suicide)
-				((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
-			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu())
-				((OnLand)(vars::stor::gBase + CO::OnLand))(LocalPlayer, -50);
+			if (vars::misc::mass_suicide) {
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer, -50);
+			}
+			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu()) {
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer, -50);
+			}
 			auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer->IsMenu()) {
 				Item* weapon = LocalPlayer->GetActiveWeapon();
@@ -203,7 +179,6 @@ namespace hk {
 					::SendInput(1, &Input, sizeof(INPUT));
 				}
 			}
-			
 			EntityThreadLoop();
 			if (!waslagging && vars::misc::fake_lag) {
 				write(LocalPlayer + 0x5C8, 0.4f, float);
@@ -218,11 +193,14 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
-			LocalPlayer->AddFlag(ModelStateFlag::OnGround);
+			//LocalPlayer->AddFlag(ModelStateFlag::OnGround);
 			typedef void(__stdcall* ClientInput)(BasePlayer*, DWORD64);
 			((ClientInput)original_clientinput)(baseplayah, ModelState);
-			if (vars::misc::spoof_ladderstate) LocalPlayer->AddFlag(ModelStateFlag::OnLadder);
-			LocalPlayer->AddFlag(ModelStateFlag::OnGround);
+			if (vars::misc::spoof_ladderstate) 
+				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
+			if (vars::misc::farmbot) 
+				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
+			//LocalPlayer->AddFlag(ModelStateFlag::OnGround);
 		}
 		void UpdateAmbient(uintptr_t TOD_Sky) {
 			if (!vars::misc::bright_ambient) {
@@ -303,6 +281,17 @@ namespace hk {
 			}
 			return original_movetowards(a1, a2, maxDelta);
 		}
+		bool DoHit(Projectile* pr, HitTest* test, Vector3 point, Vector3 normal) {
+			if (vars::combat::ignore_team) {
+				if (LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
+					if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
+						return false;
+					}
+				}
+			}
+
+			return original_dohit(pr, test, point, normal);
+		}
 		void Launch(Projectile* prdoj) {
 			Weapon tar = LocalPlayer->GetActiveWeapon()->Info();
 			int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
@@ -321,29 +310,31 @@ namespace hk {
 		void SendProjectileAttack(void* a1, void* a2) {
 			uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 			uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
-			/*if (vars::combat::tree_reflect) {
-				write(a2 + 0x20, Vector3(0, 0, 0), Vector3);
-			}*/
+			uint32_t hitID = read(Attack + 0x2C, uint32_t);
 			if (vars::weapons::spoof_hitdistance) {
 				write(a2 + 0x2C, vars::weapons::hitdistance, float);
 			}
 			if (vars::combat::hitbox_override || vars::combat::always_heli_rotor) {
+				BaseCombatEntity* entity = BaseNetworkable::clientEntities()->Find<BaseCombatEntity*>(hitID);
 				if (vars::combat::hitbox_override) {
-					uint32_t bone;
-					if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(c_xor("head")); }
-					else { bone = utils::StringPool::Get(c_xor("spine4")); }
-					write(Attack + 0x30, bone, uint32_t); // public uint hitBone;
-					write(Attack + 0x64, 16144115, uint32_t); // public uint hitPartID;
+					if (entity->ClassNameHash() == STATIC_CRC32("BasePlayer")) {
+						uint32_t bone;
+						if (rand() % 100 < vars::combat::hs_percentage) { bone = utils::StringPool::Get(c_xor("head")); }
+						else { bone = utils::StringPool::Get(c_xor("spine4")); }
+						write(Attack + 0x30, bone, uint32_t);
+						write(Attack + 0x64, 16144115, uint32_t);
+					}
 				}
-				else {
-					if (vars::combat::always_heli_rotor) {
+				if (vars::combat::always_heli_rotor) {
+					if (entity->ClassNameHash() == STATIC_CRC32("BaseHelicopter")) {
 						int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 						if (health <= 5000) {
-							write(Attack + 0x30, 224139191, uint32_t); // public uint hitBone;
+							write(Attack + 0x30, utils::StringPool::Get(c_xor("tail_rotor_col")), uint32_t);
 						}
 						else {
-							write(Attack + 0x30, 2699525250, uint32_t); // public uint hitBone;
+							write(Attack + 0x30, utils::StringPool::Get(c_xor("engine_col")), uint32_t);
 						}
+						write(Attack + 0x2C, read(read(vars::stor::closestHeli + 0x50, uintptr_t) + 0x10, uint32_t), uint32_t);
 					}
 				}
 			}
@@ -438,14 +429,13 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xDC5C70), (void**)&original_ongui, hk::exploit::OnGUI);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x538600), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0xB2DD70), (void**)&original_throw, hk::misc::Throw);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);

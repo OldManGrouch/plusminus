@@ -4,7 +4,7 @@ namespace a {
 		double pitch = (Vector3::my_atan2(height, DepthPlayerTarget));
 		double BulletVelocityXY = velocity * Vector3::my_cos(pitch);
 		double Time = DepthPlayerTarget / BulletVelocityXY;
-		double TotalVerticalDrop = (0.5f * gravity * Time * Time);
+		double TotalVerticalDrop = (0.4905f * gravity * Time * Time);
 		return TotalVerticalDrop * 10;
 	}
 #define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
@@ -104,73 +104,6 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 	}
 	return TargetedHeli;
 }
-Vector3 Prediction(BasePlayer* Player) {
-	Item* active = LocalPlayer->GetActiveWeapon();
-	Weapon tar = active->Info();
-	int ammo = active->LoadedAmmo();
-	Vector3 BonePos = Player->get_bone_pos(head);
-	Vector3 Local;
-	if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) { Local = LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0); }
-	else { Local = LocalPlayer->get_bone_pos(head); }
-	float Dist = Math::Calc3D_Dist(Local, BonePos);
-	if (Dist > 0.001f) {
-		float speed = GetBulletSpeed();
-		float gravity = GetGravity(ammo);
-		float BulletTime = Dist / speed;
-		Vector3 PredictVel = Player->GetVelocity() * BulletTime * 0.75f;
-		BonePos += PredictVel;
-		float predicty = (4.905f * BulletTime * BulletTime) * gravity;
-
-		if ((active->GetID() == 1443579727 || active->GetID() == 1953903201 || active->GetID() == 884424049) 
-			&& active->LoadedAmmo() != -1023065463/*hv arrow*/) { // bow and nailgun and compound
-			if (Dist <= 220.f) {
-				BonePos.y += predicty;
-			}
-			else if (Dist > 220.f && Dist <= 260.f) {
-				BonePos.y += 1.045f * predicty;
-			}
-			else if (Dist > 260.f && Dist <= 271.f) {
-				BonePos.y += 1.05f * predicty;
-			}
-			else if (Dist > 271.f && Dist <= 284.5f) {
-				BonePos.y += 1.06f * predicty;
-			}
-			else if (Dist > 284.5f && Dist <= 291.f) {
-				BonePos.y += 1.07f * predicty;
-			}
-			else if (Dist > 291.f) {
-				BonePos.y += 1.08f * predicty;
-			}
-		}
-		else if (active->GetID() == -75944661) { // eoka
-			if (Dist <= 180.f) {
-				BonePos.y += predicty;
-			}
-			else if (Dist > 180.f && Dist <= 220.f) {
-				BonePos.y += 1.5f * predicty;
-			}
-			else if (Dist > 220.f && Dist <= 240.f) {
-				BonePos.y += 2.1f * predicty;
-			}
-			else if (Dist > 240.f && Dist <= 255.f) {
-				BonePos.y += 2.5f * predicty;
-			}
-			else if (Dist > 255.f && Dist <= 265.f) {
-				BonePos.y += 3.0f * predicty;
-			}
-			else if (Dist > 265.f && Dist <= 273.f) {
-				BonePos.y += 3.5f * predicty;
-			}
-			else if (Dist > 273.f) {
-				BonePos.y += 3.8f * predicty;
-			}
-		}
-		else {
-			BonePos.y += predicty;
-		}
-	}
-	return BonePos;
-}
 void Normalize(float& Yaw, float& Pitch) {
 	if (Pitch < -89) Pitch = -89;
 	else if (Pitch > 89) Pitch = 89;
@@ -179,8 +112,9 @@ void Normalize(float& Yaw, float& Pitch) {
 }
 void GoToTarget(BasePlayer* player) {
 	Vector3 Local = LocalPlayer->get_bone_pos(head);
-	Vector3 PlayerPos = Prediction(player);
-	Vector2 Offset = Math::CalcAngle(Local, PlayerPos) - LocalPlayer->GetVA();
+	Vector3 Target = LocalPlayer->get_bone_pos(head);
+	a::Prediction(Local, Target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+	Vector2 Offset = Math::CalcAngle(Local, Target) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);
 	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
 	Normalize(AngleToAim.y, AngleToAim.x);

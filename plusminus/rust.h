@@ -36,6 +36,21 @@ private:
 };
 
 #define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
+struct Matrix4x4 {
+	union {
+		struct {
+			float        _11, _12, _13, _14;
+			float        _21, _22, _23, _24;
+			float        _31, _32, _33, _34;
+			float        _41, _42, _43, _44;
+
+		}; float m[4][4];
+	};
+	Quaternion GetRotation() {
+		return reinterpret_cast<Quaternion(*)(Matrix4x4*)>(vars::stor::gBase + 0x2046E0)(this);
+	}
+};
+
 class ItemModProjectile {
 public:
 	FIELD("Assembly-CSharp::ItemModProjectile::numProjectiles", numProjectiles, int);
@@ -79,6 +94,13 @@ public:
 		auto oc = *reinterpret_cast<uint64_t*>(this);
 		if (!oc) return "";
 		return *reinterpret_cast<char**>(oc + 0x10);
+	}
+	uint32_t ClassNameHash() {
+		if (!this) return 0;
+		auto oc = *reinterpret_cast<uint64_t*>(this);
+		if (!oc) return 0;
+		const char* name = *reinterpret_cast<char**>(oc + 0x10);
+		return RUNTIME_CRC32(name);
 	}
 	bool IsPlayer() {
 		if (!this) return false;
@@ -235,7 +257,20 @@ public:
 		return result;
 	}
 };
-
+class BaseNetworkable {
+public:
+	class EntityRealm {
+	public:
+		template<typename T = BaseNetworkable*> T Find(uint32_t uid) {
+			static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
+			return reinterpret_cast<T(__fastcall*)(EntityRealm*, uint32_t)>(off)(this, uid);
+		}
+	};
+	static EntityRealm* clientEntities() {
+		static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
+		return *reinterpret_cast<EntityRealm**>(std::uint64_t(clazz->static_fields));
+	}
+};
 class BasePlayer : public BaseCombatEntity {
 public:
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
@@ -266,7 +301,7 @@ public:
 		if (!transform) return Quaternion{ 0.f, 0.f, 0.f, 0.0f };
 		{
 			Quaternion pos = Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
-			static auto get_rotation = reinterpret_cast<void(__fastcall*)(DWORD64, Quaternion&)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0xDD22A0); // 
+			static auto get_rotation = reinterpret_cast<void(__fastcall*)(DWORD64, Quaternion&)>(std::uint64_t(vars::stor::uBase + 0xDD22A0)); // 
 			get_rotation(transform, pos);
 			return pos;
 		}
@@ -275,7 +310,7 @@ public:
 		if (!transform) return Vector3{ 0.f, 0.f, 0.f };
 		{
 			Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
-			static auto get_position = reinterpret_cast<void(__fastcall*)(DWORD64, Vector3&)>(std::uint64_t(GetModuleHandleA("UnityPlayer.dll")) + 0xDD2160); // 
+			static auto get_position = reinterpret_cast<void(__fastcall*)(DWORD64, Vector3&)>(std::uint64_t(vars::stor::uBase + 0xDD2160)); // 
 			get_position(transform, pos);
 			return pos;
 		}
@@ -345,16 +380,35 @@ public:
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		return !(read(Input + oKeyFocus, bool));
 	}
-	void AddFlag(int flag) {
+	void add_modelstate_flag(int flag) {
 		DWORD64 mstate = read(this + oModelState, DWORD64);
 		int flags = read(mstate + 0x24, int);
 		write(mstate + 0x24, flags |= flag, int);
 	}
-	void RemoveFlag(int flag) {
+	void remove_modelstate_flag(int flag) {
 		DWORD64 mstate = read(this + 0x588, DWORD64);
 		int flags = read(mstate + 0x24, int);
 		write(mstate + 0x24, flags &= flag, int);
 	}
+	bool has_modelstate_flag(int flag) {
+		DWORD64 mstate = read(this + 0x588, DWORD64);
+		int flags = read(mstate + 0x24, int);
+		return flags & flag;
+	}
+
+	bool OnLadder() {
+		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x304DD0)(this);
+	}
+	bool IsSwimming() {
+		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x303220)(this);
+	}
+	bool IsOnGround() {
+		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x302D60)(this);
+	}
+	float GetJumpHeight() {
+		return reinterpret_cast<float(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x2FEEA0)(this);
+	}
+
 	bool GetKeyState(ButtonS b) {
 		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
@@ -369,12 +423,22 @@ public:
 		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
 		return (Item*)read(Items + 0x20 + (Id * 0x8), DWORD64);
 	}
+	list<Item*>* item_list_b() {
+		DWORD64 Inventory = read(this + oInventory, DWORD64);
+		DWORD64 Belt = read(Inventory + 0x28, DWORD64); // containerBelt
+		return read(Belt + 0x38, list<Item*>*);// public List<Item> itemList;
+	}
 	Item* GetClothesInfo(int Id) {
 		DWORD64 Inventory = read(this + oInventory, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x30, DWORD64); // containerWear
 		DWORD64 ItemList = read(Belt + 0x38, DWORD64);// public List<Item> itemList;
 		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
 		return (Item*)read(Items + 0x20 + (Id * 0x8), DWORD64);
+	}
+	list<Item*>* item_list_w() {
+		DWORD64 Inventory = read(this + oInventory, DWORD64);
+		DWORD64 Belt = read(Inventory + 0x30, DWORD64); // containerWear
+		return read(Belt + 0x38, list<Item*>*);// public List<Item> itemList;
 	}
 	Item* GetActiveWeapon() {
 		int ActUID = read(this + oClActiveItem, int);
@@ -397,9 +461,14 @@ public:
 		write(Movement + oGravityMultiplier, val, float);
 	}
 };
-class GUILayoutOption {
+class Mathf {
 public:
-
+	static float Abs(float a) {
+		return reinterpret_cast<float(_fastcall*)(float)>(vars::stor::gBase + 0x17440F0)(a);
+	}
+	static float Max(float a, float b) {
+		return reinterpret_cast<float(_fastcall*)(float, float)>(vars::stor::gBase + 0x1744CC0)(a, b);
+	}
 };
 class LocalPlayer {
 public:
@@ -444,6 +513,7 @@ public:
 };
 class HitTest {
 public:
+	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
 	void HitEntity(BaseEntity* en) { write(this + 0x88, en, BaseEntity*); }
 
 	FIELD("Assembly-CSharp::HitTest::AttackRay", AttackRay, Ray);

@@ -4,12 +4,13 @@ bool yeetus = false;
 #define null NULL
 namespace vars {
 	namespace stuff {
+		bool gongetflyhack = false;
 		uintptr_t tree = 0;
 		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
-		float testFloat = 270.f;
+		float testFloat = 1.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		bool Panic = false;
@@ -29,6 +30,7 @@ namespace vars {
 		int gravitykey{ 0x04 };
 	}
 	namespace stor {
+		uintptr_t uBase = NULL;
 		uintptr_t gBase = NULL;
 		uintptr_t closestPlayer = NULL;
 		uintptr_t closestHeli = NULL;
@@ -112,6 +114,7 @@ namespace vars {
 		bool fillbox = false;
 	}
 	namespace ores {
+		bool closest_ore = false;
 		bool show_collectables = false;
 		bool stone = false;
 		bool sulfur = false;
@@ -182,6 +185,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool farmbot = false;
 		bool spiderman = false;
 		bool better_jump = false;
 		bool no_fall = false;

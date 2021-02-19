@@ -1,5 +1,6 @@
 class OreTarget {
 public:
+	bool i;
 	bool valid;
 	DWORD64 entity;
 	Vector3 position;
@@ -53,26 +54,25 @@ float GetFov(Vector3 Pos) {
 OreTarget FindOreTarget(Vector3 from) {
 	OreTarget lowest = OreTarget();
 
-	if (!oPlayerList) {
-		DWORD64 val = read(vars::stor::gBase + CO::BasePlayer, DWORD64);
-		DWORD64 st = read(val + 0xB8, DWORD64);
-		oPlayerList = read(st + 0x8, DWORD64);
-	}
-	UINT64 ClientEntities_values = read(oPlayerList + 0x28, UINT64);
+	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
+	if (!bn)
+		return lowest;
+	uintptr_t ClientEntities_values = read(read(read(read(bn + 0xB8, uintptr_t), uintptr_t) + 0x10, uintptr_t) + 0x28, uintptr_t);
 	if (!ClientEntities_values) return lowest;
 	int EntityCount = read(ClientEntities_values + 0x10, int);
-	UINT64 EntityBuffer = read(ClientEntities_values + 0x18, UINT64);
+	uintptr_t EntityBuffer = read(ClientEntities_values + 0x18, uintptr_t);
 	for (int i = 0; i <= EntityCount; i++) {
 		uintptr_t Entity = read(EntityBuffer + 0x20 + (i * 0x8), uintptr_t); if (Entity <= 100000) continue;
 		uintptr_t Object = read(Entity + 0x10, uintptr_t); if (Object <= 100000) continue;
 		uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
-		OreTarget res = OreTarget();
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
+		OreTarget res = OreTarget();
 		if (strstr(buff, xorstr("ore.prefab"))) {
 			uintptr_t a = read(ObjectClass + 0x30, UINT64);
 			float dist = Math::Calc3D_Dist(utils::GetEntityPosition(a), from);
-			//if (dist > 5) {
+			//if (dist > 5 /*&& from != utils::GetEntityPosition(a)*/) {
+				res.i = true;
 				res.valid = true;
 				res.dist = dist;
 				res.entity = read(Object + 0x28, DWORD64);

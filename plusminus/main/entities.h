@@ -30,11 +30,7 @@ void EntityLoop() {
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
-	OreTarget tr = FindOreTarget(LocalPlayer->get_bone_pos(head));
-	Vector2 screen;
-	if (utils::w2s(tr.position, screen) && tr.valid) {
-		Renderer::Line(Vector2(1000, 300), screen, D2D1::ColorF::GhostWhite);
-	}
+	
 	
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {

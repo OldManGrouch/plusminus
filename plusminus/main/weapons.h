@@ -60,7 +60,7 @@ Weapon{963906841, xorstr("Rock"), {Ammo{{0}, 18}}, 1 },
 
 Weapon{1953903201, xorstr("Nailgun"), { Ammo{{-2097376851}/*nails*/, 50}}, 2 },
 Weapon{-1123473824, xorstr("Multiple Grenade Launcher"), { Ammo{{915408809, 349762871}/*smoke, exp*/, 100}, Ammo{{1055319033}, 225}/*shotgun*/}, 2 },
-Weapon{442886268, xorstr("Rocket Launcher"), 0, 0 },
+Weapon{442886268, xorstr("Rocket Launcher"), 0, 69 },
 Weapon{-1215753368, xorstr("Flame Thrower"), 0, 0 },
 Weapon{200773292, xorstr("Hammer"), {0}, -3 }
 };

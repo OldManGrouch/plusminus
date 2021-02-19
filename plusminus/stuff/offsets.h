@@ -1,5 +1,7 @@
 #ifdef rusticaland
 namespace CO {
+	auto GetMaxSpeed = 0x2FF040;
+	auto DoFixedUpdate = 0xB35070;
 	auto CanAffordUpgrade = 0x45F3D0;
 	auto CanChangeToGrade = 0x45F5A0;
 	auto IsUpgradeBlocked = 0x461890;
@@ -82,6 +84,8 @@ namespace CO {
 }
 #else
 namespace CO {
+	auto GetMaxSpeed = 0x2FF040;
+	auto DoFixedUpdate = 0xB34850;
 	auto CanAffordUpgrade = 0x45F3D0;
 	auto CanChangeToGrade = 0x45F5A0;
 	auto IsUpgradeBlocked = 0x461890;
