@@ -15,7 +15,7 @@ public:
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
 	Vector3 operator-(const Vector3& v) const { return Vector3(x - v.x, y - v.y, z - v.z); }
 	bool operator==(const Vector3& b) const { return x == b.x && y == b.y && z == b.z; }
-	bool operator!=(const Vector3& b) const { return x != b.x && y != b.y && z != b.z; }
+	bool operator!=(const Vector3& b) const { return x != b.x || y != b.y || z != b.z; }
 	Vector3& operator-=(const Vector3& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
 	Vector3 operator+(const Vector3& v) const { return Vector3(x + v.x, y + v.y, z + v.z); }
 	inline float Length() { return sqrtf(x * x + y * y + z * z); }

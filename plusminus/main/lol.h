@@ -1,11 +1,7 @@
 #include <vector>
 
 namespace lol {
-	typedef void(__stdcall* ProcessAttack)(DWORD64, DWORD64);
-	typedef float(__stdcall* get_time)();
-	typedef void(__stdcall* StartAttackCooldown)(DWORD64, float);
-	typedef DWORD64(__stdcall* GetTransform)(DWORD64);
-	void DoMeleeAttack(Target target, DWORD64 Held, bool transform, bool tree = false, uintptr_t ent = 0) {
+	void do_attack(Target target, DWORD64 Held, bool transform) {
 		if (!target.valid || !Held) return;
 
 		if (read(Held + 0x230, float) >= Time::time()) { return; }
@@ -20,48 +16,44 @@ namespace lol {
 			trans = target.entity->GrabTransform(head);
 		}
 		else {
-			trans = utils::GetTransform((DWORD64)target.entity);
-
-		} if (!trans) return;
+			//trans = utils::GetTransform((DWORD64)target.entity);
+			trans = (DWORD64)reinterpret_cast<Object*>(target.entity)->transform();
+		} if (!trans) {
+			LogSystem::Log(c_wxor(L"No transform found"), 1.f);
+			return;
+		}
+			
 		write(newHitTest + 0x34, 1000.f, float);
 		write(newHitTest + 0xB0, trans, DWORD64);
 		write(newHitTest + 0x14, ray, Ray);
 		write(newHitTest + 0x66, true, bool);
 		write(newHitTest + 0x88, target.entity, BasePlayer*);
-		write(newHitTest + 0x90, utils::TransformToPoint(trans, target.position), Vector3);
+		write(newHitTest + 0x90, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
 		write(newHitTest + 0x9C, Vector3(0, 0, 0), Vector3);
 		write(newHitTest + 0x68, read(Held + 0x268, DWORD64), DWORD64);
-		((StartAttackCooldown)(vars::stor::gBase + CO::StartAttackCooldown))(Held, read(Held + 0x1DC, float));
-
-		return ((ProcessAttack)(vars::stor::gBase + CO::ProcessAttack))(Held, newHitTest);
+		reinterpret_cast<void(*)(uintptr_t, float)>(vars::stor::gBase + CO::StartAttackCooldown)(Held, read(Held + 0x1DC, float));
+		return reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::ProcessAttack)(Held, newHitTest);
 	}
-	typedef list<uintptr_t>* (__stdcall* get_Renderers)(uintptr_t);
-	typedef uintptr_t(__stdcall* get_material)(uintptr_t);
-	typedef uintptr_t(__stdcall* get_shader)(uintptr_t);
-	typedef void(__stdcall* SetInt)(uintptr_t, Str, int);
-	typedef void(__stdcall* SetColorInt)(uintptr_t, int, Color);
-	typedef int(__stdcall* PropertyToId)(Str);
 	uintptr_t shader;
 	int property;
-	void DoChams(uintptr_t target, Color col) {
+	void chams(uintptr_t target, Color col) {
 		if (!vars::players::chams) return;
 		if (target) {
-			//	((UpdateRenderers)(vars::stor::gBase + 0x43DC30))(target, null);
 			if (!property) {
-				property = ((PropertyToId)(vars::stor::gBase + CO::PropertyToId))(Str(xorstr(L"_Color")));
+				property = reinterpret_cast<int(*)(Str)>(vars::stor::gBase + CO::PropertyToId)(Str(xorstr(L"_Color")));
 			}
-			auto mainRendList = ((get_Renderers)(vars::stor::gBase + CO::get_Renderers))(target);
+			auto mainRendList = reinterpret_cast<list<uintptr_t>*(*)(uintptr_t)>(vars::stor::gBase + CO::get_Renderers)(target);
 			for (int idx = 0; idx < mainRendList->get_size(); idx++) {
 				uintptr_t renderer = mainRendList->get_value(idx);
 				if (renderer) {
-					uintptr_t material = ((get_material)(vars::stor::gBase + CO::get_material))(renderer);
-					if (shader != ((get_shader)(vars::stor::gBase + CO::get_shader))(material)) {
+					uintptr_t material = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + CO::get_material)(renderer);
+					if (shader != reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + CO::get_shader)(material)) {
 						if (!shader)
 							shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 						il2cpp::unity::set_shader(material, shader);
-						((SetColorInt)(vars::stor::gBase + CO::SetColor))(material, property, col);
+						reinterpret_cast<void(*)(uintptr_t, int, Color)>(vars::stor::gBase + CO::SetColor)(material, property, col);
 						if (vars::players::chams_xqz) {
-							((SetInt)(vars::stor::gBase + CO::SetInt))(material, Str(xorstr(L"_ZTest")), 8);
+							reinterpret_cast<void(*)(uintptr_t, Str, int)>(vars::stor::gBase + CO::SetInt)(material, Str(xorstr(L"_ZTest")), 8);
 						}
 					}
 				}
@@ -70,7 +62,7 @@ namespace lol {
 	}
 	float LastUpdate = 0.f;
 	void UpdateChams() {
-		if (LocalPlayer->Time() > LastUpdate + 30.f) {
+		if (LocalPlayer->Time() > LastUpdate + 15.f) {
 			reinterpret_cast<void(*)()>(vars::stor::gBase + CO::RebuildAll)();
 			LastUpdate = LocalPlayer->Time();
 		}
@@ -111,10 +103,6 @@ namespace lol {
 			((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer);
 			LastPickup = LocalPlayer->Time();
 		}
-	}
-	void PickupItem(DWORD64 item) {
-		typedef void(__stdcall* Pick)(DWORD64, Str);
-		return ((Pick)(vars::stor::gBase + CO::ServerRPC))(item, Str(xorstr(L"Pickup")));
 	}
 }
 

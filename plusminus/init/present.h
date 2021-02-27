@@ -71,11 +71,7 @@ LRESULT CALLBACK DXGIMsgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 DWORD __stdcall Start(LPVOID) {
 	vars::stor::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
 	vars::stor::uBase = (DWORD64)GetModuleHandleA(c_xor("UnityPlayer.dll"));
-	il2cpp::InitIL();
-	il2cpp::init_classes();
-	il2cpp::init_fields();
-	il2cpp::init_methods();
-	//game::init();
+	il2cpp::init();
 	HMODULE hDXGIDLL = 0;
 	do {
 		hDXGIDLL = GetModuleHandle(L"dxgi.dll");

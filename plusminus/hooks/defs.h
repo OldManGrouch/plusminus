@@ -1,5 +1,5 @@
 namespace hk_defs {
-	typedef void(__fastcall* SendProjectileAttack_fn)(void*, void*);
+	typedef void(__fastcall* SendProjectileAttack_fn)(BasePlayer*, void*);
 	inline SendProjectileAttack_fn original_sendprojectileattack{ };
 
 	typedef void(__fastcall* launch)(Projectile*);

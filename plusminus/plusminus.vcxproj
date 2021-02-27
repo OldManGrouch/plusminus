@@ -53,6 +53,7 @@
     <ClInclude Include="stuff/vars.h" />
     <ClInclude Include="main/weapons.h" />
     <ClInclude Include="stuff/xorstr.hpp" />
+    <ClInclude Include="wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lazyimp.hpp" />

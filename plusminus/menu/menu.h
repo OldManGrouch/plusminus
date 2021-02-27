@@ -288,7 +288,7 @@ namespace menu {
 		if (vars::players::chams) {
 			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);
 		}
-		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
+		//HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
 	}
 	void npc() {
@@ -468,7 +468,7 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("Time"), &vars::misc::time, 0.f, 12.f);
 		}
 		ImGui::Checkbox(xorstr("Gravity"), &vars::misc::gravity);
-		if (vars::misc::gravity_modifier) {
+		if (vars::misc::gravity) {
 			ImGui::SliderFloat(xorstr("Gravity Value"), &vars::misc::gravity_modifier, 0.f, 10.f);
 			Hotkey(xorstr("Gravity Key"), &vars::keys::gravitykey, ImVec2(120.f, 0));
 		}

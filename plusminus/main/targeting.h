@@ -51,7 +51,7 @@ float GetFov(Vector3 Pos) {
 	if (!utils::w2s(Pos, ScreenPos)) return 1000.f;
 	return GetFov(ScreenPos);
 }
-OreTarget FindOreTarget(Vector3 from) {
+OreTarget get_closest_ore(Vector3 from) {
 	OreTarget lowest = OreTarget();
 
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);

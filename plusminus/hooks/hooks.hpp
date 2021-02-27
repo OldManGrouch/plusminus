@@ -6,6 +6,28 @@ bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
 	namespace exploit {
+		void DoMovement(Projectile* prj, float deltaTime) {
+			if (vars::stor::closestPlayer != null && GetAsyncKeyState(0x4B) && prj->isAuthoritative()) {
+				uintptr_t playerProjectileUpdate_ = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0x47BD90)(read(vars::stor::gBase + 0x2F9FE88, uintptr_t)); // v24 = sub_18047BD90(qword_182F9FE88);
+				write(playerProjectileUpdate_ + 0x14, prj->projectileID(), uint32_t);
+				write(playerProjectileUpdate_ + 0x18, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head), Vector3);
+				write(playerProjectileUpdate_ + 0x24, prj->currentVelocity(), Vector3);
+				write(playerProjectileUpdate_ + 0x30, prj->previousTraveledTime(), float);
+				typedef void(__stdcall* SendProjectileUpdate)(BasePlayer*, uintptr_t);
+				((SendProjectileUpdate)(vars::stor::gBase + 0x30E310))(prj->owner(), playerProjectileUpdate_);
+
+				/*HitTest* hitTest = reinterpret_cast<HitTest*>(prj->hitTest());
+				hitTest->DidHit() = true;
+				hitTest->HitEntity(reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer));
+				hitTest->HitTransform() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer));
+				hitTest->HitMaterial() = il2cpp::String::New("Flesh");
+				hitTest->HitPoint() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer))->InverseTransformPoint(prj->currentPosition());
+				hitTest->HitNormal() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer))->InverseTransformDirection(prj->currentPosition());
+				hitTest->AttackRay() = Ray(prj->currentPosition(), reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition());
+				prj->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());*/
+			}
+			return original_domovement(prj, deltaTime);
+		}
 	}
 	namespace misc {
 		void Jump(uintptr_t playerwalkmovement, uintptr_t modelstate, bool indirection) {
@@ -130,14 +152,9 @@ namespace hk {
 		void DoFixedUpdate(uintptr_t movement, uintptr_t modelstate) {
 			float speed = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetMaxSpeed)(LocalPlayer);
 			if (vars::misc::farmbot) {
-				OreTarget closest = FindOreTarget(LocalPlayer->get_bone_pos(head));
+				OreTarget closest = get_closest_ore(LocalPlayer->get_bone_pos(head));
 				if (closest.valid) {
-					
-					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized();
-					direction = direction * speed;
-					//typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
-					//uintptr_t rigid = read(movement + 0x90, uintptr_t);
-					//((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(0, -10, 0));
+					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized() * speed;
 					write(movement + 0x34, direction, Vector3);
 				}
 			}
@@ -193,14 +210,14 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
-			//LocalPlayer->AddFlag(ModelStateFlag::OnGround);
+			LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
 			typedef void(__stdcall* ClientInput)(BasePlayer*, DWORD64);
 			((ClientInput)original_clientinput)(baseplayah, ModelState);
 			if (vars::misc::spoof_ladderstate) 
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
 			if (vars::misc::farmbot) 
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
-			//LocalPlayer->AddFlag(ModelStateFlag::OnGround);
+			LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
 		}
 		void UpdateAmbient(uintptr_t TOD_Sky) {
 			if (!vars::misc::bright_ambient) {
@@ -251,7 +268,7 @@ namespace hk {
 		void Play(DWORD64 viewmodel, pUncStr name) {
 			if (vars::weapons::remove_attack_anim) {
 				static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::DoAttack(): Void");
-				if (!CALLED_BY(ptr, 0x800) || LocalPlayer->GetActiveWeapon()->GetID() == -75944661) {
+				if (!CALLED_BY(ptr, 0x296) /*|| LocalPlayer->GetActiveWeapon()->GetID() == -75944661*/) {
 					return original_viewmodelplay(viewmodel, name);
 				}
 			}
@@ -289,7 +306,16 @@ namespace hk {
 					}
 				}
 			}
+			/*if (pr->isAuthoritative()) {
+				if (reinterpret_cast<bool(*)(il2cpp::String*)>(vars::stor::gBase + 0x539F90)(test->HitMaterial())) {
+					pr->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - pr->currentPosition()) * 3);
+					uintptr_t playerProjectileAttack = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0x47BD90)(read(vars::stor::gBase + 0x2F9FF10, uintptr_t));
+					typedef void(__stdcall* SendProjectileUpdate)(BasePlayer*, uintptr_t);
 
+					((SendProjectileUpdate)(vars::stor::gBase + 0x30E270))(pr->owner(), playerProjectileAttack);
+					return true;
+				}
+			}*/
 			return original_dohit(pr, test, point, normal);
 		}
 		void Launch(Projectile* prdoj) {
@@ -307,8 +333,8 @@ namespace hk {
 			if (vars::weapons::minicopter_aim) return true;
 			return original_canholditems(a1, a2);
 		}
-		void SendProjectileAttack(void* a1, void* a2) {
-			uintptr_t PlayerAttack = read((uintptr_t)a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
+		void SendProjectileAttack(BasePlayer* a1, void* a2) {
+			uintptr_t PlayerAttack = read(a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 			uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
 			uint32_t hitID = read(Attack + 0x2C, uint32_t);
 			if (vars::weapons::spoof_hitdistance) {
@@ -326,7 +352,7 @@ namespace hk {
 					}
 				}
 				if (vars::combat::always_heli_rotor) {
-					if (entity->ClassNameHash() != STATIC_CRC32("BasePlayer")) {
+					if (entity->ClassNameHash() == STATIC_CRC32("BaseHelicopter")) {
 						int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 						if (health <= 5000) {
 							write(Attack + 0x30, utils::StringPool::Get(c_xor("tail_rotor_col")), uint32_t);
@@ -334,7 +360,6 @@ namespace hk {
 						else {
 							write(Attack + 0x30, utils::StringPool::Get(c_xor("engine_col")), uint32_t);
 						}
-						write(Attack + 0x2C, read(read(vars::stor::closestHeli + 0x50, uintptr_t) + 0x10, uint32_t), uint32_t);
 					}
 				}
 			}
@@ -433,6 +458,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);

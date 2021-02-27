@@ -34,6 +34,27 @@ private:
 	ptr_t m_Address;
 	UnmanagedCallingConvention m_CallingConvention;
 };
+class SafeExecution {
+private:
+	static int fail(unsigned int code, struct _EXCEPTION_POINTERS* ep) {
+		if (code == EXCEPTION_ACCESS_VIOLATION) {
+			return EXCEPTION_EXECUTE_HANDLER;
+		}
+		else {
+			return EXCEPTION_CONTINUE_SEARCH;
+		};
+	}
+public:
+	template<typename T = void*, typename R = void*, typename... Args>
+	static T Execute(uint64_t ptr, R ret, Args... args) {
+		__try {
+			return reinterpret_cast<T(__stdcall*)(Args...)>(ptr)(args...);
+		}
+		__except (fail(GetExceptionCode(), GetExceptionInformation())) {
+			return ret;
+		}
+	}
+};
 
 #define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
 struct Matrix4x4 {
@@ -53,9 +74,6 @@ struct Matrix4x4 {
 
 class ItemModProjectile {
 public:
-	FIELD("Assembly-CSharp::ItemModProjectile::numProjectiles", numProjectiles, int);
-	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocity", projectileVelocity, float);
-	FIELD("Assembly-CSharp::ItemModProjectile::projectileVelocitySpread", projectileVelocitySpread, float);
 	float GetRandomVelocity() {
 		typedef float(__fastcall* randomvelocity)(ItemModProjectile*);
 		return ((randomvelocity)(vars::stor::gBase + CO::GetRandomVelocity))(this);
@@ -63,13 +81,8 @@ public:
 };
 class BaseEntity {
 public:
-	bool isClient() {
-		if (!this) return false;
-		static auto off = METHOD("Assembly-CSharp::BaseNetworkable::get_isClient(): Boolean");
-		return reinterpret_cast<bool(__fastcall*)(uintptr_t)>(off)((uintptr_t)this);
-	}
 	Vector3 GetWorldVelocity() {
-		if (!this) return Vector3(0.f, 0.f, 0.f);
+		if (!this) return Vector3::Zero();
 		static auto off = METHOD("Assembly-CSharp::BaseEntity::GetWorldVelocity(): Vector3");
 		return reinterpret_cast<Vector3(__fastcall*)(BaseEntity*)>(off)(this);
 	}
@@ -511,6 +524,14 @@ public:
 		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
 	}
 };
+class Object {
+public:
+	Transform* transform() {
+		if (!this) return nullptr;
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_transform(): Transform");
+		return SafeExecution::Execute<Transform*>(off, nullptr, this);
+	}
+};
 class HitTest {
 public:
 	BaseEntity* HitEntity() { return read(this + 0x88, BaseEntity*); }
@@ -712,11 +733,6 @@ namespace utils {
 		bool result = ((LOS)(vars::stor::gBase + CO::utils::LineOfSight))(a, b, 2162688 | 8388608 | 2097152, 0.f);
 		return result;
 	}
-	DWORD64 FindBone(DWORD64 TargetEntity, Str TargetBone) {
-		typedef DWORD64(__stdcall* FindBone)(DWORD64, Str);
-		DWORD64 result = ((FindBone)(vars::stor::gBase + CO::utils::FindBone))(TargetEntity, TargetBone);
-		return result;
-	}
 	DWORD64 GetTransform(DWORD64 entity) {
 		typedef DWORD64(__stdcall* GetTransform)(DWORD64);
 		DWORD64 result = ((GetTransform)(vars::stor::gBase + CO::get_transform))(entity);
@@ -726,6 +742,10 @@ namespace utils {
 		typedef uintptr_t(__stdcall* ShaderFind)(Str);
 		uintptr_t result = ((ShaderFind)(vars::stor::gBase + CO::ShaderFind))(name);
 		return result;
+	}
+	void ServerRPC(DWORD64 ent, Str func) {
+		typedef void(__stdcall* Pick)(DWORD64, Str);
+		return ((Pick)(vars::stor::gBase + CO::ServerRPC))(ent, func);
 	}
 	class StringPool {
 	public:
