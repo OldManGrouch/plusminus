@@ -17,7 +17,6 @@
     <ClInclude Include="main/esp.h" />
     <ClInclude Include="main/misc.h" />
     <ClInclude Include="config/config.h" />
-    <ClInclude Include="stuff/crt.h" />
     <ClInclude Include="init/d3defs.h" />
     <ClInclude Include="hooks/detours.h" />
     <ClInclude Include="hooks/hooks.hpp" />
@@ -53,7 +52,6 @@
     <ClInclude Include="stuff/vars.h" />
     <ClInclude Include="main/weapons.h" />
     <ClInclude Include="stuff/xorstr.hpp" />
-    <ClInclude Include="wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lazyimp.hpp" />

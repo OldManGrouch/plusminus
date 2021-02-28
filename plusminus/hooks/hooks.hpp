@@ -249,7 +249,7 @@ namespace hk {
 			}
 			if (vars::combat::always_headshot) {
 				if (entity->IsPlayer()) {
-					reinterpret_cast<void(*)(Str, GameObject*)>(vars::stor::gBase + 0x883940)(
+					reinterpret_cast<void(*)(Str, GameObject*)>(vars::stor::gBase + CO::EffectRun)(
 						Str(xorstr(L"assets/bundled/prefabs/fx/headshot_2d.prefab")),
 						LocalPlayer->eyes()->gameObject());
 					return;
@@ -312,12 +312,7 @@ namespace hk {
 			return original_dohit(pr, test, point, normal);
 		}
 		void Launch(Projectile* prdoj) {
-			int ammo = LocalPlayer->GetActiveWeapon()->LoadedAmmo();
-			if (vars::stuff::testBool) {
-				prdoj->gravityModifier(GetGravity(ammo));
-			}
 			prdoj->invisible(false);
-			LogSystem::Log(StringFormat::format(c_wxor(L"%.2f"), prdoj->gravityModifier()), 3.5f);
 			if (vars::weapons::no_spread) {
 				write(prdoj->mod() + 0x38, 0.f, float);
 			}

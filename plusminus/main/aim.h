@@ -68,10 +68,10 @@ float GetBulletSpeed() {
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
 			if (id == ammo) {
-				return vars::weapons::fast_bullets ? am.speed * 1.3 : am.speed;
+				return vars::weapons::fast_bullets ? am.speed * 1.3 + vars::stuff::testFloat : am.speed + vars::stuff::testFloat;
 			}
 		}
-		if (am.id[0] == 0) return vars::weapons::fast_bullets ? am.speed * 1.3 : am.speed;
+		if (am.id[0] == 0) return vars::weapons::fast_bullets ? am.speed * 1.3 + vars::stuff::testFloat : am.speed + vars::stuff::testFloat;
 	}
 	return vars::weapons::fast_bullets ? 250.f * 1.3 : 250.f;
 }

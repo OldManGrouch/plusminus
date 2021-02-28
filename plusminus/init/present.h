@@ -103,9 +103,6 @@ DWORD __stdcall Start(LPVOID) {
 	scd.BufferDesc.RefreshRate.Numerator = 0;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
 	UINT createFlags = 0;
-#ifdef _DEBUG
-	createFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
 	IDXGISwapChain* d3dSwapChain = 0;
 	if (FAILED(D3D11CreateDeviceAndSwapChain(
 		nullptr,

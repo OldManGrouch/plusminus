@@ -97,9 +97,6 @@
     <ClInclude Include="menu/imgui/imstb_truetype.h">
       <Filter>source\menu\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="stuff/crt.h">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="stuff/math.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
@@ -174,9 +171,6 @@
     </ClInclude>
     <ClInclude Include="config/config.h">
       <Filter>source\main</Filter>
-    </ClInclude>
-    <ClInclude Include="wrapper.h">
-      <Filter>source\stuff\sdk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

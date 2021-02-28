@@ -78,7 +78,7 @@ void EntityLoop() {
 		Item* weapon = LocalPlayer->GetActiveWeapon();
 		uintptr_t active = read(weapon + oHeldEntity, uintptr_t);
 		char* classname = weapon->ClassName();
-		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
+		bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
 		BasePlayer* Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
 		if (vars::visuals::radar_) {
 			radar::radar_logic(ObjectClass, Object, buff);
@@ -324,8 +324,8 @@ void EntityThreadLoop() {
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
 		
-		bool weaponmelee = weapon && classname && (m_strcmp(classname, xorstr("BaseMelee")) || m_strcmp(classname, xorstr("Jackhammer")));
-		if (m_strstr(buff, xorstr("player.prefab"))) {
+		bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
+		if (strstr(buff, xorstr("player.prefab"))) {
 			BasePlayer* lol = (BasePlayer*)ent;
 			
 			if (vars::players::chams && lol) {
@@ -362,7 +362,7 @@ void EntityThreadLoop() {
 				lol::do_attack(target, active, true);
 			}
 		}
-		else if (vars::misc::auto_farm_ore && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
+		else if (vars::misc::auto_farm_ore && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
@@ -372,7 +372,7 @@ void EntityThreadLoop() {
 			target.entity = (BasePlayer*)ent;
 			lol::do_attack(target, active, false);
 		}
-		else if (vars::misc::auto_grade && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
+		else if (vars::misc::auto_grade && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
@@ -380,7 +380,7 @@ void EntityThreadLoop() {
 				lol::AutoGrade(ent);
 			}
 		}
-		else if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
+		else if (vars::misc::auto_pickup && strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
@@ -390,7 +390,7 @@ void EntityThreadLoop() {
 		//========================================================================================================================================================================================
 		//Target target = Target();
 		////target.position = Vector3::Zero();
-		//if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		//if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 		//	if (Math::Distance_3D(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f)
@@ -399,7 +399,7 @@ void EntityThreadLoop() {
 		//	target.entity = (BasePlayer*)ent;
 		//	target.valid = true;
 		//}
-		//if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
+		//if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
 		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 		//	if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f)
@@ -411,7 +411,7 @@ void EntityThreadLoop() {
 		//		lol::do_attack(target, active, false);
 		//	}
 		//}
-		else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		else if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
@@ -422,7 +422,7 @@ void EntityThreadLoop() {
 			lol::do_attack(target, active, false);
 		}
 		//========================================================================================================================================================================================
-		else if (vars::misc::annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
+		else if (vars::misc::annoyer && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (ent && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {

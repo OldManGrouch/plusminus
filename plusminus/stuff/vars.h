@@ -14,12 +14,11 @@ std::wstring wRocket = xorstr(L"Rocket");
 namespace vars {
 	namespace stuff {
 		bool gongetflyhack = false;
-		uintptr_t tree = 0;
 		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;
 		int testInt = 0;
-		float testFloat = 4.f;
+		float testFloat = 0.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		bool Panic = false;

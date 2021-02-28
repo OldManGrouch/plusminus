@@ -640,7 +640,7 @@ public:
 	int size;
 	wchar_t str[MAX_STRING_LEN + 1];
 	Str(const wchar_t* st) {
-		size = min(m_wcslen((wchar_t*)st), MAX_STRING_LEN);
+		size = min(wcslen((wchar_t*)st), MAX_STRING_LEN);
 		for (int i = 0; i < size; i++) {
 			str[i] = st[i];
 		}

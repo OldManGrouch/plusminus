@@ -3,7 +3,7 @@
 #define ALLOC_CONS 0
 #define StrA
 #define StrW
-#define rusticaland
+//#define rusticaland
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <thread>
 #include "stuff/xorstr.hpp"
-#include "stuff/crt.h"
 #include <comdef.h>
 
 #include "menu/imgui/imgui.h"
@@ -40,7 +39,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/vars.h"
 #include "main/weapons.h"
 #include "stuff/sdk.h"
-#include "wrapper.h"
 #include "stuff/il2cpp.h"
 
 #include "rust.h"

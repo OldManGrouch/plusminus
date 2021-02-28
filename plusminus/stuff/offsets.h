@@ -1,5 +1,6 @@
 #ifdef rusticaland
 namespace CO {
+	auto EffectRun = 0x883940;
 	auto RebuildAll = 0xB2BCF0;
 	auto GetMaxSpeed = 0x2FF040;
 	auto DoFixedUpdate = 0xB35070;
@@ -85,6 +86,7 @@ namespace CO {
 }
 #else
 namespace CO {
+	auto EffectRun = 0x883120;
 	auto RebuildAll = 0xB2B4D0;
 	auto GetMaxSpeed = 0x2FF040;
 	auto DoFixedUpdate = 0xB34850;

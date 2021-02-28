@@ -432,7 +432,7 @@ namespace il2cpp {
 			char* name = (char*)*reinterpret_cast<uintptr_t*>(il2cpp_field);
 			if (!name)
 				break;
-			if (!m_strcmp(name, field_name)) {
+			if (!strcmp(name, field_name)) {
 				continue;
 			}
 			if (!get_offset)
@@ -462,7 +462,7 @@ namespace il2cpp {
 		auto klass = init_class(kl, name_space);
 		while (f = il2cpp::methods::class_get_methods(klass, &iter)) {
 			char* st = *reinterpret_cast<char**>(f + 0x10);
-			if (m_strcmp(st, (char*)name)) {
+			if (strcmp(st, (char*)name)) {
 				if (selected_argument >= 0 && arg_name) {
 					uintptr_t args = read(f + 0x28, uintptr_t);
 					int method_count = il2cpp::methods::method_get_param_count(f);
@@ -473,7 +473,7 @@ namespace il2cpp {
 					}
 					else
 						argname = (char*)c_xor("-");
-					if (!argname || !m_strcmp(argname, arg_name)) continue;
+					if (!argname || !strcmp(argname, arg_name)) continue;
 				}
 				return f;
 			}
