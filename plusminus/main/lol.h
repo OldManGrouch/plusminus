@@ -110,13 +110,13 @@ bool shouldaddviolations = false;
 float violations = 0.f;
 float flyhackPauseTime;
 void CheckFlyhack() {
-	TickInterpolator* ticks = new TickInterpolator();
+	TickInterpolator ticks = TickInterpolator();
 
-	bool flag = ticks->StartPoint != ticks->EndPoint;
+	bool flag = ticks.StartPoint != ticks.EndPoint;
+
 	if (flag) {
-		if (shouldaddviolations) {
-			violations += 100 * ticks->Length;
-		}
+		ticks.Reset();
+
 		flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
 		bool inAir = false;
 		float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + 0x300460)(LocalPlayer);
@@ -151,7 +151,6 @@ void CheckFlyhack() {
 			}
 		}
 		else {
-			violations = 0.f;
 			shouldaddviolations = false;
 			flyhackDistanceVertical = 0.f;
 		}
@@ -159,10 +158,12 @@ void CheckFlyhack() {
 		float num6 = LocalPlayer->GetJumpHeight() + num5;
 		vars::stuff::flyhack = flyhackDistanceVertical;
 		vars::stuff::max_flyhack = num6;
-
-		if (violations > 100.f) {
-			//vars::stuff::gongetflyhack = true;
+		if (shouldaddviolations) {
+			violations += 100 * ticks.Length;
 		}
+		
+		
+		
 	}
-	ticks->Reset(read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3));
+	ticks.Reset(read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3));
 }
