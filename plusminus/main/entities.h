@@ -1,37 +1,25 @@
-﻿bool mfound = false;
+﻿bool matrix_found = false;
 using namespace otherEsp;
-void FindMatrix() {
-	static DWORD64 dwGameObjectManager = 0;
-	if (!dwGameObjectManager)
-		dwGameObjectManager = RVA(FindPattern((PBYTE)"\x48\x8B\x15\x00\x00\x00\x00\x66\x39", "xxx????xx", L"UnityPlayer.dll"), 7);
-
-	DWORD64 ObjMgr = read(dwGameObjectManager, DWORD64);
-	if (!ObjMgr) return;
-	UINT64 end = read(ObjMgr, UINT64);
-	for (UINT64 Obj = read(ObjMgr + 0x8, UINT64); (Obj && (Obj != end)); Obj = read(Obj + 0x8, UINT64)) {
-		UINT64 GameObject = read(Obj + 0x10, UINT64);
-		WORD Tag = read(GameObject + 0x54, WORD);
-		if (Tag == 5) {
-			UINT64 ObjClass = read(GameObject + 0x30, UINT64);
-			UINT64	Entity = read(ObjClass + 0x18, UINT64);
-			pViewMatrix = (Matrix4x4*)(Entity + 0x2E4); // 0xDC
-			mfound = true;
-			return;
-		}
-	}
-}
 bool inited = false;
 float timee = 120.f;
 void EntityLoop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
-	if (bn) Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+	if (bn) {
+#ifdef rusticaland
+		Renderer::String(Vector2(100, 55), xorstr(L"plusminus [rusticaland]"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+#else
+		Renderer::String(Vector2(100, 55), xorstr(L"plusminus [alkad]"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+#endif
+	}
 	else Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
-	
-	
+
+	Renderer::FillRectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(80 * (violations / 100), 10), D2D1::ColorF::Lime);
+	Renderer::Rectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(428, 10), D2D1::ColorF::Black);
+	//LogSystem::Log(StringFormat::format(c_wxor(L"%.2f %.2f"), (vars::stuff::flyhack / vars::stuff::max_flyhack), vars::stuff::flyhack), 5.f);
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
 		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
@@ -44,22 +32,39 @@ void EntityLoop() {
 			Vector2 explPos;
 			if (utils::w2s(explosion.position, explPos)) {
 				Renderer::String(
-					explPos, 
-					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"), 
-					explosion.name.c_str(), 
-					(int)Math::Distance_3D(explosion.position, LocalPlayer->get_bone_pos(head)), 
-					(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
-					D2D1::ColorF::Red, 
-					true, 
+					explPos,
+					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"),
+						explosion.name.c_str(),
+						(int)Math::Distance_3D(explosion.position, LocalPlayer->get_bone_pos(head)),
+						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
+					D2D1::ColorF::Red,
+					true,
 					true
 				);
 			}
 		}
 	}
 	float FOV = vars::combat::fov, CurFOV;
-	bool LP_isValid = false;
-	if (!pViewMatrix || !mfound) {
-		FindMatrix();
+	bool has_local_player = false;
+	if (!pViewMatrix || !matrix_found) {
+		static DWORD64 dwGameObjectManager = 0;
+		if (!dwGameObjectManager)
+			dwGameObjectManager = RVA(FindPattern((PBYTE)"\x48\x8B\x15\x00\x00\x00\x00\x66\x39", "xxx????xx", L"UnityPlayer.dll"), 7);
+
+		DWORD64 ObjMgr = read(dwGameObjectManager, DWORD64);
+		if (!ObjMgr) return;
+		UINT64 end = read(ObjMgr, UINT64);
+		for (UINT64 Obj = read(ObjMgr + 0x8, UINT64); (Obj && (Obj != end)); Obj = read(Obj + 0x8, UINT64)) {
+			UINT64 GameObject = read(Obj + 0x10, UINT64);
+			WORD Tag = read(GameObject + 0x54, WORD);
+			if (Tag == 5) {
+				UINT64 ObjClass = read(GameObject + 0x30, UINT64);
+				UINT64	Entity = read(ObjClass + 0x18, UINT64);
+				pViewMatrix = (Matrix4x4*)(Entity + 0x2E4);
+				matrix_found = true;
+				return;
+			}
+		}
 	}
 	if (!inited) {
 		LogSystem::Log(c_wxor(L"Cheat loaded successfully!"), 7.5f);
@@ -87,18 +92,16 @@ void EntityLoop() {
 			Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
 			if (!read(Player + 0x4A8, uintptr_t)) continue;
 			if (Player != LocalPlayer) {
-				mfound = false;
+				matrix_found = false;
 			}
 			LocalPlayer = Player;
-			LP_isValid = true;
-
+			has_local_player = true;
 		}
 		if (!LocalPlayer) return;
 		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
-			
 			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 			if (!read(Player + 0x4A8, DWORD64)) continue;
-			
+
 			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
@@ -120,7 +123,6 @@ void EntityLoop() {
 			else if (vars::npc::skeleton && Player->IsNpc()) {
 				Skeleton(Player, D2D1::ColorF::Yellow);
 			}
-			
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
 					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
@@ -131,7 +133,7 @@ void EntityLoop() {
 							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
 						}
 						else {
-							
+
 							ESP(Player, LocalPlayer, D2D1::ColorF::White);
 						}
 					}
@@ -143,7 +145,6 @@ void EntityLoop() {
 			else if (Player->IsNpc()) {
 				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
 			}
-
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
 			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
 			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
@@ -154,7 +155,6 @@ void EntityLoop() {
 			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
 				FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
 			}
-
 		}
 		else if (strstr(buff, xorstr("assets/prefabs/npc/patrol helicopter/patrolhelicopter.prefab"))) {
 			uintptr_t BaseObject = read(ObjectClass + 0x30, uintptr_t);
@@ -184,8 +184,6 @@ void EntityLoop() {
 				}
 			}
 		}
-		
-		
 		otherEsp::bradley(ObjectClass, Object, buff);
 		otherEsp::corpse(ObjectClass, Object, buff);
 		otherEsp::tc(ObjectClass, Object, buff);
@@ -194,7 +192,6 @@ void EntityLoop() {
 		otherEsp::stash(ObjectClass, Object, buff);
 		otherEsp::hackablecrate(ObjectClass, Object, buff);
 		otherEsp::world(ObjectClass, Object, buff);
-		//otherEsp::explo(ObjectClass, Object, buff);
 		if (vars::ores::show_collectables) {
 			miscvis(ObjectClass, buff, vars::ores::stone, vars::ores::show_distance, vars::ores::draw_distance, xorstr("stone-collectable.prefab"), xorstr(L"Stone Collectable"), D2D1::ColorF::Gray);
 			miscvis(ObjectClass, buff, vars::ores::sulfur, vars::ores::show_distance, vars::ores::draw_distance, xorstr("sulfur-collectable.prefab"), xorstr(L"Sulfur Collectable"), D2D1::ColorF::Gold);
@@ -247,7 +244,7 @@ void EntityLoop() {
 				DWORD64 todAtm = read(dome + 0x48, DWORD64);
 				DWORD64 todDay = read(dome + 0x50, DWORD64);
 				DWORD64 todSun = read(dome + 0x60, DWORD64);
-				
+
 				if (vars::misc::custom_time) {
 					write(todCycle + 0x10, vars::misc::time, float);
 				}
@@ -291,142 +288,12 @@ void EntityLoop() {
 		vars::stor::closestHeli = NULL;
 		vars::stor::closestHeliObj = NULL;
 	}
-	if (LP_isValid) {
-		Aim((BasePlayer*)vars::stor::closestPlayer);
-	}
-	else LocalPlayer = nullptr;
-}
-void EntityThreadLoop() {
-	DWORD64 BaseNetworkable;
-	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
-
-	if (!LocalPlayer) return;
-
-	if (vars::players::chams) {
-		lol::UpdateChams();
-	}
-
-	DWORD64 EntityRealm = read(BaseNetworkable + 0xB8, DWORD64);
-	DWORD64 ClientEntities = read(EntityRealm, DWORD64);
-	DWORD64 ClientEntities_list = read(ClientEntities + 0x10, DWORD64);
-	DWORD64 ClientEntities_values = read(ClientEntities_list + 0x28, DWORD64);
-	if (!ClientEntities_values) return;
-	int EntityCount = read(ClientEntities_values + 0x10, int);
-	DWORD64 EntityBuffer = read(ClientEntities_values + 0x18, DWORD64);	
-	for (int i = 0; i <= EntityCount; i++) {
-		DWORD64 Entity = read(EntityBuffer + 0x20 + (i * 0x8), DWORD64); if (Entity <= 100000) continue;
-		DWORD64 Object = read(Entity + 0x10, DWORD64); if (Object <= 100000) continue;
-		DWORD64 ObjectClass = read(Object + 0x30, DWORD64); if (ObjectClass <= 100000) continue;
-		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
-		char* buff = name->stub;
-		DWORD64 ent = read(Object + 0x28, UINT64);
-		Item* weapon = LocalPlayer->GetActiveWeapon();
-		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
-		char* classname = weapon->ClassName();
-		
-		bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
-		if (strstr(buff, xorstr("player.prefab"))) {
-			BasePlayer* lol = (BasePlayer*)ent;
-			
-			if (vars::players::chams && lol) {
-				if (lol->GetHealth() > 0.2) {
-					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
-					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
-					//UpdateChams();
-					if (!lol->HasFlags(16)) {
-						if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
-							lol::chams(multimesh, Color(0, 1, 0, 1));
-						}
-						else {
-							lol::chams(multimesh, Color(vars::colors::chams.x, vars::colors::chams.y, vars::colors::chams.z, 1));
-						}
-					}
-					else if (lol->HasFlags(16) && !vars::players::sleeperignore) {
-						lol::chams(multimesh, Color(1, 0.5, 0, 1));
-					}
+	if (has_local_player && LocalPlayer) {
+		if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID())) {
+			if (vars::stor::closestPlayer && !LocalPlayer->IsMenu()) {
+				if (GetAsyncKeyState(vars::keys::aimkey)) {
+					do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));
 				}
-			}
-			if (vars::misc::auto_revive || vars::misc::insta_revive) {
-				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-				Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-				if (vars::misc::auto_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
-					lol::PickupPlayer((BasePlayer*)ent);
-				}
-				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE)
-					&& read(LocalPlayer + 0x4E8, uintptr_t) == ent) {
-					lol::PickupPlayer((BasePlayer*)ent);
-				}
-			}
-			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
-				Target target = TargetMeleeTest((BasePlayer*)ent, active);
-				lol::do_attack(target, active, true);
-			}
-		}
-		else if (vars::misc::auto_farm_ore && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
-			Target target = Target();
-			target.valid = true;
-			target.position = utils::GetEntityPosition(gameObject);
-			target.entity = (BasePlayer*)ent;
-			lol::do_attack(target, active, false);
-		}
-		else if (vars::misc::auto_grade && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
-			if (vars::misc::auto_grade) {
-				lol::AutoGrade(ent);
-			}
-		}
-		else if (vars::misc::auto_pickup && strstr(buff, xorstr("/collectable/"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
-				utils::ServerRPC(ent, Str(xorstr(L"Pickup")));
-			}
-		}
-		//========================================================================================================================================================================================
-		//Target target = Target();
-		////target.position = Vector3::Zero();
-		//if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
-		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-		//	if (Math::Distance_3D(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f)
-		//		continue;
-		//	LogSystem::Log(L"1", 1.f);
-		//	target.entity = (BasePlayer*)ent;
-		//	target.valid = true;
-		//}
-		//if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
-		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-		//	if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f)
-		//		continue;
-		//	LogSystem::Log(L"2", 1.f);
-		//	target.position = utils::GetEntityPosition(gameObject);
-		//	if (target.entity) {
-		//		LogSystem::Log(L"3", 1.f);
-		//		lol::do_attack(target, active, false);
-		//	}
-		//}
-		else if (vars::misc::auto_farm_tree && weaponmelee && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
-			Target target = Target();
-			target.valid = true;
-			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z);
-			target.entity = (BasePlayer*)ent;
-			lol::do_attack(target, active, false);
-		}
-		//========================================================================================================================================================================================
-		else if (vars::misc::annoyer && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (ent && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
-				lol::SpamKnock(ent);
 			}
 		}
 	}

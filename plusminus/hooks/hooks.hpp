@@ -151,6 +151,7 @@ namespace hk {
 			}
 			original_dofixedupdate(movement, modelstate);
 		}
+		
 		void ClientInput(BasePlayer* baseplayah, ModelState* ModelState) {
 			vars::stuff::anti_aim_ = yeet;
 			if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
@@ -187,6 +188,8 @@ namespace hk {
 					::SendInput(1, &Input, sizeof(INPUT));
 				}
 			}
+			CheckFlyhack();
+			
 			EntityThreadLoop();
 			if (!waslagging && vars::misc::fake_lag) {
 				write(LocalPlayer + 0x5C8, 0.4f, float);
@@ -201,7 +204,7 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
-			LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
+			//LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
 
 			original_clientinput(baseplayah, ModelState);
 
@@ -209,7 +212,7 @@ namespace hk {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
 			if (vars::misc::farmbot) 
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
-			LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
+			//LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
 			if (!vars::misc::bright_ambient) {
@@ -279,6 +282,10 @@ namespace hk {
 		}
 	}
 	namespace combat {
+		void Hurt(BossFormController* a1, float damage, Vector3 hitpos, Collider* collider) {
+			damage *= 999;
+			return original_hurt(a1, damage, hitpos, collider);
+		}
 		float GetRandomVelocity(ItemModProjectile* mod) {
 			if (vars::stuff::debugtab) {
 				LogSystem::Log(StringFormat::format(c_wxor(L"%.2f || %d"), original_getrandomvelocity(mod), LocalPlayer->GetActiveWeapon()->LoadedAmmo()), 5.f);
@@ -374,18 +381,26 @@ namespace hk {
 			return original_traceall(test, traces, layerMask);
 		}
 		Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
-			auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-			Vector3 heliDir = (HeliPrediction(LocalPlayer->get_bone_pos(head)) - LocalPlayer->get_bone_pos(head)).Normalized(); Vector3 playerDir;
+			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+			Vector3 Local = LocalPlayer->eyes()->get_position();
 
+			Vector3 heli_target = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
 			Vector3 target = TargetPlayer->get_bone_pos(head);
-			if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
-				a::Prediction(LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (target - (LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0))).Normalized();
+
+			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+			a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+			
+			Vector3 heliDir = (heli_target - Local).Normalized(); 
+			Vector3 playerDir = (target - Local).Normalized();
+
+			/*if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
+				a::Prediction(Local + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+				playerDir = (target - (Local + Vector3(0, 1.15, 0))).Normalized();
 			}
 			else {
-				a::Prediction(LocalPlayer->get_bone_pos(head), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (target - LocalPlayer->get_bone_pos(head)).Normalized();
-			}
+				a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+				playerDir = (target - Local).Normalized();
+			}*/
 
 			if (vars::combat::psilent) {
 				if (!vars::combat::psilentonkey) {
@@ -440,6 +455,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x457AE0), (void**)&original_hurt, hk::combat::Hurt);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);

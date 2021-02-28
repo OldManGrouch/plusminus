@@ -3,7 +3,7 @@
 #define ALLOC_CONS 0
 #define StrA
 #define StrW
-//#define rusticaland
+#define rusticaland
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -58,8 +58,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "main/lol.h"
 #include "main/esp.h"
 
-#include "main/entities.h"
+#include "gamethread.h"
 #include "hooks/hooks.hpp"
+#include "main/entities.h"
+
 
 
 #include "init/init.h"

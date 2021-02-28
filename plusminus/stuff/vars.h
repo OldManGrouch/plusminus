@@ -14,6 +14,8 @@ std::wstring wRocket = xorstr(L"Rocket");
 namespace vars {
 	namespace stuff {
 		bool gongetflyhack = false;
+		float flyhack = 0.f;
+		float max_flyhack = 0.f;
 		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;

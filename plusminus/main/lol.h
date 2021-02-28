@@ -105,32 +105,64 @@ namespace lol {
 		}
 	}
 }
+float flyhackDistanceVertical = 0.f;
+bool shouldaddviolations = false;
+float violations = 0.f;
+float flyhackPauseTime;
+void CheckFlyhack() {
+	TickInterpolator* ticks = new TickInterpolator();
 
-/*float flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
-			float flyhackDistanceVertical = 0.f;
-			bool inAir = false;
-			inAir = (!LocalPlayer->OnLadder() && !LocalPlayer->IsSwimming() && !LocalPlayer->IsOnGround());
+	bool flag = ticks->StartPoint != ticks->EndPoint;
+	if (flag) {
+		if (shouldaddviolations) {
+			violations += 100 * ticks->Length;
+		}
+		flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
+		bool inAir = false;
+		float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + 0x300460)(LocalPlayer);
+		float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + 0x2FE6D0)(LocalPlayer, false);
+		Vector3 vector = (LocalPlayer->lastSentTick()->position() + read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
+		Vector3 vector2 = vector + Vector3(0.f, radius - 2.f, 0.f);
+		Vector3 vector3 = vector + Vector3(0.f, height - radius, 0.f);
+		float radius2 = radius - 0.05f;
+		bool a = reinterpret_cast<bool(*)(Vector3, Vector3, float, int, QueryTriggerInteraction)>(vars::stor::gBase + 0x203BF10)(
+			vector2,
+			vector3,
+			radius2,
+			1503731969,
+			QueryTriggerInteraction::Ignore);
+		inAir = !a;
 
-			if (inAir) {
-				bool flag = false;
+		if (inAir) {
+			bool flag = false;
 
-				Vector3 vector4 = LocalPlayer->get_bone_pos(r_foot).midPoint(LocalPlayer->get_bone_pos(l_foot)) - oldPos;
+			Vector3 vector4 = read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer->lastSentTick()->position();
 
-				if (vector4.y >= 0.f) {
-					flyhackDistanceVertical += vector4.y;
-					flag = true;
-				}
-				if (flag) {
-					float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
-					float num6 = LocalPlayer->GetJumpHeight() + num5;
-					if (flyhackDistanceVertical > num6) {
-						vars::stuff::gongetflyhack = true;
-					}
-					else {
-						vars::stuff::gongetflyhack = false;
-					}
+			if (vector4.y >= 0.f) {
+				flyhackDistanceVertical += vector4.y;
+				flag = true;
+			}
+			if (flag) {
+				float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+				float num6 = LocalPlayer->GetJumpHeight() + num5;
+				if (flyhackDistanceVertical > num6) {
+					shouldaddviolations = true;
 				}
 			}
-			else {
-				flyhackDistanceVertical = 0.f;
-			}*/
+		}
+		else {
+			violations = 0.f;
+			shouldaddviolations = false;
+			flyhackDistanceVertical = 0.f;
+		}
+		float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+		float num6 = LocalPlayer->GetJumpHeight() + num5;
+		vars::stuff::flyhack = flyhackDistanceVertical;
+		vars::stuff::max_flyhack = num6;
+
+		if (violations > 100.f) {
+			//vars::stuff::gongetflyhack = true;
+		}
+	}
+	ticks->Reset(read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3));
+}

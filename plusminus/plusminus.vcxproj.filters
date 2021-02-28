@@ -35,6 +35,9 @@
     <Filter Include="source\init">
       <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\main\ent">
+      <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stuff/xorstr.hpp">
@@ -115,9 +118,6 @@
     <ClInclude Include="main/aim.h">
       <Filter>source\main</Filter>
     </ClInclude>
-    <ClInclude Include="main/entities.h">
-      <Filter>source\main</Filter>
-    </ClInclude>
     <ClInclude Include="main/esp.h">
       <Filter>source\main</Filter>
     </ClInclude>
@@ -171,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="config/config.h">
       <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="main/entities.h">
+      <Filter>source\main\ent</Filter>
+    </ClInclude>
+    <ClInclude Include="gamethread.h">
+      <Filter>source\main\ent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,3 @@
-
 struct Ammo {
 	int id[2];
 	float speed;

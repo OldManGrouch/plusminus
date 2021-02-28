@@ -65,6 +65,9 @@ namespace hk_defs {
 	typedef void(__fastcall* addpunch)(HeldEntity*, Vector3, float);
 	inline addpunch original_addpunch{ };
 
+	typedef void(__fastcall* hurt)(BossFormController*, float, Vector3, Collider*);
+	inline hurt original_hurt{ };
+
 	typedef void(__fastcall* ong)(uintptr_t);
 	inline ong original_ongui{ };
 

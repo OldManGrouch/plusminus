@@ -67,8 +67,8 @@ struct Matrix4x4 {
 
 		}; float m[4][4];
 	};
-	Quaternion GetRotation() {
-		return reinterpret_cast<Quaternion(*)(Matrix4x4*)>(vars::stor::gBase + 0x2046E0)(this);
+	Vector3 MultiplyPoint3x4(Vector3 point) {
+		return reinterpret_cast<Vector3(*)(Matrix4x4*, Vector3)>(vars::stor::gBase + 0x204890)(this, point);
 	}
 };
 
@@ -86,6 +86,11 @@ public:
 		static auto off = METHOD("Assembly-CSharp::BaseEntity::GetWorldVelocity(): Vector3");
 		return reinterpret_cast<Vector3(__fastcall*)(BaseEntity*)>(off)(this);
 	}
+};
+enum QueryTriggerInteraction {
+	UseGlobal = 0,
+	Ignore = 1,
+	Collide = 2,
 };
 class RenderSettings {
 public:
@@ -251,10 +256,73 @@ public:
 	FIELD("Assembly-CSharp::HitInfo::ProjectileVelocity", ProjectileVelocity, Vector3);
 	FIELD("Assembly-CSharp::HitInfo::damageTypes", damageTypes, DamageTypeList*);
 };
+class TickInterpolator {
+public:
+	struct Segment {
+		Vector3 point;
+		float length;
+		Segment(Vector3 a, Vector3 b) {
+			this->point = b;
+			this->length = Math::Distance_3D(a, b);
+		}
+	};
+	std::vector<Segment> points = std::vector<Segment>();
+	int index;
+	float Length;
+	Vector3 CurrentPoint;
+	Vector3 StartPoint;
+	Vector3 EndPoint;
+	void Reset() {
+		this->index = 0;
+		this->CurrentPoint = this->StartPoint;
+	}
+	void Reset(Vector3 point) {
+		this->points.clear();
+		this->index = 0;
+		this->Length = 0.f;
+		this->EndPoint = point;
+		this->StartPoint = point;
+		this->CurrentPoint = point;
+	}
+	void AddPoint(Vector3 point) {
+		Segment segment = Segment(this->EndPoint, point);
+		this->points.push_back(segment);
+		this->Length += segment.length;
+		this->EndPoint = segment.point;
+	}
+	bool MoveNext(float distance) {
+		float num = 0.f;
+		while (num < distance && this->index < this->points.size()) {
+			Segment segment = this->points[this->index];
+			this->CurrentPoint = segment.point;
+			num += segment.length;
+			this->index++;
+		}
+		return num > 0.f;
+	}
+	bool HasNext() {
+		return this->index < this->points.size();
+	}
+	void TransformEntries(Matrix4x4 matrix) {
+		for (int i = 0; i < this->points.size(); i++) {
+			Segment segment = this->points[i];
+			segment.point = matrix.MultiplyPoint3x4(segment.point);
+			this->points[i] = segment;
+		}
+		this->CurrentPoint = matrix.MultiplyPoint3x4(this->CurrentPoint);
+		this->StartPoint = matrix.MultiplyPoint3x4(this->StartPoint);
+		this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
+	}
+};
 class TOD_Sky {
 public:
 };
-
+class BossFormController {
+public:
+};
+class Collider {
+public:
+};
 class Effect {
 public:
 };
@@ -297,9 +365,9 @@ public:
 		Quaternion result = ((get_rotation)(vars::stor::gBase + CO::get_rotation))(this);
 		return result;
 	}
-	Vector3 BodyForward() {
-		typedef Vector3(__stdcall* BodyForward)(PlayerEyes*);
-		Vector3 result = ((BodyForward)(vars::stor::gBase + 0x6C0F50))(this);
+	Vector3 get_position() {
+		typedef Vector3(__stdcall* get_position)(PlayerEyes*);
+		Vector3 result = ((get_position)(vars::stor::gBase + CO::get_position))(this);
 		return result;
 	}
 };
@@ -317,10 +385,14 @@ public:
 		return *reinterpret_cast<EntityRealm**>(std::uint64_t(clazz->static_fields));
 	}
 };
+class PlayerTick {
+public:
+	Vector3 position() { return read(this + 0x20, Vector3); }
+};
 class BasePlayer : public BaseCombatEntity {
 public:
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
-
+	PlayerTick* lastSentTick() { return read(this + 0x5D0, PlayerTick*); }
 	void SetVA(const Vector2& VA) {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		write(Input + oBodyAngles, VA, Vector2);

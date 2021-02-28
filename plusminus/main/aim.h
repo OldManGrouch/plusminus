@@ -75,52 +75,19 @@ float GetBulletSpeed() {
 	}
 	return vars::weapons::fast_bullets ? 250.f * 1.3 : 250.f;
 }
-Vector3 HeliPrediction(const Vector3& LP_Pos) {
-	Item* active = LocalPlayer->GetActiveWeapon();
-	Weapon tar = active->Info();
-	int ammo = active->LoadedAmmo();
-	Vector3 TargetedHeli = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
-	float Dist = Math::Distance_3D(LP_Pos, TargetedHeli);
-	if (Dist > 0.001f) {
-		Weapon tar = active->Info();
-		int ammo = active->LoadedAmmo();
-		float speed = GetBulletSpeed();
-		float gravity = GetGravity(ammo);
-		float BulletTime = Dist / speed;
-		Vector3 vel;
-		if (vars::stor::closestHeli != NULL) {
-			vel = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity();
-		}
-		else {
-			vel = Vector3(0, 0, 0);
-		}
-		Vector3 PredictVel = vel * BulletTime * 0.75f;
-		TargetedHeli += PredictVel;
-		TargetedHeli.y += (4.905f * BulletTime * BulletTime) * gravity;
-	}
-	return TargetedHeli;
-}
 void Normalize(float& Yaw, float& Pitch) {
 	if (Pitch < -89) Pitch = -89;
 	else if (Pitch > 89) Pitch = 89;
 	if (Yaw < -360) Yaw += 360;
 	else if (Yaw > 360) Yaw -= 360;
 }
-void GoToTarget(BasePlayer* player) {
-	Vector3 Local = LocalPlayer->get_bone_pos(head);
-	Vector3 Target = LocalPlayer->get_bone_pos(head);
-	a::Prediction(Local, Target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-	Vector2 Offset = Math::CalcAngle(Local, Target) - LocalPlayer->GetVA();
+void do_aimbot(BasePlayer* player) {
+	Vector3 local = LocalPlayer->get_bone_pos(head);
+	Vector3 target = player->get_bone_pos(head);
+	a::Prediction(local, target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
+	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);
 	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
 	Normalize(AngleToAim.y, AngleToAim.x);
 	LocalPlayer->SetVA(AngleToAim);
-}
-
-void Aim(BasePlayer* AimEntity) {
-	if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(AimEntity->GetSteamID())) {
-		if (AimEntity && !LocalPlayer->IsMenu()) {
-			if (GetAsyncKeyState(vars::keys::aimkey)) GoToTarget(AimEntity);
-		}
-	}
 }

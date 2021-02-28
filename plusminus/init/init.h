@@ -44,9 +44,7 @@ void InitCheat() {
 		}
 	}
 	if (vars::stuff::gongetflyhack) {
-		wchar_t trgt[64];
-		_swprintf(trgt, xorstr(L"flyhack moment LOl"), TargetPlayerA->GetName());
-		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::OrangeRed, true, true);
+		Renderer::String(Vector2{ xs, ys - 50 }, xorstr(L"flyhack moment LOl"), D2D1::ColorF::OrangeRed, true, true);
 	}
 	if (vars::combat::lock_target) {
 		wchar_t trgt[64];
