@@ -47,7 +47,7 @@ void EntityLoop() {
 					explPos, 
 					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"), 
 					explosion.name.c_str(), 
-					(int)Math::Calc3D_Dist(explosion.position, LocalPlayer->get_bone_pos(head)), 
+					(int)Math::Distance_3D(explosion.position, LocalPlayer->get_bone_pos(head)), 
 					(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
 					D2D1::ColorF::Red, 
 					true, 
@@ -149,7 +149,7 @@ void EntityLoop() {
 			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
 			if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 			if (vars::combat::ignore_players) continue;
-			if (Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
+			if (Math::Distance_3D(LocalPlayer->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
 
 			if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
 				FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
@@ -170,7 +170,7 @@ void EntityLoop() {
 				wchar_t buffer[256];
 				wchar_t buffera[256];
 				if (vars::visuals::patrol_heli) {
-					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos));
+					swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos));
 					swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
 					Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
 					Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
@@ -349,15 +349,15 @@ void EntityThreadLoop() {
 			if (vars::misc::auto_revive || vars::misc::insta_revive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 				Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-				if (vars::misc::auto_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
+				if (vars::misc::auto_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 					lol::PickupPlayer((BasePlayer*)ent);
 				}
-				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE)
+				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE)
 					&& read(LocalPlayer + 0x4E8, uintptr_t) == ent) {
 					lol::PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (vars::combat::silent_melee && weaponmelee && Math::Calc3D_Dist(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
+			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
 				Target target = TargetMeleeTest((BasePlayer*)ent, active);
 				lol::do_attack(target, active, true);
 			}
@@ -365,7 +365,7 @@ void EntityThreadLoop() {
 		else if (vars::misc::auto_farm_ore && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("OreHotSpot"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
+			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
 			Target target = Target();
 			target.valid = true;
 			target.position = utils::GetEntityPosition(gameObject);
@@ -375,7 +375,7 @@ void EntityThreadLoop() {
 		else if (vars::misc::auto_grade && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
+			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
 			if (vars::misc::auto_grade) {
 				lol::AutoGrade(ent);
 			}
@@ -383,49 +383,49 @@ void EntityThreadLoop() {
 		else if (vars::misc::auto_pickup && m_strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
+			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 				utils::ServerRPC(ent, Str(xorstr(L"Pickup")));
 			}
 		}
 		//========================================================================================================================================================================================
-		Target target = Target();
-		//target.position = Vector3::Zero();
-		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		//Target target = Target();
+		////target.position = Vector3::Zero();
+		//if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
+		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
+		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+		//	if (Math::Distance_3D(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f)
+		//		continue;
+		//	LogSystem::Log(L"1", 1.f);
+		//	target.entity = (BasePlayer*)ent;
+		//	target.valid = true;
+		//}
+		//if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
+		//	UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
+		//	Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+		//	if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f)
+		//		continue;
+		//	LogSystem::Log(L"2", 1.f);
+		//	target.position = utils::GetEntityPosition(gameObject);
+		//	if (target.entity) {
+		//		LogSystem::Log(L"3", 1.f);
+		//		lol::do_attack(target, active, false);
+		//	}
+		//}
+		else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z)) >= 2.f)
-				continue;
-			LogSystem::Log(L"1", 1.f);
-			target.entity = (BasePlayer*)ent;
-			target.valid = true;
-		}
-		if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeMarker"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f)
-				continue;
-			LogSystem::Log(L"2", 1.f);
-			target.position = utils::GetEntityPosition(gameObject);
-			if (target.entity) {
-				LogSystem::Log(L"3", 1.f);
-				lol::do_attack(target, active, false);
-			}
-		}
-	/*	else if (vars::misc::auto_farm_tree && weaponmelee && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("TreeEntity"))) {
-			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
+			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 2.f) { continue; }
 			Target target = Target();
 			target.valid = true;
 			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z);
 			target.entity = (BasePlayer*)ent;
-			lol::DoMeleeAttack(target, active, false);
-		}*/
+			lol::do_attack(target, active, false);
+		}
 		//========================================================================================================================================================================================
 		else if (vars::misc::annoyer && m_strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
-			if (ent && Math::Calc3D_Dist(local, utils::GetEntityPosition(gameObject)) < 3.f) {
+			if (ent && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 				lol::SpamKnock(ent);
 			}
 		}

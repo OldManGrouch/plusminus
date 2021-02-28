@@ -129,10 +129,10 @@ namespace Math {
 	__forceinline float Dot(const Vector3& Vec1, const Vector3& Vec2) {
 		return Vec1[0] * Vec2[0] + Vec1[1] * Vec2[1] + Vec1[2] * Vec2[2];
 	}
-	__forceinline float Calc3D_Dist(const Vector3& Src, const Vector3& Dst) {
+	__forceinline float Distance_3D(const Vector3& Src, const Vector3& Dst) {
 		return sqrtf(pow((Src.x - Dst.x), 2) + pow((Src.y - Dst.y), 2) + pow((Src.z - Dst.z), 2));
 	}
-	__forceinline float Calc2D_Dist(const Vector2& Src, const Vector2& Dst) {
+	__forceinline float Distance_2D(const Vector2& Src, const Vector2& Dst) {
 		return sqrt(powf(Src.x - Dst.x, 2) + powf(Src.y - Dst.y, 2));
 	}
 	float NormalizeAngle(float angle) {

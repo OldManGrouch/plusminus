@@ -149,19 +149,24 @@ class Type {
 public:
 	static Type* GetType() {
 		static auto off = METHOD("mscorlib::System::Type::GetType(String): Type");
-
 		return reinterpret_cast<Type * (__cdecl*)(Str)>(off)(Str(L"ItemModProjectile, Assembly-CSharp"));
 	}
+};
+class GameObject {
+public:
 };
 class Component {
 public:
 	template<typename T = Component>
 	T* GetComponent(Type* type) {
 		if (!this || !type) return nullptr;
-
 		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::GetComponent(Type): Component");
-
 		return reinterpret_cast<T * (__fastcall*)(Component*, Type*)>(off)(this, type);
+	}
+	GameObject* gameObject() {
+		if (!this) return nullptr;
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_gameObject(): GameObject");
+		return reinterpret_cast<GameObject * (__fastcall*)(Component*)>(off)(this);
 	}
 };
 class ItemDefinition : public Component {
@@ -246,6 +251,34 @@ public:
 	FIELD("Assembly-CSharp::HitInfo::ProjectileVelocity", ProjectileVelocity, Vector3);
 	FIELD("Assembly-CSharp::HitInfo::damageTypes", damageTypes, DamageTypeList*);
 };
+class TOD_Sky {
+public:
+};
+
+class Effect {
+public:
+};
+class PlayerWalkMovement {
+public:
+};
+class ModelState {
+public:
+};
+class HeldEntity {
+public:
+};
+class BaseMountable {
+public:
+};
+class PlayerProjectileAttack {
+public:
+};
+class TraceInfo {
+public:
+};
+class ViewModel {
+public:
+};
 class PlayerNameID {
 public:
 	wchar_t* username() {
@@ -257,7 +290,7 @@ public:
 		return *reinterpret_cast<unsigned long*>((uintptr_t)this + 0x20);
 	}
 };
-class PlayerEyes {
+class PlayerEyes : public Component {
 public:
 	Quaternion get_rotation() {
 		typedef Quaternion(__stdcall* get_rotation)(PlayerEyes*);

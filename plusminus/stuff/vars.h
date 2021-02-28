@@ -1,7 +1,16 @@
-HANDLE handle2;
 bool init, show = true;
-bool yeetus = false;
 #define null NULL
+
+std::string C4 = c_xor("C4");
+std::string Satchel = c_xor("Satchel");
+std::string IncenRocket = c_xor("Incendiary Rocket");
+std::string Rocket = c_xor("Rocket");
+
+std::wstring wC4 = xorstr(L"C4");
+std::wstring wSatchel = xorstr(L"Satchel");
+std::wstring wIncenRocket = xorstr(L"Incendiary Rocket");
+std::wstring wRocket = xorstr(L"Rocket");
+
 namespace vars {
 	namespace stuff {
 		bool gongetflyhack = false;
@@ -40,8 +49,7 @@ namespace vars {
 		bool tree_reflect = true;
 		bool magicbollet = false;
 		bool always_heli_rotor = false;
-		bool hitbox_override = false;
-		int hs_percentage = 50;
+		bool always_headshot = false;
 		bool silent_melee = false;
 		bool psilent = false;
 		bool psilent_autoshoot = false;

@@ -9,7 +9,7 @@ namespace a {
 	}
 #define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
 	void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
-		float Dist = Math::Calc3D_Dist(target, local);
+		float Dist = Math::Distance_3D(target, local);
 		float BulletTime = Dist / bulletspeed;
 
 		Vector3 vel = Vector3(targetvel.x, 0, targetvel.z) * 0.75f;
@@ -35,14 +35,13 @@ namespace a {
 float GetFov(BasePlayer* Entity, BoneList Bone) {
 	Vector2 ScreenPos;
 	if (!utils::w2s(Entity->get_bone_pos(Bone), ScreenPos)) return 1000.f;
-	return Math::Calc2D_Dist(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), ScreenPos);
+	return Math::Distance_2D(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), ScreenPos);
 }
 float GetFovHeli(Vector3 pos) {
 	Vector2 ScreenPos;
 	if (!utils::w2s(pos, ScreenPos)) return 1000.f;
-	return Math::Calc2D_Dist(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), ScreenPos);
+	return Math::Distance_2D(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), ScreenPos);
 }
-// 785728077 -1691396643 51984655
 float GetGravity(int ammoid) {
 	switch (ammoid) {
 	case 14241751:
@@ -61,10 +60,7 @@ float GetGravity(int ammoid) {
 		return 1.f;
 	}
 }
-
-
-float GetBulletSpeed()
-{
+float GetBulletSpeed() {
 	Item* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
@@ -84,7 +80,7 @@ Vector3 HeliPrediction(const Vector3& LP_Pos) {
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
 	Vector3 TargetedHeli = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
-	float Dist = Math::Calc3D_Dist(LP_Pos, TargetedHeli);
+	float Dist = Math::Distance_3D(LP_Pos, TargetedHeli);
 	if (Dist > 0.001f) {
 		Weapon tar = active->Info();
 		int ammo = active->LoadedAmmo();

@@ -39,7 +39,7 @@ public:
 
 DWORD64 oPlayerList = 0;
 float GetFov(Vector2 Pos) {
-	return Math::Calc2D_Dist(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), Pos);
+	return Math::Distance_2D(Vector2(vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2), Pos);
 }
 float GetFov(BasePlayer* Entity) {
 	Vector2 ScreenPos;
@@ -70,7 +70,7 @@ OreTarget get_closest_ore(Vector3 from) {
 		OreTarget res = OreTarget();
 		if (strstr(buff, xorstr("ore.prefab"))) {
 			uintptr_t a = read(ObjectClass + 0x30, UINT64);
-			float dist = Math::Calc3D_Dist(utils::GetEntityPosition(a), from);
+			float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
 			//if (dist > 5 /*&& from != utils::GetEntityPosition(a)*/) {
 				res.i = true;
 				res.valid = true;
@@ -106,7 +106,7 @@ Target FindAimTarget(Vector3 from, bool sortByFov, bool silent, float maxdist = 
 		Vector3 pos = Player->get_bone_pos(neck);
 		Target res = Target();
 		res.valid = true;
-		float dst = Math::Calc3D_Dist(from, pos);
+		float dst = Math::Distance_3D(from, pos);
 		res.realdist = dst;
 		dst += silent_traveldist;
 		res.dist = dst;

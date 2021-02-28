@@ -97,8 +97,8 @@ private:
 
 	void Setup()
 	{
-		SetupValue(vars::combat::hitbox_override, false, c_xor("Combat"), c_xor("HitboxOverride"));
-		SetupValue(vars::combat::hs_percentage, 100, c_xor("Combat"), c_xor("HeadshotPercentage"));
+		SetupValue(vars::combat::always_headshot, false, c_xor("Combat"), c_xor("HitboxOverride"));
+		//SetupValue(vars::combat::hs_percentage, 100, c_xor("Combat"), c_xor("HeadshotPercentage"));
 		SetupValue(vars::combat::always_heli_rotor, false, c_xor("Combat"), c_xor("AlwaysHeliHotspot"));
 		SetupValue(vars::combat::silent_melee, false, c_xor("Combat"), c_xor("SilentMelee"));
 		SetupValue(vars::combat::psilent, false, c_xor("Combat"), c_xor("pSilent"));

@@ -12,7 +12,7 @@ namespace radar {
 			float y = local.x - pos.x;
 			float x = local.z - pos.z;
 
-			float dist = Math::Calc3D_Dist(local, pos);
+			float dist = Math::Distance_3D(local, pos);
 			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer->eyes()->get_rotation());
 			float num = atan2(y, x) * 57.29578f - 270.f - eulerAngles.y;
 			float PointPos_X = dist * cos(num * 0.0174532924f);
@@ -24,7 +24,7 @@ namespace radar {
 			float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
 
 			Vector2 point = Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y);
-			if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
+			if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 				Renderer::FillCircle(point, clr, 2.5f);
 			}
 		}
@@ -56,7 +56,7 @@ namespace radar {
 				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 				if (!read(Player + 0x4A8, DWORD64)) return;
 				Vector3 ply = Player->get_bone_pos(head);
-				float dist = Math::Calc3D_Dist(local, ply);
+				float dist = Math::Distance_3D(local, ply);
 				float y = local.x - ply.x;
 				float x = local.z - ply.z;
 
@@ -69,7 +69,7 @@ namespace radar {
 
 				Vector2 point = Vector2(vars::visuals::radar::x + vars::visuals::radar::size / 2.f + PointPos_X, vars::visuals::radar::y + vars::visuals::radar::size / 2.f + PointPos_Y);
 
-				if (Math::Calc2D_Dist(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
+				if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
 						if (!Player->HasFlags(16)) {
 							if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
@@ -106,9 +106,9 @@ namespace otherEsp {
 				DWORD64 gameObject = read(ObjectClass + 0x30, DWORD64);
 				Vector2 screen_Pos;
 				if (utils::w2s(utils::GetEntityPosition(gameObject), screen_Pos)) {
-					if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
+					if ((int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
 						wchar_t distance[64];
-						_swprintf(distance, L"[%d m]", (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
+						_swprintf(distance, L"[%d m]", (int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
 						wchar_t text[64];
 						_swprintf(text, targettext);
 						Renderer::String({ screen_Pos.x, screen_Pos.y }, text, color, true, true);
@@ -126,13 +126,13 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bradley = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				int health = read(bradley + oHealth, float);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t buffer[256];
 					wchar_t buffera[256];
-					swprintf(buffer, xorstr(L"Bradley APC [%dm]"), (int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos));
+					swprintf(buffer, xorstr(L"Bradley APC [%dm]"), (int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos));
 					swprintf(buffera, xorstr(L"[%d HP]"), health);
 					if (health > 0.2) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
@@ -150,7 +150,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 corpse = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t cName[0x100];
@@ -172,7 +172,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 cupboard = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					int pos = 15;
@@ -206,7 +206,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -228,7 +228,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -251,7 +251,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 stash = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t sName[0x100];
@@ -281,7 +281,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 crate = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t crateName[0x100];
@@ -317,7 +317,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 item = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), pos);
+				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t itemName[0x100];
@@ -505,7 +505,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::players::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, s, color, true, true);
 					CurPos += 15;
 				}
@@ -513,7 +513,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 100.f;
 					if (vars::players::healthbarstyle == 0) {
-						if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
+						if ((int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}
@@ -606,7 +606,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::npc::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Calc3D_Dist(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, s, color, true, true);
 					CurPos2 += 15;
 				}
@@ -614,7 +614,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					int health = (int)BP->GetHealth();
 					float maxheal = 150.f;
 					if (vars::npc::healthbarstyle == 0) {
-						if ((int)Math::Calc3D_Dist(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
+						if ((int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
 							if ((int)BP->GetHealth() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}

@@ -196,10 +196,10 @@ namespace menu {
 	}
 
 	void combat() {
-		HelpCheckbox(xorstr("Hitbox Override"), &vars::combat::hitbox_override, xorstr("Even if you hit a person in the body, the bullet will teleport to the head (depending on the headshot percentage)."));
-		if (vars::combat::hitbox_override) {
+		HelpCheckbox(xorstr("Always Headshot"), &vars::combat::always_headshot, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
+		/*if (vars::combat::hitbox_override) {
 			ImGui::SliderInt(xorstr("Headshot Percentage"), &vars::combat::hs_percentage, 0, 100);
-		}
+		}*/
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
@@ -288,7 +288,7 @@ namespace menu {
 		if (vars::players::chams) {
 			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);
 		}
-		//HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
+		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
 	}
 	void npc() {

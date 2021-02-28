@@ -26,7 +26,7 @@ Weapon{-75944661, xorstr("Eoka Pistol"), { Ammo{{-727717969, -1685290200}/*green
 
 Weapon{28201841, xorstr("M39 Rifle"), { Ammo{{-1211166256}/*normal 5.56*/, 469}, Ammo{{1712070256} /*HV 5.56*/, 563 }, Ammo{{-1321651331, 605467368}/*inc, ex 5.56*/, 281}}, 2 },
 
-Weapon{1965232394, xorstr("Crossbow"), { Ammo{{-1234735557}/*normal arrow*/, 50.f}, Ammo{{14241751} /*fire arrow*/, 60}, Ammo{{215754713} /*bone arrow*/, 68}, Ammo{{-1023065463} /*HV arrow*/, 80}}, 2 },
+Weapon{1965232394, xorstr("Crossbow"), { Ammo{{-1234735557}/*normal arrow*/, 50.f}, Ammo{{14241751} /*fire arrow*/, 40}, Ammo{{215754713} /*bone arrow*/, 45}, Ammo{{-1023065463} /*HV arrow*/, 80}}, 2 },
 Weapon{884424049, xorstr("Compound Bow"), { Ammo{{-1234735557}/*normal arrow*/, 50.f}, Ammo{{14241751} /*fire arrow*/, 40}, Ammo{{215754713} /*bone arrow*/, 45}, Ammo{{-1023065463} /*HV arrow*/, 80}}, 2 }, //TODO on zoom velocity x2
 Weapon{1443579727, xorstr("Hunting Bow"), { Ammo{{-1234735557}/*normal arrow*/, 50.f}, Ammo{{14241751} /*fire arrow*/, 40}, Ammo{{215754713} /*bone arrow*/, 45}, Ammo{{-1023065463} /*HV arrow*/, 80} }, -2 },
 
