@@ -20,7 +20,7 @@
     <ClInclude Include="config/config.h" />
     <ClInclude Include="init/d3defs.h" />
     <ClInclude Include="hooks/detours.h" />
-    <ClInclude Include="hooks/hooks.hpp" />
+    <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="stuff/hwid.h" />
     <ClInclude Include="stuff/il2cpp.h" />
     <ClInclude Include="menu/imgui/imconfig.h" />

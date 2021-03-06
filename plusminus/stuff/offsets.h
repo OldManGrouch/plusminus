@@ -1,5 +1,11 @@
 #ifdef rusticaland
 namespace CO {
+	auto GetJumpHeight = 0x2FEEA0;
+	auto MathfAbs = 0x17440F0;
+	auto MathfMax = 0x1744CC0;
+	auto GetHeight = 0x2FE6D0;
+	auto GetRadius = 0x300460;
+	auto CheckCapsule = 0x203BF10;
 	auto EffectRun = 0x883940;
 	auto RebuildAll = 0xB2BCF0;
 	auto GetMaxSpeed = 0x2FF040;

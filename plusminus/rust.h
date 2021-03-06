@@ -513,18 +513,8 @@ public:
 		int flags = read(mstate + 0x24, int);
 		return flags & flag;
 	}
-
-	bool OnLadder() {
-		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x304DD0)(this);
-	}
-	bool IsSwimming() {
-		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x303220)(this);
-	}
-	bool IsOnGround() {
-		return reinterpret_cast<bool(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x302D60)(this);
-	}
 	float GetJumpHeight() {
-		return reinterpret_cast<float(_fastcall*)(BasePlayer*)>(vars::stor::gBase + 0x2FEEA0)(this);
+		return reinterpret_cast<float(_fastcall*)(BasePlayer*)>(vars::stor::gBase + CO::GetJumpHeight)(this);
 	}
 
 	bool GetKeyState(ButtonS b) {
@@ -582,17 +572,10 @@ public:
 class Mathf {
 public:
 	static float Abs(float a) {
-		return reinterpret_cast<float(_fastcall*)(float)>(vars::stor::gBase + 0x17440F0)(a);
+		return reinterpret_cast<float(_fastcall*)(float)>(vars::stor::gBase + CO::MathfAbs)(a);
 	}
 	static float Max(float a, float b) {
-		return reinterpret_cast<float(_fastcall*)(float, float)>(vars::stor::gBase + 0x1744CC0)(a, b);
-	}
-};
-class LocalPlayer {
-public:
-	static BasePlayer* Entity() {
-		static auto clazz = CLASS("Assembly-CSharp::LocalPlayer");
-		return *reinterpret_cast<BasePlayer**>(std::uint64_t(clazz->static_fields));
+		return reinterpret_cast<float(_fastcall*)(float, float)>(vars::stor::gBase + CO::MathfMax)(a, b);
 	}
 };
 class BuildingBlock {

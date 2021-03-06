@@ -13,7 +13,7 @@ namespace lol {
 		DWORD64 trans; Ray ray = Ray(LocalPlayer->get_bone_pos(neck), (target.position - LocalPlayer->get_bone_pos(neck)).Normalized());
 		if (!target.entity) return;
 		if (transform) {
-			trans = target.entity->GrabTransform(head);
+			trans = reinterpret_cast<BasePlayer*>(target.entity)->GrabTransform(head);
 		}
 		else {
 			//trans = utils::GetTransform((DWORD64)target.entity);
@@ -27,7 +27,7 @@ namespace lol {
 		write(newHitTest + 0xB0, trans, DWORD64);
 		write(newHitTest + 0x14, ray, Ray);
 		write(newHitTest + 0x66, true, bool);
-		write(newHitTest + 0x88, target.entity, BasePlayer*);
+		write(newHitTest + 0x88, reinterpret_cast<BasePlayer*>(target.entity), BasePlayer*);
 		write(newHitTest + 0x90, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
 		write(newHitTest + 0x9C, Vector3(0, 0, 0), Vector3);
 		write(newHitTest + 0x68, read(Held + 0x268, DWORD64), DWORD64);
@@ -106,64 +106,70 @@ namespace lol {
 	}
 }
 float flyhackDistanceVertical = 0.f;
-bool shouldaddviolations = false;
-float violations = 0.f;
+float flyhackDistanceHorizontal = 0.f;
 float flyhackPauseTime;
-void CheckFlyhack() {
-	TickInterpolator ticks = TickInterpolator();
+void TestFlying() {
+	flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
+	bool inAir = false;
+	float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetRadius)(LocalPlayer);
+	float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + CO::GetHeight)(LocalPlayer, false);
+	Vector3 vector = (LocalPlayer->lastSentTick()->position() + read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
+	Vector3 vector2 = vector + Vector3(0.f, radius - 2.f, 0.f);
+	Vector3 vector3 = vector + Vector3(0.f, height - radius, 0.f);
+	float radius2 = radius - 0.05f;
+	bool a = reinterpret_cast<bool(*)(Vector3, Vector3, float, int, QueryTriggerInteraction)>(vars::stor::gBase + CO::CheckCapsule)(
+		vector2,
+		vector3,
+		radius2,
+		1503731969,
+		QueryTriggerInteraction::Ignore);
+	inAir = !a;
 
-	bool flag = ticks.StartPoint != ticks.EndPoint;
+	if (inAir) {
+		bool flag = false;
 
-	if (flag) {
-		ticks.Reset();
-
-		flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
-		bool inAir = false;
-		float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + 0x300460)(LocalPlayer);
-		float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + 0x2FE6D0)(LocalPlayer, false);
-		Vector3 vector = (LocalPlayer->lastSentTick()->position() + read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
-		Vector3 vector2 = vector + Vector3(0.f, radius - 2.f, 0.f);
-		Vector3 vector3 = vector + Vector3(0.f, height - radius, 0.f);
-		float radius2 = radius - 0.05f;
-		bool a = reinterpret_cast<bool(*)(Vector3, Vector3, float, int, QueryTriggerInteraction)>(vars::stor::gBase + 0x203BF10)(
-			vector2,
-			vector3,
-			radius2,
-			1503731969,
-			QueryTriggerInteraction::Ignore);
-		inAir = !a;
-
-		if (inAir) {
-			bool flag = false;
-
-			Vector3 vector4 = read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer->lastSentTick()->position();
-
-			if (vector4.y >= 0.f) {
-				flyhackDistanceVertical += vector4.y;
-				flag = true;
+		Vector3 vector4 = read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer->lastSentTick()->position();
+		float num3 = Mathf::Abs(vector4.y);
+		float num4 = reinterpret_cast<float(*)(Vector3)>(vars::stor::gBase + 0x1D19050)(vector4);
+		if (vector4.y >= 0.f) {
+			flyhackDistanceVertical += vector4.y;
+			flag = true;
+		}
+		if (num3 < num4) {
+			flyhackDistanceHorizontal += num4;
+			flag = true;
+		}
+		if (flag) {
+			float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+			float num6 = LocalPlayer->GetJumpHeight() + num5;
+			if (flyhackDistanceVertical > num6) {
+				//return true;
 			}
-			if (flag) {
-				float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
-				float num6 = LocalPlayer->GetJumpHeight() + num5;
-				if (flyhackDistanceVertical > num6) {
-					shouldaddviolations = true;
-				}
+			float num7 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+			float num8 = 5.f + num7;
+			if (flyhackDistanceHorizontal > num8) {
+				//return true;
 			}
 		}
-		else {
-			shouldaddviolations = false;
-			flyhackDistanceVertical = 0.f;
-		}
-		float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
-		float num6 = LocalPlayer->GetJumpHeight() + num5;
-		vars::stuff::flyhack = flyhackDistanceVertical;
-		vars::stuff::max_flyhack = num6;
-		if (shouldaddviolations) {
-			violations += 100 * ticks.Length;
-		}
-		
-		
-		
 	}
-	ticks.Reset(read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3));
+	else {
+		flyhackDistanceHorizontal = 0.f;
+		flyhackDistanceVertical = 0.f;
+	}
+}
+void CheckFlyhack() {
+	TestFlying();
+	float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+	float num6 = LocalPlayer->GetJumpHeight() + num5;
+	vars::stuff::max_flyhack = num6;
+	if (flyhackDistanceVertical <= num6) {
+		vars::stuff::flyhack = flyhackDistanceVertical;
+	}
+
+	float num7 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
+	float num8 = 5.f + num7;
+	vars::stuff::max_hor_flyhack = num8;
+	if (flyhackDistanceHorizontal <= num8) {
+		vars::stuff::hor_flyhack = flyhackDistanceHorizontal;
+	}
 }

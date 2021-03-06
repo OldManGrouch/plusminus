@@ -2,7 +2,7 @@
 using namespace otherEsp;
 bool inited = false;
 float timee = 120.f;
-void EntityLoop() {
+void ent_loop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 	if (bn) {
 #ifdef rusticaland
@@ -11,15 +11,21 @@ void EntityLoop() {
 		Renderer::String(Vector2(100, 55), xorstr(L"plusminus [alkad]"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 #endif
 	}
-	else Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+	else { 
+		Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false); 
+		return;
+	}
 
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
 	}
+	if (vars::misc::flyhack_indicator) {
+		Renderer::FillRectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(428 * (vars::stuff::flyhack / vars::stuff::max_flyhack), 10), D2D1::ColorF::Lime);
+		Renderer::Rectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(428, 10), D2D1::ColorF::Black);
 
-	Renderer::FillRectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(80 * (violations / 100), 10), D2D1::ColorF::Lime);
-	Renderer::Rectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 200), Vector2(428, 10), D2D1::ColorF::Black);
-	//LogSystem::Log(StringFormat::format(c_wxor(L"%.2f %.2f"), (vars::stuff::flyhack / vars::stuff::max_flyhack), vars::stuff::flyhack), 5.f);
+		Renderer::FillRectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 230), Vector2(428 * (vars::stuff::hor_flyhack / vars::stuff::max_hor_flyhack), 10), D2D1::ColorF::Lime);
+		Renderer::Rectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 230), Vector2(428, 10), D2D1::ColorF::Black);
+	}
 	LogSystem::Render();
 	if (vars::visuals::raid_esp) {
 		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
@@ -241,9 +247,7 @@ void EntityLoop() {
 			if (tag == 20011) {
 				DWORD64 dome = read(entity + 0x28, DWORD64); // TOD_Sky
 				DWORD64 todCycle = read(dome + 0x38, DWORD64);
-				DWORD64 todAtm = read(dome + 0x48, DWORD64);
 				DWORD64 todDay = read(dome + 0x50, DWORD64);
-				DWORD64 todSun = read(dome + 0x60, DWORD64);
 
 				if (vars::misc::custom_time) {
 					write(todCycle + 0x10, vars::misc::time, float);

@@ -58,7 +58,7 @@ void InitCheat() {
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 
-		OreTarget tr1 = get_closest_ore(LocalPlayer->get_bone_pos(head));
+		Target tr1 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
 		Vector2 screen;
 		if (utils::w2s(tr1.position, screen) && tr1.valid) {
 			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
@@ -144,15 +144,13 @@ void InitCheat() {
 		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
 		float Pos = 0;
 		for (int i = 0; i < TargetPlayerA->item_list_b()->get_size(); i++) { //
-			Item* ActWeapon = TargetPlayerA->GetWeaponInfo(i);
+			Item* ActWeapon = TargetPlayerA->item_list_b()->get_value(i);
 			if (ActWeapon) {
-				const wchar_t* ActiveItem = ActWeapon->GetName();
+				wchar_t* ActiveItem = ActWeapon->GetName();
 				if (ActiveItem) {
-					if (wcslen(ActiveItem) < 20) {
-						wchar_t itemName[0x100];
-						_swprintf(itemName, xorstr(L"%s [%d]"), ActiveItem, ActWeapon->GetCount());
-						Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName, D2D1::ColorF::White, true, true);
-					}
+					wchar_t itemName[0x100];
+					_swprintf(itemName, xorstr(L"%s [%d]"), ActiveItem, ActWeapon->GetCount());
+					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName, D2D1::ColorF::White, true, true);
 				}
 			}
 			Pos += 15;
@@ -161,19 +159,17 @@ void InitCheat() {
 		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
 		float cPos = 125;
 		for (int i = 0; i < TargetPlayerA->item_list_w()->get_size(); i++) { // clothes
-			Item* ActWeapon = TargetPlayerA->GetClothesInfo(i);
+			Item* ActWeapon = TargetPlayerA->item_list_w()->get_value(i);
 			if (ActWeapon) {
-				const wchar_t* ActiveItem = ActWeapon->GetName();
+				wchar_t* ActiveItem = ActWeapon->GetName();
 				if (ActiveItem) {
-					if (wcslen(ActiveItem) < 20) {
-						wchar_t itemName[0x100];
-						_swprintf(itemName, xorstr(L"%s"), ActiveItem);
-						Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
-					}
+					wchar_t itemName[0x100];
+					_swprintf(itemName, xorstr(L"%s"), ActiveItem);
+					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
 				}
 			}
 			cPos += 15;
 		}
 	}
-	EntityLoop();
+	ent_loop();
 }

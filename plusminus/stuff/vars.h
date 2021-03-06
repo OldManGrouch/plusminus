@@ -15,7 +15,9 @@ namespace vars {
 	namespace stuff {
 		bool gongetflyhack = false;
 		float flyhack = 0.f;
+		float hor_flyhack = 0.f;
 		float max_flyhack = 0.f;
+		float max_hor_flyhack = 0.f;
 		int anti_aim_ = 0;
 		std::wstring dlldirectory;
 		bool debugtab = false;
@@ -194,6 +196,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool flyhack_indicator = false;
 		bool farmbot = false;
 		bool spiderman = false;
 		bool better_jump = false;

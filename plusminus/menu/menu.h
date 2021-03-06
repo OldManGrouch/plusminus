@@ -420,6 +420,7 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Indicator"), &vars::misc::anti_aim_indicator);
 		}
 		HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
+		HelpCheckbox(xorstr("Flyhack Indicator"), &vars::misc::flyhack_indicator, xorstr("Shows you how much you can flyhack before getting kicked."));
 		HelpCheckbox(xorstr("Jesus"), &vars::misc::jesus, xorstr("Allows you to walk on water."));
 		HelpCheckbox(xorstr("Walker"), &vars::misc::walker, xorstr("Allows you to walk through trees and players without any resistance."));
 		HelpCheckbox(xorstr("Faster Healing"), &vars::misc::faster_healing, xorstr("Allows you to heal faster than usual, no need to spam mouse to heal - you can just hold it down."));
@@ -448,7 +449,7 @@ namespace menu {
 		if (vars::misc::auto_revive) {
 			ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
 		}
-		HelpCheckbox(xorstr("FarmBot [beta]"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
+		HelpCheckbox(xorstr("FarmBot"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
 		HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 		HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
 		HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_grade, xorstr("Will automatically upgrade any building blocks near you. Doesn't require a hammer."));

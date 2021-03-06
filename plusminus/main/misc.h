@@ -27,13 +27,6 @@ void WeaponPatch() {
 		weapon->EokaTap();
 		return;
 	}
-	if (weapon->GetID() == 442886268) {
-		weapon->SetAutomatic();
-		DWORD64 heldentity = read(weapon + oHeldEntity, DWORD64);
-		write(heldentity + oRepeatDelay, 0.01f, float);
-		return;
-	}
-	
 }
 float w_last_syringe = 0.f;
 void MiscFuncs() {

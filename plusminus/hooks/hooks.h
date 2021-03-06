@@ -143,7 +143,7 @@ namespace hk {
 		void DoFixedUpdate(PlayerWalkMovement* movement, ModelState* modelstate) {
 			float speed = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetMaxSpeed)(LocalPlayer);
 			if (vars::misc::farmbot) {
-				OreTarget closest = get_closest_ore(LocalPlayer->get_bone_pos(head));
+				Target closest = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
 				if (closest.valid) {
 					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized() * speed;
 					write(movement + 0x34, direction, Vector3);
@@ -204,15 +204,17 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
-			//LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
+			if (vars::misc::spoof_ladderstate) {
+				reinterpret_cast<void(*)(uintptr_t)>(vars::stor::gBase + 0xB25C00)(read(LocalPlayer + oPlayerModel, uintptr_t));
+			}
 
 			original_clientinput(baseplayah, ModelState);
 
-			if (vars::misc::spoof_ladderstate) 
+			if (vars::misc::spoof_ladderstate) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
+			}
 			if (vars::misc::farmbot) 
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
-			//LocalPlayer->add_modelstate_flag(ModelStateFlag::OnGround);
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
 			if (!vars::misc::bright_ambient) {
@@ -455,7 +457,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x457AE0), (void**)&original_hurt, hk::combat::Hurt);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x457AE0), (void**)&original_hurt, hk::combat::Hurt);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);

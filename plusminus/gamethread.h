@@ -60,7 +60,7 @@ void EntityThreadLoop() {
 				}
 			}
 			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
-				Target target = TargetMeleeTest((BasePlayer*)ent, active);
+				Target target = Target::get_melee_target((BasePlayer*)ent, active);
 				lol::do_attack(target, active, true);
 			}
 		}
@@ -71,7 +71,7 @@ void EntityThreadLoop() {
 			Target target = Target();
 			target.valid = true;
 			target.position = utils::GetEntityPosition(gameObject);
-			target.entity = (BasePlayer*)ent;
+			target.entity = ent;
 			lol::do_attack(target, active, false);
 		}
 		else if (vars::misc::auto_grade && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
@@ -120,7 +120,7 @@ void EntityThreadLoop() {
 			Target target = Target();
 			target.valid = true;
 			target.position = Vector3(utils::GetEntityPosition(gameObject).x, LocalPlayer->get_bone_pos(head).y, utils::GetEntityPosition(gameObject).z);
-			target.entity = (BasePlayer*)ent;
+			target.entity = ent;
 			lol::do_attack(target, active, false);
 		}
 		//========================================================================================================================================================================================
