@@ -18,7 +18,7 @@ public:
 	}
 
 	DWORD64 oPlayerList = 0;
-	static Target get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero()) {
+	static Target get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero()) {
 		Target lowest = Target();
 
 		uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
@@ -38,7 +38,7 @@ public:
 			if (strstr(buff, namee)) {
 				uintptr_t a = read(ObjectClass + 0x30, UINT64);
 				float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
-				if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2) {
+				if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
 					res.valid = true;
 					res.dist = dist;
 					res.entity = read(Object + 0x28, DWORD64);

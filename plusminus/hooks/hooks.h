@@ -8,14 +8,21 @@ namespace hk {
 	namespace exploit {
 		void DoMovement(Projectile* prj, float deltaTime) {
 			if (vars::stor::closestPlayer != null && GetAsyncKeyState(0x4B) && prj->isAuthoritative()) {
-				uintptr_t playerProjectileUpdate_ = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0x47BD90)(read(vars::stor::gBase + 0x2F9FE88, uintptr_t)); // v24 = sub_18047BD90(qword_182F9FE88);
-				write(playerProjectileUpdate_ + 0x14, prj->projectileID(), uint32_t);
-				write(playerProjectileUpdate_ + 0x18, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head), Vector3);
-				write(playerProjectileUpdate_ + 0x24, prj->currentVelocity(), Vector3);
-				write(playerProjectileUpdate_ + 0x30, prj->previousTraveledTime(), float);
-				typedef void(__stdcall* SendProjectileUpdate)(BasePlayer*, uintptr_t);
-				((SendProjectileUpdate)(vars::stor::gBase + 0x30E310))(prj->owner(), playerProjectileUpdate_);
+				uintptr_t playerProjectileAttack = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0x47BD90)(read(vars::stor::gBase + 0x2F9FF10, uintptr_t)); // v24 = sub_18047BD90(qword_182F9FF10);
+				
+				write(playerProjectileAttack + 0x20, prj->currentVelocity(), Vector3);
+				write(playerProjectileAttack + 0x2C, prj->traveledDistance(), float);
+				write(playerProjectileAttack + 0x30, prj->traveledTime(), float);
 
+				uintptr_t playerAttack = read(playerProjectileAttack + 0x18, uintptr_t);
+				uintptr_t atta = prj->hitTest()->BuildAttackMessage();
+				write(playerAttack + 0x20, prj->projectileID(), int);
+				write(playerAttack + 0x18, atta, uintptr_t);
+
+				typedef void(__stdcall* SendProjectileUpdate)(BasePlayer*, uintptr_t);
+				((SendProjectileUpdate)(vars::stor::gBase + CO::SendProjectileAttack))(prj->owner(), playerProjectileAttack);
+
+				prj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition()) * 3);
 				/*HitTest* hitTest = reinterpret_cast<HitTest*>(prj->hitTest());
 				hitTest->DidHit() = true;
 				hitTest->HitEntity(reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer));
@@ -204,17 +211,15 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
 			WeaponPatch();
 			MiscFuncs();
-			if (vars::misc::spoof_ladderstate) {
-				reinterpret_cast<void(*)(uintptr_t)>(vars::stor::gBase + 0xB25C00)(read(LocalPlayer + oPlayerModel, uintptr_t));
-			}
 
 			original_clientinput(baseplayah, ModelState);
 
 			if (vars::misc::spoof_ladderstate) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
-			if (vars::misc::farmbot) 
+			if (vars::misc::farmbot) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
+			}
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
 			if (!vars::misc::bright_ambient) {
@@ -284,10 +289,6 @@ namespace hk {
 		}
 	}
 	namespace combat {
-		void Hurt(BossFormController* a1, float damage, Vector3 hitpos, Collider* collider) {
-			damage *= 999;
-			return original_hurt(a1, damage, hitpos, collider);
-		}
 		float GetRandomVelocity(ItemModProjectile* mod) {
 			if (vars::stuff::debugtab) {
 				LogSystem::Log(StringFormat::format(c_wxor(L"%.2f || %d"), original_getrandomvelocity(mod), LocalPlayer->GetActiveWeapon()->LoadedAmmo()), 5.f);
@@ -360,16 +361,6 @@ namespace hk {
 			}
 			return original_sendprojectileattack(a1, a2);
 		}
-		Projectile* CreateProjectile(BaseProjectile* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
-			Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
-			if (vars::weapons::thick_bullet) {
-				projectile->thickness(1.f);
-			}
-			else {
-				projectile->thickness(0.1f);
-			}
-			return projectile;
-		}
 		bool CanAttack(BasePlayer* a1) {
 			if (vars::misc::can_attack) return true;
 			return original_canattack(a1);
@@ -432,11 +423,13 @@ namespace hk {
 	}
 
 }
-void hk_(void* Function, void** Original, void* Detour, bool autoEnable = true) {
-	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) { std::cout << (xorstr("Failed to initialize MinHook")) << std::endl; return; }
+void hk_(void* Function, void** Original, void* Detour) {
+	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) { 
+		MessageBox(0, xorstr(L"big error message sk4ddu"), 0, 0);
+		return; 
+	}
 	MH_CreateHook(Function, Detour, Original);
-	if (autoEnable)
-		MH_EnableHook(Function);
+	MH_EnableHook(Function);
 }
 
 inline void hk__() {
@@ -447,7 +440,6 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, hk::misc::HandleRunning);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, hk::misc::HandleJumping);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, hk::combat::GetModifiedAimConeDirection);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, hk::combat::CreateProjectile);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, hk::combat::CanHoldItems);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, hk::misc::Run);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, hk::misc::CreateEffect);
@@ -457,12 +449,10 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x457AE0), (void**)&original_hurt, hk::combat::Hurt);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);

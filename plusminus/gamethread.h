@@ -22,6 +22,9 @@ void EntityThreadLoop() {
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		char* buff = name->stub;
 		DWORD64 ent = read(Object + 0x28, UINT64);
+		if (reinterpret_cast<BaseEntity*>(ent)->IsDestroyed()) {
+			continue;
+		}
 		Item* weapon = LocalPlayer->GetActiveWeapon();
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
@@ -34,7 +37,6 @@ void EntityThreadLoop() {
 				if (lol->GetHealth() > 0.2) {
 					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
-					//UpdateChams();
 					if (!lol->HasFlags(16)) {
 						if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
 							lol::chams(multimesh, Color(0, 1, 0, 1));

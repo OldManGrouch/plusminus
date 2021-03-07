@@ -45,7 +45,7 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 		if (Renderer::NewFrame(pSwapChain)) {
-			InitCheat();
+			pre_draw();
 		}
 		Renderer::EndFrame();
 		if (show) {

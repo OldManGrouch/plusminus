@@ -243,13 +243,13 @@ namespace menu {
 		ImGui::Checkbox(xorstr("No Attack Animation"), &vars::weapons::remove_attack_anim);
 		ImGui::Checkbox(xorstr("Rapid Fire"), &vars::weapons::rapid_fire);
 		ImGui::Checkbox(xorstr("Force Automatic"), &vars::weapons::automatic);
-		ImGui::Checkbox(xorstr("Thick Bullets"), &vars::weapons::thick_bullet);
+		//ImGui::Checkbox(xorstr("Thick Bullets"), &vars::weapons::thick_bullet);
 		ImGui::Checkbox(xorstr("Faster Bullets"), &vars::weapons::fast_bullets);
 		HelpCheckbox(xorstr("Minicopter Aim"), &vars::weapons::minicopter_aim, xorstr("Allows you to hold items on minicopters."));
 		ImGui::Checkbox(xorstr("EokaTap"), &vars::weapons::eokatap);
 		ImGui::Checkbox(xorstr("FastBow"), &vars::weapons::fastbow);
 		HelpCheckbox(xorstr("Penetrate"), &vars::weapons::penetrate, xorstr("Allows you to shoot through deployables, trees."));
-		HelpCheckbox(xorstr("Spoof Hit Distance"), &vars::weapons::spoof_hitdistance, xorstr("You can use this to make enemies think you were closer than you actually were or just flex with big meters."));
+		HelpCheckbox(xorstr("Spoof Hit Distance"), &vars::weapons::spoof_hitdistance, xorstr("Flex with big meters."));
 		if (vars::weapons::spoof_hitdistance) {
 			ImGui::SliderFloat(xorstr("Distance"), &vars::weapons::hitdistance, 1000.f, 10000.f);
 		}
@@ -325,7 +325,7 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Dot"), &vars::crosshair::dot);
 		}
 		if (ImGui::CollapsingHeader(xorstr("Radar"))) {
-			ImGui::Checkbox(xorstr("Radar"), &vars::visuals::radar_);
+			ImGui::Checkbox(xorstr("Radar "), &vars::visuals::radar_);
 			if (vars::visuals::radar_) {
 				ImGui::SliderFloat(xorstr("Size"), &vars::visuals::radar::size, 5.f, 400.f);
 				ImGui::SliderFloat(xorstr("Range"), &vars::visuals::radar::range, 5.f, 400.f);

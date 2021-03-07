@@ -7,7 +7,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="crc32.hpp" />
+    <ClInclude Include="crc32.h" />
     <ClInclude Include="gamethread.h" />
     <ClInclude Include="hooks/defs.h" />
     <ClInclude Include="logsystem.h" />
@@ -52,10 +52,10 @@
     <ClInclude Include="main/targeting.h" />
     <ClInclude Include="stuff/vars.h" />
     <ClInclude Include="main/weapons.h" />
-    <ClInclude Include="stuff/xorstr.hpp" />
+    <ClInclude Include="stuff\xorstr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lazyimp.hpp" />
+    <ClCompile Include="lazyimp.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu/imgui/imgui.cpp" />
     <ClCompile Include="menu/imgui/imgui_draw.cpp" />

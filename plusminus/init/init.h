@@ -1,6 +1,6 @@
 float indicator_x = 100;
 float indicator_y = 100;
-void InitCheat() {
+void pre_draw() {
 	auto* TargetPlayerA = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	Vector2 kek = Renderer::CanvasSize();
 	vars::stuff::ScreenWidth = kek.x;
@@ -62,6 +62,24 @@ void InitCheat() {
 		Vector2 screen;
 		if (utils::w2s(tr1.position, screen) && tr1.valid) {
 			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
+
+			Target tr2 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position);
+			Vector2 screen2;
+			if (utils::w2s(tr2.position, screen2) && tr2.valid) {
+				Renderer::Line(screen, screen2, D2D1::ColorF::GhostWhite, 1.f);
+
+				Target tr3 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position, tr2.position);
+				Vector2 screen3;
+				if (utils::w2s(tr3.position, screen3) && tr3.valid) {
+					Renderer::Line(screen2, screen3, D2D1::ColorF::GhostWhite, 1.f);
+
+					Target tr4 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position, tr2.position, tr3.position);
+					Vector2 screen4;
+					if (utils::w2s(tr4.position, screen4) && tr4.valid) {
+						Renderer::Line(screen3, screen4, D2D1::ColorF::GhostWhite, 1.f);
+					}
+				}
+			}
 		}
 	}
 	if (vars::stor::closestPlayer != NULL && vars::players::targetline) {
@@ -75,17 +93,17 @@ void InitCheat() {
 			startPos = Vector2(screenX / 2, screenY / 2);
 		}
 		Vector2 ScreenPos;
-
-		
-		Vector2 t;
 		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
 			if (utils::w2s(TargetPlayerA->get_bone_pos(head), ScreenPos)) {
 				Renderer::Line(startPos, ScreenPos, D2D1::ColorF::Red, 1.f);
-				if (vars::combat::visualize_prediction) {
-					if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo())), t)) {
-						Renderer::Circle(t, D2D1::ColorF::Red, 4.5f);
-					}
-				}
+			}
+		}
+	}
+	if (vars::combat::visualize_prediction) {
+		Vector2 t;
+		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
+			if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo())), t)) {
+				Renderer::Circle(t, D2D1::ColorF::Red, 4.5f);
 			}
 		}
 	}

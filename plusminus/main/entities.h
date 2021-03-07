@@ -5,10 +5,10 @@ float timee = 120.f;
 void ent_loop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 	if (bn) {
-#ifdef rusticaland
-		Renderer::String(Vector2(100, 55), xorstr(L"plusminus [rusticaland]"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+#ifdef noauth
+		Renderer::String(Vector2(100, 55), xorstr(L"fire up the la lets go take a ride"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 #else
-		Renderer::String(Vector2(100, 55), xorstr(L"plusminus [alkad]"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+		Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 #endif
 	}
 	else { 
@@ -85,17 +85,16 @@ void ent_loop() {
 		uintptr_t Object = read(Entity + 0x10, uintptr_t); if (Object <= 100000) continue;
 		uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
+		uintptr_t ent = read(Object + 0x28, uintptr_t);
+		if (reinterpret_cast<BaseEntity*>(ent)->IsDestroyed()) {
+			continue;
+		}
 		char* buff = name->stub;
-		Item* weapon = LocalPlayer->GetActiveWeapon();
-		uintptr_t active = read(weapon + oHeldEntity, uintptr_t);
-		char* classname = weapon->ClassName();
-		bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
-		BasePlayer* Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
 		if (vars::visuals::radar_) {
 			radar::radar_logic(ObjectClass, Object, buff);
 		}
 		if (strstr(buff, xorstr("Local"))) {
-			Player = (BasePlayer*)read(Object + 0x28, uintptr_t);
+			BasePlayer* Player = (BasePlayer*)ent;
 			if (!read(Player + 0x4A8, uintptr_t)) continue;
 			if (Player != LocalPlayer) {
 				matrix_found = false;
@@ -105,7 +104,7 @@ void ent_loop() {
 		}
 		if (!LocalPlayer) return;
 		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
-			BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+			BasePlayer* Player = (BasePlayer*)ent;
 			if (!read(Player + 0x4A8, DWORD64)) continue;
 
 			if (vars::players::skeleton && !Player->IsNpc()) {

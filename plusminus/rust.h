@@ -86,6 +86,15 @@ public:
 		static auto off = METHOD("Assembly-CSharp::BaseEntity::GetWorldVelocity(): Vector3");
 		return reinterpret_cast<Vector3(__fastcall*)(BaseEntity*)>(off)(this);
 	}
+	bool IsDestroyed() {
+		if (!this) return true;
+		static auto off = OFFSET("Assembly-CSharp::BaseNetworkable::<IsDestroyed>k__BackingField");
+		return *reinterpret_cast<bool*>(this + off);
+	}
+	bool IsValid() {
+		if (!this) return false;
+		return !this->IsDestroyed();
+	}
 };
 enum QueryTriggerInteraction {
 	UseGlobal = 0,
@@ -651,6 +660,11 @@ public:
 		static auto off = METHOD("Assembly-CSharp::HitTest::HitNormalWorld(): Vector3");
 		return reinterpret_cast<Vector3(__fastcall*)(HitTest*)>(off)(this);
 	}
+
+	uintptr_t BuildAttackMessage() {
+		if (!this) return 0;
+		return reinterpret_cast<uintptr_t(__fastcall*)(HitTest*)>(vars::stor::gBase + 0x51A270)(this);
+	}
 };
 class Projectile {
 public:
@@ -684,7 +698,7 @@ public:
 	uintptr_t sourceWeaponPrefab() { return read(this + 0xD8, uintptr_t); }
 	uintptr_t sourceProjectilePrefab() { return read(this + 0xE0, uintptr_t); }
 	uintptr_t mod() { return read(this + 0xE8, uintptr_t); }
-	uint32_t projectileID() { return read(this + 0xF0, uint32_t); }
+	int projectileID() { return read(this + 0xF0, int); }
 	uint32_t seed() { return read(this + 0xF4, uint32_t); }
 	bool clientsideEffect() { return read(this + 0xF8, bool); }
 	bool clientsideAttack() { return read(this + 0xF9, bool); }
@@ -708,7 +722,7 @@ public:
 	uintptr_t flybyPlane() { return read(this + 0x168, uintptr_t); }
 	Ray flybyRay() { return read(this + 0x178, Ray); }
 	uintptr_t cleanupAction() { return read(this + 0x190, uintptr_t); }
-	uintptr_t hitTest() { return read(this + 0x198, uintptr_t); }
+	HitTest* hitTest() { return read(this + 0x198, HitTest*); }
 	float swimRandom() { return read(this + 0x1A0, float); }
 
 	void initialVelocity(Vector3 a) { write(this + 0x18, a, Vector3); }

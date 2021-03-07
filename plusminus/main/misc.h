@@ -30,7 +30,7 @@ void WeaponPatch() {
 }
 float w_last_syringe = 0.f;
 void MiscFuncs() {
-	if (w_last_syringe = 0.f) {
+	if (w_last_syringe == 0.f) {
 		w_last_syringe = LocalPlayer->Time();
 	}
 	Item* weapon = LocalPlayer->GetActiveWeapon();

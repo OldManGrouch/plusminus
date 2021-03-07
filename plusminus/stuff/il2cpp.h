@@ -1,5 +1,5 @@
 #include <map>
-#include "lazyimp.hpp"
+#include "lazyimp.h"
 namespace il2cpp {
 	auto gameAssembly = GetModuleHandleA(xorstr("GameAssembly.dll"));
 	static std::map<uint32_t, uint64_t> offsets = std::map<uint32_t, uint64_t>();
@@ -488,7 +488,6 @@ namespace il2cpp {
 		static auto DrawTexture = reinterpret_cast<void (*)(Rect, uintptr_t)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("DrawTexture"), 2, xorstr("image"), c_xor("UnityEngine"), 2)));
 	}
 	namespace unity {
-		static auto set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
 		static auto IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 	
@@ -526,7 +525,6 @@ namespace il2cpp {
 		game::set_color = reinterpret_cast<void(*)(Color)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("set_color"), -1, xorstr(""), c_xor("UnityEngine"))));
 		game::DrawTexture = reinterpret_cast<void (*)(Rect, uintptr_t)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("DrawTexture"), 2, xorstr("image"), c_xor("UnityEngine"), 2)));
 
-		unity::set_shader = reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Material::set_shader()")));
 		unity::IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 }

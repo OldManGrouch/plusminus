@@ -1,6 +1,5 @@
 #pragma warning(disable : 4530)
 #define _CRT_SECURE_NO_WARNINGS
-#define ALLOC_CONS 0
 #define StrA
 #define StrW
 #define rusticaland
@@ -16,7 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include "stuff/offsets.h"
-#include "crc32.hpp"
+#include "crc32.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +24,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <thread>
-#include "stuff/xorstr.hpp"
+#include "stuff/xorstr.h"
 #include <comdef.h>
 
 #include "menu/imgui/imgui.h"

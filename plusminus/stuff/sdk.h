@@ -373,15 +373,15 @@ public:
 	void FastBow() {
 		if (vars::weapons::fastbow) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-			write(Heldd + oAttackReady, 1, bool);
-			write(Heldd + oArrowBack, 1.f, float);
+			write(Heldd + 0x348, true, bool);
+			write(Heldd + 0x34C, 1.f, float);
 		}
 	}
 	void EokaTap() {
 		if (vars::weapons::eokatap) {
 			DWORD64 Heldd = read(this + oHeldEntity, DWORD64);
-			write(Heldd + oSuccessFraction, 1.f, float);
-			write(Heldd + oDidSparkThisFrame, true, bool);
+			write(Heldd + 0x348, 1.f, float); // successFraction
+			write(Heldd + 0x358, true, bool); // didSparkThisFrame
 		}
 	}
 };

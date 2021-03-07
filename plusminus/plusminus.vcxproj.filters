@@ -40,9 +40,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stuff/xorstr.hpp">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="hooks/minhook\src\buffer.h">
       <Filter>source\hooks\minhook\HDE</Filter>
     </ClInclude>
@@ -154,9 +151,6 @@
     <ClInclude Include="logsystem.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
-    <ClInclude Include="crc32.hpp">
-      <Filter>source\stuff</Filter>
-    </ClInclude>
     <ClInclude Include="rust.h">
       <Filter>source\stuff\sdk</Filter>
     </ClInclude>
@@ -177,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="hooks\hooks.h">
       <Filter>source\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32.h">
+      <Filter>source\stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="stuff\xorstr.h">
+      <Filter>source\stuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -216,7 +216,7 @@
     <ClCompile Include="menu/imgui/imgui_widgets.cpp">
       <Filter>source\menu\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="lazyimp.hpp">
+    <ClCompile Include="lazyimp.h">
       <Filter>source\stuff</Filter>
     </ClCompile>
   </ItemGroup>

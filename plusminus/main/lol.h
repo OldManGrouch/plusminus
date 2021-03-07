@@ -50,7 +50,7 @@ namespace lol {
 					if (shader != reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + CO::get_shader)(material)) {
 						if (!shader)
 							shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
-						il2cpp::unity::set_shader(material, shader);
+						reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::set_shader)(material, shader);
 						reinterpret_cast<void(*)(uintptr_t, int, Color)>(vars::stor::gBase + CO::SetColor)(material, property, col);
 						if (vars::players::chams_xqz) {
 							reinterpret_cast<void(*)(uintptr_t, Str, int)>(vars::stor::gBase + CO::SetInt)(material, Str(xorstr(L"_ZTest")), 8);
@@ -130,7 +130,7 @@ void TestFlying() {
 
 		Vector3 vector4 = read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer->lastSentTick()->position();
 		float num3 = Mathf::Abs(vector4.y);
-		float num4 = reinterpret_cast<float(*)(Vector3)>(vars::stor::gBase + 0x1D19050)(vector4);
+		float num4 = reinterpret_cast<float(*)(Vector3)>(vars::stor::gBase + CO::Magnitude2D)(vector4);
 		if (vector4.y >= 0.f) {
 			flyhackDistanceVertical += vector4.y;
 			flag = true;
