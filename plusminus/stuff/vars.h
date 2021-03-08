@@ -64,6 +64,7 @@ namespace vars {
 
 		float range = 300.f;
 		float fov = 100.f;
+		bool bodyaim = false;
 		bool visualize_fov = false;
 		bool visualize_prediction = false;
 		bool lock_target = false;

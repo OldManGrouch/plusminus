@@ -491,21 +491,20 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					CurPos += 15;
 				}
 				if (vars::players::weapon) {
-					const wchar_t* ActiveWeaponName;
-					Item* ActWeapon = BP->GetActiveWeapon();
-					ActiveWeaponName = ActWeapon->GetName();
-					if (!ActWeapon) {
-						ActiveWeaponName = L"---";
+					Item* weapon = BP->GetActiveWeapon();
+					wchar_t name[64];
+					if (!weapon) {
+						_swprintf(name, L"---");
 					}
 					else {
-						ActiveWeaponName = ActWeapon->GetName();
+						_swprintf(name, L"%s [x%d]", weapon->GetName(), weapon->GetCount());
 					}
-					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, ActiveWeaponName, color, true, true);
+					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, name, color, true, true);
 					CurPos += 15;
 				}
 				if (vars::players::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, s, color, true, true);
 					CurPos += 15;
 				}
@@ -606,7 +605,7 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::npc::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%dM] [%dHP]", (int)Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), BP->GetHealth());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, s, color, true, true);
 					CurPos2 += 15;
 				}

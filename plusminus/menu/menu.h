@@ -197,9 +197,6 @@ namespace menu {
 
 	void combat() {
 		HelpCheckbox(xorstr("Always Headshot"), &vars::combat::always_headshot, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
-		/*if (vars::combat::hitbox_override) {
-			ImGui::SliderInt(xorstr("Headshot Percentage"), &vars::combat::hs_percentage, 0, 100);
-		}*/
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
@@ -224,6 +221,7 @@ namespace menu {
 		}
 		HelpCheckbox(xorstr("Visualize Prediction"), &vars::combat::visualize_prediction, xorstr("Shows a little red circle indicating where the prediction is predicting."));
 		ImGui::Checkbox(xorstr("Visualize Targeting Fov"), &vars::combat::visualize_fov);
+		ImGui::Checkbox(xorstr("Body Aim"), &vars::combat::bodyaim);
 		ImGui::SliderFloat(xorstr("Targeting Fov"), &vars::combat::fov, 20.f, 1000.f);
 		ImGui::SliderFloat(xorstr("Max Targeting Distance"), &vars::combat::range, 0.f, 400.f);
 		Hotkey(xorstr("Lock Target"), &vars::keys::locktarget, ImVec2(120.f, 0));

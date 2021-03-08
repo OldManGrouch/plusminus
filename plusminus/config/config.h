@@ -110,6 +110,7 @@ private:
 		SetupValue(vars::combat::visualize_fov, false, c_xor("Combat"), c_xor("DrawFov"));
 		SetupValue(vars::combat::fov, 100.f, c_xor("Combat"), c_xor("Fov"));
 		SetupValue(vars::combat::range, 300.f, c_xor("Combat"), c_xor("Range"));
+		SetupValue(vars::combat::bodyaim, false, c_xor("Combat"), c_xor("Baim"));
 		SetupValue(vars::combat::ignore_sleepers, false, c_xor("Combat"), c_xor("IgnoreSleepers"));
 		SetupValue(vars::combat::ignore_team, false, c_xor("Combat"), c_xor("IgnoreTeam"));
 		SetupValue(vars::combat::ignore_npc, false, c_xor("Combat"), c_xor("IgnoreNpc"));
@@ -161,8 +162,8 @@ private:
 		SetupValue(vars::npc::tracers, false, c_xor("NPCs"), c_xor("tracers"));
 		
 		SetupValue(vars::misc::fov, 90.f, c_xor("Misc"), c_xor("SexyFuckingFovValue"));
-		SetupValue(vars::misc::silent_walk, false, c_xor("Misc"), c_xor("SilentWalk"));
 		SetupValue(vars::misc::spoof_ladderstate, false, c_xor("Misc"), c_xor("SpoofOnLadder"));
+		SetupValue(vars::misc::flyhack_indicator, false, c_xor("Misc"), c_xor("FlyhackIndicator"));
 		SetupValue(vars::misc::anti_aim, false, c_xor("Misc"), c_xor("AntiAim"));
 		SetupValue(vars::misc::anti_aim_speed, 25, c_xor("Misc"), c_xor("AntiAimSpeed"));
 		SetupValue(vars::misc::anti_aim_yaw, 0, c_xor("Misc"), c_xor("AntiAimYaw"));

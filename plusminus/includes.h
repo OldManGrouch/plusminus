@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define StrA
 #define StrW
-#define rusticaland
+//#define noauth
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>

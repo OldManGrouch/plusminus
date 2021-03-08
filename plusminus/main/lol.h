@@ -29,7 +29,7 @@ namespace lol {
 		write(newHitTest + 0x66, true, bool);
 		write(newHitTest + 0x88, reinterpret_cast<BasePlayer*>(target.entity), BasePlayer*);
 		write(newHitTest + 0x90, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
-		write(newHitTest + 0x9C, Vector3(0, 0, 0), Vector3);
+		write(newHitTest + 0x9C, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
 		write(newHitTest + 0x68, read(Held + 0x268, DWORD64), DWORD64);
 		reinterpret_cast<void(*)(uintptr_t, float)>(vars::stor::gBase + CO::StartAttackCooldown)(Held, read(Held + 0x1DC, float));
 		return reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::ProcessAttack)(Held, newHitTest);

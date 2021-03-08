@@ -18,7 +18,7 @@ public:
 	}
 
 	DWORD64 oPlayerList = 0;
-	static Target get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero()) {
+	static Target get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr("")) {
 		Target lowest = Target();
 
 		uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
@@ -35,15 +35,30 @@ public:
 			pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 			char* buff = name->stub;
 			Target res = Target();
-			if (strstr(buff, namee)) {
-				uintptr_t a = read(ObjectClass + 0x30, UINT64);
-				float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
-				if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-					res.valid = true;
-					res.dist = dist;
-					res.entity = read(Object + 0x28, DWORD64);
-					res.position = utils::GetEntityPosition(a);
-					if (res < lowest) lowest = res;
+			if (classname) {
+				if (strstr((char*)read(read(read(Object + 0x28, DWORD64), DWORD64) + 0x10, DWORD64), classnamee)) {
+					uintptr_t a = read(ObjectClass + 0x30, UINT64);
+					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
+					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
+						res.valid = true;
+						res.dist = dist;
+						res.entity = read(Object + 0x28, DWORD64);
+						res.position = utils::GetEntityPosition(a);
+						if (res < lowest) lowest = res;
+					}
+				}
+			}
+			else {
+				if (strstr(buff, namee)) {
+					uintptr_t a = read(ObjectClass + 0x30, UINT64);
+					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
+					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
+						res.valid = true;
+						res.dist = dist;
+						res.entity = read(Object + 0x28, DWORD64);
+						res.position = utils::GetEntityPosition(a);
+						if (res < lowest) lowest = res;
+					}
 				}
 			}
 		}

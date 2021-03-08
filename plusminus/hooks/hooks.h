@@ -195,7 +195,65 @@ namespace hk {
 					::SendInput(1, &Input, sizeof(INPUT));
 				}
 			}
-			CheckFlyhack();
+			if (vars::misc::flyhack_indicator) {
+				CheckFlyhack();
+			}
+			Item* weapon = LocalPlayer->GetActiveWeapon();
+			DWORD64 active = read(weapon + oHeldEntity, DWORD64);
+			char* classname = weapon->ClassName();
+			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
+			if (vars::misc::auto_farm_ore) {
+				if (weaponmelee) {
+					Target ore_hot_spot = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+						xorstr(""),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						true,
+						xorstr("OreHotSpot"));
+					if (ore_hot_spot.valid) {
+						Vector3 local = utils::ClosestPoint(LocalPlayer, ore_hot_spot.position);
+						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
+							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
+								lol::do_attack(ore_hot_spot, active, false);
+							}
+						}
+					}
+				}
+			}
+			if (vars::misc::auto_farm_tree) {
+				if (weaponmelee) {
+					Target tree_entity = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+						xorstr(""),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						true,
+						xorstr("TreeEntity"));
+					if (tree_entity.valid) {
+						tree_entity.position = Vector3::Zero();
+						Target tree_marker = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+							xorstr(""),
+							Vector3::Zero(),
+							Vector3::Zero(),
+							Vector3::Zero(),
+							true,
+							xorstr("TreeMarker"));
+						if (tree_marker.valid) {
+							Vector3 locala = utils::ClosestPoint(LocalPlayer, tree_marker.position);
+							if (Math::Distance_3D(locala, tree_marker.position) <= 2.f) {
+								tree_entity.position = tree_marker.position;
+								Vector3 local = utils::ClosestPoint(LocalPlayer, tree_entity.position);
+								if (Math::Distance_3D(local, tree_entity.position) <= 2.f) {
+									if (reinterpret_cast<BaseEntity*>(tree_entity.entity)->IsValid()) {
+										lol::do_attack(tree_entity, active, false);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			
 			EntityThreadLoop();
 			if (!waslagging && vars::misc::fake_lag) {
@@ -378,7 +436,7 @@ namespace hk {
 			Vector3 Local = LocalPlayer->eyes()->get_position();
 
 			Vector3 heli_target = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
-			Vector3 target = TargetPlayer->get_bone_pos(head);
+			Vector3 target = vars::combat::bodyaim ? TargetPlayer->get_bone_pos(spine1) : TargetPlayer->get_bone_pos(head);
 
 			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
 			a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));

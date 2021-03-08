@@ -43,8 +43,12 @@ void pre_draw() {
 			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
 		}
 	}
-	if (vars::stuff::gongetflyhack) {
-		Renderer::String(Vector2{ xs, ys - 50 }, xorstr(L"flyhack moment LOl"), D2D1::ColorF::OrangeRed, true, true);
+	if (reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer)->IsDestroyed()) {
+		vars::stor::closestPlayer = NULL;
+	}
+	if (reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->IsDestroyed()) {
+		vars::stor::closestHeli = NULL;
+		vars::stor::closestHeliObj = NULL;
 	}
 	if (vars::combat::lock_target) {
 		wchar_t trgt[64];
@@ -63,17 +67,17 @@ void pre_draw() {
 		if (utils::w2s(tr1.position, screen) && tr1.valid) {
 			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
 
-			Target tr2 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position);
+			Target tr2 = Target::get_closest_object(tr1.position, xorstr("ore.prefab"), tr1.position);
 			Vector2 screen2;
 			if (utils::w2s(tr2.position, screen2) && tr2.valid) {
 				Renderer::Line(screen, screen2, D2D1::ColorF::GhostWhite, 1.f);
 
-				Target tr3 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position, tr2.position);
+				Target tr3 = Target::get_closest_object(tr2.position, xorstr("ore.prefab"), tr1.position, tr2.position);
 				Vector2 screen3;
 				if (utils::w2s(tr3.position, screen3) && tr3.valid) {
 					Renderer::Line(screen2, screen3, D2D1::ColorF::GhostWhite, 1.f);
 
-					Target tr4 = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"), tr1.position, tr2.position, tr3.position);
+					Target tr4 = Target::get_closest_object(tr3.position, xorstr("ore.prefab"), tr1.position, tr2.position, tr3.position);
 					Vector2 screen4;
 					if (utils::w2s(tr4.position, screen4) && tr4.valid) {
 						Renderer::Line(screen3, screen4, D2D1::ColorF::GhostWhite, 1.f);
@@ -82,7 +86,7 @@ void pre_draw() {
 			}
 		}
 	}
-	if (vars::stor::closestPlayer != NULL && vars::players::targetline) {
+	if (vars::stor::closestPlayer != NULL && vars::players::targetline && TargetPlayerA->IsValid()) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		static Vector2 startPos;
@@ -99,7 +103,7 @@ void pre_draw() {
 			}
 		}
 	}
-	if (vars::combat::visualize_prediction) {
+	if (vars::combat::visualize_prediction && TargetPlayerA->IsValid()) {
 		Vector2 t;
 		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
 			if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo())), t)) {
@@ -142,7 +146,7 @@ void pre_draw() {
 		float origyaw = vars::stuff::anti_aim_;
 		Renderer::CosTanSinLine(origyaw, range, indicator_x, indicator_y, LineLength, D2D1::ColorF::Red);//this the function from b4 btw
 	}
-	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt) {
+	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt && TargetPlayerA->IsValid()) {
 		const float Height = 275.f;
 		const float Width = 150.f;
 		POINT p;
@@ -167,7 +171,7 @@ void pre_draw() {
 				wchar_t* ActiveItem = ActWeapon->GetName();
 				if (ActiveItem) {
 					wchar_t itemName[0x100];
-					_swprintf(itemName, xorstr(L"%s [%d]"), ActiveItem, ActWeapon->GetCount());
+					_swprintf(itemName, xorstr(L"%s [x%d]"), ActiveItem, ActWeapon->GetCount());
 					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName, D2D1::ColorF::White, true, true);
 				}
 			}

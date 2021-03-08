@@ -83,7 +83,7 @@ void Normalize(float& Yaw, float& Pitch) {
 }
 void do_aimbot(BasePlayer* player) {
 	Vector3 local = LocalPlayer->get_bone_pos(head);
-	Vector3 target = player->get_bone_pos(head);
+	Vector3 target = vars::combat::bodyaim ? player->get_bone_pos(spine1) : player->get_bone_pos(head);
 	a::Prediction(local, target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
 	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);

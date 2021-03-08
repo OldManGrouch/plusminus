@@ -138,7 +138,6 @@ void ent_loop() {
 							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
 						}
 						else {
-
 							ESP(Player, LocalPlayer, D2D1::ColorF::White);
 						}
 					}
