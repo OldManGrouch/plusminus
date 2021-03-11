@@ -6,7 +6,7 @@ void ent_loop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 	if (bn) {
 #ifdef noauth
-		Renderer::String(Vector2(100, 55), xorstr(L"fire up the la lets go take a ride"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+		Renderer::String(Vector2(100, 55), xorstr(L"niggas in my butthole (!!!!!!!)"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 #else
 		Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 #endif
@@ -39,9 +39,9 @@ void ent_loop() {
 			if (utils::w2s(explosion.position, explPos)) {
 				Renderer::String(
 					explPos,
-					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%dm] [%d]"),
+					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%.2fm] [%d]"),
 						explosion.name.c_str(),
-						(int)Math::Distance_3D(explosion.position, LocalPlayer->get_bone_pos(head)),
+						Math::Distance_3D(explosion.position, LocalPlayer->get_bone_pos(head)),
 						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
 					D2D1::ColorF::Red,
 					true,
@@ -103,7 +103,7 @@ void ent_loop() {
 			has_local_player = true;
 		}
 		if (!LocalPlayer) return;
-		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
+		if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) || strstr(buff, xorstr("dweller")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 			BasePlayer* Player = (BasePlayer*)ent;
 			if (!read(Player + 0x4A8, DWORD64)) continue;
 

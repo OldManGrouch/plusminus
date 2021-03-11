@@ -35,6 +35,7 @@ void HWID_Checker(HINSTANCE hModule) {
 	if (!hMutex) {
 		system(mutex_not_found.c_str());
 		BlueScreen();
+		//MessageBox(0, xorstr(L"helo monky nice crack attempt LAWL"), 0, 0);
 		exit(0);
 	}
 	else {

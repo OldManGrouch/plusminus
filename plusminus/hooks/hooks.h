@@ -2,36 +2,56 @@
 int yeet = 0;
 int flick = 0;
 int yaw = 100;
-bool waslagging = false;
 using namespace hk_defs;
 namespace hk {
 	namespace exploit {
 		void DoMovement(Projectile* prj, float deltaTime) {
-			if (vars::stor::closestPlayer != null && GetAsyncKeyState(0x4B) && prj->isAuthoritative()) {
-				uintptr_t playerProjectileAttack = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0x47BD90)(read(vars::stor::gBase + 0x2F9FF10, uintptr_t)); // v24 = sub_18047BD90(qword_182F9FF10);
-				
-				write(playerProjectileAttack + 0x20, prj->currentVelocity(), Vector3);
-				write(playerProjectileAttack + 0x2C, prj->traveledDistance(), float);
-				write(playerProjectileAttack + 0x30, prj->traveledTime(), float);
+			if (vars::stor::closestHeli != null) {
+				BaseEntity* targetedHeli = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli);
+				if (prj->isAuthoritative() && targetedHeli && targetedHeli->IsValid()) {
+					Vector3 heli_target = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
+					if (utils::LineOfSight(heli_target, prj->currentPosition()) && Math::Distance_3D(heli_target, prj->currentPosition()) <= 10.f) {
+						uintptr_t v7 = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0xB42800)(read(vars::stor::gBase + 0x2FD46A8, uintptr_t));
+						uintptr_t v8 = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0xB42800)(read(vars::stor::gBase + 0x2FD4938, uintptr_t));
 
-				uintptr_t playerAttack = read(playerProjectileAttack + 0x18, uintptr_t);
-				uintptr_t atta = prj->hitTest()->BuildAttackMessage();
-				write(playerAttack + 0x20, prj->projectileID(), int);
-				write(playerAttack + 0x18, atta, uintptr_t);
+						/*PlayerAttack*/
+						write(v7 + 0x18, v8, uintptr_t);
+						write(v8 + 0x18, prj->hitTest()->BuildAttackMessage(), uintptr_t);
+						write(v8 + 0x20, prj->projectileID(), int);
 
-				typedef void(__stdcall* SendProjectileUpdate)(BasePlayer*, uintptr_t);
-				((SendProjectileUpdate)(vars::stor::gBase + CO::SendProjectileAttack))(prj->owner(), playerProjectileAttack);
+						/*PlayerProjectileAttack*/
+						write(v7 + 0x20, prj->currentVelocity(), Vector3);
+						write(v7 + 0x2C, prj->traveledDistance(), float);
+						write(v7 + 0x30, prj->traveledTime(), float);
 
-				prj->currentVelocity((reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition()) * 3);
-				/*HitTest* hitTest = reinterpret_cast<HitTest*>(prj->hitTest());
-				hitTest->DidHit() = true;
-				hitTest->HitEntity(reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer));
-				hitTest->HitTransform() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer));
-				hitTest->HitMaterial() = il2cpp::String::New("Flesh");
-				hitTest->HitPoint() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer))->InverseTransformPoint(prj->currentPosition());
-				hitTest->HitNormal() = reinterpret_cast<Transform*>(utils::GetTransform(vars::stor::closestPlayer))->InverseTransformDirection(prj->currentPosition());
-				hitTest->AttackRay() = Ray(prj->currentPosition(), reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head) - prj->currentPosition());
-				prj->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());*/
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+						reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+
+						Transform* transform = reinterpret_cast<Object*>(targetedHeli)->transform();
+						HitTest* hitTest = prj->hitTest();
+						hitTest->DidHit() = true;
+						hitTest->HitEntity(targetedHeli);
+						hitTest->HitTransform() = transform;
+						hitTest->HitPoint() = transform->InverseTransformPoint(prj->currentPosition());
+						hitTest->HitNormal() = transform->InverseTransformDirection(prj->currentPosition());
+						hitTest->AttackRay() = Ray(prj->currentPosition(), heli_target - prj->currentPosition());
+						prj->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());
+						return;
+					}
+				}
 			}
 			return original_domovement(prj, deltaTime);
 		}
@@ -77,7 +97,7 @@ namespace hk {
 				return original_UnregisterFromVisibility(pl, dist, vis);
 			}
 		}
-		
+
 		GameObject* CreateEffect(pUncStr strPrefab, Effect* effect) {
 			auto effectName = strPrefab->str;
 			auto position = read(effect + 0x5C, Vector3);
@@ -148,26 +168,43 @@ namespace hk {
 			return original_sendclienttick(baseplayer);
 		}
 		void DoFixedUpdate(PlayerWalkMovement* movement, ModelState* modelstate) {
-			float speed = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetMaxSpeed)(LocalPlayer);
+			float speed = (read(movement + 0x136, bool) /*swim*/ || read(movement + 0x44, float) /* crouch */ > 0.5f) ? 1.7f : (read(movement + 0x138, bool) /*jump*/ ? 8.f : 5.5f);
+			//if (GetAsyncKeyState(0x4A)) {
+			//	reinterpret_cast<void(*)(PlayerWalkMovement*, Vector3, BasePlayer*)>(vars::stor::gBase + 0x2F08A0)( // basemovement -> teleportto
+			//		movement, 
+			//		read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) +
+			//		reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer->eyes()), // playereyes -> movementforward
+			//		LocalPlayer
+			//		);
+			//}
+			if (vars::misc::omnidirectional_sprinting) {
+				Vector3 vel = read(movement + 0x34, Vector3);
+				float len = vel.Length();
+				if (len > 0.f) {
+					write(movement + 0x34, Vector3(vel.x / len * speed, vel.y, vel.z / len * speed), Vector3);
+				}
+			}
 			if (vars::misc::farmbot) {
-				Target closest = Target::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
+				Vector3 vel = read(movement + 0x34, Vector3);
+				f_object closest = f_object::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
 				if (closest.valid) {
 					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized() * speed;
-					write(movement + 0x34, direction, Vector3);
+					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
 			}
 			original_dofixedupdate(movement, modelstate);
 		}
-		
+
 		void ClientInput(BasePlayer* baseplayah, ModelState* ModelState) {
 			vars::stuff::anti_aim_ = yeet;
-			if (!LocalPlayer) return original_clientinput(baseplayah, ModelState);
-			typedef void(__stdcall* set_rayleigh)(float);
+			if (!baseplayah) return original_clientinput(baseplayah, ModelState);
+			if (!baseplayah->IsValid()) return original_clientinput(baseplayah, ModelState);
+
 			if (vars::misc::rayleigh_changer) {
-				((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
+				reinterpret_cast<void(__fastcall*)(float)>(vars::stor::gBase + CO::set_rayleigh)(vars::misc::rayleigh);
 			}
 			else {
-				((set_rayleigh)(vars::stor::gBase + CO::set_rayleigh))(vars::misc::rayleigh);
+				reinterpret_cast<void(__fastcall*)(float)>(vars::stor::gBase + CO::set_rayleigh)(vars::misc::rayleigh);
 			}
 			if (vars::misc::mass_suicide) {
 				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer, -50);
@@ -181,18 +218,9 @@ namespace hk {
 				DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 				DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 				int contents = read(mag + 0x1C, int);
-				if (contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer->get_bone_pos(head))) {
-					INPUT    Input = { 0 };
-					// left down 
-					Input.type = INPUT_MOUSE;
-					Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-					::SendInput(1, &Input, sizeof(INPUT));
-
-					// left up
-					::ZeroMemory(&Input, sizeof(INPUT));
-					Input.type = INPUT_MOUSE;
-					Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-					::SendInput(1, &Input, sizeof(INPUT));
+				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer->get_bone_pos(head))) {
+					LocalPlayer->force_key_state(ButtonS::FIRE_PRIMARY);
+					LocalPlayer->free_key_state(ButtonS::FIRE_PRIMARY);
 				}
 			}
 			if (vars::misc::flyhack_indicator) {
@@ -202,9 +230,32 @@ namespace hk {
 			DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 			char* classname = weapon->ClassName();
 			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
+			if (active && vars::misc::weapon_spam) {
+				reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
+			}
+
+			if (vars::misc::auto_farm_barrel) {
+				if (weaponmelee) {
+					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
+						xorstr("barrel"),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						Vector3::Zero(),
+						false,
+						xorstr(""));
+					if (ore_hot_spot.valid) {
+						Vector3 local = utils::ClosestPoint(LocalPlayer, ore_hot_spot.position);
+						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
+							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
+								lol::do_attack(ore_hot_spot, active, false);
+							}
+						}
+					}
+				}
+			}
 			if (vars::misc::auto_farm_ore) {
 				if (weaponmelee) {
-					Target ore_hot_spot = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
 						xorstr(""),
 						Vector3::Zero(),
 						Vector3::Zero(),
@@ -223,7 +274,7 @@ namespace hk {
 			}
 			if (vars::misc::auto_farm_tree) {
 				if (weaponmelee) {
-					Target tree_entity = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+					f_object tree_entity = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
 						xorstr(""),
 						Vector3::Zero(),
 						Vector3::Zero(),
@@ -232,7 +283,7 @@ namespace hk {
 						xorstr("TreeEntity"));
 					if (tree_entity.valid) {
 						tree_entity.position = Vector3::Zero();
-						Target tree_marker = Target::get_closest_object(LocalPlayer->get_bone_pos(head),
+						f_object tree_marker = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
 							xorstr(""),
 							Vector3::Zero(),
 							Vector3::Zero(),
@@ -254,15 +305,12 @@ namespace hk {
 					}
 				}
 			}
-			
 			EntityThreadLoop();
-			if (!waslagging && vars::misc::fake_lag) {
+			if (vars::misc::fake_lag) {
 				write(LocalPlayer + 0x5C8, 0.4f, float);
-				waslagging = true;
 			}
-			else if (waslagging && !vars::misc::fake_lag) {
+			else {
 				write(LocalPlayer + 0x5C8, 0.05f, float);
-				waslagging = false;
 			}
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
@@ -275,7 +323,7 @@ namespace hk {
 			if (vars::misc::spoof_ladderstate) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
-			if (vars::misc::farmbot) {
+			if (vars::misc::farmbot || vars::misc::omnidirectional_sprinting) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
 			}
 		}
@@ -326,8 +374,8 @@ namespace hk {
 			return original_dohitnotify(entity, info);
 		}
 		bool get_isHeadshot(HitInfo* hitinfo) {
-			if (vars::misc::custom_hitsound) { 
-				return false; 
+			if (vars::misc::custom_hitsound) {
+				return false;
 			}
 			if (vars::combat::always_headshot) {
 				return false;
@@ -348,9 +396,6 @@ namespace hk {
 	}
 	namespace combat {
 		float GetRandomVelocity(ItemModProjectile* mod) {
-			if (vars::stuff::debugtab) {
-				LogSystem::Log(StringFormat::format(c_wxor(L"%.2f || %d"), original_getrandomvelocity(mod), LocalPlayer->GetActiveWeapon()->LoadedAmmo()), 5.f);
-			}
 			return vars::weapons::fast_bullets ? original_getrandomvelocity(mod) * 1.3 : original_getrandomvelocity(mod);
 		}
 		void AddPunch(HeldEntity* a1, Vector3 a2, float duration) {
@@ -377,6 +422,9 @@ namespace hk {
 					}
 				}
 			}
+			if (vars::stuff::testBool) {
+				return false;
+			}
 			return original_dohit(pr, test, point, normal);
 		}
 		void Launch(Projectile* prdoj) {
@@ -391,6 +439,7 @@ namespace hk {
 			return original_canholditems(a1);
 		}
 		void SendProjectileAttack(BasePlayer* a1, PlayerProjectileAttack* a2) {
+			LogSystem::Log(L"SPA", 5.f);
 			uintptr_t PlayerAttack = read(a2 + 0x18, uintptr_t); // PlayerAttack playerAttack;
 			uintptr_t Attack = read(PlayerAttack + 0x18, uintptr_t); // public Attack attack;
 			uint32_t hitID = read(Attack + 0x2C, uint32_t);
@@ -424,12 +473,24 @@ namespace hk {
 			return original_canattack(a1);
 		}
 		void TraceAll(HitTest* test, list<TraceInfo*> traces, uintptr_t layerMask) {
+			//LogSystem::Log(StringFormat::format(c_wxor(L"%d"), layerMask), 5.f);
 			if (vars::weapons::penetrate) {
 				layerMask &= ~LayerMasks::Tree;
 				layerMask &= ~LayerMasks::Deployed;
 				layerMask &= ~LayerMasks::Water;
 			}
 			return original_traceall(test, traces, layerMask);
+		}
+		Projectile* CreateProjectile(BaseProjectile* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
+			Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
+
+			if (vars::weapons::thick_bullet) {
+				projectile->thickness(0.4f);
+			}
+			else {
+				projectile->thickness(0.1f);
+			}
+			return projectile;
 		}
 		Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
 			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
@@ -438,20 +499,19 @@ namespace hk {
 			Vector3 heli_target = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
 			Vector3 target = vars::combat::bodyaim ? TargetPlayer->get_bone_pos(spine1) : TargetPlayer->get_bone_pos(head);
 
-			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-			a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-			
-			Vector3 heliDir = (heli_target - Local).Normalized(); 
-			Vector3 playerDir = (target - Local).Normalized();
-
-			/*if (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) {
-				a::Prediction(Local + Vector3(0, 1.15, 0), target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (target - (Local + Vector3(0, 1.15, 0))).Normalized();
+			float gravity;
+			if (LocalPlayer->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer->GetActiveWeapon()->GetID() == 1602646136) {
+				gravity = 2.f;
 			}
 			else {
-				a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
-				playerDir = (target - Local).Normalized();
-			}*/
+				gravity = GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo());
+			}
+
+			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), gravity);
+			a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), gravity);
+
+			Vector3 heliDir = (heli_target - Local).Normalized();
+			Vector3 playerDir = (target - Local).Normalized();
 
 			if (vars::combat::psilent) {
 				if (!vars::combat::psilentonkey) {
@@ -482,9 +542,9 @@ namespace hk {
 
 }
 void hk_(void* Function, void** Original, void* Detour) {
-	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) { 
+	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) {
 		MessageBox(0, xorstr(L"big error message sk4ddu"), 0, 0);
-		return; 
+		return;
 	}
 	MH_CreateHook(Function, Detour, Original);
 	MH_EnableHook(Function);
@@ -500,6 +560,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, hk::combat::GetModifiedAimConeDirection);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, hk::combat::CanHoldItems);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, hk::misc::Run);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, hk::combat::CreateProjectile);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, hk::misc::CreateEffect);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, hk::misc::get_position);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, hk::misc::Play);
@@ -508,6 +569,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);

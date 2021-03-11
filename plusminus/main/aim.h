@@ -64,7 +64,7 @@ float GetBulletSpeed() {
 	Item* active = LocalPlayer->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
-	if (ammo == 0) return vars::weapons::fast_bullets ? tar.ammo[0].speed * 1.3 : tar.ammo[0].speed; //melee
+	if (ammo == 0) return vars::weapons::fast_bullets ? tar.ammo[0].speed * 1.3 : tar.ammo[0].speed;
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
 			if (id == ammo) {

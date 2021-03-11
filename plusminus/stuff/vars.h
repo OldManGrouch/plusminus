@@ -197,6 +197,7 @@ namespace vars {
 		}
 	}
 	namespace misc	{
+		bool weapon_spam = false;
 		bool flyhack_indicator = false;
 		bool farmbot = false;
 		bool spiderman = false;
@@ -223,6 +224,7 @@ namespace vars {
 		float rayleigh = 10.f;
 		bool annoyer = false;
 		bool bright_ambient = false;
+		bool auto_farm_barrel = false;
 		bool auto_pickup = false;
 		bool spoof_ladderstate = false;
 		bool anti_aim = false;

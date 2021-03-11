@@ -1,25 +1,25 @@
-class Target {
+class f_object {
 public:
 	bool valid;
 	DWORD64 entity;
 	Vector3 position;
 	float dist = 10000.f;
 
-	bool operator<(const Target& b) { return this->dist < b.dist; }
-	bool operator>(const Target& b) { return this->dist > b.dist; }
-	bool operator<=(const Target& b) { return this->dist <= b.dist; }
-	bool operator>=(const Target& b) { return this->dist >= b.dist; }
-	Target() {
+	bool operator<(const f_object& b) { return this->dist < b.dist; }
+	bool operator>(const f_object& b) { return this->dist > b.dist; }
+	bool operator<=(const f_object& b) { return this->dist <= b.dist; }
+	bool operator>=(const f_object& b) { return this->dist >= b.dist; }
+	f_object() {
 		this->valid = false;
 	}
-	Target(Vector3 target) {
+	f_object(Vector3 target) {
 		this->valid = false;
 		this->position = target;
 	}
 
 	DWORD64 oPlayerList = 0;
-	static Target get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr("")) {
-		Target lowest = Target();
+	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr("")) {
+		f_object lowest = f_object();
 
 		uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 		if (!bn)
@@ -34,7 +34,7 @@ public:
 			uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
 			pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 			char* buff = name->stub;
-			Target res = Target();
+			f_object res = f_object();
 			if (classname) {
 				if (strstr((char*)read(read(read(Object + 0x28, DWORD64), DWORD64) + 0x10, DWORD64), classnamee)) {
 					uintptr_t a = read(ObjectClass + 0x30, UINT64);
@@ -77,19 +77,16 @@ public:
 		return max(res, 0.05f);
 	}
 
-	static Target get_melee_target(BasePlayer* Player, DWORD64 melee) {
-		Target res = Target();
+	static f_object get_melee_target(BasePlayer* Player, DWORD64 melee) {
+		f_object res = f_object();
 
 		if (Player->GetHealth() < 0.2) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
 		if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) return res;
-		typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
-
 		Vector3 prepos = Player->get_bone_pos(head);
-
-		Vector3 closest_entity = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(LocalPlayer, prepos);
-		Vector3 closest_local = ((CPoint)(vars::stor::gBase + CO::utils::ClosestPoint))(Player, closest_entity);
+		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer, prepos);
+		Vector3 closest_local = utils::ClosestPoint(Player, closest_entity);
 		float disttoentity = MaxMeleeDist(melee, false);
 		float distfromlocal = MaxMeleeDist(melee, true);
 

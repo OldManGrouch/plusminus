@@ -1,7 +1,7 @@
 #include <vector>
 
 namespace lol {
-	void do_attack(Target target, DWORD64 Held, bool transform) {
+	void do_attack(f_object target, DWORD64 Held, bool transform) {
 		if (!target.valid || !Held) return;
 
 		if (read(Held + 0x230, float) >= Time::time()) { return; }

@@ -67,7 +67,7 @@ void EntityThreadLoop() {
 				}
 			}
 			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
-				Target target = Target::get_melee_target((BasePlayer*)ent, active);
+				f_object target = f_object::get_melee_target((BasePlayer*)ent, active);
 				lol::do_attack(target, active, true);
 			}
 		}

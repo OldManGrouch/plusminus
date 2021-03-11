@@ -205,6 +205,24 @@ enum class BuildingGrade {
 	TopTier,
 	Count
 };
+enum class Signal {
+	Attack,
+	Alt_Attack,
+	DryFire,
+	Reload,
+	Deploy,
+	Flinch_Head,
+	Flinch_Chest,
+	Flinch_Stomach,
+	Flinch_RearHead,
+	Flinch_RearTorso,
+	Throw,
+	Relax,
+	Gesture,
+	PhysImpact,
+	Eat,
+	Startled
+};
 class DamageTypeList {
 public:
 	enum class DamageType {
@@ -533,6 +551,20 @@ public:
 		int btn = read(Cur + 0x14, int);
 		return ((btn & (int)b) == (int)b);
 	}
+	void force_key_state(ButtonS b) {
+		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
+		DWORD64 Cur = read(InputState + 0x10, DWORD64);
+		if (!Cur) return;
+		int btn = read(Cur + 0x14, int);
+		write(Cur + 0x14, btn |= (int)b, int);
+	}
+	void free_key_state(ButtonS b) {
+		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
+		DWORD64 Cur = read(InputState + 0x10, DWORD64);
+		if (!Cur) return;
+		int btn = read(Cur + 0x14, int);
+		write(Cur + 0x14, btn &= (int)b, int);
+	}
 	Item* GetWeaponInfo(int Id) {
 		DWORD64 Inventory = read(this + oInventory, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x28, DWORD64); // containerBelt
@@ -663,7 +695,7 @@ public:
 
 	uintptr_t BuildAttackMessage() {
 		if (!this) return 0;
-		return reinterpret_cast<uintptr_t(__fastcall*)(HitTest*)>(vars::stor::gBase + 0x51A270)(this);
+		return reinterpret_cast<uintptr_t(__fastcall*)(HitTest*)>(vars::stor::gBase + 0x7A8E80)(this);
 	}
 };
 class Projectile {
