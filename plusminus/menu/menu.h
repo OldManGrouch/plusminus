@@ -450,6 +450,9 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Indicator"), &vars::misc::anti_aim_indicator);
 		}
 		HelpCheckbox(xorstr("Weapon Spam"), &vars::misc::weapon_spam, xorstr("Spams the shit out of your weapon's attack animation, everyone can see and hear it (very loud)."));
+		if (vars::misc::weapon_spam) {
+			Hotkey(xorstr("Weapon Spam Key"), &vars::keys::weaponspam, ImVec2(120.f, 0));
+		}
 		HelpCheckbox(xorstr("Flyhack Indicator"), &vars::misc::flyhack_indicator, xorstr("Shows you how much you can flyhack before getting kicked."));
 		HelpCheckbox(xorstr("Jesus"), &vars::misc::jesus, xorstr("Allows you to walk on water."));
 		HelpCheckbox(xorstr("Walker"), &vars::misc::walker, xorstr("Allows you to walk through trees and players without any resistance."));

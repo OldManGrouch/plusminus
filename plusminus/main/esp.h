@@ -72,7 +72,7 @@ namespace radar {
 				if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
 						if (!Player->HasFlags(16)) {
-							if (Player->is_teammate()) {
+							if (LocalPlayer->is_teammate(Player->GetSteamID())) {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
@@ -463,7 +463,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
 				if (vars::players::fillbox) {
 					if ((int)BP->GetHealth() > 0) {
-						if (BP->is_teammate()) {
+						if (LocalPlayer->is_teammate(BP->GetSteamID())) {
 							Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.4f, 0.f, 0.4f));
 						}
 						else {

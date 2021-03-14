@@ -43,7 +43,7 @@ void EntityThreadLoop() {
 					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 					if (!lol->HasFlags(16)) {
-						if (lol->is_teammate()) {
+						if (LocalPlayer->is_teammate(lol->GetSteamID())) {
 							lol::chams(multimesh, Color(0, 1, 0, 1));
 						}
 						else {
@@ -71,7 +71,17 @@ void EntityThreadLoop() {
 				lol::do_attack(target, active, true);
 			}
 		}
-		else if (vars::misc::auto_grade && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))) {
+		else if (vars::misc::auto_grade && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))
+			&& !strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))
+			&& !strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Deployable"))
+			&& !strstr(buff, xorstr("furnace"))
+			&& !strstr(buff, xorstr("bars"))
+			&& !strstr(buff, xorstr("gates.external.high.stone.prefab"))
+			&& !strstr(buff, xorstr("gates.external.high.wood.prefab"))
+			&& !strstr(buff, xorstr("wall.external.high.stone.prefab"))
+			&& !strstr(buff, xorstr("wall.external.high.wood.prefab"))
+			)
+		{
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }

@@ -32,6 +32,7 @@ namespace vars {
 		char ConfigName[0x100] = "cfg";
 	}
 	namespace keys {
+		int weaponspam{ 0x4C };
 		int zoom = { 0x42 };
 		int suicide = { 0x5A };
 		int longneck = { 0x4D };

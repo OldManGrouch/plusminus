@@ -102,7 +102,7 @@ void ent_loop() {
 
 			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (Player->is_teammate()) {
+					if (LocalPlayer->is_teammate(Player->GetSteamID())) {
 						Skeleton(Player, D2D1::ColorF::Lime);
 					}
 					else {
@@ -123,7 +123,7 @@ void ent_loop() {
 			}
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (Player->is_teammate()) {
+					if (LocalPlayer->is_teammate(Player->GetSteamID())) {
 						ESP(Player, LocalPlayer, D2D1::ColorF::Lime);
 					}
 					else {
@@ -144,7 +144,7 @@ void ent_loop() {
 			}
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
 			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
-			if (vars::combat::ignore_team && Player->is_teammate()) continue;
+			if (vars::combat::ignore_team && LocalPlayer->is_teammate(Player->GetSteamID())) continue;
 			if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 			if (vars::combat::ignore_players) continue;
 			if (Math::Distance_3D(LocalPlayer->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
@@ -263,7 +263,7 @@ void ent_loop() {
 	if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->is_teammate() && vars::combat::ignore_team) {
+	if (LocalPlayer->is_teammate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
 		vars::stor::closestPlayer = NULL;
 	}
 	if (TargetPlayer->GetHealth() < 0.2) {
@@ -286,7 +286,7 @@ void ent_loop() {
 		vars::stor::closestHeliObj = NULL;
 	}
 	if (has_local_player && LocalPlayer) {
-		if (vars::combat::aimbot && !reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->is_teammate()) {
+		if (vars::combat::aimbot && LocalPlayer->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID())) {
 			if (vars::stor::closestPlayer && !LocalPlayer->IsMenu()) {
 				if (GetAsyncKeyState(vars::keys::aimkey)) {
 					do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));

@@ -98,7 +98,7 @@ namespace lol {
 	float LastPickup = 0.f;
 	void PickupPlayer(BasePlayer* ent) {
 		typedef void(__stdcall* AssistPlayer)(BasePlayer*, BasePlayer*);
-		if (!ent->is_teammate() && vars::misc::revive_team_only) return;
+		if (!LocalPlayer->is_teammate(ent->GetSteamID()) && vars::misc::revive_team_only) return;
 		if (LocalPlayer->Time() > LastPickup + 0.5f) {
 			((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer);
 			LastPickup = LocalPlayer->Time();

@@ -18,7 +18,7 @@ public:
 	}
 
 	DWORD64 oPlayerList = 0;
-	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr("")) {
+	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr(""), float get_dist = 400.f) {
 		f_object lowest = f_object();
 
 		uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
@@ -40,7 +40,7 @@ public:
 					uintptr_t a = read(ObjectClass + 0x30, UINT64);
 					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
 					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-						res.valid = true;
+						res.valid = dist <= get_dist;
 						res.dist = dist;
 						res.entity = read(Object + 0x28, DWORD64);
 						res.position = utils::GetEntityPosition(a);
@@ -53,7 +53,7 @@ public:
 					uintptr_t a = read(ObjectClass + 0x30, UINT64);
 					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
 					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-						res.valid = true;
+						res.valid = dist <= get_dist;
 						res.dist = dist;
 						res.entity = read(Object + 0x28, DWORD64);
 						res.position = utils::GetEntityPosition(a);
@@ -83,7 +83,7 @@ public:
 		if (Player->GetHealth() < 0.2) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
-		if (vars::combat::ignore_team && Player->is_teammate()) return res;
+		if (vars::combat::ignore_team && LocalPlayer->is_teammate(Player->GetSteamID())) return res;
 		Vector3 prepos = Player->get_bone_pos(head);
 		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer, prepos);
 		Vector3 closest_local = utils::ClosestPoint(Player, closest_entity);

@@ -199,7 +199,9 @@ namespace hk {
 			char* classname = weapon->ClassName();
 			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
 			if (active && vars::misc::weapon_spam) {
-				reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
+				if (GetAsyncKeyState(vars::keys::weaponspam)) {
+					reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
+				}
 			}
 			if (vars::misc::auto_farm_barrel) {
 				if (weaponmelee) {
@@ -373,7 +375,7 @@ namespace hk {
 		bool DoHit(Projectile* prj, HitTest* test, Vector3 point, Vector3 normal) {
 			if (prj->isAuthoritative()) {
 				if (vars::combat::ignore_team) {
-					if (reinterpret_cast<BasePlayer*>(test->HitEntity())->is_teammate()) {
+					if (LocalPlayer->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
 						if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
 							return false;
 						}

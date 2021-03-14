@@ -257,6 +257,7 @@ private:
 		SetupValue(vars::keys::gravitykey, 0x04, c_xor("Keys"), c_xor("gravityKey"));
 		SetupValue(vars::keys::forcepos, 0x4E, c_xor("Keys"), c_xor("froc"));
 		SetupValue(vars::keys::suicide, 0x5A, c_xor("Keys"), c_xor("suicide"));
+		SetupValue(vars::keys::weaponspam, 0x4C, c_xor("Keys"), c_xor("weaponspam"));
 		SetupValue(vars::keys::psilent, 0x50, c_xor("Keys"), c_xor("pSilent"));
 		SetupValue(vars::keys::longneck, 0x4D, c_xor("Keys"), c_xor("neck"));
 

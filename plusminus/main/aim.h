@@ -117,7 +117,8 @@ void do_aimbot(BasePlayer* player) {
 	if (!LocalPlayer->GetActiveWeapon() || player->IsDestroyed()) {
 		return;
 	}
-	Vector3 local = LocalPlayer->eyes()->get_position();
+	bool long_neck = vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck);
+	Vector3 local = long_neck ? LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer->get_bone_pos(head);
 	Vector3 target = vars::combat::bodyaim ? player->get_bone_pos(spine1) : player->get_bone_pos(head);
 	a::Prediction(local, target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
 	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer->GetVA();
