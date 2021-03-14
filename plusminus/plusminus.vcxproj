@@ -49,7 +49,7 @@
     <ClInclude Include="stuff/math.h" />
     <ClInclude Include="init/present.h" />
     <ClInclude Include="stuff/structs.h" />
-    <ClInclude Include="main/targeting.h" />
+    <ClInclude Include="main\f_object.h" />
     <ClInclude Include="stuff/vars.h" />
     <ClInclude Include="main/weapons.h" />
     <ClInclude Include="stuff\xorstr.h" />
@@ -141,7 +141,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\yty\Documents\GitHub\plusminus\plusminus\d;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\yty\Desktop\zgui-legacy\zgui-legacy\src;C:\Users\yty\Documents\GitHub\plusminus\plusminus\d;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Samples\C++\Effects11\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
     <GenerateManifest>false</GenerateManifest>
     <IntDir>C:\Users\yty\Documents</IntDir>

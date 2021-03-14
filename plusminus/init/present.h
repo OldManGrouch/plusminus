@@ -50,9 +50,6 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 		Renderer::EndFrame();
 		if (show) {
 			DrawMenu();
-			//Renderer::FillRectangle(Vector2(0, 0), Vector2(vars::stuff::ScreenWidth, vars::stuff::ScreenHeight), D2D1::ColorF(0.f, 0.f, 0.f));
-			//Renderer::FillRectangle(Vector2(0, 0), Vector2(vars::stuff::ScreenWidth, 15), D2D1::ColorF(0.11f, 0.11f, 0.11f));
-			//Renderer::Line(Vector2(0, 15), Vector2(vars::stuff::ScreenWidth, 15), D2D1::ColorF::White, 0.7f);
 		}
 		ImGui::End();
 		ImGui::Render();

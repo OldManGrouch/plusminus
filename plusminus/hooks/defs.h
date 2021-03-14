@@ -80,6 +80,9 @@ namespace hk_defs {
 	typedef Vector3(__fastcall* movetowards)(Vector3, Vector3, float);
 	inline movetowards original_movetowards{ };
 
+	typedef bool(__fastcall* refr)(Projectile*, uint32_t, Vector3, Vector3, float);
+	inline refr original_refract{ };
+
 	typedef void(__fastcall* SetFlying_fn)(ModelState*, bool);
 	inline SetFlying_fn original_setflying{ };
 

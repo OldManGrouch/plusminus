@@ -173,3 +173,36 @@ void CheckFlyhack() {
 		vars::stuff::hor_flyhack = flyhackDistanceHorizontal;
 	}
 }
+//if (!vars::weapons::penetrate) {
+				//	if (reinterpret_cast<bool(*)(il2cpp::String*)>(vars::stor::gBase + 0x8AFF00)(prj->hitTest()->HitMaterial())) {
+				//		if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer() && vars::stor::closestPlayer != null) {
+				//			if (test->HitEntity() != reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer)) {
+				//				if (reinterpret_cast<float(*)(Vector3, Vector3)>(vars::stor::gBase + 0x1F81F80)(prj->currentVelocity(), reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head)) < 60) {
+				//					uintptr_t v7 = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0xB42800)(read(vars::stor::gBase + 0x2FD46A8, uintptr_t));
+				//					uintptr_t v8 = reinterpret_cast<uintptr_t(*)(uintptr_t)>(vars::stor::gBase + 0xB42800)(read(vars::stor::gBase + 0x2FD4938, uintptr_t));
+				//					/*PlayerAttack*/
+				//					write(v7 + 0x18, v8, uintptr_t);
+				//					write(v8 + 0x18, prj->hitTest()->BuildAttackMessage(), uintptr_t);
+				//					write(v8 + 0x20, prj->projectileID(), int);
+				//					/*PlayerProjectileAttack*/
+				//					write(v7 + 0x20, prj->currentVelocity(), Vector3);
+				//					write(v7 + 0x2C, prj->traveledDistance(), float);
+				//					write(v7 + 0x30, prj->traveledTime(), float);
+				//					reinterpret_cast<void(*)(BasePlayer*, uintptr_t)>(vars::stor::gBase + CO::SendProjectileAttack)(prj->owner(), v7);
+
+				//					Vector3 target = vars::combat::bodyaim ? reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(spine1) : reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
+				//					float gravity;
+				//					if (LocalPlayer->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer->GetActiveWeapon()->GetID() == 1602646136) {
+				//						gravity = 2.f;
+				//					}
+				//					else {
+				//						gravity = GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo());
+				//					}
+				//					a::Prediction(prj->currentPosition(), target, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), GetBulletSpeed(), gravity);
+				//					prj->currentVelocity((target - prj->currentPosition()) * (GetBulletSpeed() / vars::stuff::testFloat));
+				//					return true;
+				//				}
+				//			}
+				//		}
+				//	}
+				//}

@@ -341,6 +341,16 @@ public:
 		this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
 	}
 };
+
+class ProjectileWeaponMod {
+public:
+	static float Average(BaseEntity* a, uintptr_t b, uintptr_t c, uintptr_t d, float e) {
+		return reinterpret_cast<float(*)(BaseEntity*, uintptr_t, uintptr_t, uintptr_t, float)>(vars::stor::gBase + 0x43E420)(a, b, c, d, e);
+	}
+};
+struct ProjectileWeaponModModifier {
+
+};
 class TOD_Sky {
 public:
 };

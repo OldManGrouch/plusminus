@@ -11,19 +11,13 @@ namespace a {
 	void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
 		float Dist = Math::Distance_3D(target, local);
 		float BulletTime = Dist / bulletspeed;
-
 		Vector3 vel = Vector3(targetvel.x, 0, targetvel.z) * 0.75f;
-
 		Vector3 PredictVel = vel * BulletTime;
-
 		target += PredictVel;
-
 		double height = target.y - local.y;
 		Vector3 dir = target - local;
 		float DepthPlayerTarget = Vector3::my_sqrt(powFFFFFFFFFFFFFFFFFFFFFF(dir.x) + powFFFFFFFFFFFFFFFFFFFFFF(dir.z));
-
 		float drop = CalcBulletDrop(height, DepthPlayerTarget, bulletspeed, gravity);
-
 		target.y += drop;
 	}
 	Vector3 get_aim_point(float speed, float gravity) {
@@ -81,6 +75,44 @@ void Normalize(float& Yaw, float& Pitch) {
 	if (Yaw < -360) Yaw += 360;
 	else if (Yaw > 360) Yaw -= 360;
 }
+
+void StepConstant(Vector2& angles) {
+	bool smooth = vars::combat::smooth;
+	Vector2 angles_step = (angles - LocalPlayer->GetVA());
+	Normalize(angles_step.x, angles_step.y);
+
+	if (smooth) {
+		float factor_pitch = (vars::combat::smooth_factor / 10.f);
+		if (angles_step.x < 0.f) {
+			if (factor_pitch > std::abs(angles_step.x)) {
+				factor_pitch = std::abs(angles_step.x);
+			}
+			angles.x = LocalPlayer->GetVA().x - factor_pitch;
+		}
+		else {
+			if (factor_pitch > angles_step.x) {
+				factor_pitch = angles_step.x;
+			}
+			angles.x = LocalPlayer->GetVA().x + factor_pitch;
+		}
+	}
+	if (smooth) {
+		float factor_yaw = (vars::combat::smooth_factor / 10.f);
+		if (angles_step.y < 0.f) {
+			if (factor_yaw > std::abs(angles_step.y)) {
+				factor_yaw = std::abs(angles_step.y);
+			}
+			angles.y = LocalPlayer->GetVA().y - factor_yaw;
+		}
+		else {
+			if (factor_yaw > angles_step.y) {
+				factor_yaw = angles_step.y;
+			}
+			angles.y = LocalPlayer->GetVA().y + factor_yaw;
+		}
+	}
+}
+
 void do_aimbot(BasePlayer* player) {
 	Vector3 local = LocalPlayer->get_bone_pos(head);
 	Vector3 target = vars::combat::bodyaim ? player->get_bone_pos(spine1) : player->get_bone_pos(head);
@@ -88,6 +120,9 @@ void do_aimbot(BasePlayer* player) {
 	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer->GetVA();
 	Normalize(Offset.y, Offset.x);
 	Vector2 AngleToAim = LocalPlayer->GetVA() + Offset;
+	if (vars::combat::smooth) {
+		StepConstant(AngleToAim);
+	}
 	Normalize(AngleToAim.y, AngleToAim.x);
 	LocalPlayer->SetVA(AngleToAim);
 }

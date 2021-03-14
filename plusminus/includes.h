@@ -41,11 +41,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "stuff/il2cpp.h"
 
 #include "rust.h"
-#include "main/targeting.h"
+#include "main/f_object.h"
 #include <d3d11.h>
 #include "init/d3defs.h"
 #include "rendering/rendering.h"
-#include "framework.h"
 #include "menu/imgui/imgui_impl_win32.h"
 #include "menu/imgui/imgui_impl_dx11.h"
 #include "menu/imgui/imgui_internal.h"

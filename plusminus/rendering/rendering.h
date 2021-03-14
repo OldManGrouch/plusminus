@@ -87,6 +87,12 @@ namespace Renderer {
 	__forceinline void FillRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr) {
 		SolidColor->SetColor(Clr); Canvas->FillRectangle({ Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, SolidColor);
 	}
+	void OutlineRect(const Vector2& pos, const Vector2& size, const D2D1::ColorF& color, const D2D1::ColorF& oColor, float thickness) {
+		SolidColor->SetColor(color);
+		Canvas->FillRectangle({ pos.x, pos.y, pos.x + size.x, pos.y + size.y }, SolidColor);
+		SolidColor->SetColor(oColor);
+		Canvas->DrawRectangle({ pos.x, pos.y, pos.x + size.x, pos.y + size.y }, SolidColor, thickness);
+	}
 	__forceinline void RoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
 		SolidColor->SetColor(Clr); Canvas->DrawRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, Rad, Rad }, SolidColor, Thick);
 	}

@@ -199,6 +199,7 @@ namespace menu {
 		HelpCheckbox(xorstr("Always Headshot"), &vars::combat::always_headshot, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
+		HelpCheckbox(xorstr("Tree Reflect"), &vars::combat::tree_reflect, xorstr("Bullets will \"magically\" bounce from trees you hit to the targeted player. Doesn't work with arrow-based weapons and the nailgun."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
 			ImGui::PushItemWidth(100);
@@ -213,7 +214,7 @@ namespace menu {
 		
 		ImGui::Checkbox(xorstr("Memory Aim"), &vars::combat::aimbot);
 		if (vars::combat::aimbot) {
-			//ImGui::Checkbox(xorstr("Smooth"), &vars::combat::Smooth);
+			ImGui::Checkbox(xorstr("Smooth"), &vars::combat::smooth);
 			if (vars::combat::smooth) {
 				ImGui::SliderInt(xorstr("Smoothing"), &vars::combat::smooth_factor, 1, 50);
 			}
@@ -407,6 +408,38 @@ namespace menu {
 		ImGui::SliderFloat(xorstr("Fov"), &vars::misc::fov, 30.f, 130.f);
 		Hotkey(xorstr("Remove Position Forcing"), &vars::keys::forcepos, ImVec2(200.f, 0));
 		Hotkey(xorstr("Zoom"), &vars::keys::zoom, ImVec2(200.f, 0));
+		if (ImGui::CollapsingHeader(xorstr("Aesthetics"))) {
+			HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
+			HelpCheckbox(xorstr("BetterJump"), &vars::misc::better_jump, xorstr("Makes your jumps smoother."));
+			HelpCheckbox(xorstr("Custom Hitsound"), &vars::misc::custom_hitsound, xorstr("When you hit a player, your custom hitsound will play. Make a new folder in C disk called 'plusminus', and put your hitsound inside of there. It has to be in a .wav format and called 'hit'"));
+			HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
+			if (vars::misc::rayleigh_changer) {
+				ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
+			}
+			HelpCheckbox(xorstr("Bright Ambient"), &vars::misc::bright_ambient, xorstr("Nightmode, fullbright, whatever you want to call it."));
+			ImGui::SameLine(); ImGui::ColorButton(xorstr("Ambient##Color"), vars::colors::ambient_color);
+			ImGui::Checkbox(xorstr("Custom Time"), &vars::misc::custom_time);
+			if (vars::misc::custom_time) {
+				ImGui::SliderFloat(xorstr("Time"), &vars::misc::time, 0.f, 12.f);
+			}
+		}
+		if (ImGui::CollapsingHeader(xorstr("Automation"))) {
+			HelpCheckbox(xorstr("FarmBot"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
+			HelpCheckbox(xorstr("Auto Farm Barrels"), &vars::misc::auto_farm_barrel, xorstr("Will automatically hit barrels when you are close to them with a melee weapon"));
+			HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
+			HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
+			HelpCheckbox(xorstr("Auto Collect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
+			HelpCheckbox(xorstr("Auto Revive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
+			if (vars::misc::auto_revive) {
+				ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
+			}
+			HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_grade, xorstr("Will automatically upgrade any building blocks near you. Doesn't require a hammer."));
+			if (vars::misc::auto_grade) {
+				ImGui::PushItemWidth(100);
+				ImGui::Combo(xorstr("Building Grade"), &vars::misc::grade_, building_grade, IM_ARRAYSIZE(building_grade));
+				ImGui::PopItemWidth();
+			}
+		}
 		HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
 		if (vars::misc::anti_aim) {
@@ -443,38 +476,6 @@ namespace menu {
 		if (vars::misc::gravity) {
 			ImGui::SliderFloat(xorstr("Gravity Value"), &vars::misc::gravity_modifier, 0.f, 10.f);
 			Hotkey(xorstr("Gravity Key"), &vars::keys::gravitykey, ImVec2(120.f, 0));
-		}
-		if (ImGui::CollapsingHeader(xorstr("Aesthetics"))) {
-			HelpCheckbox(xorstr("HitLogs"), &vars::misc::hit_logs, xorstr("Shows logs on players you hit."));
-			HelpCheckbox(xorstr("BetterJump"), &vars::misc::better_jump, xorstr("Makes your jumps smoother."));
-			HelpCheckbox(xorstr("Custom Hitsound"), &vars::misc::custom_hitsound, xorstr("When you hit a player, your custom hitsound will play. Make a new folder in C disk called 'plusminus', and put your hitsound inside of there. It has to be in a .wav format and called 'hit'"));
-			HelpCheckbox(xorstr("Rayleigh Changer"), &vars::misc::rayleigh_changer, xorstr("Makes your sky look pretty when day."));
-			if (vars::misc::rayleigh_changer) {
-				ImGui::SliderFloat(xorstr("Rayleigh Amount"), &vars::misc::rayleigh, 1.f, 50.f);
-			}
-			HelpCheckbox(xorstr("Bright Ambient"), &vars::misc::bright_ambient, xorstr("Nightmode, fullbright, whatever you want to call it."));
-			ImGui::SameLine(); ImGui::ColorButton(xorstr("Ambient##Color"), vars::colors::ambient_color);
-			ImGui::Checkbox(xorstr("Custom Time"), &vars::misc::custom_time);
-			if (vars::misc::custom_time) {
-				ImGui::SliderFloat(xorstr("Time"), &vars::misc::time, 0.f, 12.f);
-			}
-		}
-		if (ImGui::CollapsingHeader(xorstr("Automation"))) {
-			HelpCheckbox(xorstr("FarmBot"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
-			HelpCheckbox(xorstr("Auto Farm Barrels"), &vars::misc::auto_farm_barrel, xorstr("Will automatically hit barrels when you are close to them with a melee weapon"));
-			HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
-			HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
-			HelpCheckbox(xorstr("Auto Collect"), &vars::misc::auto_pickup, xorstr("Automatically collects collectables that are close."));
-			HelpCheckbox(xorstr("Auto Revive"), &vars::misc::auto_revive, xorstr("Automatically assists / revives downed players that are next to you."));
-			if (vars::misc::auto_revive) {
-				ImGui::Checkbox(xorstr("Revive Teammates Only"), &vars::misc::revive_team_only);
-			}
-			HelpCheckbox(xorstr("Auto Upgrade"), &vars::misc::auto_grade, xorstr("Will automatically upgrade any building blocks near you. Doesn't require a hammer."));
-			if (vars::misc::auto_grade) {
-				ImGui::PushItemWidth(100);
-				ImGui::Combo(xorstr("Building Grade"), &vars::misc::grade_, building_grade, IM_ARRAYSIZE(building_grade));
-				ImGui::PopItemWidth();
-			}
 		}
 	}
 	void other() {

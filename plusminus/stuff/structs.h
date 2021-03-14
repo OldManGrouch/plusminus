@@ -1,5 +1,8 @@
 #define PI 3.14159265358979323846
 #define PI_2 1.57079632679489661923
+float ToDegrees(float radians) {
+	return (radians * (180.f / PI));
+}
 class Vector3 {
 public:
 	float x, y, z;
@@ -23,6 +26,12 @@ public:
 	Vector3 Normalized() { float num = this->Magnitude(); if (num > 9.99999974737875E-06) { return { this->x / num, this->y / num, this->z / num }; } return Vector3(); }
 	float Distance(Vector3 b) { return (*this - b).Length(); }
 	Vector3 midPoint(Vector3 v2) { return Vector3((x + v2.x) / 2, (y + v2.y) / 2, (z + v2.z) / 2); }
+	Vector3 ToEulerAngles() {
+		const auto length = Length();
+		const auto pitch = -ToDegrees(std::asin(y / length));
+		const auto yaw = ToDegrees(std::atan2(x, z));
+		return { pitch, yaw, 0.f };
+	}
 	static float my_sqrt(float number) {
 		long        i;
 		float       x2, y;

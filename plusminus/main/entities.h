@@ -4,16 +4,16 @@ bool inited = false;
 float timee = 120.f;
 void ent_loop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
-	if (bn) {
-#ifdef noauth
-		Renderer::String(Vector2(100, 55), xorstr(L"niggas in my butthole (!!!!!!!)"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
-#else
-		Renderer::String(Vector2(100, 55), xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
-#endif
-	}
-	else { 
-		Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false); 
+	if (!bn) {
+		Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 		return;
+	}
+	else {
+		const int extend = 200;
+		Vector2 start = { 5, 10 };
+		Renderer::Line(start, { start.x + extend, start.y }, D2D1::ColorF::White, 1.f);
+		Renderer::FillRectangle(start, { extend, 20 }, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
+		Renderer::String({ start.x + 3, start.y + 1}, xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), false, false);
 	}
 
 	if (vars::visuals::radar_) {

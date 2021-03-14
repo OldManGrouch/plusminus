@@ -176,6 +176,7 @@ namespace Math {
 		vector.z = std::atan2f(2.0f * quaternion.x * quaternion.y + 2.0f * quaternion.z * quaternion.w, 1.0f - 2.0f * (quaternion.y * quaternion.y + quaternion.z * quaternion.z));
 		return NormalizeAngles(vector * 57.2958f);
 	}
+	
 	Vector3 RotatePoint(Vector3 center, Vector3 origin, float angle) {
 		float num = angle * 0.0174532924f;
 		float num2 = -std::sin(num);
