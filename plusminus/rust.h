@@ -426,6 +426,9 @@ class PlayerTick {
 public:
 	Vector3 position() { return read(this + 0x20, Vector3); }
 };
+
+class BasePlayer;
+BasePlayer* LocalPlayer = nullptr;
 class BasePlayer : public BaseCombatEntity {
 public:
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
@@ -493,6 +496,7 @@ public:
 		auto klass = read(vars::stor::gBase + CO::Client, DWORD64);
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x2C, 1.f, float);
+		write(static_fields + 0x20, 1.f, float);
 	}
 	const wchar_t* GetName() {
 		pUncStr Str = ((pUncStr)(read(this + oDisplayName, DWORD64)));
@@ -512,17 +516,17 @@ public:
 		DWORD64 members = read(ClientTeam + 0x28, DWORD64);//private ListHashSet<ILOD> members; //public PlayerInventory inventory; // 0x28 ���  public List<PlayerTeam.TeamMember> members; // 0x28
 		return read(members + 0x18, DWORD64);
 	}
-	DWORD64 GetTeammateByPos(int Id) {
-		DWORD64 ClientTeam = read(this + 0x540, DWORD64);
-		DWORD64 members = read(ClientTeam + 0x30, DWORD64);
-		DWORD64 List = read(members + 0x10, DWORD64);
-		DWORD64 player = read(List + 0x20 + (Id * 0x8), DWORD64);
-		return read(player + 0x20, DWORD64);
-	}
-	bool IsTeamMate(DWORD64 SteamID) {
+	bool is_teammate() {
 		bool ret = false;
-		for (int i = 0; i < 8; i++) {
-			if (GetTeammateByPos(i) == SteamID) {
+		if (!LocalPlayer) {
+			return ret;
+		}
+		DWORD64 PlayerTeam = read(LocalPlayer + 0x540, DWORD64);
+		list<DWORD64>* members = read(PlayerTeam + 0x30, list<DWORD64>*);
+		for (int i = 0; i < members->get_size(); i++) {
+			DWORD64 player = members->get_value(i);
+			DWORD64 userid = read(player + 0x20, DWORD64); // public ulong userid;
+			if (userid == this->GetSteamID()) {
 				ret = true;
 				break;
 			}
@@ -835,7 +839,7 @@ public:
 	}
 };
 Matrix4x4* pViewMatrix = nullptr;
-BasePlayer* LocalPlayer = nullptr;
+
 namespace utils {
 	bool w2s(const Vector3& EntityPos, Vector2& ScreenPos) {
 		if (!pViewMatrix) return false;

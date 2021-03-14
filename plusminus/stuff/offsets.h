@@ -1,5 +1,6 @@
 
 namespace CO {
+	auto Refract = 0x8B06E0;
 	auto SendSignalBroadcast = 0x3B5690;
 	auto Magnitude2D = 0x1CAA460;
 	auto GetJumpHeight = 0x2FFE40;

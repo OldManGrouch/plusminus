@@ -114,7 +114,10 @@ void StepConstant(Vector2& angles) {
 }
 
 void do_aimbot(BasePlayer* player) {
-	Vector3 local = LocalPlayer->get_bone_pos(head);
+	if (!LocalPlayer->GetActiveWeapon() || player->IsDestroyed()) {
+		return;
+	}
+	Vector3 local = LocalPlayer->eyes()->get_position();
 	Vector3 target = vars::combat::bodyaim ? player->get_bone_pos(spine1) : player->get_bone_pos(head);
 	a::Prediction(local, target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo()));
 	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer->GetVA();

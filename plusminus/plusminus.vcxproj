@@ -32,7 +32,7 @@
     <ClInclude Include="menu/imgui/imstb_rectpack.h" />
     <ClInclude Include="menu/imgui/imstb_textedit.h" />
     <ClInclude Include="menu/imgui/imstb_truetype.h" />
-    <ClInclude Include="init/init.h" />
+    <ClInclude Include="init\pre_draw.h" />
     <ClInclude Include="main/lol.h" />
     <ClInclude Include="menu/menu.h" />
     <ClInclude Include="hooks/minhook\include\MinHook.h" />

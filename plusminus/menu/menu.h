@@ -199,7 +199,7 @@ namespace menu {
 		HelpCheckbox(xorstr("Always Headshot"), &vars::combat::always_headshot, xorstr("Even if you hit a person in the body, the bullet will teleport to the head."));
 		HelpCheckbox(xorstr("Always Heli Weakspot"), &vars::combat::always_heli_rotor, xorstr("If you hit any part of the helicopter, the bullet will teleport to the weakspot (rotor)."));
 		HelpCheckbox(xorstr("Silent Melee"), &vars::combat::silent_melee, xorstr("Will automatically hit people next to you with a melee weapon in your hand."));
-		HelpCheckbox(xorstr("Tree Reflect"), &vars::combat::tree_reflect, xorstr("Bullets will \"magically\" bounce from trees you hit to the targeted player. Doesn't work with arrow-based weapons and the nailgun."));
+		HelpCheckbox(xorstr("Tree / Ore Reflect"), &vars::combat::tree_reflect, xorstr("Bullets will \"magically\" bounce from trees you hit to the targeted player. Doesn't work with arrow-based weapons and the nailgun."));
 		HelpCheckbox(xorstr("pSilent"), &vars::combat::psilent, xorstr("Bullets will just fly to the target."));
 		if (vars::combat::psilent) {
 			ImGui::PushItemWidth(100);

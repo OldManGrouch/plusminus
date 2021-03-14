@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define StrA
 #define StrW
-#define noauth
+//#define noauth
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -62,7 +62,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 
 
-#include "init/init.h"
+#include "init/pre_draw.h"
 #include "config/config.h"
 #include "menu/menu.h"
 #include "init/present.h"

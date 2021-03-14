@@ -8,13 +8,6 @@ void ent_loop() {
 		Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 		return;
 	}
-	else {
-		const int extend = 200;
-		Vector2 start = { 5, 10 };
-		Renderer::Line(start, { start.x + extend, start.y }, D2D1::ColorF::White, 1.f);
-		Renderer::FillRectangle(start, { extend, 20 }, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
-		Renderer::String({ start.x + 3, start.y + 1}, xorstr(L"plusminus"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), false, false);
-	}
 
 	if (vars::visuals::radar_) {
 		radar::radar_bg();
@@ -109,7 +102,7 @@ void ent_loop() {
 
 			if (vars::players::skeleton && !Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+					if (Player->is_teammate()) {
 						Skeleton(Player, D2D1::ColorF::Lime);
 					}
 					else {
@@ -130,7 +123,7 @@ void ent_loop() {
 			}
 			if (!Player->IsNpc()) {
 				if (!Player->HasFlags(16)) {
-					if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+					if (Player->is_teammate()) {
 						ESP(Player, LocalPlayer, D2D1::ColorF::Lime);
 					}
 					else {
@@ -151,7 +144,7 @@ void ent_loop() {
 			}
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
 			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
-			if (vars::combat::ignore_team && LocalPlayer->IsTeamMate(Player->GetSteamID())) continue;
+			if (vars::combat::ignore_team && Player->is_teammate()) continue;
 			if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 			if (vars::combat::ignore_players) continue;
 			if (Math::Distance_3D(LocalPlayer->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
@@ -206,6 +199,8 @@ void ent_loop() {
 		miscvis(ObjectClass, buff, vars::ores::sulfur, vars::ores::show_distance, vars::ores::draw_distance, xorstr("sulfur-ore.prefab"), xorstr(L"Sulfur Ore"), D2D1::ColorF::Gold);
 		miscvis(ObjectClass, buff, vars::ores::metal, vars::ores::show_distance, vars::ores::draw_distance, xorstr("metal-ore.prefab"), xorstr(L"Metal Ore"), D2D1::ColorF::SaddleBrown);
 		// ---------------------------------------------------------
+		miscvis(ObjectClass, buff, vars::visuals::crates::elite, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("crate_elite.prefab"), xorstr(L"Elite Crate"), D2D1::ColorF::SeaGreen);
+		miscvis(ObjectClass, buff, vars::visuals::crates::military, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("crate_normal.prefab"), xorstr(L"Military Crate"), D2D1::ColorF::ForestGreen);
 		miscvis(ObjectClass, buff, vars::visuals::crates::supply, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("supply_drop.prefab"), xorstr(L"Airdrop"), D2D1::ColorF::DarkCyan);
 		miscvis(ObjectClass, buff, vars::visuals::crates::heli, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("heli_crate.prefab"), xorstr(L"Heli Crate"), D2D1::ColorF::DarkGreen);
 		miscvis(ObjectClass, buff, vars::visuals::crates::bradley, vars::visuals::crates::show_distance, vars::visuals::crates::draw_distance, xorstr("bradley_crate.prefab"), xorstr(L"Bradley Crate"), D2D1::ColorF::GreenYellow);
@@ -268,7 +263,7 @@ void ent_loop() {
 	if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (LocalPlayer->IsTeamMate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
+	if (TargetPlayer->is_teammate() && vars::combat::ignore_team) {
 		vars::stor::closestPlayer = NULL;
 	}
 	if (TargetPlayer->GetHealth() < 0.2) {
@@ -291,7 +286,7 @@ void ent_loop() {
 		vars::stor::closestHeliObj = NULL;
 	}
 	if (has_local_player && LocalPlayer) {
-		if (vars::combat::aimbot && !LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID())) {
+		if (vars::combat::aimbot && !reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->is_teammate()) {
 			if (vars::stor::closestPlayer && !LocalPlayer->IsMenu()) {
 				if (GetAsyncKeyState(vars::keys::aimkey)) {
 					do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));

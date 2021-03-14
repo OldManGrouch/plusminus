@@ -137,14 +137,14 @@ namespace hk {
 		}
 		void DoFixedUpdate(PlayerWalkMovement* movement, ModelState* modelstate) {
 			float speed = (read(movement + 0x136, bool) /*swim*/ || read(movement + 0x44, float) /* crouch */ > 0.5f) ? 1.7f : (read(movement + 0x138, bool) /*jump*/ ? 8.f : 5.5f);
-			if (GetAsyncKeyState(0x4A)) {
-				reinterpret_cast<void(*)(PlayerWalkMovement*, Vector3, BasePlayer*)>(vars::stor::gBase + 0x2F08A0)( // basemovement -> teleportto
-					movement, 
-					read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) +
-					reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer->eyes()), // playereyes -> movementforward
-					LocalPlayer
-					);
-			}
+			//if (GetAsyncKeyState(0x4A)) {
+			//	reinterpret_cast<void(*)(PlayerWalkMovement*, Vector3, BasePlayer*)>(vars::stor::gBase + 0x2F08A0)( // basemovement -> teleportto
+			//		movement, 
+			//		read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) +
+			//		reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer->eyes()), // playereyes -> movementforward
+			//		LocalPlayer
+			//		);
+			//}
 			/*if (vars::misc::omnidirectional_sprinting) {
 				Vector3 vel = read(movement + 0x34, Vector3);
 				float len = vel.Length();
@@ -201,7 +201,6 @@ namespace hk {
 			if (active && vars::misc::weapon_spam) {
 				reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
 			}
-
 			if (vars::misc::auto_farm_barrel) {
 				if (weaponmelee) {
 					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
@@ -299,15 +298,6 @@ namespace hk {
 			if (!vars::misc::bright_ambient) {
 				return original_updateambient(TOD_Sky);
 			}
-			//static int cases = 0;
-			//static float r = 1.00f, g = 0.00f, b = 1.00f;
-			//switch (cases) {
-			//case 0: { r -= 0.05f; if (r <= 0) cases += 1; break; }
-			//case 1: { g += 0.05f; b -= 0.05f; if (g >= 1) cases += 1; break; }
-			//case 2: { r += 0.05f; if (r >= 1) cases += 1; break; }                       // RAINBOW
-			//case 3: { b += 0.05f; g -= 0.05f; if (b >= 1) cases = 0; break; }
-			//default: { r = 1.00f; g = 0.00f; b = 1.00f; break; }
-			//}
 			RenderSettings::set_ambientMode(RenderSettings::AmbientMode::Flat);
 			RenderSettings::set_ambientIntensity(6.f);
 			RenderSettings::set_ambientLight(Color({ vars::colors::ambient_color.x, vars::colors::ambient_color.y, vars::colors::ambient_color.z, 1 }));
@@ -326,13 +316,11 @@ namespace hk {
 				if (vars::misc::hit_logs) {
 					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), utils::StringPool::Get(info->HitBone())->buffer, info->damageTypes()->Total()), 5.f);
 				}
-			}
-			if (vars::misc::custom_hitsound) {
-				PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
-				return;
-			}
-			if (vars::combat::always_headshot) {
-				if (entity->IsPlayer()) {
+				if (vars::misc::custom_hitsound) {
+					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
+					return;
+				}
+				if (vars::combat::always_headshot) {
 					reinterpret_cast<void(*)(Str, GameObject*)>(vars::stor::gBase + CO::EffectRun)(
 						Str(xorstr(L"assets/bundled/prefabs/fx/headshot_2d.prefab")),
 						LocalPlayer->eyes()->gameObject());
@@ -385,7 +373,7 @@ namespace hk {
 		bool DoHit(Projectile* prj, HitTest* test, Vector3 point, Vector3 normal) {
 			if (prj->isAuthoritative()) {
 				if (vars::combat::ignore_team) {
-					if (LocalPlayer->IsTeamMate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
+					if (reinterpret_cast<BasePlayer*>(test->HitEntity())->is_teammate()) {
 						if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
 							return false;
 						}
@@ -549,7 +537,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + 0x8B06E0), (void**)&original_refract, hk::exploit::Refract);
+	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Refract), (void**)&original_refract, hk::exploit::Refract);
 	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);

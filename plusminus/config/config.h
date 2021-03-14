@@ -203,12 +203,21 @@ private:
 		SetupValue(vars::ores::stone, false, c_xor("ores"), c_xor("stone"));
 		SetupValue(vars::ores::sulfur, false, c_xor("ores"), c_xor("sulfur"));
 		SetupValue(vars::ores::metal, false, c_xor("ores"), c_xor("metal"));
+		SetupValue(vars::ores::show_collectables, false, c_xor("ores"), c_xor("ShowCollectables"));
 		SetupValue(vars::ores::draw_distance, 300.f, c_xor("ores"), c_xor("oreDrawDistance"));
 		SetupValue(vars::ores::show_distance, false, c_xor("ores"), c_xor("showCollectables"));
 
 		SetupValue(vars::visuals::radar_, false, c_xor("visuals"), c_xor("Radar"));
 		SetupValue(vars::visuals::raid_esp, false, c_xor("visuals"), c_xor("Raids"));
 		SetupValue(vars::visuals::patrol_heli, false, c_xor("visuals"), c_xor("PatrolHeli"));
+		SetupValue(vars::visuals::bradley_apc, false, c_xor("visuals"), c_xor("BradleyAPC"));
+		SetupValue(vars::visuals::animals::bear, false, c_xor("visuals"), c_xor("bear"));
+		SetupValue(vars::visuals::animals::pig, false, c_xor("visuals"), c_xor("pig"));
+		SetupValue(vars::visuals::animals::wolf, false, c_xor("visuals"), c_xor("wolf"));
+		SetupValue(vars::visuals::animals::chicken, false, c_xor("visuals"), c_xor("chicken"));
+		SetupValue(vars::visuals::animals::deer, false, c_xor("visuals"), c_xor("deer"));
+		SetupValue(vars::visuals::animals::draw_distance, 300.f, c_xor("visuals"), c_xor("deer"));
+		SetupValue(vars::visuals::animals::show_distance, false, c_xor("visuals"), c_xor("deer"));
 		SetupValue(vars::visuals::vehicles::minicopter, false, c_xor("visuals"), c_xor("Minicopter"));
 		SetupValue(vars::visuals::vehicles::scrapheli, false, c_xor("visuals"), c_xor("ScrapHeli"));
 		SetupValue(vars::visuals::vehicles::boat, false, c_xor("visuals"), c_xor("Boat"));
@@ -222,16 +231,24 @@ private:
 		SetupValue(vars::visuals::turrets::bear_trap, false, c_xor("visuals"), c_xor("BearTrap"));
 		SetupValue(vars::visuals::turrets::show_distance, false, c_xor("visuals"), c_xor("trapDistance"));
 		SetupValue(vars::visuals::turrets::draw_distance, 300.f, c_xor("visuals"), c_xor("drawTrapDistance"));
+		SetupValue(vars::visuals::base::bed, false, c_xor("visuals"), c_xor("bed"));
+		SetupValue(vars::visuals::base::boxes, false, c_xor("visuals"), c_xor("boxes"));
+		SetupValue(vars::visuals::base::sleeping_bag, false, c_xor("visuals"), c_xor("sleeping_bag"));
+		SetupValue(vars::visuals::base::tc, false, c_xor("visuals"), c_xor("tc"));
+		SetupValue(vars::visuals::base::show_distance, false, c_xor("visuals"), c_xor("base_ShowDist"));
+		SetupValue(vars::visuals::base::draw_distance, 300.f, c_xor("visuals"), c_xor("draw_drawdww"));
 		SetupValue(vars::visuals::other::corpse, false, c_xor("visuals"), c_xor("Corpse"));
 		SetupValue(vars::visuals::other::stash, false, c_xor("visuals"), c_xor("Stash"));
 		SetupValue(vars::visuals::other::hemp, false, c_xor("visuals"), c_xor("Hemp"));
+		SetupValue(vars::visuals::other::dropped_items, false, c_xor("visuals"), c_xor("Hemp"));
 		SetupValue(vars::visuals::other::show_distance, false, c_xor("visuals"), c_xor("otherDistance"));
 		SetupValue(vars::visuals::other::draw_distance, 300.f, c_xor("visuals"), c_xor("drawOtherDistance"));
 		SetupValue(vars::visuals::crates::supply, false, c_xor("visuals"), c_xor("Supply"));
 		SetupValue(vars::visuals::crates::chinook, false, c_xor("visuals"), c_xor("Chinook"));
 		SetupValue(vars::visuals::crates::heli, false, c_xor("visuals"), c_xor("Heli"));
+		SetupValue(vars::visuals::crates::elite, false, c_xor("visuals"), c_xor("elite"));
+		SetupValue(vars::visuals::crates::military, false, c_xor("visuals"), c_xor("military"));
 		SetupValue(vars::visuals::crates::bradley, false, c_xor("visuals"), c_xor("Bradley"));
-		SetupValue(vars::visuals::bradley_apc, false, c_xor("visuals"), c_xor("BradleyTank"));
 		SetupValue(vars::visuals::crates::show_distance, false, c_xor("visuals"), c_xor("Hemp"));
 		SetupValue(vars::visuals::crates::draw_distance, 300.f, c_xor("visuals"), c_xor("otherDistance"));
 

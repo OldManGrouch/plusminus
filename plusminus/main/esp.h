@@ -72,7 +72,7 @@ namespace radar {
 				if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
 						if (!Player->HasFlags(16)) {
-							if (LocalPlayer->IsTeamMate(Player->GetSteamID())) {
+							if (Player->is_teammate()) {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
@@ -108,7 +108,7 @@ namespace otherEsp {
 				if (utils::w2s(utils::GetEntityPosition(gameObject), screen_Pos)) {
 					if ((int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
 						wchar_t distance[64];
-						_swprintf(distance, L"[%d m]", (int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
+						_swprintf(distance, L"[%.2f m]", Math::Distance_3D(LocalPlayer->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
 						wchar_t text[64];
 						_swprintf(text, targettext);
 						Renderer::String({ screen_Pos.x, screen_Pos.y }, text, color, true, true);
@@ -127,13 +127,13 @@ namespace otherEsp {
 				DWORD64 bradley = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
-				int health = read(bradley + oHealth, float);
+				float health = read(bradley + oHealth, float);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t buffer[256];
 					wchar_t buffera[256];
-					swprintf(buffer, xorstr(L"Bradley APC [%dm]"), (int)Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos));
-					swprintf(buffera, xorstr(L"[%d HP]"), health);
+					swprintf(buffer, xorstr(L"Bradley APC [%.2fm]"), Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos));
+					swprintf(buffera, xorstr(L"[%.2f HP]"), health);
 					if (health > 0.2) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
 						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
@@ -150,7 +150,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 corpse = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t cName[0x100];
@@ -159,7 +159,7 @@ namespace otherEsp {
 					_swprintf(cName, xorstr(L"Corpse | %s"), corpsename->str);
 					Renderer::String({ screen.x, screen.y }, cName, D2D1::ColorF::Firebrick, true, true);
 					if (vars::visuals::other::show_distance) {
-						_swprintf(cDist, xorstr(L"[%d m]"), distance);
+						_swprintf(cDist, xorstr(L"[%.2f m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), cDist, D2D1::ColorF::Firebrick, true, true);
 					}
 				}
@@ -172,7 +172,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 cupboard = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					int pos = 15;
@@ -183,7 +183,7 @@ namespace otherEsp {
 					_swprintf(TCName, xorstr(L"Tool Cupboard | %d hours"), upkeep / 60);
 					Renderer::String({ screen.x, screen.y }, TCName, D2D1::ColorF::YellowGreen, true, true);
 					if (vars::visuals::base::show_distance) {
-						_swprintf(TCDist, xorstr(L"[%d m]"), distance);
+						_swprintf(TCDist, xorstr(L"[%.2f m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), TCDist, D2D1::ColorF::YellowGreen, true, true);
 						pos += 15;
 					}
@@ -206,7 +206,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -215,7 +215,7 @@ namespace otherEsp {
 					_swprintf(bagName, xorstr(L"Sleeping Bag | %s"), bagname->str);
 					Renderer::String({ screen.x, screen.y }, bagName, D2D1::ColorF::Olive, true, true);
 					if (vars::visuals::base::show_distance) {
-						_swprintf(bagDist, xorstr(L"[%d m]"), distance);
+						_swprintf(bagDist, xorstr(L"[%.2f m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), bagDist, D2D1::ColorF::Olive, true, true);
 					}
 				}
@@ -228,7 +228,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 bag = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
 					wchar_t bagName[0x100];
@@ -237,7 +237,7 @@ namespace otherEsp {
 					_swprintf(bagName, xorstr(L"Bed | %s"), bagname->str);
 					Renderer::String({ screen.x, screen.y }, bagName, D2D1::ColorF::OliveDrab, true, true);
 					if (vars::visuals::base::show_distance) {
-						_swprintf(bagDist, xorstr(L"[%d m]"), distance);
+						_swprintf(bagDist, xorstr(L"[%.2f m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), bagDist, D2D1::ColorF::OliveDrab, true, true);
 					}
 				}
@@ -251,7 +251,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 stash = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t sName[0x100];
@@ -266,7 +266,7 @@ namespace otherEsp {
 						Renderer::String({ screen.x, screen.y }, sName, D2D1::ColorF::Yellow, true, true);
 					}
 					if (vars::visuals::other::show_distance) {
-						_swprintf(sDist, xorstr(L"[%d m]"), distance);
+						_swprintf(sDist, xorstr(L"[%.2f m]"), distance);
 						Renderer::String(screen + Vector2(0, 15), sDist, D2D1::ColorF::Yellow, true, true);
 					}
 				}
@@ -281,7 +281,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 crate = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t crateName[0x100];
@@ -304,7 +304,7 @@ namespace otherEsp {
 						_swprintf(crateName, xorstr(L"Chinook Crate [Open]"));
 					}
 					Renderer::String({ screen.x, screen.y }, crateName, color, true, true);
-					_swprintf(crateDist, xorstr(L"[%d m]"), distance);
+					_swprintf(crateDist, xorstr(L"[%.2f m]"), distance);
 					Renderer::String(screen + Vector2(0, 15), crateDist, color, true, true);
 				}
 			}
@@ -317,7 +317,7 @@ namespace otherEsp {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
 				DWORD64 item = read(Object + 0x28, DWORD64);
 				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
+				float distance = Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos);
 				Vector2 screen;
 				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
 					wchar_t itemName[0x100];
@@ -328,12 +328,12 @@ namespace otherEsp {
 					auto* english = reinterpret_cast<pUncStr>(read(displayName + 0x18, DWORD64)); // get name of item
 					int amount = read(Item + 0x30, int);
 
-					_swprintf(itemName, xorstr(L"%s [%d]"), english->str, amount);
+					_swprintf(itemName, xorstr(L"%s [x%d]"), english->str, amount);
 					std::wstring eng = std::wstring(english->str);
 					if (!(eng.find(xorstr(L"Arrow")) != std::wstring::npos) && !(eng.find(xorstr(L"Nails")) != std::wstring::npos)) {
 						Renderer::String({ screen.x, screen.y }, itemName, D2D1::ColorF::BlanchedAlmond, true, true);
 						if (vars::visuals::other::show_distance) {
-							_swprintf(itemDist, xorstr(L"[%d m]"), distance);
+							_swprintf(itemDist, xorstr(L"[%.2f m]"), distance);
 							Renderer::String(screen + Vector2(0, 15), itemDist, D2D1::ColorF::BlanchedAlmond, true, true);
 						}
 					}
@@ -463,7 +463,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
 				if (vars::players::fillbox) {
 					if ((int)BP->GetHealth() > 0) {
-						if (LocalPlayer->IsTeamMate(BP->GetSteamID())) {
+						if (BP->is_teammate()) {
 							Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.4f, 0.f, 0.4f));
 						}
 						else {

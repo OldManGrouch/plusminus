@@ -43,7 +43,7 @@ void EntityThreadLoop() {
 					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 					if (!lol->HasFlags(16)) {
-						if (LocalPlayer->IsTeamMate(lol->GetSteamID())) {
+						if (lol->is_teammate()) {
 							lol::chams(multimesh, Color(0, 1, 0, 1));
 						}
 						else {

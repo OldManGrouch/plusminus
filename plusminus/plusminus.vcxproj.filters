@@ -118,9 +118,6 @@
     <ClInclude Include="init/d3defs.h">
       <Filter>source\init</Filter>
     </ClInclude>
-    <ClInclude Include="init/init.h">
-      <Filter>source\init</Filter>
-    </ClInclude>
     <ClInclude Include="init/present.h">
       <Filter>source\init</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="main\f_object.h">
       <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="init\pre_draw.h">
+      <Filter>source\init</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

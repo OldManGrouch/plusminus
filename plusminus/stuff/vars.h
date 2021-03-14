@@ -179,6 +179,8 @@ namespace vars {
 			float draw_distance = 300.f;
 		}
 		namespace crates {
+			bool elite = false;
+			bool military = false;
 			bool supply = false;
 			bool chinook = false;
 			bool heli = false;
