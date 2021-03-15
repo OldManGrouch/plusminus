@@ -57,20 +57,7 @@ public:
 };
 
 #define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
-struct Matrix4x4 {
-	union {
-		struct {
-			float        _11, _12, _13, _14;
-			float        _21, _22, _23, _24;
-			float        _31, _32, _33, _34;
-			float        _41, _42, _43, _44;
 
-		}; float m[4][4];
-	};
-	Vector3 MultiplyPoint3x4(Vector3 point) {
-		return reinterpret_cast<Vector3(*)(Matrix4x4*, Vector3)>(vars::stor::gBase + 0x204890)(this, point);
-	}
-};
 
 class ItemModProjectile {
 public:
@@ -289,6 +276,7 @@ public:
 			!strcmp(this->ClassName(), xorstr("NPCPlayer")) ||
 			!strcmp(this->ClassName(), xorstr("HumanNPC")) ||
 			!strcmp(this->ClassName(), xorstr("Scientist")) ||
+			!strcmp(this->ClassName(), xorstr("TunnelDweller")) ||
 			!strcmp(this->ClassName(), xorstr("HTNPlayer"));
 	}
 	FIELD("Assembly-CSharp::BaseCombatEntity::_health", health, float);
@@ -485,12 +473,12 @@ public:
 	void TransformEntries(Matrix4x4 matrix) {
 		for (int i = 0; i < this->points.size(); i++) {
 			Segment segment = this->points[i];
-			segment.point = matrix.MultiplyPoint3x4(segment.point);
+			//segment.point = matrix.MultiplyPoint3x4(segment.point);
 			this->points[i] = segment;
 		}
-		this->CurrentPoint = matrix.MultiplyPoint3x4(this->CurrentPoint);
-		this->StartPoint = matrix.MultiplyPoint3x4(this->StartPoint);
-		this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
+		//this->CurrentPoint = matrix.MultiplyPoint3x4(this->CurrentPoint);
+		//this->StartPoint = matrix.MultiplyPoint3x4(this->StartPoint);
+		//this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
 	}
 };
 
@@ -560,6 +548,19 @@ public:
 		return result;
 	}
 };
+class BufferList {
+public:
+	char pad_0000[0x10];
+	int32_t size;
+	char pad_0014[0x4];
+	void* buffer;
+};
+class ListDictionary {
+public:
+	char pad_0000[0x20];
+	class BufferList* keys;
+	class BufferList* vals;
+};
 class BaseNetworkable {
 public:
 	class EntityRealm {
@@ -568,6 +569,8 @@ public:
 			static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
 			return reinterpret_cast<T(__fastcall*)(EntityRealm*, uint32_t)>(off)(this, uid);
 		}
+
+		FIELD("Assembly-CSharp::EntityRealm::entityList", entityList, ListDictionary*);
 	};
 	static EntityRealm* clientEntities() {
 		static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
@@ -582,10 +585,14 @@ enum Lifestate {
 	Alive = 0,
 	Dead = 1
 };
-class BasePlayer;
-BasePlayer* LocalPlayer = nullptr;
+//BasePlayer* LocalPlayer = nullptr;
 class BasePlayer : public BaseCombatEntity {
 public:
+	const wchar_t* _displayName() {
+		if (!this) return L"";
+		static auto off = OFFSET("Assembly-CSharp::BasePlayer::_displayName");
+		return (*reinterpret_cast<il2cpp::String**>(this + off))->buffer;
+	}
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
 	PlayerTick* lastSentTick() { return read(this + 0x5D0, PlayerTick*); }
 	void SetVA(const Vector2& VA) {
@@ -659,10 +666,6 @@ public:
 		write(static_fields + 0x2C, 1.f, float);
 		write(static_fields + 0x20, 1.f, float);
 	}
-	const wchar_t* GetName() {
-		pUncStr Str = ((pUncStr)(read(this + oDisplayName, DWORD64)));
-		if (!Str) return L""; return Str->str;
-	}
 	bool HasFlags(int Flg) {
 		return (read(this + oPlayerFlags, int) & Flg);
 	}
@@ -719,21 +722,21 @@ public:
 		return reinterpret_cast<float(_fastcall*)(BasePlayer*)>(vars::stor::gBase + CO::GetJumpHeight)(this);
 	}
 
-	bool GetKeyState(ButtonS b) {
+	bool GetKeyState(Button b) {
 		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
 		if (!Cur) return false;
 		int btn = read(Cur + 0x14, int);
 		return ((btn & (int)b) == (int)b);
 	}
-	void force_key_state(ButtonS b) {
+	void force_key_state(Button b) {
 		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
 		if (!Cur) return;
 		int btn = read(Cur + 0x14, int);
 		write(Cur + 0x14, btn |= (int)b, int);
 	}
-	void free_key_state(ButtonS b) {
+	void free_key_state(Button b) {
 		DWORD64 InputState = read(read(this + oPlayerInput, DWORD64) + oState, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
 		if (!Cur) return;
@@ -783,6 +786,12 @@ public:
 	void SetGravity(float val) {
 		DWORD64 Movement = read(this + oMovement, DWORD64);
 		write(Movement + oGravityMultiplier, val, float);
+	}
+};
+class LocalPlayer {
+public:
+	static BasePlayer* Entity() {
+		return reinterpret_cast<BasePlayer* (*)()>(vars::stor::gBase + CO::get_Entity)();
 	}
 };
 class Mathf {

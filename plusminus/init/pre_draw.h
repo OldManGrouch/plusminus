@@ -47,7 +47,7 @@ void pre_draw() {
 		}
 	}
 	if (vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-		Vector3 pos = read(vars::stor::closestHeliObj + 0x90, Vector3);
+		Vector3 pos = utils::GetEntityPosition(vars::stor::closestHeliObj);
 		if (FOV < (CurFOV = GetFovHeli(pos))) {
 			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
 		}
@@ -61,7 +61,7 @@ void pre_draw() {
 	}
 	if (vars::combat::lock_target && vars::stor::closestPlayer != NULL) {
 		wchar_t trgt[64];
-		_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->GetName());
+		_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName());
 		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::PaleVioletRed, true, true);
 	}
 	if (vars::ores::closest_ore) {
@@ -69,7 +69,7 @@ void pre_draw() {
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 
-		f_object tr1 = f_object::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
+		f_object tr1 = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head), xorstr("ore.prefab"));
 		Vector2 screen;
 		if (utils::w2s(tr1.position, screen) && tr1.valid) {
 			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
@@ -113,7 +113,7 @@ void pre_draw() {
 	if (vars::combat::visualize_prediction && TargetPlayerA->IsValid()) {
 		Vector2 t;
 		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
-			if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo())), t)) {
+			if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo())), t)) {
 				Renderer::Circle(t, D2D1::ColorF::Red, 4.5f);
 			}
 		}
@@ -125,7 +125,7 @@ void pre_draw() {
 		static Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 		Vector2 ScreenPos;
 		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) > 0) {
-			if (utils::w2s(read(vars::stor::closestHeliObj + 0x90, Vector3), ScreenPos)) Renderer::Line(startPos, ScreenPos, D2D1::ColorF(0.3f, 0.34f, 1.f), 1.f);
+			if (utils::w2s(utils::GetEntityPosition(vars::stor::closestHeliObj), ScreenPos)) Renderer::Line(startPos, ScreenPos, D2D1::ColorF(0.3f, 0.34f, 1.f), 1.f);
 		}
 
 	}

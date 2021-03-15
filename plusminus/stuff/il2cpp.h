@@ -1,5 +1,16 @@
 #include <map>
 #include "lazyimp.h"
+struct Matrix4x4 {
+	union {
+		struct {
+			float        _11, _12, _13, _14;
+			float        _21, _22, _23, _24;
+			float        _31, _32, _33, _34;
+			float        _41, _42, _43, _44;
+
+		}; float m[4][4];
+	};
+};
 namespace il2cpp {
 	auto gameAssembly = GetModuleHandleA(xorstr("GameAssembly.dll"));
 	static std::map<uint32_t, uint64_t> offsets = std::map<uint32_t, uint64_t>();
@@ -408,6 +419,15 @@ namespace il2cpp {
 		NP(type) \
 		static auto off = OFFSET(field_path); \
 		return *reinterpret_cast<type*>(this + off); }
+	char* memstr(char* haystack, const char* needle, int size) {
+		char* p;
+		char needlesize = strlen(needle);
+		for (p = haystack; p <= (haystack - needlesize + size); p++) {
+			if (memcmp(p, needle, needlesize) == 0)
+				return p; /* found */
+		}
+		return NULL;
+	}
 	DWORD64 il2cpp_object_new(DWORD64 klass) {
 		DWORD64 objnew = il2cpp::methods::object_new(klass);
 		return objnew;
@@ -488,6 +508,54 @@ namespace il2cpp {
 		static auto DrawTexture = reinterpret_cast<void (*)(Rect, uintptr_t)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("DrawTexture"), 2, xorstr("image"), c_xor("UnityEngine"), 2)));
 	}
 	namespace unity {
+
+		uint64_t get_camera() {
+			const auto base = (uint64_t)GetModuleHandleA("UnityPlayer.dll");
+			if (!base)
+				return 0;
+			const auto dos_header = reinterpret_cast<IMAGE_DOS_HEADER*>(base);
+			const auto nt_header = reinterpret_cast<IMAGE_NT_HEADERS64*>(base + dos_header->e_lfanew);
+			uint64_t data_base;
+			uint64_t data_size;
+			for (int i = 0;;) {
+				const auto section = reinterpret_cast<IMAGE_SECTION_HEADER*>(
+					base + dos_header->e_lfanew + // nt_header base 
+					sizeof(IMAGE_NT_HEADERS64) +  // start of section headers
+					(i * sizeof(IMAGE_SECTION_HEADER))); // section header at our index
+				if (strcmp((char*)section->Name, xorstr(".data")) == 0) {
+					data_base = section->VirtualAddress + base;
+					data_size = section->SizeOfRawData;
+					break;
+				}
+				i++;
+				if (i >= nt_header->FileHeader.NumberOfSections) {
+					Beep(500, 1000);
+					return 0;
+				}
+			}
+			uint64_t camera_table = 0;
+			const auto camera_string = memstr((char*)data_base, xorstr("AllCameras"), data_size);
+			for (auto walker = (uint64_t*)camera_string; walker > 0; walker -= 1) {
+				if (*walker > 0x100000 && *walker < 0xF00000000000000) {
+					// [[[[unityplayer.dll + ctable offset]]] + 0x30] = Camera
+					camera_table = *walker;
+					break;
+				}
+			}
+			if (camera_table)
+				return camera_table;
+			Beep(500, 1000);
+			return 0;
+		}
+		Matrix4x4* getViewMatrix() {
+			static auto camera_list = get_camera();
+			if (!camera_list) return new Matrix4x4();
+
+			auto camera_table = *reinterpret_cast<uint64_t*>(camera_list);
+			auto cam = *reinterpret_cast<uint64_t*>(camera_table);
+
+			return *reinterpret_cast<Matrix4x4**>(cam + 0x2E4);
+		}
 		static auto IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 	

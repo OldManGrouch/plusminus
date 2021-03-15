@@ -25,6 +25,7 @@ namespace vars {
 		float testFloat = 0.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
+		char testChar2[0x100] = "testyvesty";
 		bool Panic = false;
 		int ScreenHeight = 0;
 		int ScreenWidth = 0;

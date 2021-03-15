@@ -2,7 +2,7 @@ void EntityThreadLoop() {
 	DWORD64 BaseNetworkable;
 	BaseNetworkable = read(vars::stor::gBase + CO::BaseNetworkable, DWORD64);
 
-	if (!LocalPlayer) return;
+	if (!LocalPlayer::Entity()) return;
 
 	if (vars::players::chams) {
 		lol::UpdateChams();
@@ -30,7 +30,7 @@ void EntityThreadLoop() {
 		if (reinterpret_cast<BaseEntity*>(ent)->IsDestroyed()) {
 			continue;
 		}
-		Item* weapon = LocalPlayer->GetActiveWeapon();
+		Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 		DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 		char* classname = weapon->ClassName();
 
@@ -43,7 +43,7 @@ void EntityThreadLoop() {
 					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 					if (!lol->HasFlags(16)) {
-						if (LocalPlayer->is_teammate(lol->GetSteamID())) {
+						if (LocalPlayer::Entity()->is_teammate(lol->GetSteamID())) {
 							lol::chams(multimesh, Color(0, 1, 0, 1));
 						}
 						else {
@@ -57,16 +57,16 @@ void EntityThreadLoop() {
 			}
 			if (vars::misc::auto_revive || vars::misc::insta_revive) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-				Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+				Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));
 				if (vars::misc::auto_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 					lol::PickupPlayer((BasePlayer*)ent);
 				}
-				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer->GetKeyState(ButtonS::USE)
-					&& read(LocalPlayer + 0x4E8, uintptr_t) == ent) {
+				if (vars::misc::insta_revive && (BasePlayer*)ent && lol->HasFlags(64) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer::Entity()->GetKeyState(Button::USE)
+					&& read(LocalPlayer::Entity() + 0x4E8, uintptr_t) == ent) {
 					lol::PickupPlayer((BasePlayer*)ent);
 				}
 			}
-			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer->get_bone_pos(head)) <= 3.5f) {
+			if (vars::combat::silent_melee && weaponmelee && Math::Distance_3D(lol->get_bone_pos(head), LocalPlayer::Entity()->get_bone_pos(head)) <= 3.5f) {
 				f_object target = f_object::get_melee_target((BasePlayer*)ent, active);
 				lol::do_attack(target, active, true);
 			}
@@ -83,7 +83,7 @@ void EntityThreadLoop() {
 			)
 		{
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
 			if (vars::misc::auto_grade) {
 				lol::AutoGrade(ent);
@@ -91,14 +91,14 @@ void EntityThreadLoop() {
 		}
 		else if (vars::misc::auto_pickup && strstr(buff, xorstr("/collectable/"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));
 			if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 				utils::ServerRPC(ent, Str(xorstr(L"Pickup")));
 			}
 		}
 		else if (vars::misc::annoyer && strstr((char*)read(read(ent, DWORD64) + 0x10, DWORD64), xorstr("Door"))) {
 			UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-			Vector3 local = utils::ClosestPoint(LocalPlayer, utils::GetEntityPosition(gameObject));
+			Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));
 			if (ent && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f) {
 				lol::SpamKnock(ent);
 			}

@@ -1,5 +1,5 @@
 void weapon_set() {
-	Item* weapon = LocalPlayer->GetActiveWeapon();
+	Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 	if (weapon == nullptr) return;
 	
 	//-3 - hammer, -2 - bows, -1 - eoka, 0-nopatch, 1 - meele, 2 - semiautomatic, 3 - automatic
@@ -31,36 +31,36 @@ void weapon_set() {
 float w_last_syringe = 0.f;
 void misc_set() {
 	if (w_last_syringe == 0.f) {
-		w_last_syringe = LocalPlayer->Time();
+		w_last_syringe = LocalPlayer::Entity()->Time();
 	}
-	Item* weapon = LocalPlayer->GetActiveWeapon();
+	Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 	if ((weapon->GetID() == 1079279582 || weapon->GetID() == -2072273936) && vars::misc::faster_healing) {
 		DWORD64 Held = read(weapon + oHeldEntity, DWORD64);
 		bool deployed = read(Held + 0x188, bool);
-		float curtime = LocalPlayer->Time();
-		if (LocalPlayer->GetKeyState(ButtonS::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) {
+		float curtime = LocalPlayer::Entity()->Time();
+		if (LocalPlayer::Entity()->GetKeyState(Button::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) {
 			reinterpret_cast<void(_stdcall*)(DWORD64, Str)>(vars::stor::gBase + CO::ServerRPC)(Held, Str(xorstr(L"UseSelf")));
 			w_last_syringe = curtime;
 		}
 	}
 	if (vars::misc::gravity) {
 		if (GetAsyncKeyState(vars::keys::gravitykey))
-			LocalPlayer->SetGravity(vars::misc::gravity_modifier);
-		else LocalPlayer->SetGravity(2.5f);
+			LocalPlayer::Entity()->SetGravity(vars::misc::gravity_modifier);
+		else LocalPlayer::Entity()->SetGravity(2.5f);
 	}
 	if (GetAsyncKeyState(vars::keys::zoom)) {
-		LocalPlayer->SetFov(10.f);
+		LocalPlayer::Entity()->SetFov(10.f);
 	}
 	else {
-		LocalPlayer->SetFov(vars::misc::fov);
+		LocalPlayer::Entity()->SetFov(vars::misc::fov);
 	}
 	if (vars::misc::spiderman) {
-		ULONG64 Movement = read(LocalPlayer + oMovement, ULONG64);
+		ULONG64 Movement = read(LocalPlayer::Entity() + oMovement, ULONG64);
 		write(Movement + 0xB8, 0.f, float);
 	}
-	LocalPlayer->PatchCamspeed();
+	LocalPlayer::Entity()->PatchCamspeed();
 	if (vars::misc::fakeadmin)
-		LocalPlayer->FakeAdmin();
+		LocalPlayer::Entity()->FakeAdmin();
 }
 namespace lol {
 	void do_attack(f_object target, DWORD64 Held, bool transform) {
@@ -72,7 +72,7 @@ namespace lol {
 		DWORD64 staticHitTest = read(vars::stor::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
 		DWORD64 newHitTest = il2cpp::il2cpp_object_new(staticHitTest);
 
-		DWORD64 trans; Ray ray = Ray(LocalPlayer->get_bone_pos(neck), (target.position - LocalPlayer->get_bone_pos(neck)).Normalized());
+		DWORD64 trans; Ray ray = Ray(LocalPlayer::Entity()->get_bone_pos(neck), (target.position - LocalPlayer::Entity()->get_bone_pos(neck)).Normalized());
 		if (!target.entity) return;
 		if (transform) {
 			trans = reinterpret_cast<BasePlayer*>(target.entity)->GrabTransform(head);
@@ -124,46 +124,46 @@ namespace lol {
 	}
 	float LastUpdate = 0.f;
 	void UpdateChams() {
-		if (LocalPlayer->Time() > LastUpdate + 15.f) {
+		if (LocalPlayer::Entity()->Time() > LastUpdate + 15.f) {
 			reinterpret_cast<void(*)()>(vars::stor::gBase + CO::RebuildAll)();
-			LastUpdate = LocalPlayer->Time();
+			LastUpdate = LocalPlayer::Entity()->Time();
 		}
 	}
 	float LastGrade = 0.f;
 	void AutoGrade(uintptr_t buildingblocc) {
 		BuildingBlock* block = reinterpret_cast<BuildingBlock*>(buildingblocc);
 		//LogSystem::Log(c_wxor(L"xd"), 5.f);
-		if (LocalPlayer->Time() > LastGrade + 0.35f
-			&& block->CanAffordUpgrade((BuildingGrade)vars::misc::grade_, LocalPlayer)
-			&& block->CanChangeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer)
+		if (LocalPlayer::Entity()->Time() > LastGrade + 0.35f
+			&& block->CanAffordUpgrade((BuildingGrade)vars::misc::grade_, LocalPlayer::Entity())
+			&& block->CanChangeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer::Entity())
 			&& !block->IsUpgradeBlocked()) {
-			block->UpgradeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer);
-			LastGrade = LocalPlayer->Time();
+			block->UpgradeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer::Entity());
+			LastGrade = LocalPlayer::Entity()->Time();
 		}
 	}
 	float LastKnock = 0.f; float LastOpen = 0.f; float LastHatch = 0.f;
 	void SpamKnock(uintptr_t Door) {
 		typedef void(__stdcall* DoorFunction)(uintptr_t, BasePlayer*);
-		if (LocalPlayer->Time() > LastKnock + 0.5f) {
-			((DoorFunction)(vars::stor::gBase + CO::KnockDoor))(Door, LocalPlayer);
-			LastKnock = LocalPlayer->Time();
+		if (LocalPlayer::Entity()->Time() > LastKnock + 0.5f) {
+			((DoorFunction)(vars::stor::gBase + CO::KnockDoor))(Door, LocalPlayer::Entity());
+			LastKnock = LocalPlayer::Entity()->Time();
 		}
-		if (LocalPlayer->Time() > LastOpen + 0.1f) {
-			((DoorFunction)(vars::stor::gBase + CO::OpenDoor))(Door, LocalPlayer);
-			LastOpen = LocalPlayer->Time();
+		if (LocalPlayer::Entity()->Time() > LastOpen + 0.1f) {
+			((DoorFunction)(vars::stor::gBase + CO::OpenDoor))(Door, LocalPlayer::Entity());
+			LastOpen = LocalPlayer::Entity()->Time();
 		}
-		if (LocalPlayer->Time() > LastHatch + 0.1f) {
-			((DoorFunction)(vars::stor::gBase + CO::OpenHatch))(Door, LocalPlayer);
-			LastHatch = LocalPlayer->Time();
+		if (LocalPlayer::Entity()->Time() > LastHatch + 0.1f) {
+			((DoorFunction)(vars::stor::gBase + CO::OpenHatch))(Door, LocalPlayer::Entity());
+			LastHatch = LocalPlayer::Entity()->Time();
 		}
 	}
 	float LastPickup = 0.f;
 	void PickupPlayer(BasePlayer* ent) {
 		typedef void(__stdcall* AssistPlayer)(BasePlayer*, BasePlayer*);
-		if (!LocalPlayer->is_teammate(ent->GetSteamID()) && vars::misc::revive_team_only) return;
-		if (LocalPlayer->Time() > LastPickup + 0.5f) {
-			((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer);
-			LastPickup = LocalPlayer->Time();
+		if (!LocalPlayer::Entity()->is_teammate(ent->GetSteamID()) && vars::misc::revive_team_only) return;
+		if (LocalPlayer::Entity()->Time() > LastPickup + 0.5f) {
+			((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer::Entity());
+			LastPickup = LocalPlayer::Entity()->Time();
 		}
 	}
 }
@@ -173,9 +173,9 @@ float flyhackPauseTime;
 void TestFlying() {
 	flyhackPauseTime = Mathf::Max(0.f, flyhackPauseTime - Time::deltaTime());
 	bool inAir = false;
-	float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetRadius)(LocalPlayer);
-	float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + CO::GetHeight)(LocalPlayer, false);
-	Vector3 vector = (LocalPlayer->lastSentTick()->position() + read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
+	float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetRadius)(LocalPlayer::Entity());
+	float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + CO::GetHeight)(LocalPlayer::Entity(), false);
+	Vector3 vector = (LocalPlayer::Entity()->lastSentTick()->position() + read(read(LocalPlayer::Entity() + oPlayerModel, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
 	Vector3 vector2 = vector + Vector3(0.f, radius - 2.f, 0.f);
 	Vector3 vector3 = vector + Vector3(0.f, height - radius, 0.f);
 	float radius2 = radius - 0.05f;
@@ -190,7 +190,7 @@ void TestFlying() {
 	if (inAir) {
 		bool flag = false;
 
-		Vector3 vector4 = read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer->lastSentTick()->position();
+		Vector3 vector4 = read(read(LocalPlayer::Entity() + oPlayerModel, uintptr_t) + 0x1D8, Vector3) - LocalPlayer::Entity()->lastSentTick()->position();
 		float num3 = Mathf::Abs(vector4.y);
 		float num4 = reinterpret_cast<float(*)(Vector3)>(vars::stor::gBase + CO::Magnitude2D)(vector4);
 		if (vector4.y >= 0.f) {
@@ -203,7 +203,7 @@ void TestFlying() {
 		}
 		if (flag) {
 			float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
-			float num6 = LocalPlayer->GetJumpHeight() + num5;
+			float num6 = LocalPlayer::Entity()->GetJumpHeight() + num5;
 			if (flyhackDistanceVertical > num6) {
 				//return true;
 			}
@@ -222,7 +222,7 @@ void TestFlying() {
 void CheckFlyhack() {
 	TestFlying();
 	float num5 = Mathf::Max((flyhackPauseTime > 0.f) ? 10 : 1.5, 0.f);
-	float num6 = LocalPlayer->GetJumpHeight() + num5;
+	float num6 = LocalPlayer::Entity()->GetJumpHeight() + num5;
 	vars::stuff::max_flyhack = num6;
 	if (flyhackDistanceVertical <= num6) {
 		vars::stuff::flyhack = flyhackDistanceVertical;
@@ -254,11 +254,11 @@ void CheckFlyhack() {
 
 				//					Vector3 target = vars::combat::bodyaim ? reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(spine1) : reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
 				//					float gravity;
-				//					if (LocalPlayer->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer->GetActiveWeapon()->GetID() == 1602646136) {
+				//					if (LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1602646136) {
 				//						gravity = 2.f;
 				//					}
 				//					else {
-				//						gravity = GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo());
+				//						gravity = GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo());
 				//					}
 				//					a::Prediction(prj->currentPosition(), target, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), GetBulletSpeed(), gravity);
 				//					prj->currentVelocity((target - prj->currentPosition()) * (GetBulletSpeed() / vars::stuff::testFloat));

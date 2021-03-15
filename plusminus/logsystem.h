@@ -11,7 +11,7 @@ namespace StringConverter {
 		return converterX.to_bytes(wstr);
 	}
 }
-
+float timee = 120.f;
 UINT vps = 1;
 WNDPROC original_windowproc = nullptr;
 bool sdk_initialized = false;
@@ -101,6 +101,29 @@ public:
 			}
 			draw_text(Vector2(200, yPos), entry.message);
 			yPos += 15.0f;
+		}
+	}
+	static void RenderExplosions() {
+		for (int i = 0; i < LogSystem::loggedExplosions.size(); i++) {
+			if ((get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince) >= timee) {
+				LogSystem::loggedExplosions.erase(LogSystem::loggedExplosions.begin() + i);
+				continue;
+			}
+			Explosion explosion = LogSystem::loggedExplosions.at(i);
+
+			Vector2 explPos;
+			if (utils::w2s(explosion.position, explPos)) {
+				Renderer::String(
+					explPos,
+					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%.2fm] [%d]"),
+						explosion.name.c_str(),
+						Math::Distance_3D(explosion.position, LocalPlayer::Entity()->get_bone_pos(head)),
+						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
+					D2D1::ColorF::Red,
+					true,
+					true
+				);
+			}
 		}
 	}
 };

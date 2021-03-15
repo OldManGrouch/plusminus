@@ -490,12 +490,6 @@ public:
 		return *this;
 	}
 };
-class Vector4 {
-public:
-	float x, y, z, w;
-	inline Vector4() { x = y = z = w = 0.0f; }
-	inline Vector4(float X, float Y, float Z, float W) { x = X; y = Y; z = Z; w = W; }
-};
 class StringFormat {
 public:
 	template <typename ...Args>
@@ -628,7 +622,7 @@ enum class EventType : int {
 	KeyUp = 5,
 	Repaint = 7
 };
-enum class ButtonS : int {
+enum class Button : int {
 	FORWARD = 2,
 	BACKWARD = 4,
 	LEFT = 8,

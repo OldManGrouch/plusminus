@@ -69,7 +69,7 @@ public:
 		typedef float(__stdcall* RetF)();
 		float time = Time::time();
 
-		float desyncTime = max(time - LocalPlayer->Time() - 0.0325f, 0.f);
+		float desyncTime = max(time - LocalPlayer::Entity()->Time() - 0.0325f, 0.f);
 		float res = pad + desyncTime * 5.5f;
 		if (localplayer) {
 			res += (1.5f * read(melee + 0x278, float)); //maxDistance
@@ -83,9 +83,9 @@ public:
 		if (Player->GetHealth() <= 0) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
-		if (vars::combat::ignore_team && LocalPlayer->is_teammate(Player->GetSteamID())) return res;
+		if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) return res;
 		Vector3 prepos = Player->get_bone_pos(head);
-		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer, prepos);
+		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer::Entity(), prepos);
 		Vector3 closest_local = utils::ClosestPoint(Player, closest_entity);
 		float disttoentity = MaxMeleeDist(melee, false);
 		float distfromlocal = MaxMeleeDist(melee, true);
@@ -107,7 +107,7 @@ public:
 		res.valid = utils::LineOfSight(closest_local, target);
 		if (!res.valid) return res;
 
-		Vector3 lppos = LocalPlayer->get_bone_pos(neck);
+		Vector3 lppos = LocalPlayer::Entity()->get_bone_pos(neck);
 		res.valid = utils::LineOfSight(lppos, target);
 		if (!res.valid) return res;
 

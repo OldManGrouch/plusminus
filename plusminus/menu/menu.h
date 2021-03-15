@@ -309,7 +309,6 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Weapon "), &vars::npc::weapon);
 		ImGui::Checkbox(xorstr("Tracers "), &vars::npc::tracers);
-		ImGui::ColorButton(xorstr("Npc##Color"), vars::colors::npc_esp); ImGui::SameLine(); ImGui::Text(xorstr("NPC Color"));
 	}
 	void visuals() {
 		
@@ -357,6 +356,8 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Airdrops"), &vars::visuals::crates::supply);
 			ImGui::Checkbox(xorstr("Heli Crates"), &vars::visuals::crates::heli);
 			ImGui::Checkbox(xorstr("Bradley Crates"), &vars::visuals::crates::bradley);
+			ImGui::Checkbox(xorstr("Military Crates"), &vars::visuals::crates::military);
+			ImGui::Checkbox(xorstr("Elite Crates"), &vars::visuals::crates::elite);
 			if (vars::visuals::crates::supply || vars::visuals::crates::bradley || vars::visuals::crates::heli) {
 				ImGui::SliderFloat(xorstr("Crate ESP Distance"), &vars::visuals::crates::draw_distance, 5.f, 3000.f);
 				ImGui::Checkbox(xorstr("Show Distance "), &vars::visuals::crates::show_distance);

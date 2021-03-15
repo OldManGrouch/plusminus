@@ -9,11 +9,11 @@ namespace hk {
 			if (vars::combat::tree_reflect) {
 				Vector3 target = vars::combat::bodyaim ? reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(spine1) : reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
 				float gravity;
-				if (LocalPlayer->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer->GetActiveWeapon()->GetID() == 1602646136) {
+				if (LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1602646136) {
 					gravity = 2.f;
 				}
 				else {
-					gravity = GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo());
+					gravity = GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo());
 				}
 				a::Prediction(prj->currentPosition(), target, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), GetBulletSpeed(), gravity);
 				prj->currentVelocity((target - prj->currentPosition()) * (GetBulletSpeed() / 75.f));
@@ -73,19 +73,19 @@ namespace hk {
 				switch (RUNTIME_CRC32_W(effectName)) {
 				case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 					LogSystem::LogExplosion(C4, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Distance_3D(LocalPlayer->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
 					LogSystem::LogExplosion(Satchel, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Distance_3D(LocalPlayer->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
 					LogSystem::LogExplosion(IncenRocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Distance_3D(LocalPlayer->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 					LogSystem::LogExplosion(Rocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str(), Math::Distance_3D(LocalPlayer->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
 					break;
 				}
 			}
@@ -109,14 +109,14 @@ namespace hk {
 		Vector3 get_position(PlayerEyes* playereyes) {
 			if (vars::misc::long_neck) {
 				if (GetAsyncKeyState(vars::keys::longneck)) {
-					return Vector3(LocalPlayer->get_bone_pos(head)) + Vector3(0, 1.15, 0);
+					return Vector3(LocalPlayer::Entity()->get_bone_pos(head)) + Vector3(0, 1.15, 0);
 				}
 			}
 			return original_geteyepos(playereyes);
 		}
 		void __fastcall SetFlying(ModelState* a1, bool a2) {}
 		void SendClientTick(BasePlayer* baseplayer) {
-			if (!LocalPlayer) return original_sendclienttick(baseplayer);
+			if (!baseplayer) return original_sendclienttick(baseplayer);
 			if (vars::misc::anti_aim) {
 				auto input = read(baseplayer + 0x4C8, uintptr_t);
 				auto state = read(input + 0x20, uintptr_t);
@@ -141,7 +141,7 @@ namespace hk {
 			//	reinterpret_cast<void(*)(PlayerWalkMovement*, Vector3, BasePlayer*)>(vars::stor::gBase + 0x2F08A0)( // basemovement -> teleportto
 			//		movement, 
 			//		read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) +
-			//		reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer->eyes()), // playereyes -> movementforward
+			//		reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer::Entity()->eyes()), // playereyes -> movementforward
 			//		LocalPlayer
 			//		);
 			//}
@@ -154,9 +154,9 @@ namespace hk {
 			}*/
 			if (vars::misc::farmbot) {
 				Vector3 vel = read(movement + 0x34, Vector3);
-				f_object closest = f_object::get_closest_object(LocalPlayer->get_bone_pos(head), xorstr("ore.prefab"));
+				f_object closest = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head), xorstr("ore.prefab"));
 				if (closest.valid) {
-					Vector3 direction = (closest.position - LocalPlayer->get_bone_pos(head)).Normalized() * speed;
+					Vector3 direction = (closest.position - LocalPlayer::Entity()->get_bone_pos(head)).Normalized() * speed;
 					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
 			}
@@ -175,26 +175,26 @@ namespace hk {
 				reinterpret_cast<void(__fastcall*)(float)>(vars::stor::gBase + CO::set_rayleigh)(vars::misc::rayleigh);
 			}
 			if (vars::misc::mass_suicide) {
-				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer, -50);
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity(), -50);
 			}
-			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer->GetHealth() > 0 && !LocalPlayer->IsMenu()) {
-				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer, -50);
+			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer::Entity()->GetHealth() > 0 && !LocalPlayer::Entity()->IsMenu()) {
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity(), -50);
 			}
 			auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer->IsMenu()) {
-				Item* weapon = LocalPlayer->GetActiveWeapon();
+			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer::Entity()->IsMenu()) {
+				Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 				DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 				DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 				int contents = read(mag + 0x1C, int);
-				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer->get_bone_pos(head))) {
-					LocalPlayer->force_key_state(ButtonS::FIRE_PRIMARY);
-					LocalPlayer->free_key_state(ButtonS::FIRE_PRIMARY);
+				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head))) {
+					LocalPlayer::Entity()->force_key_state(Button::FIRE_PRIMARY);
+					//LocalPlayer::Entity()->free_key_state(Button::FIRE_PRIMARY);
 				}
 			}
 			if (vars::misc::flyhack_indicator) {
 				CheckFlyhack();
 			}
-			Item* weapon = LocalPlayer->GetActiveWeapon();
+			Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 			DWORD64 active = read(weapon + oHeldEntity, DWORD64);
 			char* classname = weapon->ClassName();
 			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
@@ -205,7 +205,7 @@ namespace hk {
 			}
 			if (vars::misc::auto_farm_barrel) {
 				if (weaponmelee) {
-					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
+					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
 						xorstr("barrel"),
 						Vector3::Zero(),
 						Vector3::Zero(),
@@ -213,7 +213,7 @@ namespace hk {
 						false,
 						xorstr(""));
 					if (ore_hot_spot.valid) {
-						Vector3 local = utils::ClosestPoint(LocalPlayer, ore_hot_spot.position);
+						Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), ore_hot_spot.position);
 						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
 							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
 								lol::do_attack(ore_hot_spot, active, false);
@@ -224,7 +224,7 @@ namespace hk {
 			}
 			if (vars::misc::auto_farm_ore) {
 				if (weaponmelee) {
-					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
+					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
 						xorstr(""),
 						Vector3::Zero(),
 						Vector3::Zero(),
@@ -232,7 +232,7 @@ namespace hk {
 						true,
 						xorstr("OreHotSpot"));
 					if (ore_hot_spot.valid) {
-						Vector3 local = utils::ClosestPoint(LocalPlayer, ore_hot_spot.position);
+						Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), ore_hot_spot.position);
 						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
 							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
 								lol::do_attack(ore_hot_spot, active, false);
@@ -243,7 +243,7 @@ namespace hk {
 			}
 			if (vars::misc::auto_farm_tree) {
 				if (weaponmelee) {
-					f_object tree_entity = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
+					f_object tree_entity = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
 						xorstr(""),
 						Vector3::Zero(),
 						Vector3::Zero(),
@@ -252,7 +252,7 @@ namespace hk {
 						xorstr("TreeEntity"));
 					if (tree_entity.valid) {
 						tree_entity.position = Vector3::Zero();
-						f_object tree_marker = f_object::get_closest_object(LocalPlayer->get_bone_pos(head),
+						f_object tree_marker = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
 							xorstr(""),
 							Vector3::Zero(),
 							Vector3::Zero(),
@@ -260,10 +260,10 @@ namespace hk {
 							true,
 							xorstr("TreeMarker"));
 						if (tree_marker.valid) {
-							Vector3 locala = utils::ClosestPoint(LocalPlayer, tree_marker.position);
+							Vector3 locala = utils::ClosestPoint(LocalPlayer::Entity(), tree_marker.position);
 							if (Math::Distance_3D(locala, tree_marker.position) <= 2.f) {
 								tree_entity.position = tree_marker.position;
-								Vector3 local = utils::ClosestPoint(LocalPlayer, tree_entity.position);
+								Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), tree_entity.position);
 								if (Math::Distance_3D(local, tree_entity.position) <= 2.f) {
 									if (reinterpret_cast<BaseEntity*>(tree_entity.entity)->IsValid()) {
 										lol::do_attack(tree_entity, active, false);
@@ -276,10 +276,10 @@ namespace hk {
 			}
 			EntityThreadLoop();
 			if (vars::misc::fake_lag) {
-				write(LocalPlayer + 0x5C8, 0.4f, float);
+				write(LocalPlayer::Entity() + 0x5C8, 0.4f, float);
 			}
 			else {
-				write(LocalPlayer + 0x5C8, 0.05f, float);
+				write(LocalPlayer::Entity() + 0x5C8, 0.05f, float);
 			}
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
@@ -290,10 +290,10 @@ namespace hk {
 			original_clientinput(baseplayah, ModelState);
 
 			if (vars::misc::spoof_ladderstate) {
-				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
+				LocalPlayer::Entity()->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
 			if (vars::misc::farmbot) {
-				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
+				LocalPlayer::Entity()->add_modelstate_flag(ModelStateFlag::Sprinting);
 			}
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
@@ -316,7 +316,7 @@ namespace hk {
 		void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 			if (entity->IsPlayer()) {
 				if (vars::misc::hit_logs) {
-					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->GetName(), utils::StringPool::Get(info->HitBone())->buffer, info->damageTypes()->Total()), 5.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->_displayName(), utils::StringPool::Get(info->HitBone())->buffer, info->damageTypes()->Total()), 5.f);
 				}
 				if (vars::misc::custom_hitsound) {
 					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
@@ -325,7 +325,7 @@ namespace hk {
 				if (vars::combat::always_headshot) {
 					reinterpret_cast<void(*)(Str, GameObject*)>(vars::stor::gBase + CO::EffectRun)(
 						Str(xorstr(L"assets/bundled/prefabs/fx/headshot_2d.prefab")),
-						LocalPlayer->eyes()->gameObject());
+						LocalPlayer::Entity()->eyes()->gameObject());
 					return;
 				}
 			}
@@ -343,7 +343,7 @@ namespace hk {
 		void Play(ViewModel* viewmodel, pUncStr name) {
 			if (vars::weapons::remove_attack_anim) {
 				static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::DoAttack(): Void");
-				if (!CALLED_BY(ptr, 0x296) || LocalPlayer->GetActiveWeapon()->GetID() == -75944661) {
+				if (!CALLED_BY(ptr, 0x296) || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == -75944661) {
 					return original_viewmodelplay(viewmodel, name);
 				}
 			}
@@ -377,7 +377,7 @@ namespace hk {
 				if (vars::combat::ignore_team) {
 					if (test->HitEntity() != null) {
 						if (test->HitEntity()->IsValid()) {
-							if (LocalPlayer->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
+							if (LocalPlayer::Entity()->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
 								if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
 									return false;
 								}
@@ -396,9 +396,19 @@ namespace hk {
 					if (test->HitEntity() != null) {
 						if (test->HitEntity()->IsValid()) {
 							BaseCombatEntity* lol = reinterpret_cast<BaseCombatEntity*>(test->HitEntity());
-							//printf("%s \n", lol->ClassName());
-							if (lol->ClassNameHash() == STATIC_CRC32("CargoShip") || lol->ClassNameHash() == STATIC_CRC32("Deployable")
-								|| lol->ClassNameHash() == STATIC_CRC32("TreeEntity") || lol->ClassNameHash() == STATIC_CRC32("OreResourceEntity")) {
+							if (vars::stuff::testInt == 2) {
+								printf("%s \n", lol->ClassName());
+							}
+							if (lol->ClassNameHash() == STATIC_CRC32("CargoShip") || lol->ClassNameHash() == STATIC_CRC32("BaseOven")
+								|| lol->ClassNameHash() == STATIC_CRC32("TreeEntity") || lol->ClassNameHash() == STATIC_CRC32("OreResourceEntity")
+								|| lol->ClassNameHash() == STATIC_CRC32("CH47HelicopterAIController") || lol->ClassNameHash() == STATIC_CRC32("MiniCopter") 
+								|| lol->ClassNameHash() == STATIC_CRC32("BoxStorage") || lol->ClassNameHash() == STATIC_CRC32("Workbench") 
+								|| lol->ClassNameHash() == STATIC_CRC32("VendingMachine") || lol->ClassNameHash() == STATIC_CRC32("Barricade") 
+								|| lol->ClassNameHash() == STATIC_CRC32("BuildingPrivlidge") || lol->ClassNameHash() == STATIC_CRC32("LootContainer")
+								|| lol->ClassNameHash() == STATIC_CRC32("HackableLockedCrate") || lol->ClassNameHash() == STATIC_CRC32("ResourceEntity")
+								|| lol->ClassNameHash() == STATIC_CRC32("RidableHorse") || lol->ClassNameHash() == STATIC_CRC32("MotorRowboat")
+								|| lol->ClassNameHash() == STATIC_CRC32("ScrapTransportHelicopter") || lol->ClassNameHash() == STATIC_CRC32("JunkPile")
+								|| lol->ClassNameHash() == STATIC_CRC32("MiningQuarry")) {
 								return false;
 							}
 						}
@@ -479,17 +489,17 @@ namespace hk {
 		}
 		Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
 			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-			Vector3 Local = LocalPlayer->eyes()->get_position();
+			Vector3 Local = LocalPlayer::Entity()->eyes()->get_position();
 
-			Vector3 heli_target = read(vars::stor::closestHeliObj + 0x90, Vector3) + Vector3(0, 2, 0);
+			Vector3 heli_target = utils::GetEntityPosition(vars::stor::closestHeliObj) + Vector3(0, 2, 0);
 			Vector3 target = vars::combat::bodyaim ? TargetPlayer->get_bone_pos(spine1) : TargetPlayer->get_bone_pos(head);
 
 			float gravity;
-			if (LocalPlayer->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer->GetActiveWeapon()->GetID() == 1602646136) {
+			if (LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1602646136) {
 				gravity = 2.f;
 			}
 			else {
-				gravity = GetGravity(LocalPlayer->GetActiveWeapon()->LoadedAmmo());
+				gravity = GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo());
 			}
 
 			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), gravity);
