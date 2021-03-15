@@ -76,7 +76,7 @@ namespace radar {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
-								if (Player->GetHealth() < 0.2) {
+								if (Player->GetHealth() <= 0) {
 									Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
 								}
 								else {
@@ -134,7 +134,7 @@ namespace otherEsp {
 					wchar_t buffera[256];
 					swprintf(buffer, xorstr(L"Bradley APC [%.2fm]"), Math::Distance_3D(LocalPlayer->get_bone_pos(head), pos));
 					swprintf(buffera, xorstr(L"[%.2f HP]"), health);
-					if (health > 0.2) {
+					if (health > 0) {
 						Renderer::String(screen, buffer, D2D1::ColorF::Red, true, true);
 						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 						Renderer::Rectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
@@ -365,7 +365,7 @@ void Skeleton(BasePlayer* BasePlayer, D2D1::ColorF color) {
 	Renderer::Line(Vector2{ BonesPos[9].x, BonesPos[9].y }, Vector2{ BonesPos[7].x, BonesPos[7].y }, color, 1.5f, true);
 	Renderer::Line(Vector2{ BonesPos[12].x, BonesPos[12].y }, Vector2{ BonesPos[7].x, BonesPos[7].y }, color, 1.5f, true);
 }
-inline void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Entity_h, D2D1::ColorF color) {
+void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Entity_h, D2D1::ColorF color) {
 	Renderer::Line({ Entity_x, Entity_y }, { Entity_x + Entity_w / 3.5f, Entity_y }, D2D1::ColorF::Black, 3.f);
 	Renderer::Line({ Entity_x, Entity_y }, { Entity_x + Entity_w / 3.5f, Entity_y }, color);
 	Renderer::Line({ Entity_x, Entity_y }, { Entity_x,Entity_y + Entity_h / 3.5f }, D2D1::ColorF::Black, 3.f);
@@ -387,7 +387,7 @@ inline void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Enti
 	Renderer::Line({ Entity_x, Entity_y + Entity_h }, { Entity_x,(Entity_y + Entity_h) - Entity_h / 3.5f }, color);
 }
 typedef bool(__stdcall* IsDucked)(BasePlayer*);
-inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
+void Box3D(BasePlayer* player, D2D1::ColorF color) {
 	CBounds bounds = CBounds();
 
 	IsDucked ducked = (IsDucked)(vars::stor::gBase + CO::IsDucked);
@@ -444,6 +444,7 @@ inline void Box3D(BasePlayer* player, D2D1::ColorF color) {
 }
 void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 	if (vars::players::sleeperignore && BP->HasFlags(16)) return;
+	if (!BP) return;
 	Vector2 tempFeetR, tempFeetL;
 	if (utils::w2s(BP->get_bone_pos(r_foot), tempFeetR) && utils::w2s(BP->get_bone_pos(l_foot), tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
@@ -484,23 +485,27 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 						Box3D(BP, color);
 					}
 				}
-				if (vars::players::name) {
-					wchar_t name[64];
-					_swprintf(name, L"%s", BP->GetName());
-					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + 10.f }, name, color, true, true);
-					CurPos += 15;
+				if (vars::players::name) { 
+					if (BP->GetName()) {
+						if ((unsigned int)BP->GetName() != 0x4E00u) {
+							Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + 10.f }, BP->GetName(), color, true, true);
+							CurPos += 15;
+						}
+					}
 				}
 				if (vars::players::weapon) {
-					Item* weapon = BP->GetActiveWeapon();
-					wchar_t name[64];
-					if (!weapon) {
-						_swprintf(name, L"---");
+					if (BP->GetHealth() > 0) {
+						Item* weapon = BP->GetActiveWeapon();
+						wchar_t name[64];
+						if (!weapon) {
+							_swprintf(name, L"---");
+						}
+						else {
+							_swprintf(name, L"%s [x%d]", weapon->GetName(), weapon->GetCount());
+						}
+						Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, name, color, true, true);
+						CurPos += 15;
 					}
-					else {
-						_swprintf(name, L"%s [x%d]", weapon->GetName(), weapon->GetCount());
-					}
-					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, name, color, true, true);
-					CurPos += 15;
 				}
 				if (vars::players::healthdist) {
 					wchar_t s[64];

@@ -21,7 +21,6 @@
     <ClInclude Include="init/d3defs.h" />
     <ClInclude Include="hooks/detours.h" />
     <ClInclude Include="hooks\hooks.h" />
-    <ClInclude Include="stuff/hwid.h" />
     <ClInclude Include="stuff/il2cpp.h" />
     <ClInclude Include="menu/imgui/imconfig.h" />
     <ClInclude Include="menu/imgui/imgui.h" />
@@ -33,7 +32,6 @@
     <ClInclude Include="menu/imgui/imstb_textedit.h" />
     <ClInclude Include="menu/imgui/imstb_truetype.h" />
     <ClInclude Include="init\pre_draw.h" />
-    <ClInclude Include="main/lol.h" />
     <ClInclude Include="menu/menu.h" />
     <ClInclude Include="hooks/minhook\include\MinHook.h" />
     <ClInclude Include="hooks/minhook\src\buffer.h" />

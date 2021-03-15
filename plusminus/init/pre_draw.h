@@ -124,7 +124,7 @@ void pre_draw() {
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		static Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 		Vector2 ScreenPos;
-		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) > 0.2f) {
+		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) > 0) {
 			if (utils::w2s(read(vars::stor::closestHeliObj + 0x90, Vector3), ScreenPos)) Renderer::Line(startPos, ScreenPos, D2D1::ColorF(0.3f, 0.34f, 1.f), 1.f);
 		}
 

@@ -28,7 +28,7 @@ public:
 
 	void Initialize()
 	{
-		szPath = "C:\\ProgramData\\";
+		szPath = "C:\\plusminus\\";
 		Setup();
 	}
 

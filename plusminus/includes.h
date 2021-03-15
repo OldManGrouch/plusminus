@@ -13,6 +13,7 @@
 #include <emmintrin.h>
 #include "winternl.h"
 #include <iostream>
+#include <vector>
 #include <fstream>
 #include "stuff/offsets.h"
 #include "crc32.h"
@@ -26,12 +27,8 @@
 #include <thread>
 #include "stuff/xorstr.h"
 #include <comdef.h>
-
 #include "menu/imgui/imgui.h"
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #include <Lmcons.h>
-#include "stuff/hwid.h"
-
 #include "stuff/mem.h"
 #include "stuff/structs.h"
 #include "stuff/math.h"
@@ -53,7 +50,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include "logsystem.h"
 #include "main/aim.h"
 #include "main/misc.h"
-#include "main/lol.h"
 #include "main/esp.h"
 
 #include "gamethread.h"

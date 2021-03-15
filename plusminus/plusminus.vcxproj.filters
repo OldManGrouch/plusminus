@@ -5,9 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="source\rendering">
-      <UniqueIdentifier>{cc01cadc-391c-4907-b7bb-4296cccb9457}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\stuff">
       <UniqueIdentifier>{5f392fa9-1698-4200-a62c-2ab8633b0371}</UniqueIdentifier>
     </Filter>
@@ -32,11 +29,11 @@
     <Filter Include="source\stuff\sdk">
       <UniqueIdentifier>{9345b5da-4641-4db4-80a2-18474cef01bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\init">
-      <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\main\ent">
       <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\d3d">
+      <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +97,6 @@
     <ClInclude Include="stuff/mem.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
-    <ClInclude Include="main/lol.h">
-      <Filter>source\main</Filter>
-    </ClInclude>
     <ClInclude Include="menu/menu.h">
       <Filter>source\menu</Filter>
     </ClInclude>
@@ -116,19 +110,13 @@
       <Filter>source\main</Filter>
     </ClInclude>
     <ClInclude Include="init/d3defs.h">
-      <Filter>source\init</Filter>
+      <Filter>source\d3d</Filter>
     </ClInclude>
     <ClInclude Include="init/present.h">
-      <Filter>source\init</Filter>
+      <Filter>source\d3d</Filter>
     </ClInclude>
     <ClInclude Include="main/weapons.h">
       <Filter>source\main</Filter>
-    </ClInclude>
-    <ClInclude Include="rendering/rendering.h">
-      <Filter>source\rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="stuff/hwid.h">
-      <Filter>source\stuff</Filter>
     </ClInclude>
     <ClInclude Include="stuff/vars.h">
       <Filter>source\stuff</Filter>
@@ -163,9 +151,6 @@
     <ClInclude Include="gamethread.h">
       <Filter>source\main\ent</Filter>
     </ClInclude>
-    <ClInclude Include="hooks\hooks.h">
-      <Filter>source\hooks</Filter>
-    </ClInclude>
     <ClInclude Include="crc32.h">
       <Filter>source\stuff</Filter>
     </ClInclude>
@@ -175,8 +160,14 @@
     <ClInclude Include="main\f_object.h">
       <Filter>source\main</Filter>
     </ClInclude>
+    <ClInclude Include="hooks\hooks.h">
+      <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering/rendering.h">
+      <Filter>source\d3d</Filter>
+    </ClInclude>
     <ClInclude Include="init\pre_draw.h">
-      <Filter>source\init</Filter>
+      <Filter>source\main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

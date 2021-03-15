@@ -578,7 +578,10 @@ class PlayerTick {
 public:
 	Vector3 position() { return read(this + 0x20, Vector3); }
 };
-
+enum Lifestate {
+	Alive = 0,
+	Dead = 1
+};
 class BasePlayer;
 BasePlayer* LocalPlayer = nullptr;
 class BasePlayer : public BaseCombatEntity {
@@ -615,6 +618,12 @@ public:
 			get_rotation(transform, pos);
 			return pos;
 		}
+	}
+	bool is_alive() {
+		if (!this) return false;
+		Lifestate lifestate = read(this + 0x204, Lifestate);
+		if (!lifestate) return false;
+		return lifestate == Lifestate::Alive;
 	}
 	Vector3 GetPosition(DWORD64 transform) {
 		if (!transform) return Vector3{ 0.f, 0.f, 0.f };

@@ -284,15 +284,15 @@ namespace hk {
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
 			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
-			WeaponPatch();
-			MiscFuncs();
+			weapon_set();
+			misc_set();
 
 			original_clientinput(baseplayah, ModelState);
 
 			if (vars::misc::spoof_ladderstate) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
-			if (vars::misc::farmbot || vars::misc::omnidirectional_sprinting) {
+			if (vars::misc::farmbot) {
 				LocalPlayer->add_modelstate_flag(ModelStateFlag::Sprinting);
 			}
 		}
@@ -375,9 +375,13 @@ namespace hk {
 		bool DoHit(Projectile* prj, HitTest* test, Vector3 point, Vector3 normal) {
 			if (prj->isAuthoritative()) {
 				if (vars::combat::ignore_team) {
-					if (LocalPlayer->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
-						if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
-							return false;
+					if (test->HitEntity() != null) {
+						if (test->HitEntity()->IsValid()) {
+							if (LocalPlayer->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
+								if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
+									return false;
+								}
+							}
 						}
 					}
 				}
@@ -388,10 +392,21 @@ namespace hk {
 						}
 					}
 				}
+				if (vars::weapons::penetrate) {
+					if (test->HitEntity() != null) {
+						if (test->HitEntity()->IsValid()) {
+							BaseCombatEntity* lol = reinterpret_cast<BaseCombatEntity*>(test->HitEntity());
+							//printf("%s \n", lol->ClassName());
+							if (lol->ClassNameHash() == STATIC_CRC32("CargoShip") || lol->ClassNameHash() == STATIC_CRC32("Deployable")
+								|| lol->ClassNameHash() == STATIC_CRC32("TreeEntity") || lol->ClassNameHash() == STATIC_CRC32("OreResourceEntity")) {
+								return false;
+							}
+						}
+					}
+				}
 				if (vars::stuff::testBool) {
 					if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
-						//return false;
-						prj->integrity(0.f);
+						return false;
 					}
 				}
 			}
@@ -520,7 +535,7 @@ void hk_(void* Function, void** Original, void* Detour) {
 	MH_EnableHook(Function);
 }
 
-inline void hk__() {
+void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, hk::misc::SetFlying);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, hk::combat::SendProjectileAttack);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, hk::combat::CanAttack);
@@ -535,7 +550,7 @@ inline void hk__() {
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, hk::misc::get_position);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, hk::misc::Play);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, hk::misc::VisUpdateUsingCulling);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
+	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
 	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);

@@ -80,7 +80,7 @@ void ent_loop() {
 		pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
 		uintptr_t ent = read(Object + 0x28, uintptr_t);
 		if (reinterpret_cast<BaseEntity*>(ent)->IsDestroyed()) {
-			continue;
+			return;
 		}
 		char* buff = name->stub;
 		if (vars::visuals::radar_) {
@@ -106,7 +106,7 @@ void ent_loop() {
 						Skeleton(Player, D2D1::ColorF::Lime);
 					}
 					else {
-						if (Player->GetHealth() < 0.2) {
+						if (Player->GetHealth() <= 0) {
 							Skeleton(Player, D2D1::ColorF::Red);
 						}
 						else {
@@ -127,7 +127,7 @@ void ent_loop() {
 						ESP(Player, LocalPlayer, D2D1::ColorF::Lime);
 					}
 					else {
-						if (Player->GetHealth() < 0.2) {
+						if (Player->GetHealth() <= 0) {
 							ESP(Player, LocalPlayer, D2D1::ColorF::Red);
 						}
 						else {
@@ -140,7 +140,9 @@ void ent_loop() {
 				}
 			}
 			else if (Player->IsNpc()) {
-				NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
+				if (Player->GetHealth() > 0 && Player->GetHealth() != 100.0f) {
+					NPCESP(Player, LocalPlayer, D2D1::ColorF::Yellow);
+				}
 			}
 			if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
 			if (vars::combat::ignore_npc && Player->IsNpc()) continue;
@@ -174,7 +176,7 @@ void ent_loop() {
 					Renderer::FillRectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / maxhealth), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 					Renderer::Rectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 				}
-				if (health > 0.2 && !vars::combat::ignore_heli) {
+				if (health > 0 && !vars::combat::ignore_heli) {
 					if ((FOV > (CurFOV = GetFovHeli(pos)))) {
 						FOV = CurFOV; vars::stor::closestHeli = (uintptr_t)Helicopter; vars::stor::closestHeliObj = VisualState;
 					}
@@ -266,11 +268,11 @@ void ent_loop() {
 	if (LocalPlayer->is_teammate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (TargetPlayer->GetHealth() < 0.2) {
+	if (TargetPlayer->GetHealth() <= 0) {
 		vars::combat::lock_target = false;
 		vars::stor::closestPlayer = NULL;
 	}
-	if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) < 0.2) {
+	if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) <= 0) {
 		vars::stor::closestHeli = NULL;
 		vars::stor::closestHeliObj = NULL;
 	}

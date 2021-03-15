@@ -30,6 +30,9 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 #ifdef noauth
 	CreateThread(NULL, 0, Start, NULL, 0, NULL);
+	//AllocConsole();
+	//freopen(xorstr("CONOUT$"), xorstr("w"), stdout);
+	//std::cout << xorstr("hi\n\n\n");
 #else
 	HANDLE hMutex = OpenMutexA(SYNCHRONIZE, FALSE, c_xor("1bo7MMSCOc6Nod3iV4BK"));
 	if (!hMutex) {

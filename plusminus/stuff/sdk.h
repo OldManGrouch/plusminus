@@ -286,6 +286,9 @@ public:
 	char* ClassName() {
 		return (char*)read(read(read(this + oHeldEntity, DWORD64), DWORD64) + 0x10, DWORD64);
 	}
+	char* ClassNameB() {
+		return (char*)read(read(this, DWORD64) + 0x10, DWORD64);
+	}
 	Weapon Info() {
 		int ID = GetID();
 		for (Weapon k : info) {

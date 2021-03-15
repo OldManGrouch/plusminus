@@ -39,7 +39,7 @@ void EntityThreadLoop() {
 			BasePlayer* lol = (BasePlayer*)ent;
 
 			if (vars::players::chams && lol) {
-				if (lol->GetHealth() > 0.2) {
+				if (lol->GetHealth() > 0) {
 					uintptr_t playermodel = read(ent + oPlayerModel, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 					if (!lol->HasFlags(16)) {

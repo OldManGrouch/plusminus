@@ -75,11 +75,23 @@ void Normalize(float& Yaw, float& Pitch) {
 	if (Yaw < -360) Yaw += 360;
 	else if (Yaw > 360) Yaw -= 360;
 }
-
+float NormalizeAngle(float angle) {
+	while (angle > 360.0f) {
+		angle -= 360.0f;
+	}
+	while (angle < 0.0f) {
+		angle += 360.0f;
+	}
+	return angle;
+}
+Vector2 NormalizeAngles(Vector2 angles) {
+	angles.x = NormalizeAngle(angles.x);
+	angles.y = NormalizeAngle(angles.y);
+	return angles;
+}
 void StepConstant(Vector2& angles) {
 	bool smooth = vars::combat::smooth;
-	Vector2 angles_step = (angles - LocalPlayer->GetVA());
-	Normalize(angles_step.x, angles_step.y);
+	Vector2 angles_step = NormalizeAngles(angles - LocalPlayer->GetVA());
 
 	if (smooth) {
 		float factor_pitch = (vars::combat::smooth_factor / 10.f);
