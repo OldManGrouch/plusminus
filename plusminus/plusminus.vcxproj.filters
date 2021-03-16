@@ -169,6 +169,9 @@
     <ClInclude Include="init\pre_draw.h">
       <Filter>source\main</Filter>
     </ClInclude>
+    <ClInclude Include="il2cpp_.h">
+      <Filter>source\stuff\sdk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

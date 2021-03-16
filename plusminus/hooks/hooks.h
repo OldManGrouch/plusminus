@@ -180,15 +180,16 @@ namespace hk {
 			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer::Entity()->GetHealth() > 0 && !LocalPlayer::Entity()->IsMenu()) {
 				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity(), -50);
 			}
-			auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer::Entity()->IsMenu()) {
+				auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 				Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
 				DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
 				DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 				int contents = read(mag + 0x1C, int);
-				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), (vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head))) {
+				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), 
+					(vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head))) {
 					LocalPlayer::Entity()->force_key_state(Button::FIRE_PRIMARY);
-					//LocalPlayer::Entity()->free_key_state(Button::FIRE_PRIMARY);
+					reinterpret_cast<void(*)(uintptr_t)>(vars::stor::gBase + 0x2E9850)(basepr);
 				}
 			}
 			if (vars::misc::flyhack_indicator) {
@@ -199,7 +200,7 @@ namespace hk {
 			char* classname = weapon->ClassName();
 			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
 			if (active && vars::misc::weapon_spam) {
-				if (GetAsyncKeyState(vars::keys::weaponspam)) {
+				if (GetAsyncKeyState(vars::keys::weaponspam) && !LocalPlayer::Entity()->IsMenu()) {
 					reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
 				}
 			}

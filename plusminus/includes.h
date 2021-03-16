@@ -1,6 +1,6 @@
 #pragma warning(disable : 4530)
 #define _CRT_SECURE_NO_WARNINGS
-//#define noauth
+#define noauth
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -34,6 +34,7 @@
 #include "main/weapons.h"
 #include "stuff/sdk.h"
 #include "stuff/il2cpp.h"
+#include "il2cpp_.h"
 
 #include "rust.h"
 #include "main/f_object.h"

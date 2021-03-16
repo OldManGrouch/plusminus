@@ -79,7 +79,7 @@ public:
 	static f_object get_melee_target(BasePlayer* Player, DWORD64 melee) {
 		f_object res = f_object();
 
-		if (Player->GetHealth() <= 0) return res;
+		if (Player->health() <= 0) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
 		if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) return res;

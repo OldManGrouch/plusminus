@@ -55,7 +55,7 @@ void ent_loop() {
 							Skeleton(Player, D2D1::ColorF::Lime);
 						}
 						else {
-							if (Player->GetHealth() <= 0) {
+							if (Player->health() <= 0) {
 								Skeleton(Player, D2D1::ColorF::Red);
 							}
 							else {
@@ -76,7 +76,7 @@ void ent_loop() {
 							ESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Lime);
 						}
 						else {
-							if (Player->GetHealth() <= 0) {
+							if (Player->health() <= 0) {
 								ESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Red);
 							}
 							else {
@@ -89,7 +89,7 @@ void ent_loop() {
 					}
 				}
 				else if (Player->IsNpc()) {
-					if (Player->GetHealth() > 0) {
+					if (Player->health() > 0) {
 						NPCESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Yellow);
 					}
 				}
@@ -100,7 +100,7 @@ void ent_loop() {
 				if (vars::combat::ignore_players) continue;
 				if (Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
 
-				if (FOV > (CurFOV = GetFov(Player, BoneList(0.5))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
+				if (FOV > (CurFOV = GetFov(Player, BoneList(0.5))) && Player->health() > 0 && !vars::combat::lock_target) {
 					FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
 				}
 			}
@@ -177,44 +177,46 @@ void ent_loop() {
 			// ---------------------------------------------------------
 			miscvis(ObjectClass, buff, true, false, 2000.f, vars::stuff::testChar, xorstr(L"TESTITEM"), D2D1::ColorF::LimeGreen);
 		}
-		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-		/*targeting shit*/
-		if (TargetPlayer->get_bone_pos(head).x == 0 || TargetPlayer->get_bone_pos(head).y == 0 || TargetPlayer->get_bone_pos(head).z == 0) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (LocalPlayer::Entity()->is_teammate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (TargetPlayer->GetHealth() <= 0) {
-			vars::combat::lock_target = false;
-			vars::stor::closestPlayer = NULL;
-		}
-		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) <= 0) {
-			vars::stor::closestHeli = NULL;
-			vars::stor::closestHeliObj = NULL;
-		}
-		if (vars::combat::ignore_players) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (vars::combat::ignore_heli) {
-			vars::stor::closestHeli = NULL;
-			vars::stor::closestHeliObj = NULL;
-		}
-		if (utils::GetEntityPosition(vars::stor::closestHeliObj).y > 1500 || utils::GetEntityPosition(vars::stor::closestHeliObj).y < -1500) {
-			vars::stor::closestHeli = NULL;
-			vars::stor::closestHeliObj = NULL;
-		}
-		if (LocalPlayer::Entity() != nullptr) {
-			if (vars::combat::aimbot && !LocalPlayer::Entity()->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID())) {
-				if (vars::stor::closestPlayer && !LocalPlayer::Entity()->IsMenu()) {
-					if (GetAsyncKeyState(vars::keys::aimkey)) {
-						do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));
+		if (vars::stor::closestPlayer != null) {
+			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
+			/*targeting shit*/
+			if (TargetPlayer->get_bone_pos(head).x == 0 || TargetPlayer->get_bone_pos(head).y == 0 || TargetPlayer->get_bone_pos(head).z == 0) {
+				vars::stor::closestPlayer = NULL;
+			}
+			if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
+				vars::stor::closestPlayer = NULL;
+			}
+			if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
+				vars::stor::closestPlayer = NULL;
+			}
+			if (LocalPlayer::Entity()->is_teammate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {
+				vars::stor::closestPlayer = NULL;
+			}
+			if (TargetPlayer->health() <= 0) {
+				vars::combat::lock_target = false;
+				vars::stor::closestPlayer = NULL;
+			}
+			if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) <= 0) {
+				vars::stor::closestHeli = NULL;
+				vars::stor::closestHeliObj = NULL;
+			}
+			if (vars::combat::ignore_players) {
+				vars::stor::closestPlayer = NULL;
+			}
+			if (vars::combat::ignore_heli) {
+				vars::stor::closestHeli = NULL;
+				vars::stor::closestHeliObj = NULL;
+			}
+			if (utils::GetEntityPosition(vars::stor::closestHeliObj).y > 1500 || utils::GetEntityPosition(vars::stor::closestHeliObj).y < -1500) {
+				vars::stor::closestHeli = NULL;
+				vars::stor::closestHeliObj = NULL;
+			}
+			if (LocalPlayer::Entity() != nullptr) {
+				if (vars::combat::aimbot && !LocalPlayer::Entity()->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID())) {
+					if (vars::stor::closestPlayer && !LocalPlayer::Entity()->IsMenu()) {
+						if (GetAsyncKeyState(vars::keys::aimkey)) {
+							do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));
+						}
 					}
 				}
 			}

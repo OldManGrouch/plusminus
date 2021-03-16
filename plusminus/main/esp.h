@@ -76,7 +76,7 @@ namespace radar {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
-								if (Player->GetHealth() <= 0) {
+								if (Player->health() <= 0) {
 									Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
 								}
 								else {
@@ -463,7 +463,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			Vector2 middlePointPlayerFeet;
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
 				if (vars::players::fillbox) {
-					if ((int)BP->GetHealth() > 0) {
+					if ((int)BP->health() > 0) {
 						if (LocalPlayer::Entity()->is_teammate(BP->GetSteamID())) {
 							Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.4f, 0.f, 0.4f));
 						}
@@ -490,7 +490,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					CurPos += 15;
 				}
 				if (vars::players::weapon) {
-					if (BP->GetHealth() > 0) {
+					if (BP->health() > 0) {
 						Item* weapon = BP->GetActiveWeapon();
 						wchar_t name[64];
 						if (!weapon) {
@@ -505,35 +505,35 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::players::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->health());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, s, color, true, true);
 					CurPos += 15;
 				}
 				if (vars::players::healthbar) {
-					int health = (int)BP->GetHealth();
+					int health = (int)BP->health();
 					float maxheal = 100.f;
 					if (vars::players::healthbarstyle == 0) {
 						if ((int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
-							if ((int)BP->GetHealth() <= 33) {
+							if ((int)BP->health() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}
-							if ((int)BP->GetHealth() >= 34 && (int)BP->GetHealth() <= 66) {
+							if ((int)BP->health() >= 34 && (int)BP->health() <= 66) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 202.f, 0.f, 0.8f));
 							}
-							if ((int)BP->GetHealth() >= 67) {
+							if ((int)BP->health() >= 67) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 							}
 							Renderer::Rectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h }, D2D1::ColorF::Black, 0.5f);
 						}
 					}
 					if (vars::players::healthbarstyle == 1) {
-						if ((int)BP->GetHealth() <= 33) {
+						if ((int)BP->health() <= 33) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 						}
-						if ((int)BP->GetHealth() >= 34 && (int)BP->GetHealth() <= 66) {
+						if ((int)BP->health() >= 34 && (int)BP->health() <= 66) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 202.f, 0.f, 0.8f));
 						}
-						if ((int)BP->GetHealth() >= 67) {
+						if ((int)BP->health() >= 67) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 						}
 						Renderer::Rectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
@@ -549,7 +549,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					if (vars::players::tracers_pos == 1) {
 						startPos = Vector2(screenX / 2, screenY / 2);
 					}
-					if ((int)BP->GetHealth() > 0) {
+					if ((int)BP->health() > 0) {
 						Renderer::Line(startPos, tempHead, color, 0.5f);
 					}
 				}
@@ -606,35 +606,35 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				}
 				if (vars::npc::healthdist) {
 					wchar_t s[64];
-					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->GetHealth());
+					_swprintf(s, L"[%.2fM] [%dHP]", Math::Distance_3D(LP->get_bone_pos(head), BP->get_bone_pos(head)), (int)BP->health());
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, s, color, true, true);
 					CurPos2 += 15;
 				}
 				if (vars::npc::healthbar) {
-					int health = (int)BP->GetHealth();
+					int health = (int)BP->health();
 					float maxheal = 150.f;
 					if (vars::npc::healthbarstyle == 0) {
 						if ((int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
-							if ((int)BP->GetHealth() <= 33) {
+							if ((int)BP->health() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}
-							if ((int)BP->GetHealth() >= 34 && (int)BP->GetHealth() <= 66) {
+							if ((int)BP->health() >= 34 && (int)BP->health() <= 66) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 202.f, 0.f, 0.8f));
 							}
-							if ((int)BP->GetHealth() >= 67) {
+							if ((int)BP->health() >= 67) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 							}
 							Renderer::Rectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h }, D2D1::ColorF::Black, 0.5f);
 						}
 					}
 					if (vars::npc::healthbarstyle == 1) {
-						if ((int)BP->GetHealth() <= 33) {
+						if ((int)BP->health() <= 33) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 						}
-						if ((int)BP->GetHealth() >= 34 && (int)BP->GetHealth() <= 66) {
+						if ((int)BP->health() >= 34 && (int)BP->health() <= 66) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(255.f, 202.f, 0.f, 0.8f));
 						}
-						if ((int)BP->GetHealth() >= 67) {
+						if ((int)BP->health() >= 67) {
 							Renderer::FillRectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60 * (health / maxheal), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 						}
 						Renderer::Rectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);

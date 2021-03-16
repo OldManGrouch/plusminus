@@ -48,14 +48,16 @@ void misc_set() {
 			LocalPlayer::Entity()->SetGravity(vars::misc::gravity_modifier);
 		else LocalPlayer::Entity()->SetGravity(2.5f);
 	}
+	auto klass = read(vars::stor::gBase + CO::ConvarGraphics, DWORD64);
+	auto static_fields = read(klass + 0xB8, DWORD64);
 	if (GetAsyncKeyState(vars::keys::zoom)) {
-		LocalPlayer::Entity()->SetFov(10.f);
+		write(static_fields + 0x18, 10.f, float);
 	}
 	else {
-		LocalPlayer::Entity()->SetFov(vars::misc::fov);
+		write(static_fields + 0x18, vars::misc::fov, float);
 	}
 	if (vars::misc::spiderman) {
-		ULONG64 Movement = read(LocalPlayer::Entity() + oMovement, ULONG64);
+		uintptr_t Movement = read(LocalPlayer::Entity() + oMovement, uintptr_t);
 		write(Movement + 0xB8, 0.f, float);
 	}
 	LocalPlayer::Entity()->PatchCamspeed();

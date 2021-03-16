@@ -595,11 +595,11 @@ public:
 	}
 	PlayerEyes* eyes() { return read(this + 0x600, PlayerEyes*); }
 	PlayerTick* lastSentTick() { return read(this + 0x5D0, PlayerTick*); }
-	void SetVA(const Vector2& VA) {
+	void set_viewangles(const Vector2& VA) {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		write(Input + oBodyAngles, VA, Vector2);
 	}
-	Vector2 GetVA() {
+	Vector2 viewangles() {
 		DWORD64 Input = read(this + oPlayerInput, DWORD64);
 		return read(Input + oBodyAngles, Vector2);
 	}

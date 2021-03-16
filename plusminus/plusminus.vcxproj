@@ -10,6 +10,7 @@
     <ClInclude Include="crc32.h" />
     <ClInclude Include="gamethread.h" />
     <ClInclude Include="hooks/defs.h" />
+    <ClInclude Include="il2cpp_.h" />
     <ClInclude Include="logsystem.h" />
     <ClInclude Include="rust.h" />
     <ClInclude Include="stuff/offsets.h" />

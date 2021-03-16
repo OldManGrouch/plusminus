@@ -442,6 +442,7 @@ namespace menu {
 				ImGui::Combo(xorstr("Building Grade"), &vars::misc::grade_, building_grade, IM_ARRAYSIZE(building_grade));
 				ImGui::PopItemWidth();
 			}
+			ImGui::Separator();
 		}
 		HelpCheckbox(xorstr("On Ladder"), &vars::misc::spoof_ladderstate, xorstr("Looks funny and can be used to walk silently."));
 		HelpCheckbox(xorstr("Anti-Aim"), &vars::misc::anti_aim, xorstr("Makes you look like you're spinning on other people's screens."));
