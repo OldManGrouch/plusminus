@@ -15,6 +15,8 @@ namespace Renderer {
 	IDWriteTextFormat* TextFormat;
 	IDWriteTextFormat* BigText;
 	ID2D1SolidColorBrush* SolidColor;
+	bool initialized = false;
+
 	__forceinline UINT wcslen(const wchar_t* Str) {
 		const wchar_t* TempStr = Str;
 		for (; *TempStr; ++TempStr);
@@ -22,12 +24,12 @@ namespace Renderer {
 	}
 	__declspec(noinline) bool InitRender(IDXGISwapChain* SwapChain)
 	{
-		static bool initialized; if (!initialized) {
-			initialized = true; D2D1_FACTORY_OPTIONS CreateOpt = { D2D1_DEBUG_LEVEL_NONE };
-			FC(dwrite, DWriteCreateFactory, DWRITE_FACTORY_TYPE_SHARED, __uuidof(TextEngine), (IUnknown**)&TextEngine);
-			FC(d2d1, D2D1CreateFactory, D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &CreateOpt, (void**)&Interface);
-			TextEngine->CreateTextFormat(xorstr(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 12.f, L"", &TextFormat);
-			TextEngine->CreateTextFormat(xorstr(L"Tahoma"), NULL, DWRITE_FONT_WEIGHT_THIN, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_CONDENSED, 20.f, L"", &BigText);
+		if (!initialized) {
+			initialized = true; 
+			D2D1_FACTORY_OPTIONS CreateOpt = { D2D1_DEBUG_LEVEL_NONE };
+			DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(TextEngine), (IUnknown**)&TextEngine);
+			D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &CreateOpt, (void**)&Interface);
+			TextEngine->CreateTextFormat(xorstr(L"Consola"), NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12.f, L"", &TextFormat);
 			if (!Interface || !TextEngine || !TextFormat) return false;
 		}
 		ID3D11Device* d3d_device;

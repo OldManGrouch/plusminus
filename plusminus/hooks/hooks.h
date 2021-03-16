@@ -297,6 +297,11 @@ namespace hk {
 			}
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
+			uintptr_t cycle = read(TOD_Sky + 0x38, uintptr_t);
+			if (vars::misc::custom_time) {
+				write(cycle + 0x10, vars::misc::time, float);
+			}
+
 			if (!vars::misc::bright_ambient) {
 				return original_updateambient(TOD_Sky);
 			}
@@ -397,7 +402,7 @@ namespace hk {
 						if (test->HitEntity()->IsValid()) {
 							BaseCombatEntity* lol = reinterpret_cast<BaseCombatEntity*>(test->HitEntity());
 							if (vars::stuff::testInt == 2) {
-								printf("%s \n", lol->ClassName());
+								printf(xorstr("%s \n"), lol->ClassName());
 							}
 							if (lol->ClassNameHash() == STATIC_CRC32("CargoShip") || lol->ClassNameHash() == STATIC_CRC32("BaseOven")
 								|| lol->ClassNameHash() == STATIC_CRC32("TreeEntity") || lol->ClassNameHash() == STATIC_CRC32("OreResourceEntity")
@@ -408,7 +413,7 @@ namespace hk {
 								|| lol->ClassNameHash() == STATIC_CRC32("HackableLockedCrate") || lol->ClassNameHash() == STATIC_CRC32("ResourceEntity")
 								|| lol->ClassNameHash() == STATIC_CRC32("RidableHorse") || lol->ClassNameHash() == STATIC_CRC32("MotorRowboat")
 								|| lol->ClassNameHash() == STATIC_CRC32("ScrapTransportHelicopter") || lol->ClassNameHash() == STATIC_CRC32("JunkPile")
-								|| lol->ClassNameHash() == STATIC_CRC32("MiningQuarry")) {
+								|| lol->ClassNameHash() == STATIC_CRC32("MiningQuarry") || lol->ClassNameHash() == STATIC_CRC32("WaterCatcher")) {
 								return false;
 							}
 						}
@@ -444,7 +449,7 @@ namespace hk {
 			if (vars::combat::always_headshot || vars::combat::always_heli_rotor) {
 				BaseCombatEntity* entity = BaseNetworkable::clientEntities()->Find<BaseCombatEntity*>(hitID);
 				if (vars::combat::always_headshot) {
-					if (entity->ClassNameHash() == STATIC_CRC32("BasePlayer")) {
+					if (entity->IsPlayer()) {
 						uint32_t bone = utils::StringPool::Get(c_xor("head"));
 						write(Attack + 0x30, bone, uint32_t);
 					}
@@ -546,34 +551,34 @@ void hk_(void* Function, void** Original, void* Detour) {
 }
 
 void hk__() {
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::set_flying), (void**)&original_setflying, hk::misc::SetFlying);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, hk::combat::SendProjectileAttack);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanAttack), (void**)&original_canattack, hk::combat::CanAttack);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::SendClientTick), (void**)&original_sendclienttick, hk::misc::SendClientTick);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleRunning), (void**)&original_handleRunning, hk::misc::HandleRunning);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::HandleJumping), (void**)&original_handleJumping, hk::misc::HandleJumping);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, hk::combat::GetModifiedAimConeDirection);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CanHoldItems), (void**)&original_canholditems, hk::combat::CanHoldItems);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Run), (void**)&original_consolerun, hk::misc::Run);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateProjectile), (void**)&original_create_projectile, hk::combat::CreateProjectile);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::CreateEffect), (void**)&original_createeffect, hk::misc::CreateEffect);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_position), (void**)&original_geteyepos, hk::misc::get_position);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Play), (void**)&original_viewmodelplay, hk::misc::Play);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, hk::misc::VisUpdateUsingCulling);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Refract), (void**)&original_refract, hk::exploit::Refract);
-	//hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Launch), (void**)&original_launch, hk::combat::Launch);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::Jump), (void**)&original_jump, hk::misc::Jump);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
-	hk_((void*)(uintptr_t)(GetModBase(xorstr(L"GameAssembly.dll")) + CO::OnLand), (void**)&original_onland, hk::misc::OnLand);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::set_flying), (void**)&original_setflying, hk::misc::SetFlying);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, hk::combat::SendProjectileAttack);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::CanAttack), (void**)&original_canattack, hk::combat::CanAttack);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::SendClientTick), (void**)&original_sendclienttick, hk::misc::SendClientTick);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::HandleRunning), (void**)&original_handleRunning, hk::misc::HandleRunning);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::HandleJumping), (void**)&original_handleJumping, hk::misc::HandleJumping);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::GetModifiedAimConeDirection), (void**)&original_aimconedirection, hk::combat::GetModifiedAimConeDirection);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::CanHoldItems), (void**)&original_canholditems, hk::combat::CanHoldItems);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Run), (void**)&original_consolerun, hk::misc::Run);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::CreateProjectile), (void**)&original_create_projectile, hk::combat::CreateProjectile);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::CreateEffect), (void**)&original_createeffect, hk::misc::CreateEffect);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::get_position), (void**)&original_geteyepos, hk::misc::get_position);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Play), (void**)&original_viewmodelplay, hk::misc::Play);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, hk::misc::VisUpdateUsingCulling);
+	//hk_((void*)(uintptr_t)(vars::stor::gBase + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Refract), (void**)&original_refract, hk::exploit::Refract);
+	//hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Launch), (void**)&original_launch, hk::combat::Launch);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Jump), (void**)&original_jump, hk::misc::Jump);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHitNotify), (void**)&original_dohitnotify, hk::misc::DoHitNotify);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::get_isHeadshot), (void**)&original_getisheadshot, hk::misc::get_isHeadshot);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ForceToPos), (void**)&original_forcepos, hk::misc::ForcePositionTo);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::OnLand), (void**)&original_onland, hk::misc::OnLand);
 }

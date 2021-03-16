@@ -1,8 +1,6 @@
 #pragma warning(disable : 4530)
 #define _CRT_SECURE_NO_WARNINGS
-#define StrA
-#define StrW
-#define noauth
+//#define noauth
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>

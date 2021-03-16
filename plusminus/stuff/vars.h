@@ -29,7 +29,6 @@ namespace vars {
 		bool Panic = false;
 		int ScreenHeight = 0;
 		int ScreenWidth = 0;
-		float BoneToAim = 0.5;
 		char ConfigName[0x100] = "cfg";
 	}
 	namespace keys {
@@ -168,12 +167,14 @@ namespace vars {
 			bool flame_turret = false;
 			bool shotgun_turret = false;
 			bool landmine = false;
+			bool sam_site = false;
 			bool bear_trap = false;
 			bool show_distance = false;
 			float draw_distance = 300.f;
 		}
 		namespace other {
 			bool dropped_items = false;
+			bool bodybag = false;
 			bool corpse = false;
 			bool stash = false;
 			bool hemp = false;

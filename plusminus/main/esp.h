@@ -50,7 +50,7 @@ namespace radar {
 	void radar_logic(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		float mid_x = vars::visuals::radar::x + vars::visuals::radar::size / 2;
 		float mid_y = vars::visuals::radar::y + vars::visuals::radar::size / 2;
-		if (LocalPlayer::Entity() && pViewMatrix) {
+		if (LocalPlayer::Entity()) {
 			Vector3 local = LocalPlayer::Entity()->get_bone_pos(head);
 			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);

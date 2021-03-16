@@ -1,15 +1,77 @@
 #include <map>
 #include "lazyimp.h"
-struct Matrix4x4 {
-	union {
-		struct {
-			float        _11, _12, _13, _14;
-			float        _21, _22, _23, _24;
-			float        _31, _32, _33, _34;
-			float        _41, _42, _43, _44;
+class Matrix {
+public:
+	inline float* operator[](int i) {
+		return m[i];
+	}
 
-		}; float m[4][4];
-	};
+	inline const float* operator[](int i) const {
+		return m[i];
+	}
+
+	inline float* Base() {
+		return &m[0][0];
+	}
+
+	inline const float* Base() const {
+		return &m[0][0];
+	}
+public:
+	inline Matrix() {
+		Init(
+			0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f
+		);
+	}
+	inline Matrix(
+		float m00, float m01, float m02, float m03,
+		float m10, float m11, float m12, float m13,
+		float m20, float m21, float m22, float m23,
+		float m30, float m31, float m32, float m33) {
+		Init(
+			m00, m01, m02, m03,
+			m10, m11, m12, m13,
+			m20, m21, m22, m23,
+			m30, m31, m32, m33
+		);
+	}
+	inline void Init(
+		float m00, float m01, float m02, float m03,
+		float m10, float m11, float m12, float m13,
+		float m20, float m21, float m22, float m23,
+		float m30, float m31, float m32, float m33
+	) {
+		m[0][0] = m00;
+		m[0][1] = m01;
+		m[0][2] = m02;
+		m[0][3] = m03;
+
+		m[1][0] = m10;
+		m[1][1] = m11;
+		m[1][2] = m12;
+		m[1][3] = m13;
+
+		m[2][0] = m20;
+		m[2][1] = m21;
+		m[2][2] = m22;
+		m[2][3] = m23;
+
+		m[3][0] = m30;
+		m[3][1] = m31;
+		m[3][2] = m32;
+		m[3][3] = m33;
+	}
+	Matrix transpose() const {
+		return Matrix(
+			m[0][0], m[1][0], m[2][0], m[3][0],
+			m[0][1], m[1][1], m[2][1], m[3][1],
+			m[0][2], m[1][2], m[2][2], m[3][2],
+			m[0][3], m[1][3], m[2][3], m[3][3]);
+	}
+	float m[4][4];
 };
 namespace il2cpp {
 	auto gameAssembly = GetModuleHandleA(xorstr("GameAssembly.dll"));
@@ -547,14 +609,14 @@ namespace il2cpp {
 			Beep(500, 1000);
 			return 0;
 		}
-		Matrix4x4* getViewMatrix() {
+		Matrix getViewMatrix() {
 			static auto camera_list = get_camera();
-			if (!camera_list) return new Matrix4x4();
+			if (!camera_list) return Matrix();
 
 			auto camera_table = *reinterpret_cast<uint64_t*>(camera_list);
 			auto cam = *reinterpret_cast<uint64_t*>(camera_table);
 
-			return *reinterpret_cast<Matrix4x4**>(cam + 0x2E4);
+			return *reinterpret_cast<Matrix*>(cam + 0x2E4);
 		}
 		static auto IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}

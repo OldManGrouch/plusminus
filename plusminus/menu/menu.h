@@ -247,7 +247,7 @@ namespace menu {
 		HelpCheckbox(xorstr("Minicopter Aim"), &vars::weapons::minicopter_aim, xorstr("Allows you to hold items on minicopters."));
 		ImGui::Checkbox(xorstr("EokaTap"), &vars::weapons::eokatap);
 		ImGui::Checkbox(xorstr("FastBow"), &vars::weapons::fastbow);
-		HelpCheckbox(xorstr("Penetrate"), &vars::weapons::penetrate, xorstr("Allows you to shoot through deployables, trees."));
+		HelpCheckbox(xorstr("Penetrate"), &vars::weapons::penetrate, xorstr("Allows you to shoot through the cargo ship, crates, trees, ores, minicopters and scrap helis, deployables, boats, quarrys and junk piles on the roads."));
 		HelpCheckbox(xorstr("Spoof Hit Distance"), &vars::weapons::spoof_hitdistance, xorstr("Flex with big meters."));
 		if (vars::weapons::spoof_hitdistance) {
 			ImGui::SliderFloat(xorstr("Distance"), &vars::weapons::hitdistance, 1000.f, 10000.f);
@@ -287,7 +287,7 @@ namespace menu {
 		if (vars::players::chams) {
 			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);
 		}
-		//HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
+		HelpCheckbox(xorstr("Target Belt / Clothes"), &vars::players::belt, xorstr("Shows the targeted player's belt and clothing."));
 		ImGui::Checkbox(xorstr("Ignore Sleepers"), &vars::players::sleeperignore);
 	}
 	void npc() {
@@ -358,7 +358,7 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Bradley Crates"), &vars::visuals::crates::bradley);
 			ImGui::Checkbox(xorstr("Military Crates"), &vars::visuals::crates::military);
 			ImGui::Checkbox(xorstr("Elite Crates"), &vars::visuals::crates::elite);
-			if (vars::visuals::crates::supply || vars::visuals::crates::bradley || vars::visuals::crates::heli) {
+			if (vars::visuals::crates::supply || vars::visuals::crates::bradley || vars::visuals::crates::heli || vars::visuals::crates::military || vars::visuals::crates::elite) {
 				ImGui::SliderFloat(xorstr("Crate ESP Distance"), &vars::visuals::crates::draw_distance, 5.f, 3000.f);
 				ImGui::Checkbox(xorstr("Show Distance "), &vars::visuals::crates::show_distance);
 			}
@@ -377,6 +377,7 @@ namespace menu {
 			ImGui::Checkbox(xorstr("Auto Turrets"), &vars::visuals::turrets::auto_turret);
 			ImGui::Checkbox(xorstr("Flame Turrets"), &vars::visuals::turrets::flame_turret);
 			ImGui::Checkbox(xorstr("Shotgun Traps"), &vars::visuals::turrets::shotgun_turret);
+			ImGui::Checkbox(xorstr("SAM Sites"), &vars::visuals::turrets::sam_site);
 			ImGui::Checkbox(xorstr("Landmines"), &vars::visuals::turrets::landmine);
 			ImGui::Checkbox(xorstr("Beartraps"), &vars::visuals::turrets::bear_trap);
 			if (vars::visuals::turrets::auto_turret || vars::visuals::turrets::flame_turret || vars::visuals::turrets::shotgun_turret || vars::visuals::turrets::landmine || vars::visuals::turrets::bear_trap) {
@@ -397,6 +398,7 @@ namespace menu {
 		if (ImGui::CollapsingHeader(xorstr("Misc "))) {
 			ImGui::Checkbox(xorstr("Hemp"), &vars::visuals::other::hemp);
 			ImGui::Checkbox(xorstr("Corpses"), &vars::visuals::other::corpse);
+			ImGui::Checkbox(xorstr("Bodybags"), &vars::visuals::other::bodybag);
 			ImGui::Checkbox(xorstr("Stashes"), &vars::visuals::other::stash);
 			ImGui::Checkbox(xorstr("Dropped / World items"), &vars::visuals::other::dropped_items);
 			if (vars::visuals::other::corpse || vars::visuals::other::stash || vars::visuals::other::hemp || vars::visuals::other::dropped_items) {

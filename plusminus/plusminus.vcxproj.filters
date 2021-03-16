@@ -14,12 +14,6 @@
     <Filter Include="source\hooks">
       <UniqueIdentifier>{bf6a9dc9-dc11-4200-9d44-a2ee2b6790d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\menu">
-      <UniqueIdentifier>{f89ffed9-05ce-4fb9-a444-98b2f858638d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\menu\imgui">
-      <UniqueIdentifier>{117bdcbc-a7e4-44e0-9ab2-e03ace856803}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\hooks\minhook">
       <UniqueIdentifier>{4a9c7b7a-9159-43f2-80df-6d7bc4d754c9}</UniqueIdentifier>
     </Filter>
@@ -32,8 +26,14 @@
     <Filter Include="source\main\ent">
       <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\d3d">
+    <Filter Include="source\render">
       <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\render\menu">
+      <UniqueIdentifier>{f89ffed9-05ce-4fb9-a444-98b2f858638d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\render\menu\imgui">
+      <UniqueIdentifier>{117bdcbc-a7e4-44e0-9ab2-e03ace856803}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,31 +65,31 @@
       <Filter>source\hooks\minhook\HDE</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imconfig.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imgui.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imgui_impl_dx11.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imgui_impl_win32.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imgui_internal.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imgui_stdlib.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imstb_rectpack.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imstb_textedit.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="menu/imgui/imstb_truetype.h">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClInclude>
     <ClInclude Include="stuff/math.h">
       <Filter>source\stuff</Filter>
@@ -98,7 +98,7 @@
       <Filter>source\stuff</Filter>
     </ClInclude>
     <ClInclude Include="menu/menu.h">
-      <Filter>source\menu</Filter>
+      <Filter>source\render\menu</Filter>
     </ClInclude>
     <ClInclude Include="main/aim.h">
       <Filter>source\main</Filter>
@@ -110,10 +110,10 @@
       <Filter>source\main</Filter>
     </ClInclude>
     <ClInclude Include="init/d3defs.h">
-      <Filter>source\d3d</Filter>
+      <Filter>source\render</Filter>
     </ClInclude>
     <ClInclude Include="init/present.h">
-      <Filter>source\d3d</Filter>
+      <Filter>source\render</Filter>
     </ClInclude>
     <ClInclude Include="main/weapons.h">
       <Filter>source\main</Filter>
@@ -164,7 +164,7 @@
       <Filter>source\main</Filter>
     </ClInclude>
     <ClInclude Include="rendering/rendering.h">
-      <Filter>source\d3d</Filter>
+      <Filter>source\render</Filter>
     </ClInclude>
     <ClInclude Include="init\pre_draw.h">
       <Filter>source\main</Filter>
@@ -190,22 +190,22 @@
       <Filter>source\hooks\minhook</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui_draw.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui_impl_dx11.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui_impl_win32.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui_stdlib.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="menu/imgui/imgui_widgets.cpp">
-      <Filter>source\menu\imgui</Filter>
+      <Filter>source\render\menu\imgui</Filter>
     </ClCompile>
     <ClCompile Include="lazyimp.h">
       <Filter>source\stuff</Filter>

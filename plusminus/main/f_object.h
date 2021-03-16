@@ -21,48 +21,47 @@ public:
 	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr(""), float get_dist = 400.f) {
 		f_object lowest = f_object();
 
-		uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
-		if (!bn)
+		auto entityList = BaseNetworkable::clientEntities()->entityList();
+		if (entityList) {
+			for (int i = 1; i < entityList->vals->size; i++) {
+				uintptr_t Entity = *reinterpret_cast<uintptr_t*>(std::uint64_t(entityList->vals->buffer) + (0x20 + (sizeof(void*) * i)));
+				if (!Entity) continue;
+				uintptr_t Object = *reinterpret_cast<uint64_t*>(Entity + 0x10);
+				if (!Object) continue;
+				uintptr_t ObjectClass = *reinterpret_cast<uint64_t*>(Object + 0x30);
+				if (!ObjectClass) continue;
+				pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
+				char* buff = name->stub;
+				f_object res = f_object();
+				if (classname) {
+					if (strstr((char*)read(read(read(Object + 0x28, DWORD64), DWORD64) + 0x10, DWORD64), classnamee)) {
+						uintptr_t a = read(ObjectClass + 0x30, UINT64);
+						float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
+						if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
+							res.valid = dist <= get_dist;
+							res.dist = dist;
+							res.entity = Entity;
+							res.position = utils::GetEntityPosition(a);
+							if (res < lowest) lowest = res;
+						}
+					}
+				}
+				else {
+					if (strstr(buff, namee)) {
+						uintptr_t a = read(ObjectClass + 0x30, UINT64);
+						float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
+						if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
+							res.valid = dist <= get_dist;
+							res.dist = dist;
+							res.entity = Entity;
+							res.position = utils::GetEntityPosition(a);
+							if (res < lowest) lowest = res;
+						}
+					}
+				}
+			}
 			return lowest;
-		uintptr_t ClientEntities_values = read(read(read(read(bn + 0xB8, uintptr_t), uintptr_t) + 0x10, uintptr_t) + 0x28, uintptr_t);
-		if (!ClientEntities_values) return lowest;
-		int EntityCount = read(ClientEntities_values + 0x10, int);
-		uintptr_t EntityBuffer = read(ClientEntities_values + 0x18, uintptr_t);
-		for (int i = 0; i <= EntityCount; i++) {
-			uintptr_t Entity = read(EntityBuffer + 0x20 + (i * 0x8), uintptr_t); if (Entity <= 100000) continue;
-			uintptr_t Object = read(Entity + 0x10, uintptr_t); if (Object <= 100000) continue;
-			uintptr_t ObjectClass = read(Object + 0x30, uintptr_t); if (ObjectClass <= 100000) continue;
-			pUncStr name = read(ObjectClass + 0x60, pUncStr); if (!name) continue;
-			char* buff = name->stub;
-			f_object res = f_object();
-			if (classname) {
-				if (strstr((char*)read(read(read(Object + 0x28, DWORD64), DWORD64) + 0x10, DWORD64), classnamee)) {
-					uintptr_t a = read(ObjectClass + 0x30, UINT64);
-					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
-					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-						res.valid = dist <= get_dist;
-						res.dist = dist;
-						res.entity = read(Object + 0x28, DWORD64);
-						res.position = utils::GetEntityPosition(a);
-						if (res < lowest) lowest = res;
-					}
-				}
-			}
-			else {
-				if (strstr(buff, namee)) {
-					uintptr_t a = read(ObjectClass + 0x30, UINT64);
-					float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
-					if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-						res.valid = dist <= get_dist;
-						res.dist = dist;
-						res.entity = read(Object + 0x28, DWORD64);
-						res.position = utils::GetEntityPosition(a);
-						if (res < lowest) lowest = res;
-					}
-				}
-			}
 		}
-		return lowest;
 	}
 	static float MaxMeleeDist(DWORD64 melee, bool localplayer) {
 		float pad = 0.1f;

@@ -1,5 +1,4 @@
-﻿bool matrix_found = false;
-using namespace otherEsp;
+﻿using namespace otherEsp;
 bool inited = false;
 void ent_loop() {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
@@ -24,11 +23,6 @@ void ent_loop() {
 		LogSystem::RenderExplosions();
 	}
 	float FOV = vars::combat::fov, CurFOV;
-	if (!pViewMatrix || !matrix_found) {
-		pViewMatrix = il2cpp::unity::getViewMatrix();
-		matrix_found = true;
-		return;
-	}
 	if (!inited) {
 		LogSystem::Log(c_wxor(L"Cheat loaded successfully!"), 7.5f);
 		inited = true;
@@ -95,7 +89,7 @@ void ent_loop() {
 					}
 				}
 				else if (Player->IsNpc()) {
-					if (Player->GetHealth() > 0 && Player->GetHealth() != 100.0f) {
+					if (Player->GetHealth() > 0) {
 						NPCESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Yellow);
 					}
 				}
@@ -105,9 +99,8 @@ void ent_loop() {
 				if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 				if (vars::combat::ignore_players) continue;
 				if (Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
-				if (Player->IsNpc() && Player->GetHealth() == 100.0f) continue;
 
-				if (FOV > (CurFOV = GetFov(Player, BoneList(vars::stuff::BoneToAim))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
+				if (FOV > (CurFOV = GetFov(Player, BoneList(0.5))) && Player->GetHealth() > 0 && !vars::combat::lock_target) {
 					FOV = CurFOV; vars::stor::closestPlayer = (uintptr_t)Player;
 				}
 			}
@@ -121,7 +114,7 @@ void ent_loop() {
 					wchar_t buffer[256];
 					wchar_t buffera[256];
 					if (vars::visuals::patrol_heli) {
-						swprintf(buffer, xorstr(L"Helicopter [%dm]"), (int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos));
+						swprintf(buffer, xorstr(L"Helicopter [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos));
 						swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
 						Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
 						Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
@@ -168,9 +161,11 @@ void ent_loop() {
 			miscvis(ObjectClass, buff, vars::visuals::turrets::flame_turret, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("flameturret.deployed.prefab"), xorstr(L"Flame Turret"), D2D1::ColorF::DarkOrange);
 			miscvis(ObjectClass, buff, vars::visuals::turrets::shotgun_turret, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("guntrap.deployed.prefab"), xorstr(L"Shotgun Trap"), D2D1::ColorF::DimGray);
 			miscvis(ObjectClass, buff, vars::visuals::turrets::landmine, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("landmine.prefab"), xorstr(L"Landmine"), D2D1::ColorF::BlueViolet);
+			miscvis(ObjectClass, buff, vars::visuals::turrets::sam_site, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("sam_site_turret_deployed.prefab"), xorstr(L"SAM Site"), D2D1::ColorF::PowderBlue);
 			miscvis(ObjectClass, buff, vars::visuals::turrets::bear_trap, vars::visuals::turrets::show_distance, vars::visuals::turrets::draw_distance, xorstr("beartrap.prefab"), xorstr(L"Beartrap"), D2D1::ColorF::Brown);
 			// ---------------------------------------------------------
 			miscvis(ObjectClass, buff, vars::visuals::other::hemp, vars::visuals::other::show_distance, vars::visuals::other::draw_distance, xorstr("hemp-collectable.prefab"), xorstr(L"Hemp"), D2D1::ColorF::LimeGreen);
+			miscvis(ObjectClass, buff, vars::visuals::other::bodybag, vars::visuals::other::show_distance, vars::visuals::other::draw_distance, xorstr("item_drop_backpack.prefab"), xorstr(L"Bodybag"), D2D1::ColorF::Purple);
 			// ---------------------------------------------------------
 			miscvis(ObjectClass, buff, vars::visuals::base::boxes, vars::visuals::base::show_distance, vars::visuals::base::draw_distance, xorstr("box.wooden.large.prefab"), xorstr(L"Box"), D2D1::ColorF::RosyBrown);
 			// ---------------------------------------------------------
@@ -182,39 +177,12 @@ void ent_loop() {
 			// ---------------------------------------------------------
 			miscvis(ObjectClass, buff, true, false, 2000.f, vars::stuff::testChar, xorstr(L"TESTITEM"), D2D1::ColorF::LimeGreen);
 		}
-		static DWORD64 GOM = 0;
-		if (!GOM) GOM = RVA(FindPattern((PBYTE)"\x48\x8B\x15\x00\x00\x00\x00\x66\x39", xorstr("xxx????xx"), xorstr(L"UnityPlayer.dll")), 7);
-		DWORD64 manager = read(GOM, DWORD64); if (!manager) return;
-		for (DWORD64 object = read(manager + 0x8, DWORD64); (object && (object != read(manager, DWORD64))); object = read(object + 0x8, DWORD64)) {
-			DWORD64 gameobject = read(object + 0x10, DWORD64);
-			WORD tag = read(gameobject + 0x54, WORD);
-			if (tag == 6 || tag == 5 || tag == 20011) {
-				DWORD64 objectclass = read(gameobject + 0x30, DWORD64);
-				DWORD64	entity = read(objectclass + 0x18, DWORD64);
-				if (tag == 20011) {
-					DWORD64 dome = read(entity + 0x28, DWORD64); // TOD_Sky
-					DWORD64 todCycle = read(dome + 0x38, DWORD64);
-					DWORD64 todDay = read(dome + 0x50, DWORD64);
-
-					if (vars::misc::custom_time) {
-						write(todCycle + 0x10, vars::misc::time, float);
-					}
-					if (vars::misc::bright_ambient) {
-						write(todDay + 0x50, 1.f, float);
-						write(todDay + 0x54, 1.f, float);
-					}
-				}
-			}
-		}
 		auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 		/*targeting shit*/
 		if (TargetPlayer->get_bone_pos(head).x == 0 || TargetPlayer->get_bone_pos(head).y == 0 || TargetPlayer->get_bone_pos(head).z == 0) {
 			vars::stor::closestPlayer = NULL;
 		}
 		if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
-			vars::stor::closestPlayer = NULL;
-		}
-		if (TargetPlayer->IsNpc() && TargetPlayer->GetHealth() == 100.0f) {
 			vars::stor::closestPlayer = NULL;
 		}
 		if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {

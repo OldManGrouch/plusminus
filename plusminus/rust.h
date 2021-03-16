@@ -470,16 +470,16 @@ public:
 	bool HasNext() {
 		return this->index < this->points.size();
 	}
-	void TransformEntries(Matrix4x4 matrix) {
-		for (int i = 0; i < this->points.size(); i++) {
-			Segment segment = this->points[i];
-			//segment.point = matrix.MultiplyPoint3x4(segment.point);
-			this->points[i] = segment;
-		}
-		//this->CurrentPoint = matrix.MultiplyPoint3x4(this->CurrentPoint);
-		//this->StartPoint = matrix.MultiplyPoint3x4(this->StartPoint);
-		//this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
-	}
+	//void TransformEntries(Matrix4x4 matrix) {
+	//	for (int i = 0; i < this->points.size(); i++) {
+	//		Segment segment = this->points[i];
+	//		//segment.point = matrix.MultiplyPoint3x4(segment.point);
+	//		this->points[i] = segment;
+	//	}
+	//	//this->CurrentPoint = matrix.MultiplyPoint3x4(this->CurrentPoint);
+	//	//this->StartPoint = matrix.MultiplyPoint3x4(this->StartPoint);
+	//	//this->EndPoint = matrix.MultiplyPoint3x4(this->EndPoint);
+	//}
 };
 
 class ProjectileWeaponMod {
@@ -1008,19 +1008,28 @@ public:
 		return reinterpret_cast<bool(__fastcall*)(Projectile*)>(off)(this);
 	}
 };
-Matrix4x4* pViewMatrix = nullptr;
-
 namespace utils {
-	bool w2s(const Vector3& EntityPos, Vector2& ScreenPos) {
-		if (!pViewMatrix) return false;
-		Vector3 TransVec = Vector3(pViewMatrix->_14, pViewMatrix->_24, pViewMatrix->_34);
-		Vector3 RightVec = Vector3(pViewMatrix->_11, pViewMatrix->_21, pViewMatrix->_31);
-		Vector3 UpVec = Vector3(pViewMatrix->_12, pViewMatrix->_22, pViewMatrix->_32);
-		float w = Math::Dot(TransVec, EntityPos) + pViewMatrix->_44;
-		if (w < 0.098f) return false;
-		float y = Math::Dot(UpVec, EntityPos) + pViewMatrix->_42;
-		float x = Math::Dot(RightVec, EntityPos) + pViewMatrix->_41;
-		ScreenPos = Vector2((vars::stuff::ScreenWidth / 2) * (1.f + x / w), (vars::stuff::ScreenHeight / 2) * (1.f - y / w));
+	bool w2s(Vector3 world, Vector2& screen) {
+		const auto matrix = il2cpp::unity::getViewMatrix().transpose();
+
+		const Vector3 translation = { matrix[3][0], matrix[3][1], matrix[3][2] };
+		const Vector3 up = { matrix[1][0], matrix[1][1], matrix[1][2] };
+		const Vector3 right = { matrix[0][0], matrix[0][1], matrix[0][2] };
+
+		const auto w = translation.dot_product(world) + matrix[3][3];
+
+		if (w < 0.1f)
+			return false;
+
+		const auto x = right.dot_product(world) + matrix[0][3];
+		const auto y = up.dot_product(world) + matrix[1][3];
+
+		screen =
+		{
+			(vars::stuff::ScreenWidth / 2) * (1.f + x / w),
+			(vars::stuff::ScreenHeight / 2) * (1.f - y / w)
+		};
+
 		return true;
 	}
 	Vector3 GetEntityPosition(std::uint64_t entity) {
