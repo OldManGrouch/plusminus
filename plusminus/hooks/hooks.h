@@ -5,6 +5,33 @@ int yaw = 100;
 using namespace hk_defs;
 namespace hk {
 	namespace exploit {
+		void DoMovement(Projectile* projectile, float deltaTime) {
+			if (projectile->isAuthoritative() && vars::stuff::testBool) {
+				f_object target = f_object::get_closest_object(projectile->currentPosition(), xorstr("player.prefab"));
+
+				if (target.valid) {
+					Vector3 tar = reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head);
+					if (utils::LineOfSight(tar, projectile->currentPosition()) && projectile->traveledDistance() >= 70.f) {
+						Transform* transform = reinterpret_cast<Transform*>(reinterpret_cast<BasePlayer*>(target.entity)->GrabTransform(head));
+
+						HitTest* hitTest = projectile->hitTest();
+						hitTest->DidHit() = true;
+						hitTest->HitEntity((BaseEntity*)target.entity);
+						hitTest->HitTransform() = transform;
+						//hitTest->HitMaterial() = il2cpp::String::New("Flesh");
+
+						hitTest->HitPoint() = transform->InverseTransformPoint(projectile->currentPosition());
+						hitTest->HitNormal() = transform->InverseTransformDirection(projectile->currentPosition());
+
+						hitTest->AttackRay() = Ray(projectile->currentPosition(), reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head) - projectile->currentPosition());
+
+						projectile->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());
+						return;
+					}
+				}
+			}
+			return original_domovement(projectile, deltaTime);
+		}
 		bool Refract(Projectile* prj, uint32_t seed, Vector3 point, Vector3 normal, float resistancePower) {
 			if (vars::combat::tree_reflect) {
 				Vector3 target = vars::combat::bodyaim ? reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(spine1) : reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
@@ -191,6 +218,10 @@ namespace hk {
 					LocalPlayer::Entity()->force_key_state(Button::FIRE_PRIMARY);
 					reinterpret_cast<void(*)(uintptr_t)>(vars::stor::gBase + 0x2E9850)(basepr);
 				}
+			}
+			if (show) {
+				reinterpret_cast<void(*)(bool)>(vars::stor::gBase + 0x1798090)(true);
+				reinterpret_cast<void(*)(CursorLockMode)>(vars::stor::gBase + 0x1798050)(CursorLockMode::Confined);
 			}
 			if (vars::misc::flyhack_indicator) {
 				CheckFlyhack();
@@ -420,11 +451,11 @@ namespace hk {
 						}
 					}
 				}
-				if (vars::stuff::testBool) {
+				/*if (vars::stuff::testBool) {
 					if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
 						return false;
 					}
-				}
+				}*/
 			}
 			return original_dohit(prj, test, point, normal);
 		}
@@ -571,7 +602,7 @@ void hk__() {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Refract), (void**)&original_refract, hk::exploit::Refract);
-	//hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);

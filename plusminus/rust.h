@@ -699,9 +699,7 @@ public:
 	}
 	
 	bool IsMenu() {
-		if (!this) return true;
-		DWORD64 Input = read(this + oPlayerInput, DWORD64);
-		return !(read(Input + oKeyFocus, bool));
+		return reinterpret_cast<bool(*)()>(vars::stor::gBase + 0x1798020)();
 	}
 	void add_modelstate_flag(int flag) {
 		DWORD64 mstate = read(this + oModelState, DWORD64);
