@@ -119,7 +119,11 @@ namespace hk {
 			return original_createeffect(strPrefab, effect);
 		}
 		void HandleRunning(PlayerWalkMovement* a1, ModelState* a2, bool wantsRun) {
-			if (vars::misc::omnidirectional_sprinting) wantsRun = true;
+			if (vars::misc::omnidirectional_sprinting) {
+				//wantsRun = true;
+				write(a1 + 0x40, 1.f, float);
+				return;
+			}
 			return original_handleRunning(a1, a2, wantsRun);
 		}
 		void HandleJumping(PlayerWalkMovement* a1, ModelState* a2, bool wantsJump, bool jumpInDirection = false) { // recreated
