@@ -1,37 +1,37 @@
 float indicator_x = 100;
 float indicator_y = 100;
-void pre_draw() {
+void pre_draw( ) {
 	auto* TargetPlayerA = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-	Vector2 kek = Renderer::CanvasSize();
+	Vector2 kek = Renderer::CanvasSize( );
 	vars::stuff::ScreenWidth = kek.x;
 	vars::stuff::ScreenHeight = kek.y;
 	float xs = vars::stuff::ScreenWidth / 2, ys = vars::stuff::ScreenHeight / 2;
 	if (vars::crosshair::default) {
-		Renderer::Line(Vector2{ xs, ys }, Vector2{ xs + 4, ys + 4 }, D2D1::ColorF::White, 0.7f);
-		Renderer::Line(Vector2{ xs, ys }, Vector2{ xs + 4, ys - 4 }, D2D1::ColorF::White, 0.7f);
-		Renderer::Line(Vector2{ xs, ys }, Vector2{ xs - 4, ys - 4 }, D2D1::ColorF::White, 0.7f);
-		Renderer::Line(Vector2{ xs, ys }, Vector2{ xs - 4, ys + 4 }, D2D1::ColorF::White, 0.7f);
+		Renderer::Line(Vector2{xs, ys}, Vector2{xs + 4, ys + 4}, D2D1::ColorF::White, 0.7f);
+		Renderer::Line(Vector2{xs, ys}, Vector2{xs + 4, ys - 4}, D2D1::ColorF::White, 0.7f);
+		Renderer::Line(Vector2{xs, ys}, Vector2{xs - 4, ys - 4}, D2D1::ColorF::White, 0.7f);
+		Renderer::Line(Vector2{xs, ys}, Vector2{xs - 4, ys + 4}, D2D1::ColorF::White, 0.7f);
 
-		Renderer::Line(Vector2{ xs + 4, ys + 4 }, Vector2{ xs + 4 + 4, ys + 4 + 4 }, D2D1::ColorF::Black, 0.7f);
-		Renderer::Line(Vector2{ xs + 4, ys - 4 }, Vector2{ xs + 4 + 4, ys - 4 - 4 }, D2D1::ColorF::Black, 0.7f);
-		Renderer::Line(Vector2{ xs - 4, ys - 4 }, Vector2{ xs - 4 - 4, ys - 4 - 4 }, D2D1::ColorF::Black, 0.7f);
-		Renderer::Line(Vector2{ xs - 4, ys + 4 }, Vector2{ xs - 4 - 4, ys + 4 + 4 }, D2D1::ColorF::Black, 0.7f);
+		Renderer::Line(Vector2{xs + 4, ys + 4}, Vector2{xs + 4 + 4, ys + 4 + 4}, D2D1::ColorF::Black, 0.7f);
+		Renderer::Line(Vector2{xs + 4, ys - 4}, Vector2{xs + 4 + 4, ys - 4 - 4}, D2D1::ColorF::Black, 0.7f);
+		Renderer::Line(Vector2{xs - 4, ys - 4}, Vector2{xs - 4 - 4, ys - 4 - 4}, D2D1::ColorF::Black, 0.7f);
+		Renderer::Line(Vector2{xs - 4, ys + 4}, Vector2{xs - 4 - 4, ys + 4 + 4}, D2D1::ColorF::Black, 0.7f);
 	}
 	if (vars::crosshair::custom) {
 		if (vars::crosshair::dot) {
-			Renderer::FillRectangle(Vector2{ xs , ys }, Vector2{ 2, 2 }, D2D1::ColorF::White);
+			Renderer::FillRectangle(Vector2{xs , ys}, Vector2{2, 2}, D2D1::ColorF::White);
 		}
 		// i did it ! lol
-		Renderer::FillRectangle(Vector2{ xs + vars::crosshair::gap, ys }, Vector2{ vars::crosshair::length, 2 }, D2D1::ColorF::White); // right
-		Renderer::FillRectangle(Vector2{ xs - vars::crosshair::gap + 2, ys }, Vector2{ -vars::crosshair::length , 2 }, D2D1::ColorF::White); // left
-		Renderer::FillRectangle(Vector2{ xs , ys - vars::crosshair::gap + 2 }, Vector2{ 2 , -vars::crosshair::length }, D2D1::ColorF::White); // up
-		Renderer::FillRectangle(Vector2{ xs , ys + vars::crosshair::gap }, Vector2{ 2 , vars::crosshair::length }, D2D1::ColorF::White); // down
+		Renderer::FillRectangle(Vector2{xs + vars::crosshair::gap, ys}, Vector2{vars::crosshair::length, 2}, D2D1::ColorF::White); // right
+		Renderer::FillRectangle(Vector2{xs - vars::crosshair::gap + 2, ys}, Vector2{-vars::crosshair::length , 2}, D2D1::ColorF::White); // left
+		Renderer::FillRectangle(Vector2{xs , ys - vars::crosshair::gap + 2}, Vector2{2 , -vars::crosshair::length}, D2D1::ColorF::White); // up
+		Renderer::FillRectangle(Vector2{xs , ys + vars::crosshair::gap}, Vector2{2 , vars::crosshair::length}, D2D1::ColorF::White); // down
 	}
 	if (show) {
-		Renderer::FillRectangle({ 0, 0 }, { (float)vars::stuff::ScreenWidth, (float)vars::stuff::ScreenHeight }, D2D1::ColorF(0, 0, 0, 0.2));
+		Renderer::FillRectangle({0, 0}, {(float)vars::stuff::ScreenWidth, (float)vars::stuff::ScreenHeight}, D2D1::ColorF(0, 0, 0, 0.2));
 	}
 	if (vars::combat::visualize_fov) {
-		Renderer::Circle(Vector2{ xs, ys }, D2D1::ColorF::White, vars::combat::fov, 1.f);
+		Renderer::Circle(Vector2{xs, ys}, D2D1::ColorF::White, vars::combat::fov, 1.f);
 	}
 	float FOV = vars::combat::fov, CurFOV;
 	if (vars::stor::closestPlayer != NULL) {
@@ -45,24 +45,24 @@ void pre_draw() {
 			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
 		}
 	}
-	if (reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer)->IsDestroyed()) {
+	if (reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer)->IsDestroyed( )) {
 		vars::stor::closestPlayer = NULL;
 	}
-	if (reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->IsDestroyed()) {
+	if (reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->IsDestroyed( )) {
 		vars::stor::closestHeli = NULL;
 		vars::stor::closestHeliObj = NULL;
 	}
 	if (vars::combat::lock_target && vars::stor::closestPlayer != NULL) {
-		wchar_t trgt[64];
-		_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName());
-		Renderer::String(Vector2{ xs, ys - 50 }, trgt, D2D1::ColorF::PaleVioletRed, true, true);
+		wchar_t trgt[ 64 ];
+		_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
+		Renderer::String(Vector2{xs, ys - 50}, trgt, D2D1::ColorF::PaleVioletRed, true, true);
 	}
 	if (vars::ores::closest_ore) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 
-		f_object tr1 = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head), xorstr("ore.prefab"));
+		f_object tr1 = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("ore.prefab"));
 		Vector2 screen;
 		if (utils::w2s(tr1.position, screen) && tr1.valid) {
 			Renderer::Line(startPos, screen, D2D1::ColorF::GhostWhite, 1.f);
@@ -86,7 +86,7 @@ void pre_draw() {
 			}
 		}
 	}
-	if (vars::stor::closestPlayer != NULL && vars::players::targetline && TargetPlayerA->IsValid()) {
+	if (vars::stor::closestPlayer != NULL && vars::players::targetline && TargetPlayerA->IsValid( )) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
 		static float screenY = GetSystemMetrics(SM_CYSCREEN);
 		static Vector2 startPos;
@@ -103,10 +103,10 @@ void pre_draw() {
 			}
 		}
 	}
-	if (vars::combat::visualize_prediction && TargetPlayerA->IsValid()) {
+	if (vars::combat::visualize_prediction && TargetPlayerA->IsValid( )) {
 		Vector2 t;
 		if (!(TargetPlayerA->get_bone_pos(spine1).x == 0 && TargetPlayerA->get_bone_pos(spine1).y == 0 && TargetPlayerA->get_bone_pos(spine1).z == 0)) {
-			if (utils::w2s(a::get_aim_point(GetBulletSpeed(), GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo())), t)) {
+			if (utils::w2s(a::get_aim_point(GetBulletSpeed( ), GetGravity(LocalPlayer::Entity( )->GetActiveWeapon( )->LoadedAmmo( ))), t)) {
 				Renderer::Circle(t, D2D1::ColorF::Red, 4.5f);
 			}
 		}
@@ -146,7 +146,7 @@ void pre_draw() {
 		float origyaw = vars::stuff::anti_aim_;
 		Renderer::CosTanSinLine(origyaw, range, indicator_x, indicator_y, LineLength, D2D1::ColorF::Red);//this the function from b4 btw
 	}
-	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc() && vars::players::belt && TargetPlayerA->IsValid()) {
+	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc( ) && vars::players::belt && TargetPlayerA->IsValid( )) {
 		const float Height = 275.f;
 		const float Width = 150.f;
 		POINT p;
@@ -160,47 +160,43 @@ void pre_draw() {
 				}
 			}
 		}
-		Renderer::FillRectangle({ vars::players::beltx, vars::players::belty }, { Width, Height }, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
-		Renderer::Rectangle({ vars::players::beltx, vars::players::belty }, { Width, Height }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
-		Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 10 }, TargetPlayerA->_displayName(), D2D1::ColorF::White, true, true);
-		Renderer::Line({ vars::players::beltx, vars::players::belty + 20 }, { vars::players::beltx + Width, vars::players::belty + 20 }, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
+		Renderer::FillRectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
+		Renderer::Rectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
+		Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 10}, TargetPlayerA->_displayName( ), D2D1::ColorF::White, true, true);
+		Renderer::Line({vars::players::beltx, vars::players::belty + 20}, {vars::players::beltx + Width, vars::players::belty + 20}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
 		float Pos = 0;
-		for (int i = 0; i < TargetPlayerA->item_list_b()->get_size(); i++) { // belt
-			Item* ActWeapon = TargetPlayerA->item_list_b()->get_value(i);
-			wchar_t prefix[0x100];
+		for (int i = 0; i < TargetPlayerA->item_list_b( )->get_size( ); i++) { // belt
+			Item* ActWeapon = TargetPlayerA->item_list_b( )->get_value(i);
+			wchar_t prefix[ 0x100 ];
 			if (ActWeapon) {
-				if (ActWeapon == TargetPlayerA->GetActiveWeapon()) {
-					std::swprintf(prefix, xorstr(L"->"));
+				if (ActWeapon == TargetPlayerA->GetActiveWeapon( )) {
+					_swprintf(prefix, xorstr(L"->"));
 				}
-				else { 
-					std::swprintf(prefix, xorstr(L""));
-				}
-				wchar_t* ActiveItem = ActWeapon->get_name();
+				else { _swprintf(prefix, xorstr(L"")); }
+				wchar_t* ActiveItem = ActWeapon->get_name( );
 				if (ActiveItem) {
-					int sz = static_cast<std::size_t>(std::swprintf(nullptr, 0, ActiveItem) + 1);
-					const std::unique_ptr<wchar_t [ ]> itemName(new wchar_t[ sz ]);
-
-					std::swprintf(itemName.get( ), xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count());
-					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName.get(), D2D1::ColorF::White, true, true);
+					wchar_t itemName[ 0x100 ];
+					_swprintf(itemName, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
+					Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, itemName, D2D1::ColorF::White, true, true);
 				}
 			}
 			Pos += 15;
 		}
-		Renderer::FillRectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80 * (TargetPlayerA->health() / 100.f), 10 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
-		Renderer::Rectangle(Vector2{ vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135 }, Vector2{ 80, 10 }, D2D1::ColorF::White, 0.5f);
+		Renderer::FillRectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80 * (TargetPlayerA->health( ) / 100.f), 10}, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+		Renderer::Rectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80, 10}, D2D1::ColorF::White, 0.5f);
 		float cPos = 125;
-		for (int i = 0; i < TargetPlayerA->item_list_w()->get_size(); i++) { // clothes
-			Item* ActWeapon = TargetPlayerA->item_list_w()->get_value(i);
+		for (int i = 0; i < TargetPlayerA->item_list_w( )->get_size( ); i++) { // clothes
+			Item* ActWeapon = TargetPlayerA->item_list_w( )->get_value(i);
 			if (ActWeapon) {
-				wchar_t* ActiveItem = ActWeapon->get_name();
+				wchar_t* ActiveItem = ActWeapon->get_name( );
 				if (ActiveItem) {
-					wchar_t itemName[0x100];
-					std::swprintf(itemName, xorstr(L"%s"), ActiveItem);
-					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
+					wchar_t itemName[ 0x100 ];
+					_swprintf(itemName, xorstr(L"%s"), ActiveItem);
+					Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, itemName, D2D1::ColorF::White, true, true);
 				}
 			}
 			cPos += 15;
 		}
 	}
-	ent_loop();
+	ent_loop( );
 }
