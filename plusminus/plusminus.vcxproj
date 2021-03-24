@@ -7,10 +7,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="class.h" />
     <ClInclude Include="crc32.h" />
     <ClInclude Include="gamethread.h" />
     <ClInclude Include="hooks/defs.h" />
-    <ClInclude Include="il2cpp_.h" />
     <ClInclude Include="logsystem.h" />
     <ClInclude Include="rust.h" />
     <ClInclude Include="stuff/offsets.h" />
@@ -43,7 +43,6 @@
     <ClInclude Include="hooks/minhook\src\HDE\table64.h" />
     <ClInclude Include="hooks/minhook\src\trampoline.h" />
     <ClInclude Include="rendering/rendering.h" />
-    <ClInclude Include="stuff/sdk.h" />
     <ClInclude Include="stuff/mem.h" />
     <ClInclude Include="stuff/math.h" />
     <ClInclude Include="init/present.h" />
@@ -52,6 +51,7 @@
     <ClInclude Include="stuff/vars.h" />
     <ClInclude Include="main/weapons.h" />
     <ClInclude Include="stuff\xorstr.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lazyimp.h" />

@@ -6,26 +6,26 @@ using namespace hk_defs;
 namespace hk {
 	namespace exploit {
 		void DoMovement(Projectile* projectile, float deltaTime) {
-			if (projectile->isAuthoritative() && vars::stuff::testBool) {
-				f_object target = f_object::get_closest_object(projectile->currentPosition(), xorstr("player.prefab"));
+			if (projectile->isAuthoritative( ) && vars::stuff::testBool) {
+				f_object target = f_object::get_closest_object(projectile->currentPosition( ), xorstr("player.prefab"));
 
 				if (target.valid) {
 					Vector3 tar = reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head);
-					if (utils::LineOfSight(tar, projectile->currentPosition()) && projectile->traveledDistance() >= 70.f) {
-						Transform* transform = reinterpret_cast<Transform*>(reinterpret_cast<BasePlayer*>(target.entity)->GrabTransform(head));
+					if (utils::LineOfSight(tar, projectile->currentPosition( )) && projectile->traveledDistance( ) >= Math::Distance_3D(projectile->currentPosition( ), LocalPlayer::Entity( )->get_bone_pos(head))) {
+						Transform* transform = reinterpret_cast<Transform*>(reinterpret_cast<BasePlayer*>(target.entity)->mono_transform(head));
 
-						HitTest* hitTest = projectile->hitTest();
-						hitTest->DidHit() = true;
+						HitTest* hitTest = projectile->hitTest( );
+						hitTest->DidHit( ) = true;
 						hitTest->HitEntity((BaseEntity*)target.entity);
-						hitTest->HitTransform() = transform;
+						hitTest->HitTransform( ) = transform;
 						//hitTest->HitMaterial() = il2cpp::String::New("Flesh");
 
-						hitTest->HitPoint() = transform->InverseTransformPoint(projectile->currentPosition());
-						hitTest->HitNormal() = transform->InverseTransformDirection(projectile->currentPosition());
+						hitTest->HitPoint( ) = transform->InverseTransformPoint(projectile->currentPosition( ));
+						hitTest->HitNormal( ) = transform->InverseTransformDirection(projectile->currentPosition( ));
 
-						hitTest->AttackRay() = Ray(projectile->currentPosition(), reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head) - projectile->currentPosition());
+						hitTest->AttackRay( ) = Ray(projectile->currentPosition( ), reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head) - projectile->currentPosition( ));
 
-						projectile->DoHit(hitTest, hitTest->HitPointWorld(), hitTest->HitNormalWorld());
+						projectile->DoHit(hitTest, hitTest->HitPointWorld( ), hitTest->HitNormalWorld( ));
 						return;
 					}
 				}
@@ -36,15 +36,15 @@ namespace hk {
 			if (vars::combat::tree_reflect) {
 				Vector3 target = vars::combat::bodyaim ? reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(spine1) : reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
 				float gravity;
-				if (LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1602646136) {
+				if (LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1540934679 || LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1602646136) {
 					gravity = 2.f;
 				}
 				else {
-					gravity = GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo());
+					gravity = GetGravity(LocalPlayer::Entity( )->GetActiveWeapon( )->LoadedAmmo( ));
 				}
-				a::Prediction(prj->currentPosition(), target, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), GetBulletSpeed(), gravity);
-				prj->currentVelocity((target - prj->currentPosition()) * (GetBulletSpeed() / 75.f));
-				prj->currentPosition(prj->currentPosition() + prj->currentVelocity().Normalized() * 0.001f);
+				a::Prediction(prj->currentPosition( ), target, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->newVelocity( ), GetBulletSpeed( ), gravity);
+				prj->currentVelocity((target - prj->currentPosition( )) * (GetBulletSpeed( ) / 75.f));
+				prj->currentPosition(prj->currentPosition( ) + prj->currentVelocity( ).Normalized( ) * 0.001f);
 			}
 			else {
 				return original_refract(prj, seed, point, normal, resistancePower);
@@ -63,16 +63,13 @@ namespace hk {
 
 				write(playerwalkmovement + 0x130, st, bool);
 				write(playerwalkmovement + 0x138, st2, bool);
-				write(playerwalkmovement + 0xC0, Time::time(), float);
+				write(playerwalkmovement + 0xC0, Time::time( ), float);
 				write(playerwalkmovement + 0xA8, null, uintptr_t);
 
-				typedef void(__stdcall* set_velocity)(uintptr_t, Vector3);
-				typedef Vector3(__stdcall* get_velocity)(uintptr_t);
 				uintptr_t rigid = read(playerwalkmovement + 0x90, uintptr_t);
-				//this.body.velocity += Vector3.Lerp(this.Owner.eyes.BodyForward() * 9f, Vector3.zero, this.modify.drag);
-				Vector3 targetVel = ((get_velocity)(vars::stor::gBase + CO::get_velocity))(rigid);
+				Vector3 targetVel = reinterpret_cast<Vector3(*)(uintptr_t)>(vars::stor::gBase + CO::get_velocity)(rigid);
 
-				((set_velocity)(vars::stor::gBase + CO::set_velocity))(rigid, Vector3(targetVel.x, 10, targetVel.z));
+				reinterpret_cast<void(*)(uintptr_t, Vector3)>(vars::stor::gBase + CO::set_velocity)(rigid, Vector3(targetVel.x, 10, targetVel.z));
 			}
 			else { return original_jump(playerwalkmovement, modelstate, indirection); }
 		}
@@ -96,23 +93,23 @@ namespace hk {
 		GameObject* CreateEffect(pUncStr strPrefab, Effect* effect) {
 			auto effectName = strPrefab->str;
 			auto position = read(effect + 0x5C, Vector3);
-			if (vars::visuals::raid_esp && effect && strPrefab->str) {
+			if (vars::visuals::raid_esp && effect && strPrefab->str && !position.empty()) {
 				switch (RUNTIME_CRC32_W(effectName)) {
 				case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 					LogSystem::LogExplosion(C4, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
 					LogSystem::LogExplosion(Satchel, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
 					LogSystem::LogExplosion(IncenRocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 					LogSystem::LogExplosion(Rocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str(), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				}
 			}
@@ -140,12 +137,12 @@ namespace hk {
 		Vector3 get_position(PlayerEyes* playereyes) {
 			if (vars::misc::long_neck) {
 				if (GetAsyncKeyState(vars::keys::longneck)) {
-					return Vector3(LocalPlayer::Entity()->get_bone_pos(head)) + Vector3(0, 1.15, 0);
+					return Vector3(LocalPlayer::Entity( )->get_bone_pos(head)) + Vector3(0, 1.15, 0);
 				}
 			}
 			return original_geteyepos(playereyes);
 		}
-		void __fastcall SetFlying(ModelState* a1, bool a2) {}
+		void __fastcall SetFlying(ModelState* a1, bool a2) { }
 		void SendClientTick(BasePlayer* baseplayer) {
 			if (!baseplayer) return original_sendclienttick(baseplayer);
 			if (vars::misc::anti_aim) {
@@ -168,26 +165,11 @@ namespace hk {
 		}
 		void DoFixedUpdate(PlayerWalkMovement* movement, ModelState* modelstate) {
 			float speed = (read(movement + 0x136, bool) /*swim*/ || read(movement + 0x44, float) /* crouch */ > 0.5f) ? 1.7f : (read(movement + 0x138, bool) /*jump*/ ? 8.f : 5.5f);
-			//if (GetAsyncKeyState(0x4A)) {
-			//	reinterpret_cast<void(*)(PlayerWalkMovement*, Vector3, BasePlayer*)>(vars::stor::gBase + 0x2F08A0)( // basemovement -> teleportto
-			//		movement, 
-			//		read(read(LocalPlayer + oPlayerModel, uintptr_t) + 0x1D8, Vector3) +
-			//		reinterpret_cast<Vector3(*)(PlayerEyes*)>(vars::stor::gBase + 0xAB8B80)(LocalPlayer::Entity()->eyes()), // playereyes -> movementforward
-			//		LocalPlayer
-			//		);
-			//}
-			/*if (vars::misc::omnidirectional_sprinting) {
-				Vector3 vel = read(movement + 0x34, Vector3);
-				float len = vel.Length();
-				if (len > 0.f) {
-					write(movement + 0x34, Vector3(vel.x / len * speed, vel.y, vel.z / len * speed), Vector3);
-				}
-			}*/
 			if (vars::misc::farmbot) {
 				Vector3 vel = read(movement + 0x34, Vector3);
-				f_object closest = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head), xorstr("ore.prefab"));
-				if (closest.valid) {
-					Vector3 direction = (closest.position - LocalPlayer::Entity()->get_bone_pos(head)).Normalized() * speed;
+				f_object closest = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("ore.prefab"));
+				if (closest.valid && !vel.empty( )) {
+					Vector3 direction = (closest.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
 					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
 			}
@@ -197,7 +179,7 @@ namespace hk {
 		void ClientInput(BasePlayer* baseplayah, ModelState* ModelState) {
 			vars::stuff::anti_aim_ = yeet;
 			if (!baseplayah) return original_clientinput(baseplayah, ModelState);
-			if (!baseplayah->IsValid()) return original_clientinput(baseplayah, ModelState);
+			if (!baseplayah->IsValid( )) return original_clientinput(baseplayah, ModelState);
 
 			if (vars::misc::rayleigh_changer) {
 				reinterpret_cast<void(__fastcall*)(float)>(vars::stor::gBase + CO::set_rayleigh)(vars::misc::rayleigh);
@@ -206,130 +188,57 @@ namespace hk {
 				reinterpret_cast<void(__fastcall*)(float)>(vars::stor::gBase + CO::set_rayleigh)(vars::misc::rayleigh);
 			}
 			if (vars::misc::mass_suicide) {
-				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity(), -50);
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity( ), -50);
 			}
-			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer::Entity()->GetHealth() > 0 && !LocalPlayer::Entity()->IsMenu()) {
-				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity(), -50);
+			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer::Entity( )->GetHealth( ) > 0 && !LocalPlayer::Entity( )->IsMenu( )) {
+				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity( ), -50);
 			}
-			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer::Entity()->IsMenu()) {
+			if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer::Entity( )->IsMenu( )) {
 				auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-				Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
-				DWORD64 basepr = read(weapon + oHeldEntity, DWORD64);
+				Item* weapon = LocalPlayer::Entity( )->GetActiveWeapon( );
+				DWORD64 basepr = weapon->entity( );
 				DWORD64 mag = read(basepr + 0x2A0, DWORD64);
 				int contents = read(mag + 0x1C, int);
-				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head), 
-					(vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head))) {
-					LocalPlayer::Entity()->force_key_state(Button::FIRE_PRIMARY);
-					reinterpret_cast<void(*)(uintptr_t)>(vars::stor::gBase + 0x2E9850)(basepr);
+				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head),
+					(vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity( )->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity( )->get_bone_pos(head))) {
+
 				}
 			}
-			if (show) {
-				reinterpret_cast<void(*)(bool)>(vars::stor::gBase + 0x1798090)(true);
-				reinterpret_cast<void(*)(CursorLockMode)>(vars::stor::gBase + 0x1798050)(CursorLockMode::Confined);
-			}
 			if (vars::misc::flyhack_indicator) {
-				CheckFlyhack();
+				CheckFlyhack( );
 			}
-			Item* weapon = LocalPlayer::Entity()->GetActiveWeapon();
-			DWORD64 active = read(weapon + oHeldEntity, DWORD64);
-			char* classname = weapon->ClassName();
+			Item* weapon = LocalPlayer::Entity( )->GetActiveWeapon( );
+			DWORD64 active = weapon->entity( );
+			char* classname = weapon->ClassName( );
 			bool weaponmelee = weapon && classname && (strcmp(classname, xorstr("BaseMelee")) || strcmp(classname, xorstr("Jackhammer")));
 			if (active && vars::misc::weapon_spam) {
-				if (GetAsyncKeyState(vars::keys::weaponspam) && !LocalPlayer::Entity()->IsMenu()) {
+				if (GetAsyncKeyState(vars::keys::weaponspam) && !LocalPlayer::Entity( )->IsMenu( )) {
 					reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
 				}
 			}
-			if (vars::misc::auto_farm_barrel) {
-				if (weaponmelee) {
-					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
-						xorstr("barrel"),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						false,
-						xorstr(""));
-					if (ore_hot_spot.valid) {
-						Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), ore_hot_spot.position);
-						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
-							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
-								lol::do_attack(ore_hot_spot, active, false);
-							}
-						}
-					}
-				}
-			}
-			if (vars::misc::auto_farm_ore) {
-				if (weaponmelee) {
-					f_object ore_hot_spot = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
-						xorstr(""),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						true,
-						xorstr("OreHotSpot"));
-					if (ore_hot_spot.valid) {
-						Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), ore_hot_spot.position);
-						if (Math::Distance_3D(local, ore_hot_spot.position) <= 2.f) {
-							if (reinterpret_cast<BaseEntity*>(ore_hot_spot.entity)->IsValid()) {
-								lol::do_attack(ore_hot_spot, active, false);
-							}
-						}
-					}
-				}
-			}
-			if (vars::misc::auto_farm_tree) {
-				if (weaponmelee) {
-					f_object tree_entity = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
-						xorstr(""),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						Vector3::Zero(),
-						true,
-						xorstr("TreeEntity"));
-					if (tree_entity.valid) {
-						tree_entity.position = Vector3::Zero();
-						f_object tree_marker = f_object::get_closest_object(LocalPlayer::Entity()->get_bone_pos(head),
-							xorstr(""),
-							Vector3::Zero(),
-							Vector3::Zero(),
-							Vector3::Zero(),
-							true,
-							xorstr("TreeMarker"));
-						if (tree_marker.valid) {
-							Vector3 locala = utils::ClosestPoint(LocalPlayer::Entity(), tree_marker.position);
-							if (Math::Distance_3D(locala, tree_marker.position) <= 2.f) {
-								tree_entity.position = tree_marker.position;
-								Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), tree_entity.position);
-								if (Math::Distance_3D(local, tree_entity.position) <= 2.f) {
-									if (reinterpret_cast<BaseEntity*>(tree_entity.entity)->IsValid()) {
-										lol::do_attack(tree_entity, active, false);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			EntityThreadLoop();
+			lol::auto_farm_loop(weaponmelee, active);
+			game_thread_loop( );
 			if (vars::misc::fake_lag) {
-				write(LocalPlayer::Entity() + 0x5C8, 0.4f, float);
+				write(LocalPlayer::Entity( ) + 0x5C8, 0.4f, float);
 			}
 			else {
-				write(LocalPlayer::Entity() + 0x5C8, 0.05f, float);
+				write(LocalPlayer::Entity( ) + 0x5C8, 0.05f, float);
 			}
-			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Water, !vars::misc::jesus);
-			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::Tree, vars::misc::walker);
-			il2cpp::unity::IgnoreLayerCollision(layer::PlayerMovement, layer::AI, vars::misc::walker);
-			weapon_set();
-			misc_set();
+
+			Physics::IgnoreLayerCollision((int)Layer::PlayerMovement, (int)Layer::Water, !vars::misc::jesus);
+			Physics::IgnoreLayerCollision((int)Layer::PlayerMovement, (int)Layer::Tree, vars::misc::walker);
+			Physics::IgnoreLayerCollision((int)Layer::PlayerMovement, (int)Layer::AI, vars::misc::walker);
+
+			weapon_set( );
+			misc_set( );
 
 			original_clientinput(baseplayah, ModelState);
 
 			if (vars::misc::spoof_ladderstate) {
-				LocalPlayer::Entity()->add_modelstate_flag(ModelStateFlag::OnLadder);
+				LocalPlayer::Entity( )->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
 			if (vars::misc::farmbot) {
-				LocalPlayer::Entity()->add_modelstate_flag(ModelStateFlag::Sprinting);
+				LocalPlayer::Entity( )->add_modelstate_flag(ModelStateFlag::Sprinting);
 			}
 		}
 		void UpdateAmbient(TOD_Sky* TOD_Sky) {
@@ -343,10 +252,10 @@ namespace hk {
 			}
 			RenderSettings::set_ambientMode(RenderSettings::AmbientMode::Flat);
 			RenderSettings::set_ambientIntensity(6.f);
-			RenderSettings::set_ambientLight(Color({ vars::colors::ambient_color.x, vars::colors::ambient_color.y, vars::colors::ambient_color.z, 1 }));
+			RenderSettings::set_ambientLight(Color({vars::colors::ambient_color.x, vars::colors::ambient_color.y, vars::colors::ambient_color.z, 1}));
 		}
 		pUncStr Run(ConsoleOptions* options, pUncStr strCommand, DWORD64 args) {
-			if (options->IsFromServer()) {
+			if (options->IsFromServer( )) {
 				std::wstring cmd = std::wstring(strCommand->str);
 				if (cmd.find(xorstr(L"noclip")) != std::wstring::npos || cmd.find(xorstr(L"debugcamera")) != std::wstring::npos || cmd.find(xorstr(L"camspeed")) != std::wstring::npos || cmd.find(xorstr(L"admintime")) != std::wstring::npos) {
 					strCommand = nullptr;
@@ -355,9 +264,9 @@ namespace hk {
 			return original_consolerun(options, strCommand, args);
 		}
 		void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
-			if (entity->IsPlayer()) {
+			if (entity->IsPlayer( )) {
 				if (vars::misc::hit_logs) {
-					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->_displayName(), utils::StringPool::Get(info->HitBone())->buffer, info->damageTypes()->Total()), 5.f);
+					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->_displayName( ), utils::StringPool::Get(info->HitBone( ))->buffer, info->damageTypes( )->Total( )), 5.f);
 				}
 				if (vars::misc::custom_hitsound) {
 					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
@@ -366,7 +275,7 @@ namespace hk {
 				if (vars::combat::always_headshot) {
 					reinterpret_cast<void(*)(Str, GameObject*)>(vars::stor::gBase + CO::EffectRun)(
 						Str(xorstr(L"assets/bundled/prefabs/fx/headshot_2d.prefab")),
-						LocalPlayer::Entity()->eyes()->gameObject());
+						LocalPlayer::Entity( )->eyes( )->gameObject( ));
 					return;
 				}
 			}
@@ -384,7 +293,7 @@ namespace hk {
 		void Play(ViewModel* viewmodel, pUncStr name) {
 			if (vars::weapons::remove_attack_anim) {
 				static auto ptr = METHOD("Assembly-CSharp::BaseProjectile::DoAttack(): Void");
-				if (!CALLED_BY(ptr, 0x296) || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == -75944661) {
+				if (!CALLED_BY(ptr, 0x296) || LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == -75944661) {
 					return original_viewmodelplay(viewmodel, name);
 				}
 			}
@@ -414,12 +323,12 @@ namespace hk {
 			return original_movetowards(a1, a2, maxDelta);
 		}
 		bool DoHit(Projectile* prj, HitTest* test, Vector3 point, Vector3 normal) {
-			if (prj->isAuthoritative()) {
+			if (prj->isAuthoritative( )) {
 				if (vars::combat::ignore_team) {
-					if (test->HitEntity() != null) {
-						if (test->HitEntity()->IsValid()) {
-							if (LocalPlayer::Entity()->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity())->GetSteamID())) {
-								if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
+					if (test->HitEntity( ) != null) {
+						if (test->HitEntity( )->IsValid( )) {
+							if (LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity( ))->GetSteamID( ))) {
+								if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity( ))->IsPlayer( )) {
 									return false;
 								}
 							}
@@ -427,29 +336,29 @@ namespace hk {
 					}
 				}
 				if (vars::combat::tree_reflect) {
-					if (test->HitEntity() != null) {
-						if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
+					if (test->HitEntity( ) != null) {
+						if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity( ))->IsPlayer( )) {
 							prj->penetrationPower(35.f);
 						}
 					}
 				}
 				if (vars::weapons::penetrate) {
-					if (test->HitEntity() != null) {
-						if (test->HitEntity()->IsValid()) {
-							BaseCombatEntity* lol = reinterpret_cast<BaseCombatEntity*>(test->HitEntity());
+					if (test->HitEntity( ) != null) {
+						if (test->HitEntity( )->IsValid( )) {
+							BaseCombatEntity* lol = reinterpret_cast<BaseCombatEntity*>(test->HitEntity( ));
 							if (vars::stuff::testInt == 2) {
-								printf(xorstr("%s \n"), lol->ClassName());
+								printf(xorstr("%s \n"), lol->ClassName( ));
 							}
-							if (lol->ClassNameHash() == STATIC_CRC32("CargoShip") || lol->ClassNameHash() == STATIC_CRC32("BaseOven")
-								|| lol->ClassNameHash() == STATIC_CRC32("TreeEntity") || lol->ClassNameHash() == STATIC_CRC32("OreResourceEntity")
-								|| lol->ClassNameHash() == STATIC_CRC32("CH47HelicopterAIController") || lol->ClassNameHash() == STATIC_CRC32("MiniCopter") 
-								|| lol->ClassNameHash() == STATIC_CRC32("BoxStorage") || lol->ClassNameHash() == STATIC_CRC32("Workbench") 
-								|| lol->ClassNameHash() == STATIC_CRC32("VendingMachine") || lol->ClassNameHash() == STATIC_CRC32("Barricade") 
-								|| lol->ClassNameHash() == STATIC_CRC32("BuildingPrivlidge") || lol->ClassNameHash() == STATIC_CRC32("LootContainer")
-								|| lol->ClassNameHash() == STATIC_CRC32("HackableLockedCrate") || lol->ClassNameHash() == STATIC_CRC32("ResourceEntity")
-								|| lol->ClassNameHash() == STATIC_CRC32("RidableHorse") || lol->ClassNameHash() == STATIC_CRC32("MotorRowboat")
-								|| lol->ClassNameHash() == STATIC_CRC32("ScrapTransportHelicopter") || lol->ClassNameHash() == STATIC_CRC32("JunkPile")
-								|| lol->ClassNameHash() == STATIC_CRC32("MiningQuarry") || lol->ClassNameHash() == STATIC_CRC32("WaterCatcher")) {
+							if (lol->ClassNameHash( ) == STATIC_CRC32("CargoShip") || lol->ClassNameHash( ) == STATIC_CRC32("BaseOven")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("TreeEntity") || lol->ClassNameHash( ) == STATIC_CRC32("OreResourceEntity")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("CH47HelicopterAIController") || lol->ClassNameHash( ) == STATIC_CRC32("MiniCopter")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("BoxStorage") || lol->ClassNameHash( ) == STATIC_CRC32("Workbench")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("VendingMachine") || lol->ClassNameHash( ) == STATIC_CRC32("Barricade")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("BuildingPrivlidge") || lol->ClassNameHash( ) == STATIC_CRC32("LootContainer")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("HackableLockedCrate") || lol->ClassNameHash( ) == STATIC_CRC32("ResourceEntity")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("RidableHorse") || lol->ClassNameHash( ) == STATIC_CRC32("MotorRowboat")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("ScrapTransportHelicopter") || lol->ClassNameHash( ) == STATIC_CRC32("JunkPile")
+								|| lol->ClassNameHash( ) == STATIC_CRC32("MiningQuarry") || lol->ClassNameHash( ) == STATIC_CRC32("WaterCatcher")) {
 								return false;
 							}
 						}
@@ -465,9 +374,9 @@ namespace hk {
 		}
 		void Launch(Projectile* prdoj) {
 			prdoj->invisible(false);
-			
+
 			if (vars::weapons::no_spread) {
-				write(prdoj->mod() + 0x38, 0.f, float);
+				write(prdoj->mod( ) + 0x38, 0.f, float);
 			}
 			return original_launch(prdoj);
 		}
@@ -483,15 +392,15 @@ namespace hk {
 				write(a2 + 0x2C, vars::weapons::hitdistance, float);
 			}
 			if (vars::combat::always_headshot || vars::combat::always_heli_rotor) {
-				BaseCombatEntity* entity = BaseNetworkable::clientEntities()->Find<BaseCombatEntity*>(hitID);
+				BaseCombatEntity* entity = BaseNetworkable::clientEntities( )->Find<BaseCombatEntity*>(hitID);
 				if (vars::combat::always_headshot) {
-					if (entity->IsPlayer()) {
+					if (entity->IsPlayer( )) {
 						uint32_t bone = utils::StringPool::Get(c_xor("head"));
 						write(Attack + 0x30, bone, uint32_t);
 					}
 				}
 				if (vars::combat::always_heli_rotor) {
-					if (entity->ClassNameHash() == STATIC_CRC32("BaseHelicopter")) {
+					if (entity->ClassNameHash( ) == STATIC_CRC32("BaseHelicopter")) {
 						int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 						if (health <= 5000) {
 							write(Attack + 0x30, utils::StringPool::Get(c_xor("tail_rotor_col")), uint32_t);
@@ -505,17 +414,9 @@ namespace hk {
 			return original_sendprojectileattack(a1, a2);
 		}
 		bool CanAttack(BasePlayer* a1) {
-			if (vars::misc::can_attack) return true;
+			if (vars::misc::can_attack)
+				return true;
 			return original_canattack(a1);
-		}
-		void TraceAll(HitTest* test, list<TraceInfo*> traces, uintptr_t layerMask) {
-			//LogSystem::Log(StringFormat::format(c_wxor(L"%d"), layerMask), 5.f);
-			if (vars::weapons::penetrate) {
-				layerMask &= ~LayerMasks::Tree;
-				layerMask &= ~LayerMasks::Deployed;
-				layerMask &= ~LayerMasks::Water;
-			}
-			return original_traceall(test, traces, layerMask);
 		}
 		Projectile* CreateProjectile(BaseProjectile* BaseProjectileA, void* prefab_pathptr, Vector3 pos, Vector3 forward, Vector3 velocity) {
 			Projectile* projectile = original_create_projectile(BaseProjectileA, prefab_pathptr, pos, forward, velocity);
@@ -530,24 +431,24 @@ namespace hk {
 		}
 		Vector3 GetModifiedAimConeDirection(float aimCone, Vector3 inputVec, bool anywhereInside = true) {
 			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-			Vector3 Local = LocalPlayer::Entity()->eyes()->get_position();
+			Vector3 Local = LocalPlayer::Entity( )->eyes( )->get_position( );
 
 			Vector3 heli_target = utils::GetEntityPosition(vars::stor::closestHeliObj) + Vector3(0, 2, 0);
 			Vector3 target = vars::combat::bodyaim ? TargetPlayer->get_bone_pos(spine1) : TargetPlayer->get_bone_pos(head);
 
 			float gravity;
-			if (LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1540934679 || LocalPlayer::Entity()->GetActiveWeapon()->GetID() == 1602646136) {
+			if (LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1540934679 || LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1602646136) {
 				gravity = 2.f;
 			}
 			else {
-				gravity = GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo());
+				gravity = GetGravity(LocalPlayer::Entity( )->GetActiveWeapon( )->LoadedAmmo( ));
 			}
 
-			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity(), GetBulletSpeed(), gravity);
-			a::Prediction(Local, target, TargetPlayer->GetVelocity(), GetBulletSpeed(), gravity);
+			a::Prediction(Local, heli_target, reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->GetWorldVelocity( ), GetBulletSpeed( ), gravity);
+			a::Prediction(Local, target, TargetPlayer->newVelocity( ), GetBulletSpeed( ), gravity);
 
-			Vector3 heliDir = (heli_target - Local).Normalized();
-			Vector3 playerDir = (target - Local).Normalized();
+			Vector3 heliDir = (heli_target - Local).Normalized( );
+			Vector3 playerDir = (target - Local).Normalized( );
 
 			if (vars::combat::psilent) {
 				if (!vars::combat::psilentonkey) {
@@ -578,7 +479,7 @@ namespace hk {
 
 }
 void hk_(void* Function, void** Original, void* Detour) {
-	if (MH_Initialize() != MH_OK && MH_Initialize() != MH_ERROR_ALREADY_INITIALIZED) {
+	if (MH_Initialize( ) != MH_OK && MH_Initialize( ) != MH_ERROR_ALREADY_INITIALIZED) {
 		MessageBox(0, xorstr(L"big error message sk4ddu"), 0, 0);
 		return;
 	}
@@ -586,7 +487,7 @@ void hk_(void* Function, void** Original, void* Detour) {
 	MH_EnableHook(Function);
 }
 
-void hk__() {
+void hk__( ) {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::set_flying), (void**)&original_setflying, hk::misc::SetFlying);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::SendProjectileAttack), (void**)&original_sendprojectileattack, hk::combat::SendProjectileAttack);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::CanAttack), (void**)&original_canattack, hk::combat::CanAttack);
@@ -601,7 +502,6 @@ void hk__() {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::get_position), (void**)&original_geteyepos, hk::misc::get_position);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Play), (void**)&original_viewmodelplay, hk::misc::Play);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::VisUpdateUsingCulling), (void**)&original_UnregisterFromVisibility, hk::misc::VisUpdateUsingCulling);
-	//hk_((void*)(uintptr_t)(vars::stor::gBase + CO::TraceAll), (void**)&original_traceall, hk::combat::TraceAll);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::GetRandomVelocity), (void**)&original_getrandomvelocity, hk::combat::GetRandomVelocity);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::AddPunch), (void**)&original_addpunch, hk::combat::AddPunch);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::MoveTowards), (void**)&original_movetowards, hk::combat::MoveTowards);

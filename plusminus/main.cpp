@@ -30,15 +30,6 @@ void HWID_Checker(HINSTANCE hModule) {
 	std::string success = c_xor("curl --data \"username=plusminus&content=login successful: ") + winname + c_xor(" guid: ") + lol + c_xor("&avatar_url=") + avatar_url + "\" " + webhook_url;
 #ifdef noauth
 	CreateThread(NULL, 0, Start, NULL, 0, NULL);
-
-	//AllocConsole();
-	//freopen(xorstr("CONOUT$"), xorstr("w"), stdout);
-	//std::cout << xorstr("hi\n\n\n");
-
-	//il2cpp_lib::think(xorstr("Assembly-CSharp")); // assembly name ( could loop through all domain assemblies to make this easier )
-	//il2cpp_lib::dump_methods(xorstr(""), xorstr("BasePlayer")); // namespace, klass name
-	//il2cpp_lib::dump_fields(xorstr(""), xorstr("BasePlayer")); // namespace, klass name
-	//return;
 #else
 	HANDLE hMutex = OpenMutexA(SYNCHRONIZE, FALSE, c_xor("1bo7MMSCOc6Nod3iV4BK"));
 	if (!hMutex) {

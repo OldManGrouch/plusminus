@@ -29,7 +29,7 @@ void ent_loop() {
 	}
 	auto entityList = BaseNetworkable::clientEntities()->entityList();
 	if (entityList) {
-		for (int i = 1; i < entityList->vals->size; i++) {
+		for (int i = 0; i < entityList->vals->size; i++) {
 			uintptr_t Entity = *reinterpret_cast<uintptr_t*>(std::uint64_t(entityList->vals->buffer) + (0x20 + (sizeof(void*) * i)));
 			if (!Entity) continue;
 			uintptr_t Object = *reinterpret_cast<uint64_t*>(Entity + 0x10);
@@ -42,6 +42,7 @@ void ent_loop() {
 
 			if (!reinterpret_cast<BaseEntity*>(Entity)->IsValid()) { continue; }
 			if (!reinterpret_cast<Component*>(Entity)->gameObject()) { continue; }
+			if (strstr(buff, xorstr("Local"))) { continue; }
 			
 			if (vars::visuals::radar_) {
 				radar::radar_logic(ObjectClass, Object, buff);
@@ -50,7 +51,7 @@ void ent_loop() {
 				BasePlayer* Player = (BasePlayer*)Entity;
 
 				if (vars::players::skeleton && !Player->IsNpc()) {
-					if (!Player->HasFlags(16)) {
+					if (!Player->HasFlags(PlayerFlags::Sleeping)) {
 						if (LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) {
 							Skeleton(Player, D2D1::ColorF::Lime);
 						}
@@ -63,7 +64,7 @@ void ent_loop() {
 							}
 						}
 					}
-					else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
+					else if (Player->HasFlags(PlayerFlags::Sleeping) && !vars::players::sleeperignore) {
 						Skeleton(Player, D2D1::ColorF::Orange);
 					}
 				}
@@ -71,7 +72,7 @@ void ent_loop() {
 					Skeleton(Player, D2D1::ColorF::Yellow);
 				}
 				if (!Player->IsNpc()) {
-					if (!Player->HasFlags(16)) {
+					if (!Player->HasFlags(PlayerFlags::Sleeping)) {
 						if (LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) {
 							ESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Lime);
 						}
@@ -93,7 +94,7 @@ void ent_loop() {
 						NPCESP(Player, LocalPlayer::Entity(), D2D1::ColorF::Yellow);
 					}
 				}
-				if (vars::combat::ignore_sleepers && Player->HasFlags(16)) continue;
+				if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) continue;
 				if (vars::combat::ignore_npc && Player->IsNpc()) continue;
 				if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) continue;
 				if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
@@ -106,7 +107,7 @@ void ent_loop() {
 			}
 			if (reinterpret_cast<BaseCombatEntity*>(Entity)->ClassNameHash() == STATIC_CRC32("BaseHelicopter")) {
 				DWORD64 gameObject = read(ObjectClass + 0x30, DWORD64);
-				float health = read(Entity + oHealth, float);
+				float health = reinterpret_cast<BaseCombatEntity*>(Entity)->health( );
 				float maxhealth = 10000.f;
 				Vector3 pos = utils::GetEntityPosition(gameObject);
 				Vector2 screenPos;
@@ -186,7 +187,7 @@ void ent_loop() {
 			if (TargetPlayer->IsNpc() && vars::combat::ignore_npc) {
 				vars::stor::closestPlayer = NULL;
 			}
-			if (TargetPlayer->HasFlags(16) && vars::combat::ignore_sleepers) {
+			if (TargetPlayer->HasFlags(PlayerFlags::Sleeping) && vars::combat::ignore_sleepers) {
 				vars::stor::closestPlayer = NULL;
 			}
 			if (LocalPlayer::Entity()->is_teammate(TargetPlayer->GetSteamID()) && vars::combat::ignore_team) {

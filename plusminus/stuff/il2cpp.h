@@ -1,78 +1,9 @@
 #include <map>
 #include "lazyimp.h"
-class Matrix {
-public:
-	inline float* operator[](int i) {
-		return m[i];
-	}
+template<typename T1, typename T2> bool map_contains_key(T1 map, T2 key) {
+	return map.count(key) > 0;
+}
 
-	inline const float* operator[](int i) const {
-		return m[i];
-	}
-
-	inline float* Base() {
-		return &m[0][0];
-	}
-
-	inline const float* Base() const {
-		return &m[0][0];
-	}
-public:
-	inline Matrix() {
-		Init(
-			0.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 0.0f
-		);
-	}
-	inline Matrix(
-		float m00, float m01, float m02, float m03,
-		float m10, float m11, float m12, float m13,
-		float m20, float m21, float m22, float m23,
-		float m30, float m31, float m32, float m33) {
-		Init(
-			m00, m01, m02, m03,
-			m10, m11, m12, m13,
-			m20, m21, m22, m23,
-			m30, m31, m32, m33
-		);
-	}
-	inline void Init(
-		float m00, float m01, float m02, float m03,
-		float m10, float m11, float m12, float m13,
-		float m20, float m21, float m22, float m23,
-		float m30, float m31, float m32, float m33
-	) {
-		m[0][0] = m00;
-		m[0][1] = m01;
-		m[0][2] = m02;
-		m[0][3] = m03;
-
-		m[1][0] = m10;
-		m[1][1] = m11;
-		m[1][2] = m12;
-		m[1][3] = m13;
-
-		m[2][0] = m20;
-		m[2][1] = m21;
-		m[2][2] = m22;
-		m[2][3] = m23;
-
-		m[3][0] = m30;
-		m[3][1] = m31;
-		m[3][2] = m32;
-		m[3][3] = m33;
-	}
-	Matrix transpose() const {
-		return Matrix(
-			m[0][0], m[1][0], m[2][0], m[3][0],
-			m[0][1], m[1][1], m[2][1], m[3][1],
-			m[0][2], m[1][2], m[2][2], m[3][2],
-			m[0][3], m[1][3], m[2][3], m[3][3]);
-	}
-	float m[4][4];
-};
 namespace il2cpp {
 	auto gameAssembly = GetModuleHandleA(xorstr("GameAssembly.dll"));
 	static std::map<uint32_t, uint64_t> offsets = std::map<uint32_t, uint64_t>();
@@ -121,6 +52,9 @@ namespace il2cpp {
 
 	uint64_t il2cpp_resolve_icall(const char* str) {
 		return call<uint64_t, const char*>(xorstr("il2cpp_resolve_icall"), str);
+	}
+	uint64_t il2cpp_object_new(uint64_t klass) {
+		return call<uint64_t, uint64_t>(xorstr("il2cpp_object_new"), klass);
 	}
 
 	class Il2CppField {
@@ -198,45 +132,15 @@ namespace il2cpp {
 	}
 
 	void* il2cpp_runtime_invoke(void* method_ptr, void* obj, void** param, void** exc) {
-		return call<void*, void*, void*, void**, void**>("il2cpp_runtime_invoke", method_ptr, obj, param, exc);
+		return call<void*, void*, void*, void**, void**>(xorstr("il2cpp_runtime_invoke"), method_ptr, obj, param, exc);
 	}
 
 	void* il2cpp_object_get_virtual_method(void* obj, void* method) {
-		return call<void*, void*, void*>("il2cpp_object_get_virtual_method", obj, method);
+		return call<void*, void*, void*>(xorstr("il2cpp_object_get_virtual_method"), obj, method);
 	}
-	namespace methods {
-		template<typename T1, typename T2> bool map_contains_key(T1 map, T2 key) {
-			return map.count(key) > 0;
-		}
-		using il2cpp_object_new = uintptr_t(*)(uintptr_t);
-		static auto object_new = LI_FIND_DEF(il2cpp_object_new);
-		using il2cpp_domain_get = uintptr_t(*)();
-		static auto domain_get = LI_FIND_DEF(il2cpp_domain_get);
-		using il2cpp_class_get_methods = uintptr_t(*)(uintptr_t, uintptr_t*);
-		static auto class_get_methods = LI_FIND_DEF(il2cpp_class_get_methods);
-		using il2cpp_method_get_param_count = int (*)(uintptr_t);
-		static auto method_get_param_count = LI_FIND_DEF(il2cpp_method_get_param_count);
-		using il2cpp_assembly_get_image = uintptr_t(*)(uintptr_t);
-		static auto assembly_get_image = LI_FIND_DEF(il2cpp_assembly_get_image);
-		using il2cpp_domain_get_assemblies = uintptr_t * (*)(void* domain, uintptr_t* size);
-		static auto domain_get_assemblies = LI_FIND_DEF(il2cpp_domain_get_assemblies);
-		using il2cpp_class_from_name = uintptr_t(*)(uintptr_t, const char*, const char*);
-		static auto class_from_name = LI_FIND_DEF(il2cpp_class_from_name);
-		using il2cpp_resolve_icall = uintptr_t(*)(const char*);
-		static auto resolve_icall = LI_FIND_DEF(il2cpp_resolve_icall);
-		using il2cpp_field_static_get_value = uintptr_t(*)(uintptr_t, uintptr_t*);
-		static auto field_static_get_value = LI_FIND_DEF(il2cpp_field_static_get_value);
-		using il2cpp_class_get_fields = uintptr_t(*)(uintptr_t, uintptr_t*);
-		static auto class_get_fields = LI_FIND_DEF(il2cpp_class_get_fields);
-		using il2cpp_field_get_offset = uintptr_t(*)(uintptr_t);
-		static auto field_get_offset = LI_FIND_DEF(il2cpp_field_get_offset);
-		using il2cpp_runtime_class_init = uintptr_t(*)(uintptr_t);
-		static auto runtime_class_init = LI_FIND_DEF(il2cpp_runtime_class_init);
-		using il2cpp_string_new_wrapper = uintptr_t(*)(const char*);
-		static auto new_string = LI_FIND_DEF(il2cpp_string_new_wrapper);
-	}
+	
 	Il2CppClass* klass(uint32_t path) {
-		if (methods::map_contains_key(offsets, path))
+		if (map_contains_key(offsets, path))
 			return reinterpret_cast<Il2CppClass*>(offsets[path]);
 
 		Il2CppDomain* domain = il2cpp_domain_get();
@@ -268,7 +172,7 @@ namespace il2cpp {
 		return nullptr;
 	}
 	uint64_t method(uint32_t path) {
-		if (methods::map_contains_key(offsets, path))
+		if (map_contains_key(offsets, path))
 			return offsets[path];
 
 		Il2CppDomain* domain = il2cpp_domain_get();
@@ -325,7 +229,7 @@ namespace il2cpp {
 		return 0;
 	}
 	uint64_t field(uint32_t path) {
-		if (il2cpp::methods::map_contains_key(offsets, path))
+		if (map_contains_key(offsets, path))
 			return std::uint32_t(offsets[path]);
 
 		Il2CppDomain* domain = il2cpp_domain_get();
@@ -490,89 +394,10 @@ namespace il2cpp {
 		}
 		return NULL;
 	}
-	DWORD64 il2cpp_object_new(DWORD64 klass) {
-		DWORD64 objnew = il2cpp::methods::object_new(klass);
-		return objnew;
-	}
-	uintptr_t init_class(const char* name, const char* name_space = c_xor("")) {
-		uintptr_t domain = il2cpp::methods::domain_get();
-		uintptr_t nrofassemblies = 0;
-		uintptr_t* assemblies;
-		assemblies = il2cpp::methods::domain_get_assemblies((void*)domain, &nrofassemblies);
-		for (int i = 0; i < nrofassemblies; i++) {
-			uintptr_t img = il2cpp::methods::assembly_get_image(assemblies[i]);
-			uintptr_t kl = il2cpp::methods::class_from_name(img, name_space, name);
-			if (!kl) continue;
-			return kl;
-		}
-		return 0;
-	}
-	uintptr_t il2cpp_field(uintptr_t klass, char* field_name, bool get_offset = true) {
-		uintptr_t out = 0;
-		uintptr_t il2cpp_field;
-		while (il2cpp_field = il2cpp::methods::class_get_fields(klass, &out)) {
-			char* name = (char*)*reinterpret_cast<uintptr_t*>(il2cpp_field);
-			if (!name)
-				break;
-			if (!strcmp(name, field_name)) {
-				continue;
-			}
-			if (!get_offset)
-				return il2cpp_field;
-			uintptr_t offset = il2cpp::methods::field_get_offset(il2cpp_field);
-			return offset;
-		}
-		return 0;
-	}
-	uintptr_t il2cpp_value(const char* kl, char* name, bool get_offset = true) {
-		auto klass = init_class(kl);
-		if (get_offset) {
-			auto field_offset = il2cpp_field(klass, name);
-			return field_offset;
-		}
-		else {
-			auto _field = il2cpp_field(klass, name, false);
-			uintptr_t ret;
-			il2cpp::methods::field_static_get_value(_field, &ret);
-			return ret;
-		}
-		return 0;
-	}
-	uintptr_t il2cpp_method(const char* kl, const char* name, int argument_number = -1, char* arg_name = "", const char* name_space = "", int selected_argument = -1) {
-		uintptr_t iter = 0;
-		uintptr_t f;
-		auto klass = init_class(kl, name_space);
-		while (f = il2cpp::methods::class_get_methods(klass, &iter)) {
-			char* st = *reinterpret_cast<char**>(f + 0x10);
-			if (strcmp(st, (char*)name)) {
-				if (selected_argument >= 0 && arg_name) {
-					uintptr_t args = read(f + 0x28, uintptr_t);
-					int method_count = il2cpp::methods::method_get_param_count(f);
-					if (selected_argument > method_count || (argument_number >= 0 && method_count != argument_number)) continue;
-					char* argname;
-					if (method_count > 0) {
-						argname = *reinterpret_cast<char**>(args + (selected_argument - 1) * 0x18);
-					}
-					else
-						argname = (char*)c_xor("-");
-					if (!argname || !strcmp(argname, arg_name)) continue;
-				}
-				return f;
-			}
-		}
-		return 0;
-	}
-	namespace game {
-		static auto get_iconSprite = reinterpret_cast<uintptr_t(*)(Item* nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
-		static auto get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));
-		static auto get_rect = reinterpret_cast<Rect(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_rect"), 0, xorstr(""), c_xor("UnityEngine"))));
-		static auto set_color = reinterpret_cast<void(*)(Color)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("set_color"), -1, xorstr(""), c_xor("UnityEngine"))));
-		static auto DrawTexture = reinterpret_cast<void (*)(Rect, uintptr_t)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("DrawTexture"), 2, xorstr("image"), c_xor("UnityEngine"), 2)));
-	}
 	namespace unity {
-
+		// getting camera using header scanning (epic)
 		uint64_t get_camera() {
-			const auto base = (uint64_t)GetModuleHandleA("UnityPlayer.dll");
+			const auto base = (uint64_t)GetModuleHandleA(xorstr("UnityPlayer.dll"));
 			if (!base)
 				return 0;
 			const auto dos_header = reinterpret_cast<IMAGE_DOS_HEADER*>(base);
@@ -618,43 +443,11 @@ namespace il2cpp {
 
 			return *reinterpret_cast<Matrix*>(cam + 0x2E4);
 		}
-		static auto IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
 	}
 	
 	static void init() {
-		using il2cpp_string_new_wrapper = uintptr_t(*)(const char*);
-		methods::new_string = LI_FIND_DEF(il2cpp_string_new_wrapper);
-		using il2cpp_domain_get = uintptr_t(*)();
-		methods::domain_get = LI_FIND_DEF(il2cpp_domain_get);
-		using il2cpp_class_get_methods = uintptr_t(*)(uintptr_t, uintptr_t*);
-		methods::class_get_methods = LI_FIND_DEF(il2cpp_class_get_methods);
-		using il2cpp_method_get_param_count = int (*)(uintptr_t);
-		methods::method_get_param_count = LI_FIND_DEF(il2cpp_method_get_param_count);
-		using il2cpp_assembly_get_image = uintptr_t(*)(uintptr_t);
-		methods::assembly_get_image = LI_FIND_DEF(il2cpp_assembly_get_image);
-		using il2cpp_domain_get_assemblies = uintptr_t * (*)(void* domain, uintptr_t* size);
-		methods::domain_get_assemblies = LI_FIND_DEF(il2cpp_domain_get_assemblies);
-		using il2cpp_class_from_name = uintptr_t(*)(uintptr_t, const char*, const char*);
-		methods::class_from_name = LI_FIND_DEF(il2cpp_class_from_name);
-		using il2cpp_resolve_icall = uintptr_t(*)(const char*);
-		methods::resolve_icall = LI_FIND_DEF(il2cpp_resolve_icall);
-		using il2cpp_field_static_get_value = uintptr_t(*)(uintptr_t, uintptr_t*);
-		methods::field_static_get_value = LI_FIND_DEF(il2cpp_field_static_get_value);
-		using il2cpp_class_get_fields = uintptr_t(*)(uintptr_t, uintptr_t*);
-		methods::class_get_fields = LI_FIND_DEF(il2cpp_class_get_fields);
-		using il2cpp_field_get_offset = uintptr_t(*)(uintptr_t);
-		methods::field_get_offset = LI_FIND_DEF(il2cpp_field_get_offset);
-		using il2cpp_object_new = uintptr_t(*)(uintptr_t);
-		methods::object_new = LI_FIND_DEF(il2cpp_object_new);
-		using il2cpp_runtime_class_init = uintptr_t(*)(uintptr_t);
-		methods::runtime_class_init = LI_FIND_DEF(il2cpp_runtime_class_init);
-
-		game::get_iconSprite = reinterpret_cast<uintptr_t(*)(Item * nigga)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Item"), c_xor("get_iconSprite"), 0, xorstr(""), c_xor(""))));
-		game::get_texture = reinterpret_cast<uintptr_t(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_texture"), 0, xorstr(""), c_xor("UnityEngine"))));
-		game::get_rect = reinterpret_cast<Rect(*)(uintptr_t sprite)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("Sprite"), c_xor("get_rect"), 0, xorstr(""), c_xor("UnityEngine"))));
-		game::set_color = reinterpret_cast<void(*)(Color)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("set_color"), -1, xorstr(""), c_xor("UnityEngine"))));
-		game::DrawTexture = reinterpret_cast<void (*)(Rect, uintptr_t)>(*reinterpret_cast<uintptr_t*>(il2cpp_method(c_xor("GUI"), c_xor("DrawTexture"), 2, xorstr("image"), c_xor("UnityEngine"), 2)));
-
-		unity::IgnoreLayerCollision = reinterpret_cast<void(*)(layer, layer, bool)>(il2cpp::methods::resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision()")));
+		init_classes( );
+		init_methods( );
+		init_fields( );
 	}
 }

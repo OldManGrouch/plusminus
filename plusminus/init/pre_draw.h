@@ -170,14 +170,18 @@ void pre_draw() {
 			wchar_t prefix[0x100];
 			if (ActWeapon) {
 				if (ActWeapon == TargetPlayerA->GetActiveWeapon()) {
-					_swprintf(prefix, xorstr(L"->"));
+					std::swprintf(prefix, xorstr(L"->"));
 				}
-				else { _swprintf(prefix, xorstr(L"")); }
-				wchar_t* ActiveItem = ActWeapon->GetName();
+				else { 
+					std::swprintf(prefix, xorstr(L""));
+				}
+				wchar_t* ActiveItem = ActWeapon->get_name();
 				if (ActiveItem) {
-					wchar_t itemName[0x100];
-					_swprintf(itemName, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->GetCount());
-					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName, D2D1::ColorF::White, true, true);
+					int sz = static_cast<std::size_t>(std::swprintf(nullptr, 0, ActiveItem) + 1);
+					const std::unique_ptr<wchar_t [ ]> itemName(new wchar_t[ sz ]);
+
+					std::swprintf(itemName.get( ), xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count());
+					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos }, itemName.get(), D2D1::ColorF::White, true, true);
 				}
 			}
 			Pos += 15;
@@ -188,10 +192,10 @@ void pre_draw() {
 		for (int i = 0; i < TargetPlayerA->item_list_w()->get_size(); i++) { // clothes
 			Item* ActWeapon = TargetPlayerA->item_list_w()->get_value(i);
 			if (ActWeapon) {
-				wchar_t* ActiveItem = ActWeapon->GetName();
+				wchar_t* ActiveItem = ActWeapon->get_name();
 				if (ActiveItem) {
 					wchar_t itemName[0x100];
-					_swprintf(itemName, xorstr(L"%s"), ActiveItem);
+					std::swprintf(itemName, xorstr(L"%s"), ActiveItem);
 					Renderer::String({ vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos }, itemName, D2D1::ColorF::White, true, true);
 				}
 			}

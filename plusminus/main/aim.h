@@ -7,7 +7,6 @@ namespace a {
 		double TotalVerticalDrop = (0.4905f * gravity * Time * Time);
 		return TotalVerticalDrop * 10;
 	}
-#define powFFFFFFFFFFFFFFFFFFFFFF(n) (n)*(n)
 	void Prediction(Vector3 local, Vector3& target, Vector3 targetvel, float bulletspeed, float gravity) {
 		float Dist = Math::Distance_3D(target, local);
 		float BulletTime = Dist / bulletspeed;
@@ -16,13 +15,13 @@ namespace a {
 		target += PredictVel;
 		double height = target.y - local.y;
 		Vector3 dir = target - local;
-		float DepthPlayerTarget = Vector3::my_sqrt(powFFFFFFFFFFFFFFFFFFFFFF(dir.x) + powFFFFFFFFFFFFFFFFFFFFFF(dir.z));
+		float DepthPlayerTarget = Vector3::my_sqrt((dir.x * dir.x) + (dir.z * dir.z));
 		float drop = CalcBulletDrop(height, DepthPlayerTarget, bulletspeed, gravity);
 		target.y += drop;
 	}
 	Vector3 get_aim_point(float speed, float gravity) {
 		Vector3 ret = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head);
-		Prediction(LocalPlayer::Entity()->get_bone_pos(head), ret, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetVelocity(), speed, gravity);
+		Prediction(LocalPlayer::Entity()->get_bone_pos(head), ret, reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->newVelocity(), speed, gravity);
 		return ret;
 	}
 }
@@ -69,30 +68,11 @@ float GetBulletSpeed() {
 	}
 	return vars::weapons::fast_bullets ? 250.f * 1.3 : 250.f;
 }
-void Normalize(float& Yaw, float& Pitch) {
-	if (Pitch < -89) Pitch = -89;
-	else if (Pitch > 89) Pitch = 89;
-	if (Yaw < -360) Yaw += 360;
-	else if (Yaw > 360) Yaw -= 360;
-}
-float NormalizeAngle(float angle) {
-	while (angle > 360.0f) {
-		angle -= 360.0f;
-	}
-	while (angle < 0.0f) {
-		angle += 360.0f;
-	}
-	return angle;
-}
-Vector2 NormalizeAngles(Vector2 angles) {
-	angles.x = NormalizeAngle(angles.x);
-	angles.y = NormalizeAngle(angles.y);
-	return angles;
-}
+
 void StepConstant(Vector2& angles) {
 	bool smooth = vars::combat::smooth;
 	Vector2 angles_step = angles - LocalPlayer::Entity()->viewangles();
-	Normalize(angles_step.x, angles_step.y);
+	Math::Normalize(angles_step.x, angles_step.y);
 
 	if (smooth) {
 		float factor_pitch = (vars::combat::smooth_factor / 10.f);
@@ -132,13 +112,13 @@ void do_aimbot(BasePlayer* player) {
 	bool long_neck = vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck);
 	Vector3 local = long_neck ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head);
 	Vector3 target = vars::combat::bodyaim ? player->get_bone_pos(spine1) : player->get_bone_pos(head);
-	a::Prediction(local, target, player->GetVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo()));
+	a::Prediction(local, target, player->newVelocity(), GetBulletSpeed(), GetGravity(LocalPlayer::Entity()->GetActiveWeapon()->LoadedAmmo()));
 	Vector2 Offset = Math::CalcAngle(local, target) - LocalPlayer::Entity()->viewangles();
-	Normalize(Offset.y, Offset.x);
+	Math::Normalize(Offset.y, Offset.x);
 	Vector2 AngleToAim = LocalPlayer::Entity()->viewangles() + Offset;
 	if (vars::combat::smooth) {
 		StepConstant(AngleToAim);
 	}
-	Normalize(AngleToAim.y, AngleToAim.x);
+	Math::Normalize(AngleToAim.y, AngleToAim.x);
 	LocalPlayer::Entity()->viewangles() = AngleToAim;
 }

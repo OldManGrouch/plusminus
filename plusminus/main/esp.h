@@ -71,7 +71,7 @@ namespace radar {
 
 				if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
-						if (!Player->HasFlags(16)) {
+						if (!Player->HasFlags(PlayerFlags::Sleeping)) {
 							if (LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
@@ -84,7 +84,7 @@ namespace radar {
 								}
 							}
 						}
-						else if (Player->HasFlags(16) && !vars::players::sleeperignore) {
+						else if (Player->HasFlags(PlayerFlags::Sleeping) && !vars::players::sleeperignore) {
 							Renderer::FillCircle(point, D2D1::ColorF::Orange, 2.5f);
 						}
 					}
@@ -124,10 +124,10 @@ namespace otherEsp {
 		if (vars::visuals::bradley_apc) {
 			if (strstr(buff, xorstr("bradleyapc.prefab"))) {
 				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 bradley = read(Object + 0x28, DWORD64);
+				BaseCombatEntity* bradley = read(Object + 0x28, BaseCombatEntity*);
 				Vector3 pos = utils::GetEntityPosition(object);
 				int distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				float health = read(bradley + oHealth, float);
+				float health = bradley->health( );
 				Vector2 screen;
 				if (utils::w2s(pos, screen)) {
 					wchar_t buffer[256];
@@ -188,7 +188,7 @@ namespace otherEsp {
 						pos += 15;
 					}
 					uintptr_t authedPly = read(cupboard + 0x568, uintptr_t);
-					list<PlayerNameID*>* authedPly_list = read(authedPly + 0x10, list<PlayerNameID*>*);
+					List<PlayerNameID*>* authedPly_list = read(authedPly + 0x10, List<PlayerNameID*>*);
 					authedPly_list->for_each([&](PlayerNameID* authorizedPlayer, int32_t idx) {
 						if (authorizedPlayer) {
 							auto user = authorizedPlayer->username();
@@ -443,7 +443,7 @@ void Box3D(BasePlayer* player, D2D1::ColorF color) {
 	}
 }
 void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
-	if (vars::players::sleeperignore && BP->HasFlags(16)) return;
+	if (vars::players::sleeperignore && BP->HasFlags(PlayerFlags::Sleeping)) return;
 	if (!BP) return;
 	Vector2 tempFeetR, tempFeetL;
 	if (utils::w2s(BP->get_bone_pos(r_foot), tempFeetR) && utils::w2s(BP->get_bone_pos(l_foot), tempFeetL)) {
@@ -497,7 +497,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 							_swprintf(name, L"---");
 						}
 						else {
-							_swprintf(name, L"%s [x%d]", weapon->GetName(), weapon->GetCount());
+							_swprintf(name, L"%s [x%d]", weapon->get_name(), weapon->count());
 						}
 						Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos + 10.f }, name, color, true, true);
 						CurPos += 15;
@@ -539,7 +539,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 						Renderer::Rectangle(Vector2{ middlePointPlayerFeet.x - 30, middlePointPlayerFeet.y + CurPos + 5 }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 					}
 				}
-				if (vars::players::tracers && !BP->HasFlags(16)) {
+				if (vars::players::tracers && !BP->HasFlags(PlayerFlags::Sleeping)) {
 					static float screenX = GetSystemMetrics(SM_CXSCREEN);
 					static float screenY = GetSystemMetrics(SM_CYSCREEN);
 					static Vector2 startPos;
@@ -594,12 +594,12 @@ void NPCESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 				if (vars::npc::weapon) {
 					const wchar_t* ActiveWeaponName;
 					Item* ActWeapon = BP->GetActiveWeapon();
-					ActiveWeaponName = ActWeapon->GetName();
+					ActiveWeaponName = ActWeapon->get_name();
 					if (!ActWeapon) {
 						ActiveWeaponName = L"---";
 					}
 					else {
-						ActiveWeaponName = ActWeapon->GetName();
+						ActiveWeaponName = ActWeapon->get_name();
 					}
 					Renderer::String(Vector2{ middlePointPlayerFeet.x, middlePointPlayerFeet.y + CurPos2 + 10.f }, ActiveWeaponName, color, true, true);
 					CurPos2 += 15;

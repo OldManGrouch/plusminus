@@ -17,7 +17,6 @@ public:
 		this->position = target;
 	}
 
-	DWORD64 oPlayerList = 0;
 	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr(""), float get_dist = 400.f) {
 		f_object lowest = f_object();
 
@@ -68,7 +67,7 @@ public:
 		typedef float(__stdcall* RetF)();
 		float time = Time::time();
 
-		float desyncTime = max(time - LocalPlayer::Entity()->Time() - 0.0325f, 0.f);
+		float desyncTime = max(time - LocalPlayer::Entity()->lastSentTickTime() - 0.0325f, 0.f);
 		float res = pad + desyncTime * 5.5f;
 		if (localplayer) {
 			res += (1.5f * read(melee + 0x278, float)); //maxDistance
@@ -81,7 +80,7 @@ public:
 
 		if (Player->health() <= 0) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
-		if (vars::combat::ignore_sleepers && Player->HasFlags(16)) return res;
+		if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) return res;
 		if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) return res;
 		Vector3 prepos = Player->get_bone_pos(head);
 		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer::Entity(), prepos);

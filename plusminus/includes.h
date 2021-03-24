@@ -29,12 +29,12 @@
 #include <Lmcons.h>
 #include "stuff/mem.h"
 #include "stuff/structs.h"
+#include "vector.h"
 #include "stuff/math.h"
 #include "stuff/vars.h"
 #include "main/weapons.h"
-#include "stuff/sdk.h"
+#include "class.h"
 #include "stuff/il2cpp.h"
-#include "il2cpp_.h"
 
 #include "rust.h"
 #include "main/f_object.h"

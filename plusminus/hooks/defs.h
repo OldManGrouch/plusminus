@@ -41,7 +41,7 @@ namespace hk_defs {
 	typedef bool(__fastcall* isheadshot)(HitInfo*);
 	inline isheadshot original_getisheadshot{ };
 
-	typedef void(__fastcall* traceallthing)(HitTest*, list<TraceInfo*>, uintptr_t);
+	typedef void(__fastcall* traceallthing)(HitTest*, List<TraceInfo*>, uintptr_t);
 	inline traceallthing original_traceall{ };
 
 	typedef float(__fastcall* getrandvel)(ItemModProjectile*);
