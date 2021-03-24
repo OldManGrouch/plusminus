@@ -82,7 +82,7 @@ public:
 		}
 		if (!explosionCollision) {
 			Explosion explosion = Explosion();
-			explosion.name = StringFormat::format(c_xor("%s Raid"), type.c_str());
+			explosion.name = StringFormat::format(xorstr("%s Raid"), type.c_str());
 			explosion.position = pos;
 			explosion.timeSince = get_time_since_startup();
 			loggedExplosions.push_back(explosion);
@@ -115,7 +115,7 @@ public:
 			if (utils::w2s(explosion.position, explPos)) {
 				Renderer::String(
 					explPos,
-					StringConverter::ToUnicode(StringFormat::format(c_xor("%s [%.2fm] [%d]"),
+					StringConverter::ToUnicode(StringFormat::format(xorstr("%s [%.2fm] [%d]"),
 						explosion.name.c_str(),
 						Math::Distance_3D(explosion.position, LocalPlayer::Entity()->get_bone_pos(head)),
 						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),

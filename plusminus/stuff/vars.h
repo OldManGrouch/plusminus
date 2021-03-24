@@ -1,10 +1,10 @@
 bool init, show = true;
 #define null NULL
 
-std::string C4 = c_xor("C4");
-std::string Satchel = c_xor("Satchel");
-std::string IncenRocket = c_xor("Incendiary Rocket");
-std::string Rocket = c_xor("Rocket");
+std::string C4 = xorstr("C4");
+std::string Satchel = xorstr("Satchel");
+std::string IncenRocket = xorstr("Incendiary Rocket");
+std::string Rocket = xorstr("Rocket");
 
 std::wstring wC4 = xorstr(L"C4");
 std::wstring wSatchel = xorstr(L"Satchel");

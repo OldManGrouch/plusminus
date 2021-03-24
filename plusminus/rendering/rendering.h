@@ -150,6 +150,44 @@ namespace Renderer {
 		m_pLinearGradientBrush->Release();
 		pGradientStops->Release();
 	}
+	template <typename ...Args>
+	void Text(const Vector2 pos, const D2D1::ColorF clr, const std::wstring_view text, Args&&... args) {
+		const auto size = static_cast<std::size_t>(std::swprintf(nullptr, 0, text.data( ), std::forward<Args>(args)...) + 1);
+
+		const std::unique_ptr<wchar_t [ ]> buffer(new wchar_t[ size ]);
+		std::swprintf(buffer.get( ), size, text.data( ), std::forward<Args>(args)...);
+
+		const auto str = std::wstring(buffer.get( ), buffer.get( ) + size - 1);
+		const auto str_len = static_cast<std::uint32_t>(str.size( ));
+
+		IDWriteTextLayout* dwrite_layout = nullptr;
+		RET_CHK(TextEngine->CreateTextLayout(str.c_str( ), str_len, TextFormat, vars::stuff::ScreenWidth, vars::stuff::ScreenHeight, &dwrite_layout));
+
+		const DWRITE_TEXT_RANGE range
+		{
+			0,
+			str_len
+		};
+
+		dwrite_layout->SetFontSize(12.f, range);
+
+		static const auto black_color = D2D1::ColorF(D2D1::ColorF::Black);
+
+		SolidColor->SetColor(black_color);
+
+		const auto x = pos.x;
+		const auto y = pos.y;
+
+		Canvas->DrawTextLayout(D2D1::Point2F(x - 1, y), dwrite_layout, SolidColor);
+		Canvas->DrawTextLayout(D2D1::Point2F(x + 1, y), dwrite_layout, SolidColor);
+		Canvas->DrawTextLayout(D2D1::Point2F(x, y - 1), dwrite_layout, SolidColor);
+		Canvas->DrawTextLayout(D2D1::Point2F(x, y + 1), dwrite_layout, SolidColor);
+
+		SolidColor->SetColor(clr);
+		Canvas->DrawTextLayout(D2D1::Point2F(x, y), dwrite_layout, SolidColor);
+
+		dwrite_layout->Release( );
+	}
 	Vector2 String(const Vector2& pos, const wchar_t* text, const D2D1::ColorF& color, bool outline, bool center = false, bool big = false) {
 		if (center) {
 			SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));

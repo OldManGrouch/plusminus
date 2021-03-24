@@ -53,9 +53,9 @@ void pre_draw( ) {
 		vars::stor::closestHeliObj = NULL;
 	}
 	if (vars::combat::lock_target && vars::stor::closestPlayer != NULL) {
-		wchar_t trgt[ 64 ];
-		_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
-		Renderer::String(Vector2{xs, ys - 50}, trgt, D2D1::ColorF::PaleVioletRed, true, true);
+		//wchar_t trgt[ 64 ];
+		//_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
+		Renderer::Text(Vector2{xs, ys - 50}, D2D1::ColorF::PaleVioletRed, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
 	}
 	if (vars::ores::closest_ore) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
@@ -167,17 +167,20 @@ void pre_draw( ) {
 		float Pos = 0;
 		for (int i = 0; i < TargetPlayerA->item_list_b( )->get_size( ); i++) { // belt
 			Item* ActWeapon = TargetPlayerA->item_list_b( )->get_value(i);
-			wchar_t prefix[ 0x100 ];
+			wchar_t prefix[ 3 ];
 			if (ActWeapon) {
 				if (ActWeapon == TargetPlayerA->GetActiveWeapon( )) {
 					_swprintf(prefix, xorstr(L"->"));
 				}
-				else { _swprintf(prefix, xorstr(L"")); }
+				else { 
+					_swprintf(prefix, xorstr(L"")); 
+				}
 				wchar_t* ActiveItem = ActWeapon->get_name( );
 				if (ActiveItem) {
-					wchar_t itemName[ 0x100 ];
-					_swprintf(itemName, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
-					Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, itemName, D2D1::ColorF::White, true, true);
+					//wchar_t itemName[ 0x100 ];
+					//_swprintf(itemName, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
+					//Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, itemName, D2D1::ColorF::White, true, true);
+					Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, D2D1::ColorF::White, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
 				}
 			}
 			Pos += 15;
@@ -190,9 +193,10 @@ void pre_draw( ) {
 			if (ActWeapon) {
 				wchar_t* ActiveItem = ActWeapon->get_name( );
 				if (ActiveItem) {
-					wchar_t itemName[ 0x100 ];
-					_swprintf(itemName, xorstr(L"%s"), ActiveItem);
-					Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, itemName, D2D1::ColorF::White, true, true);
+					//wchar_t itemName[ 0x100 ];
+					//_swprintf(itemName, xorstr(L"%s"), ActiveItem);
+					//Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, itemName, D2D1::ColorF::White, true, true);
+					Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, D2D1::ColorF::White, xorstr(L"%s"), ActiveItem);
 				}
 			}
 			cPos += 15;

@@ -150,15 +150,15 @@ namespace il2cpp {
 			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
 			for (int c = 0; c < image->classcount(); c++) {
 				std::string temp(image->assemblyName);
-				temp.erase(temp.find(c_xor(".dll")), 4);
+				temp.erase(temp.find(xorstr(".dll")), 4);
 
 				Il2CppClass* klass = image->get_class(c);
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				if (path == RUNTIME_CRC32(temp.c_str())) {
 					uint64_t ptr = std::uint64_t(klass);
@@ -190,31 +190,31 @@ namespace il2cpp {
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				Il2CppMethod* mthd;
 				void* iter = NULL;
 				while (mthd = klass->methods(&iter)) {
 					if (!mthd) continue;
 
-					std::string temp2(temp + c_xor("::") + mthd->name());
+					std::string temp2(temp + xorstr("::") + mthd->name());
 
 					if (mthd->paramCount() > 0) {
-						temp2 = temp2 + c_xor("(");
+						temp2 = temp2 + xorstr("(");
 						for (int p = 0; p < mthd->paramCount(); p++) {
 							std::string t(mthd->getParam(p)->name());
-							t = t.substr(t.find(c_xor(".")) + 1);
-							temp2 = temp2 + t + c_xor(",");
+							t = t.substr(t.find(xorstr(".")) + 1);
+							temp2 = temp2 + t + xorstr(",");
 						}
 						std::string t(mthd->retType()->name());
 						temp2 = temp2.substr(0, temp2.size() - 1);
-						temp2 = temp2 + c_xor("): ") + t.substr(t.find(".") + 1);
+						temp2 = temp2 + xorstr("): ") + t.substr(t.find(".") + 1);
 					}
 					else {
 						std::string t(mthd->retType()->name());
-						temp2 = temp2 + c_xor("(): ") + t.substr(t.find(".") + 1);
+						temp2 = temp2 + xorstr("(): ") + t.substr(t.find(".") + 1);
 					}
 
 					if (RUNTIME_CRC32(temp2.c_str()) == path) {
@@ -239,22 +239,22 @@ namespace il2cpp {
 			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
 			for (int c = 0; c < image->classcount(); c++) {
 				std::string temp(image->assemblyName);
-				temp.erase(temp.find(c_xor(".dll")), 4);
+				temp.erase(temp.find(xorstr(".dll")), 4);
 
 				Il2CppClass* klass = image->get_class(c);
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				Il2CppField* field;
 				void* iter = NULL;
 				while (field = klass->fields(&iter)) {
 					if (!field) continue;
 
-					std::string t(temp + c_xor("::") + field->name());
+					std::string t(temp + xorstr("::") + field->name());
 					if (RUNTIME_CRC32(t.c_str()) == path) {
 						uint32_t off = field->offset();
 						offsets.insert(std::make_pair(path, off));
@@ -281,9 +281,9 @@ namespace il2cpp {
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				uint64_t ptr = std::uint64_t(klass);
 
@@ -307,31 +307,31 @@ namespace il2cpp {
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				Il2CppMethod* mthd;
 				void* iter = NULL;
 				while (mthd = klass->methods(&iter)) {
 					if (!mthd) continue;
 
-					std::string temp2(temp + c_xor("::") + mthd->name());
+					std::string temp2(temp + xorstr("::") + mthd->name());
 
 					if (mthd->paramCount() > 0) {
-						temp2 = temp2 + c_xor("(");
+						temp2 = temp2 + xorstr("(");
 						for (int p = 0; p < mthd->paramCount(); p++) {
 							std::string t(mthd->getParam(p)->name());
-							t = t.substr(t.find(c_xor(".")) + 1);
-							temp2 = temp2 + t + c_xor(",");
+							t = t.substr(t.find(xorstr(".")) + 1);
+							temp2 = temp2 + t + xorstr(",");
 						}
 						std::string t(mthd->retType()->name());
 						temp2 = temp2.substr(0, temp2.size() - 1);
-						temp2 = temp2 + c_xor("): ") + t.substr(t.find(".") + 1);
+						temp2 = temp2 + xorstr("): ") + t.substr(t.find(".") + 1);
 					}
 					else {
 						std::string t(mthd->retType()->name());
-						temp2 = temp2 + c_xor("(): ") + t.substr(t.find(".") + 1);
+						temp2 = temp2 + xorstr("(): ") + t.substr(t.find(".") + 1);
 					}
 
 					offsets.insert(std::make_pair(RUNTIME_CRC32(temp2.c_str()), std::uint64_t(mthd)));
@@ -347,22 +347,22 @@ namespace il2cpp {
 			Il2CppImage* image = *reinterpret_cast<Il2CppImage**>(*reinterpret_cast<uint64_t*>(std::uint64_t(assemblies) + (0x8 * i)));
 			for (int c = 0; c < image->classcount(); c++) {
 				std::string temp(image->assemblyName);
-				temp.erase(temp.find(c_xor(".dll")), 4);
+				temp.erase(temp.find(xorstr(".dll")), 4);
 
 				Il2CppClass* klass = image->get_class(c);
 				char* name = klass->name;
 				char* ns = klass->namespaze;
 				if (std::string(ns).empty())
-					temp = temp + c_xor("::") + name;
+					temp = temp + xorstr("::") + name;
 				else
-					temp = temp + c_xor("::") + ns + c_xor("::") + name;
+					temp = temp + xorstr("::") + ns + xorstr("::") + name;
 
 				Il2CppField* field;
 				void* iter = NULL;
 				while (field = klass->fields(&iter)) {
 					if (!field) continue;
 
-					std::string t(temp + c_xor("::") + field->name());
+					std::string t(temp + xorstr("::") + field->name());
 					uint32_t off = field->offset();
 					offsets.insert(std::make_pair(RUNTIME_CRC32(t.c_str()), off));
 				}

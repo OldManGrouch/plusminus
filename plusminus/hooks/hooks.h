@@ -97,19 +97,19 @@ namespace hk {
 				switch (RUNTIME_CRC32_W(effectName)) {
 				case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 					LogSystem::LogExplosion(C4, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wC4.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(xorstr(L"%ls explosion %.2f meters away from you."), wC4.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/satchelcharge/effects/satchel-charge-explosion.prefab"):
 					LogSystem::LogExplosion(Satchel, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wSatchel.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(xorstr(L"%ls explosion %.2f meters away from you."), wSatchel.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion_incendiary.prefab"):
 					LogSystem::LogExplosion(IncenRocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(xorstr(L"%ls explosion %.2f meters away from you."), wIncenRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				case STATIC_CRC32("assets/prefabs/weapons/rocketlauncher/effects/rocket_explosion.prefab"):
 					LogSystem::LogExplosion(Rocket, position);
-					LogSystem::Log(StringFormat::format(c_wxor(L"%ls explosion %.2f meters away from you."), wRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
+					LogSystem::Log(StringFormat::format(xorstr(L"%ls explosion %.2f meters away from you."), wRocket.c_str( ), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), position)), 15.f);
 					break;
 				}
 			}
@@ -266,7 +266,7 @@ namespace hk {
 		void DoHitNotify(BaseCombatEntity* entity, HitInfo* info) {
 			if (entity->IsPlayer( )) {
 				if (vars::misc::hit_logs) {
-					LogSystem::Log(StringFormat::format(c_wxor(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->_displayName( ), utils::StringPool::Get(info->HitBone( ))->buffer, info->damageTypes( )->Total( )), 5.f);
+					LogSystem::Log(StringFormat::format(xorstr(L"Hit %s in %s for %.2f damage"), reinterpret_cast<BasePlayer*>(entity)->_displayName( ), utils::StringPool::Get(info->HitBone( ))->buffer, info->damageTypes( )->Total( )), 5.f);
 				}
 				if (vars::misc::custom_hitsound) {
 					PlaySoundA(xorstr("C:\\plusminus\\hit.wav"), NULL, SND_ASYNC);
@@ -395,7 +395,7 @@ namespace hk {
 				BaseCombatEntity* entity = BaseNetworkable::clientEntities( )->Find<BaseCombatEntity*>(hitID);
 				if (vars::combat::always_headshot) {
 					if (entity->IsPlayer( )) {
-						uint32_t bone = utils::StringPool::Get(c_xor("head"));
+						uint32_t bone = utils::StringPool::Get(xorstr("head"));
 						write(Attack + 0x30, bone, uint32_t);
 					}
 				}
@@ -403,10 +403,10 @@ namespace hk {
 					if (entity->ClassNameHash( ) == STATIC_CRC32("BaseHelicopter")) {
 						int health = (int)ceil(read(vars::stor::closestHeli + 0x20C, float));
 						if (health <= 5000) {
-							write(Attack + 0x30, utils::StringPool::Get(c_xor("tail_rotor_col")), uint32_t);
+							write(Attack + 0x30, utils::StringPool::Get(xorstr("tail_rotor_col")), uint32_t);
 						}
 						else {
-							write(Attack + 0x30, utils::StringPool::Get(c_xor("engine_col")), uint32_t);
+							write(Attack + 0x30, utils::StringPool::Get(xorstr("engine_col")), uint32_t);
 						}
 					}
 				}

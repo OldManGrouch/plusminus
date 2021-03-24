@@ -83,7 +83,7 @@ namespace lol {
 			//trans = utils::GetTransform((DWORD64)target.entity);
 			trans = (DWORD64)reinterpret_cast<Object*>(target.entity)->transform( );
 		} if (!trans) {
-			LogSystem::Log(c_wxor(L"No transform found"), 1.f);
+			LogSystem::Log(xorstr(L"No transform found"), 1.f);
 			return;
 		}
 
@@ -134,7 +134,7 @@ namespace lol {
 	float LastGrade = 0.f;
 	void auto_grade(uintptr_t buildingblocc) {
 		BuildingBlock* block = reinterpret_cast<BuildingBlock*>(buildingblocc);
-		//LogSystem::Log(c_wxor(L"xd"), 5.f);
+		//LogSystem::Log(xorstr(L"xd"), 5.f);
 		if (LocalPlayer::Entity( )->lastSentTickTime( ) > LastGrade + 0.35f
 			&& block->CanAffordUpgrade((BuildingGrade)vars::misc::grade_, LocalPlayer::Entity( ))
 			&& block->CanChangeToGrade((BuildingGrade)vars::misc::grade_, LocalPlayer::Entity( ))

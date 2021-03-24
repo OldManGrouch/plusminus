@@ -66,8 +66,8 @@ HRESULT __stdcall hookD3D11Present(IDXGISwapChain* pSwapChain, UINT SyncInterval
 int MultisampleCount = 1;
 LRESULT CALLBACK DXGIMsgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) { return DefWindowProc(hwnd, uMsg, wParam, lParam); }
 DWORD __stdcall Start(LPVOID) {
-	vars::stor::gBase = (DWORD64)GetModuleHandleA(c_xor("GameAssembly.dll"));
-	vars::stor::uBase = (DWORD64)GetModuleHandleA(c_xor("UnityPlayer.dll"));
+	vars::stor::gBase = (DWORD64)GetModuleHandleA(xorstr("GameAssembly.dll"));
+	vars::stor::uBase = (DWORD64)GetModuleHandleA(xorstr("UnityPlayer.dll"));
 	il2cpp::init();
 	HMODULE hDXGIDLL = 0;
 	do {

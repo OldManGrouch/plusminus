@@ -24,7 +24,7 @@ void ent_loop() {
 	}
 	float FOV = vars::combat::fov, CurFOV;
 	if (!inited) {
-		LogSystem::Log(c_wxor(L"Cheat loaded successfully!"), 7.5f);
+		LogSystem::Log(xorstr(L"Cheat loaded successfully!"), 7.5f);
 		inited = true;
 	}
 	auto entityList = BaseNetworkable::clientEntities()->entityList();
@@ -112,13 +112,16 @@ void ent_loop() {
 				Vector3 pos = utils::GetEntityPosition(gameObject);
 				Vector2 screenPos;
 				if (utils::w2s(pos, screenPos)) {
-					wchar_t buffer[256];
-					wchar_t buffera[256];
+					//wchar_t buffer[256];
+					//wchar_t buffera[256];
 					if (vars::visuals::patrol_heli) {
-						swprintf(buffer, xorstr(L"Helicopter [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos));
-						swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
-						Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
-						Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
+						//swprintf(buffer, xorstr(L"Helicopter [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos));
+						//swprintf(buffera, xorstr(L"[%dHP]"), (int)health);
+						//Renderer::String(screenPos, buffer, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
+						//Renderer::String(screenPos + Vector2(0, 15), buffera, D2D1::ColorF(0.5f, 0.54f, 1.f), true, true);
+						Renderer::Text(screenPos, D2D1::ColorF(0.5f, 0.54f, 1.f), xorstr(L"Helicopter [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos));
+						Renderer::Text(screenPos + Vector2(0, 15), D2D1::ColorF(0.5f, 0.54f, 1.f), xorstr(L"[%dHP]"), (int)health);
+
 						Renderer::FillRectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60 * (health / maxhealth), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
 						Renderer::Rectangle(Vector2{ screenPos - Vector2(30, 0) + Vector2(0, 25) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
 					}
