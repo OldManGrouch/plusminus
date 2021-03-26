@@ -186,9 +186,9 @@ namespace hk {
 					Vector3 direction = (closest.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
 					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
-				if (LocalPlayer::Entity( )->newVelocity( ).empty( )) {
-					reinterpret_cast<void(_fastcall*)(PlayerWalkMovement*, ModelState*, bool)>(vars::stor::gBase + CO::Jump)(movement, modelstate, true);
-				}
+				//if (LocalPlayer::Entity( )->newVelocity( ).empty( )) {
+				//	reinterpret_cast<void(_fastcall*)(PlayerWalkMovement*, ModelState*, bool)>(vars::stor::gBase + CO::Jump)(movement, modelstate, true);
+				//}
 			}
 			original_dofixedupdate(movement, modelstate);
 		}
@@ -450,7 +450,7 @@ namespace hk {
 			BasePlayer* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 			Vector3 Local = LocalPlayer::Entity( )->eyes( )->get_position( );
 
-			Vector3 heli_target = utils::GetEntityPosition(vars::stor::closestHeliObj) + Vector3(0, 2, 0);
+			Vector3 heli_target = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->transform( )->position( ) + Vector3(0, 1.5, 0);
 			Vector3 target = vars::combat::bodyaim ? TargetPlayer->get_bone_pos(spine1) : TargetPlayer->get_bone_pos(head);
 
 			float gravity;
@@ -472,7 +472,7 @@ namespace hk {
 					if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
 						inputVec = playerDir;
 					}
-					if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
+					if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL) {
 						inputVec = heliDir;
 					}
 				}
@@ -481,7 +481,7 @@ namespace hk {
 						if (vars::combat::psilenttarget == 0 && vars::stor::closestPlayer != NULL) {
 							inputVec = playerDir;
 						}
-						if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
+						if (vars::combat::psilenttarget == 1 && vars::stor::closestHeli != NULL) {
 							inputVec = heliDir;
 						}
 					}
@@ -526,8 +526,8 @@ void hk__( ) {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
-	hk_((void*)(uintptr_t)(vars::stor::gBase + 0x2FB040), (void**)&original_clientupdate, hk::misc::ClientUpdate);
-	hk_((void*)(uintptr_t)(vars::stor::gBase + 0x2FACB0), (void**)&original_clientupdate_sleeping, hk::misc::ClientUpdate_Sleeping);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientUpdate), (void**)&original_clientupdate, hk::misc::ClientUpdate);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientUpdate_Sleeping), (void**)&original_clientupdate_sleeping, hk::misc::ClientUpdate_Sleeping);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Jump), (void**)&original_jump, hk::misc::Jump);

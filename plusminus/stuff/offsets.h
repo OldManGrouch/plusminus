@@ -1,5 +1,7 @@
 
 namespace CO {
+	auto ClientUpdate = 0x2FB040;
+	auto ClientUpdate_Sleeping = 0x2FACB0;
 	auto cursor_get_visible = 0x1798020;
 	auto get_Entity = 0x590920; // localplayer
 	auto Refract = 0x8B06E0;

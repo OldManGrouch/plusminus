@@ -63,23 +63,6 @@ void game_thread_loop() {
 					lol::do_attack(target, active, true);
 				}
 			}
-			/*else if (vars::misc::auto_grade && strstr((char*)read(read(Entity, DWORD64) + 0x10, DWORD64), xorstr("BuildingBlock"))
-				&& !strstr((char*)read(read(Entity, DWORD64) + 0x10, DWORD64), xorstr("Door"))
-				&& !strstr((char*)read(read(Entity, DWORD64) + 0x10, DWORD64), xorstr("Deployable"))
-				&& !strstr(buff, xorstr("furnace"))
-				&& !strstr(buff, xorstr("bars"))
-				&& !strstr(buff, xorstr("gates.external.high.stone.prefab"))
-				&& !strstr(buff, xorstr("gates.external.high.wood.prefab"))
-				&& !strstr(buff, xorstr("wall.external.high.stone.prefab"))
-				&& !strstr(buff, xorstr("wall.external.high.wood.prefab"))
-				) {
-				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
-				Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));
-				if (Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) >= 3.f) { continue; }
-				if (vars::misc::auto_grade) {
-					lol::AutoGrade(Entity);
-				}
-			}*/
 			else if (vars::misc::auto_pickup && strstr(buff, xorstr("/collectable/"))) {
 				UINT64 gameObject = read(ObjectClass + 0x30, UINT64);
 				Vector3 local = utils::ClosestPoint(LocalPlayer::Entity(), utils::GetEntityPosition(gameObject));

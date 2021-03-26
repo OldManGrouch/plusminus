@@ -53,7 +53,7 @@ namespace radar {
 		if (LocalPlayer::Entity()) {
 			Vector3 local = LocalPlayer::Entity()->get_bone_pos(head);
 			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
-				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
+				BasePlayer* Player = (BasePlayer*)Object;
 				if (!read(Player + 0x4A8, DWORD64)) return;
 				if (!Player->isCached( )) return;
 
@@ -110,13 +110,15 @@ namespace otherEsp {
 	void miscvis(DWORD64 ObjectClass, char* buff, bool boolean, bool showDistance, float drawDistance, const char* substring, const wchar_t* targettext, D2D1::ColorF color) {
 		if (boolean) {
 			if (strstr(buff, substring)) {
-				DWORD64 gameObject = read(ObjectClass + 0x30, DWORD64);
+				
 				Vector2 screen_Pos;
-				if (utils::w2s(utils::GetEntityPosition(gameObject), screen_Pos)) {
-					if ((int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), utils::GetEntityPosition(gameObject)) <= drawDistance) {
-						Renderer::Text({screen_Pos.x, screen_Pos.y}, color, true, true, xorstr(L"%s"), targettext);
-						if (showDistance) {
-							Renderer::Text(screen_Pos + Vector2(0, 15), color, true, true, xorstr(L"[%.2f m]"), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), utils::GetEntityPosition(gameObject)));
+				if (ObjectClass) {
+					if (utils::w2s(reinterpret_cast<BaseEntity*>(ObjectClass)->transform( )->position( )/*utils::GetEntityPosition(gameObject)*/, screen_Pos)) {
+						if ((int)Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), reinterpret_cast<BaseEntity*>(ObjectClass)->transform( )->position( )) <= drawDistance) {
+							Renderer::Text({screen_Pos.x, screen_Pos.y}, color, true, true, xorstr(L"%s"), targettext);
+							if (showDistance) {
+								Renderer::Text(screen_Pos + Vector2(0, 15), color, true, true, xorstr(L"[%.2f m]"), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), reinterpret_cast<BaseEntity*>(ObjectClass)->transform( )->position( )));
+							}
 						}
 					}
 				}
@@ -126,18 +128,20 @@ namespace otherEsp {
 	void bradley(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		if (vars::visuals::bradley_apc) {
 			if (strstr(buff, xorstr("bradleyapc.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				BaseCombatEntity* bradley = read(Object + 0x28, BaseCombatEntity*);
-				Vector3 pos = utils::GetEntityPosition(object);
-				int distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				float health = bradley->health( );
-				Vector2 screen;
-				if (utils::w2s(pos, screen)) {
-					if (health > 0) {
-						Renderer::Text(screen, D2D1::ColorF::Red, true, true, xorstr(L"Bradley APC [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos));
+				
+				BaseCombatEntity* bradley = (BaseCombatEntity*)Object;
+				if (bradley) {
+					Vector3 pos = bradley->transform( )->position( );/*utils::GetEntityPosition(object);*/
+					int distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					float health = bradley->health( );
+					Vector2 screen;
+					if (utils::w2s(pos, screen)) {
+						if (health > 0) {
+							Renderer::Text(screen, D2D1::ColorF::Red, true, true, xorstr(L"Bradley APC [%.2fm]"), Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos));
 
-						Renderer::FillRectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60 * (health / 1000.f), 6 }, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
-						Renderer::Rectangle(Vector2{ screen - Vector2(30, 0) + Vector2(0, 15) }, Vector2{ 60, 6 }, D2D1::ColorF::Black, 0.5f);
+							Renderer::FillRectangle(Vector2{screen - Vector2(30, 0) + Vector2(0, 15)}, Vector2{60 * (health / 1000.f), 6}, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+							Renderer::Rectangle(Vector2{screen - Vector2(30, 0) + Vector2(0, 15)}, Vector2{60, 6}, D2D1::ColorF::Black, 0.5f);
+						}
 					}
 				}
 			}
@@ -146,16 +150,18 @@ namespace otherEsp {
 	void corpse(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		if (vars::visuals::other::corpse) {
 			if (strstr(buff, xorstr("player_corpse.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 corpse = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
-					auto* corpsename = reinterpret_cast<pUncStr>(read(corpse + 0x2A8, DWORD64));
-					Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Firebrick, true, true, xorstr(L"Corpse | %s"), corpsename->str);
-					if (vars::visuals::other::show_distance) {
-						Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Firebrick, true, true, xorstr(L"[%.2f m]"), distance);
+				
+				BaseEntity* corpse = (BaseEntity*)Object;
+				if (corpse) {
+					Vector3 pos = corpse->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
+						auto* corpsename = reinterpret_cast<pUncStr>(read(corpse + 0x2A8, DWORD64));
+						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Firebrick, true, true, xorstr(L"Corpse | %s"), corpsename->str);
+						if (vars::visuals::other::show_distance) {
+							Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Firebrick, true, true, xorstr(L"[%.2f m]"), distance);
+						}
 					}
 				}
 			}
@@ -164,28 +170,30 @@ namespace otherEsp {
 	void tc(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		if (vars::visuals::base::tc) {
 			if (strstr(buff, xorstr("cupboard.tool.deployed.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 cupboard = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
-					int pos = 15;
-					int upkeep = read(cupboard + 0x558, float);
-					Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::YellowGreen, true, true, xorstr(L"Tool Cupboard | %d hours"), upkeep / 60);
-					if (vars::visuals::base::show_distance) {
-						Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::YellowGreen, true, true, xorstr(L"[%.2f m]"), distance);
-						pos += 15;
-					}
-					uintptr_t authedPly = read(cupboard + 0x568, uintptr_t);
-					List<PlayerNameID*>* authedPly_list = read(authedPly + 0x10, List<PlayerNameID*>*);
-					authedPly_list->for_each([&](PlayerNameID* authorizedPlayer, int32_t idx) {
-						if (authorizedPlayer) {
-							auto user = authorizedPlayer->username();
-							Renderer::String(screen + Vector2(0, pos), user, D2D1::ColorF::YellowGreen, true, true);
+				
+				BaseEntity* cupboard = (BaseEntity*)Object;
+				if (cupboard) {
+					Vector3 pos = cupboard->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
+						int pos = 15;
+						int upkeep = read(cupboard + 0x558, float);
+						Renderer::Text(screen, D2D1::ColorF::YellowGreen, true, true, xorstr(L"Tool Cupboard | %d hours"), upkeep / 60);
+						if (vars::visuals::base::show_distance) {
+							Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::YellowGreen, true, true, xorstr(L"[%.2f m]"), distance);
 							pos += 15;
 						}
-						});
+						uintptr_t authedPly = read(cupboard + 0x568, uintptr_t);
+						List<PlayerNameID*>* authedPly_list = read(authedPly + 0x10, List<PlayerNameID*>*);
+						authedPly_list->for_each([ & ](PlayerNameID* authorizedPlayer, int32_t idx) {
+							if (authorizedPlayer) {
+								auto user = authorizedPlayer->username( );
+								Renderer::String(screen + Vector2(0, pos), user, D2D1::ColorF::YellowGreen, true, true);
+								pos += 15;
+							}
+							});
+					}
 				}
 			}
 		}
@@ -193,16 +201,18 @@ namespace otherEsp {
 	void sleepingbag(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		if (vars::visuals::base::sleeping_bag) {
 			if (strstr(buff, xorstr("sleepingbag_leather_deployed.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 bag = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
-					auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
-					Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Olive, true, true, xorstr(L"Sleeping Bag | %s"), bagname->str);
-					if (vars::visuals::base::show_distance) {
-						Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Olive, true, true, xorstr(L"[%.2f m]"), distance);
+				
+				BaseEntity* bag = (BaseEntity*)Object;
+				if (bag) {
+					Vector3 pos = bag->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
+						auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
+						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Olive, true, true, xorstr(L"Sleeping Bag | %s"), bagname->str);
+						if (vars::visuals::base::show_distance) {
+							Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Olive, true, true, xorstr(L"[%.2f m]"), distance);
+						}
 					}
 				}
 			}
@@ -211,73 +221,79 @@ namespace otherEsp {
 	void bed(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
 		if (vars::visuals::base::bed) {
 			if (strstr(buff, xorstr("bed_deployed.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 bag = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
-					auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
-					Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OliveDrab, true, true, xorstr(L"Bed | %s"), bagname->str);
-					if (vars::visuals::base::show_distance) {
-						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OliveDrab, true, true, xorstr(L"[%.2f m]"), distance);
+				
+				BaseEntity* bag = (BaseEntity*)Object;
+				if (bag) {
+					Vector3 pos = bag->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::base::draw_distance) {
+						auto* bagname = reinterpret_cast<pUncStr>(read(bag + 0x410, DWORD64));
+						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OliveDrab, true, true, xorstr(L"Bed | %s"), bagname->str);
+						if (vars::visuals::base::show_distance) {
+							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OliveDrab, true, true, xorstr(L"[%.2f m]"), distance);
+						}
 					}
 				}
 			}
 		}
 	}
 	void stash(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		typedef bool(__stdcall* IsHidden)(uintptr_t);
+		typedef bool(__stdcall* IsHidden)(BaseEntity*);
 		if (vars::visuals::other::stash) {
 			if (strstr(buff, xorstr("small_stash_deployed.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 stash = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
-					if (((IsHidden)(vars::stor::gBase + CO::IsHidden))(stash)) {
-						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Yellow, true, true, xorstr(L"Stash [Hidden]"));
-					}
-					else {
-						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Yellow, true, true, xorstr(L"Stash [Open]"));
-					}
-					if (vars::visuals::other::show_distance) {
-						Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Yellow, true, true, xorstr(L"[%.2f m]"), distance);
+				
+				BaseEntity* stash = (BaseEntity*)Object;
+				if (stash) {
+					Vector3 pos = stash->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
+						if (((IsHidden)(vars::stor::gBase + CO::IsHidden))(stash)) {
+							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Yellow, true, true, xorstr(L"Stash [Hidden]"));
+						}
+						else {
+							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::Yellow, true, true, xorstr(L"Stash [Open]"));
+						}
+						if (vars::visuals::other::show_distance) {
+							Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::Yellow, true, true, xorstr(L"[%.2f m]"), distance);
+						}
 					}
 				}
 			}
 		}
 	}
 	void hackablecrate(DWORD64 ObjectClass, DWORD64 Object, char* buff) {
-		typedef bool(__stdcall* IsBeingHacked)(uintptr_t);
-		typedef bool(__stdcall* IsFullyHacked)(uintptr_t);
+		typedef bool(__stdcall* IsBeingHacked)(BaseEntity*);
+		typedef bool(__stdcall* IsFullyHacked)(BaseEntity*);
 		if (vars::visuals::crates::chinook) {
 			if (strstr(buff, xorstr("codelockedhackablecrate.prefab"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 crate = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen)) {
-					uintptr_t timerText = read(crate + 0x440, uintptr_t);
-					auto* m_Text = reinterpret_cast<pUncStr>(read(timerText + 0xD0, DWORD64));
-					D2D1::ColorF color = D2D1::ColorF::OrangeRed;
-					if (!((IsFullyHacked)(vars::stor::gBase + CO::IsFullyHacked))(crate)) {
-						if (((IsBeingHacked)(vars::stor::gBase + CO::IsBeingHacked))(crate)) {
-							color = D2D1::ColorF::LightGoldenrodYellow;
-							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::LightGoldenrodYellow, true, true, xorstr(L"Chinook Crate | %s"), m_Text->str);
+				
+				BaseEntity* crate = (BaseEntity*)Object;
+				if (crate) {
+					Vector3 pos = crate->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen)) {
+						uintptr_t timerText = read(crate + 0x440, uintptr_t);
+						auto* m_Text = reinterpret_cast<pUncStr>(read(timerText + 0xD0, DWORD64));
+						D2D1::ColorF color = D2D1::ColorF::OrangeRed;
+						if (!((IsFullyHacked)(vars::stor::gBase + CO::IsFullyHacked))(crate)) {
+							if (((IsBeingHacked)(vars::stor::gBase + CO::IsBeingHacked))(crate)) {
+								color = D2D1::ColorF::LightGoldenrodYellow;
+								Renderer::Text({screen.x, screen.y}, D2D1::ColorF::LightGoldenrodYellow, true, true, xorstr(L"Chinook Crate | %s"), m_Text->str);
+							}
+							else {
+								color = D2D1::ColorF::OrangeRed;
+								Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OrangeRed, true, true, xorstr(L"Chinook Crate"));
+							}
 						}
 						else {
-							color = D2D1::ColorF::OrangeRed;
-							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::OrangeRed, true, true, xorstr(L"Chinook Crate"));
+							color = D2D1::ColorF::LightSeaGreen;
+							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::LightSeaGreen, true, true, xorstr(L"Chinook Crate [Open]"));
 						}
+						Renderer::Text(screen + Vector2(0, 15), color, true, true, xorstr(L"[%.2f m]"), distance);
 					}
-					else {
-						color = D2D1::ColorF::LightSeaGreen;
-						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::LightSeaGreen, true, true, xorstr(L"Chinook Crate [Open]"));
-					}
-					Renderer::Text(screen + Vector2(0, 15), color, true, true, xorstr(L"[%.2f m]"), distance);
 				}
 			}
 		}
@@ -286,23 +302,25 @@ namespace otherEsp {
 		typedef uintptr_t(__stdcall* GetItem)(uintptr_t);
 		if (vars::visuals::other::dropped_items) {
 			if (strstr(buff, xorstr("world"))) {
-				DWORD64 object = read(ObjectClass + 0x30, DWORD64);
-				DWORD64 item = read(Object + 0x28, DWORD64);
-				Vector3 pos = utils::GetEntityPosition(object);
-				float distance = Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), pos);
-				Vector2 screen;
-				if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
-					uintptr_t Item = read(item + 0x150, uintptr_t);
-					uintptr_t itemDefinition = read(Item + 0x20, uintptr_t);
-					uintptr_t displayName = read(itemDefinition + 0x28, uintptr_t);
-					auto* english = reinterpret_cast<pUncStr>(read(displayName + 0x18, DWORD64)); // get name of item
-					int amount = read(Item + 0x30, int);
+				
+				BaseEntity* item = (BaseEntity*)Object;
+				if (item) {
+					Vector3 pos = item->transform( )->position( );
+					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
+					Vector2 screen;
+					if (utils::w2s(pos, screen) && distance <= vars::visuals::other::draw_distance) {
+						uintptr_t Item = read(item + 0x150, uintptr_t);
+						uintptr_t itemDefinition = read(Item + 0x20, uintptr_t);
+						uintptr_t displayName = read(itemDefinition + 0x28, uintptr_t);
+						auto* english = reinterpret_cast<pUncStr>(read(displayName + 0x18, DWORD64)); // get name of item
+						int amount = read(Item + 0x30, int);
 
-					std::wstring eng = std::wstring(english->str);
-					if (!(eng.find(xorstr(L"Arrow")) != std::wstring::npos) && !(eng.find(xorstr(L"Nails")) != std::wstring::npos)) {
-						Renderer::Text({screen.x, screen.y}, D2D1::ColorF::BlanchedAlmond, true, true, xorstr(L"%s [x%d]"), english->str, amount);
-						if (vars::visuals::other::show_distance) {
-							Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::BlanchedAlmond, true, true, xorstr(L"[%.2f m]"), distance);
+						std::wstring eng = std::wstring(english->str);
+						if (!(eng.find(xorstr(L"Arrow")) != std::wstring::npos) && !(eng.find(xorstr(L"Nails")) != std::wstring::npos)) {
+							Renderer::Text({screen.x, screen.y}, D2D1::ColorF::BlanchedAlmond, true, true, xorstr(L"%s [x%d]"), english->str, amount);
+							if (vars::visuals::other::show_distance) {
+								Renderer::Text(screen + Vector2(0, 15), D2D1::ColorF::BlanchedAlmond, true, true, xorstr(L"[%.2f m]"), distance);
+							}
 						}
 					}
 				}

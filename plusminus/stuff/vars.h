@@ -47,7 +47,6 @@ namespace vars {
 		uintptr_t gBase = NULL;
 		uintptr_t closestPlayer = NULL;
 		uintptr_t closestHeli = NULL;
-		uintptr_t closestHeliObj = NULL;
 	}
 	namespace combat {
 		bool tree_reflect = false;

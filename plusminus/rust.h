@@ -950,15 +950,13 @@ namespace utils {
 	Vector3 GetEntityPosition(std::uint64_t entity) {
 		if (!entity) return Vector3::Zero( );
 
-		uintptr_t plyVis = read(entity + 0x8, uintptr_t); if (!plyVis) return {0,0,0};
+		uintptr_t plyVis = read(entity + 0x8, uintptr_t);
 		if (!plyVis) return Vector3::Zero( );
 
-		uintptr_t visualState = read(plyVis + 0x38, uintptr_t); if (!visualState) return {0,0,0};
+		uintptr_t visualState = read(plyVis + 0x38, uintptr_t);
 		if (!visualState) return Vector3::Zero( );
 
 		Vector3 ret = read(visualState + 0x90, Vector3);
-		if (!ret.empty( )) return Vector3::Zero( );
-
 		return ret;
 	}
 	Vector3 ClosestPoint(BasePlayer* player, Vector3 vec) {
@@ -1013,7 +1011,7 @@ public:
 			if (!bone_name || !bone_transform) continue;
 
 			if (RUNTIME_CRC32_W(bone_name->buffer) == hash/*wcscmp(bone_name->buffer, name) == 0*/)
-				return new Bone(bone_transform->position( ), utils::LineOfSight(bone_transform->position( ), LocalPlayer::Entity( )->get_bone_pos(head)));
+				return new Bone(bone_transform->position( ), utils::LineOfSight(bone_transform->position( ), LocalPlayer::Entity( )->eyes()->get_position()));
 		}
 
 		return nullptr;

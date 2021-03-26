@@ -39,10 +39,10 @@ void pre_draw( ) {
 			vars::stor::closestPlayer = NULL;
 		}
 	}
-	if (vars::stor::closestHeli != NULL && vars::stor::closestHeliObj != NULL) {
-		Vector3 pos = utils::GetEntityPosition(vars::stor::closestHeliObj);
+	if (vars::stor::closestHeli != NULL) {
+		Vector3 pos = reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->transform( )->position( );
 		if (FOV < (CurFOV = GetFovHeli(pos))) {
-			vars::stor::closestHeli = NULL; vars::stor::closestHeliObj = NULL;
+			vars::stor::closestHeli = NULL;
 		}
 	}
 	if (reinterpret_cast<BaseEntity*>(vars::stor::closestPlayer)->IsDestroyed( )) {
@@ -50,7 +50,6 @@ void pre_draw( ) {
 	}
 	if (reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->IsDestroyed( )) {
 		vars::stor::closestHeli = NULL;
-		vars::stor::closestHeliObj = NULL;
 	}
 	if (vars::combat::lock_target && vars::stor::closestPlayer != NULL) {
 		Renderer::Text(Vector2{xs, ys - 50}, D2D1::ColorF::PaleVioletRed, true, true, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
@@ -116,7 +115,8 @@ void pre_draw( ) {
 		static Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 		Vector2 ScreenPos;
 		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) > 0) {
-			if (utils::w2s(utils::GetEntityPosition(vars::stor::closestHeliObj), ScreenPos)) Renderer::Line(startPos, ScreenPos, D2D1::ColorF(0.3f, 0.34f, 1.f), 1.f);
+			if (utils::w2s(reinterpret_cast<BaseEntity*>(vars::stor::closestHeli)->transform( )->position( ), ScreenPos)) 
+				Renderer::Line(startPos, ScreenPos, D2D1::ColorF(0.3f, 0.34f, 1.f), 1.f);
 		}
 
 	}
