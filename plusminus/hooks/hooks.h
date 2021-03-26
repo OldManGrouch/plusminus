@@ -172,6 +172,9 @@ namespace hk {
 					Vector3 direction = (closest.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
 					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
+				if (LocalPlayer::Entity( )->newVelocity( ).empty( )) {
+					reinterpret_cast<void(_fastcall*)(PlayerWalkMovement*, ModelState*, bool)>(vars::stor::gBase + CO::Jump)(movement, modelstate, true);
+				}
 			}
 			original_dofixedupdate(movement, modelstate);
 		}

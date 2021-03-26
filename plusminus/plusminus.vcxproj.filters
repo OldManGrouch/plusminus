@@ -8,9 +8,6 @@
     <Filter Include="source\main">
       <UniqueIdentifier>{67caad19-5894-490a-9d69-dbb22224f72b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\main\ent">
-      <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\main\hooks">
       <UniqueIdentifier>{bf6a9dc9-dc11-4200-9d44-a2ee2b6790d3}</UniqueIdentifier>
     </Filter>
@@ -37,6 +34,9 @@
     </Filter>
     <Filter Include="source\main\backend">
       <UniqueIdentifier>{c4e3de37-ef91-4472-963d-c6a9b106370f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\main\backend\ent">
+      <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -128,10 +128,10 @@
       <Filter>source\main\core\sdk</Filter>
     </ClInclude>
     <ClInclude Include="main/entities.h">
-      <Filter>source\main\ent</Filter>
+      <Filter>source\main\backend\ent</Filter>
     </ClInclude>
     <ClInclude Include="gamethread.h">
-      <Filter>source\main\ent</Filter>
+      <Filter>source\main\backend\ent</Filter>
     </ClInclude>
     <ClInclude Include="crc32.h">
       <Filter>source\main\core</Filter>

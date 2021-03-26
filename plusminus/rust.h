@@ -389,9 +389,9 @@ public:
 		return ammo;
 	}
 	wchar_t* get_name( ) {
-		DWORD64 Info = read(this + 0x20, DWORD64);
-		DWORD64 DispName = read(Info + 0x658, DWORD64);
-		pUncStr Str = ((pUncStr)read(DispName + 0x18, DWORD64)); // default
+		uintptr_t Info = read(this + 0x20, uintptr_t);
+		uintptr_t DispName = read(Info + 0x28, uintptr_t);
+		pUncStr Str = ((pUncStr)read(DispName + 0x18, uintptr_t)); // default
 		if (!Str) return nullptr; return Str->str;
 	}
 	int count( ) {
@@ -496,6 +496,8 @@ public:
 		auto static_fields = read(klass + 0xB8, DWORD64);
 		write(static_fields + 0x2C, 1.f, float);
 		write(static_fields + 0x20, 1.f, float);
+		write(static_fields + 0x34, 1.f, float);
+		write(static_fields + 0x28, 1.f, float);
 	}
 	bool HasFlags(int Flg) {
 		return (read(this + 0x5F8, int) & Flg);
@@ -532,7 +534,7 @@ public:
 	}
 
 	bool IsMenu( ) {
-		return reinterpret_cast<bool(*)()>(vars::stor::gBase + 0x1798020)();
+		return reinterpret_cast<bool(*)()>(vars::stor::gBase + CO::cursor_get_visible)();
 	}
 	void add_modelstate_flag(ModelStateFlag flag) {
 		DWORD64 mstate = read(this + 0x588, DWORD64);

@@ -53,9 +53,7 @@ void pre_draw( ) {
 		vars::stor::closestHeliObj = NULL;
 	}
 	if (vars::combat::lock_target && vars::stor::closestPlayer != NULL) {
-		//wchar_t trgt[ 64 ];
-		//_swprintf(trgt, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
-		Renderer::Text(Vector2{xs, ys - 50}, D2D1::ColorF::PaleVioletRed, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
+		Renderer::Text(Vector2{xs, ys - 50}, D2D1::ColorF::PaleVioletRed, true, true, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
 	}
 	if (vars::ores::closest_ore) {
 		static float screenX = GetSystemMetrics(SM_CXSCREEN);
@@ -146,60 +144,60 @@ void pre_draw( ) {
 		float origyaw = vars::stuff::anti_aim_;
 		Renderer::CosTanSinLine(origyaw, range, indicator_x, indicator_y, LineLength, D2D1::ColorF::Red);//this the function from b4 btw
 	}
-	if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc( ) && vars::players::belt && TargetPlayerA->IsValid( )) {
-		const float Height = 275.f;
-		const float Width = 150.f;
-		POINT p;
-		if (GetCursorPos(&p)) {
-			if (p.x >= vars::players::beltx && p.x <= vars::players::beltx + Width) {
-				if (p.y >= vars::players::belty && p.y <= vars::players::belty + Height) {
-					if (GetAsyncKeyState(VK_LBUTTON) && show) {
-						vars::players::beltx = p.x - (Width / 2);
-						vars::players::belty = p.y - (Height / 2);
+	if (TargetPlayerA) {
+		if (vars::stor::closestPlayer != NULL && !TargetPlayerA->IsNpc( ) && vars::players::belt && TargetPlayerA->IsValid( )) {
+			const float Height = 275.f;
+			const float Width = 150.f;
+			POINT p;
+			if (GetCursorPos(&p)) {
+				if (p.x >= vars::players::beltx && p.x <= vars::players::beltx + Width) {
+					if (p.y >= vars::players::belty && p.y <= vars::players::belty + Height) {
+						if (GetAsyncKeyState(VK_LBUTTON) && show) {
+							vars::players::beltx = p.x - (Width / 2);
+							vars::players::belty = p.y - (Height / 2);
+						}
 					}
 				}
 			}
-		}
-		Renderer::FillRectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
-		Renderer::Rectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
-		Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 10}, TargetPlayerA->_displayName( ), D2D1::ColorF::White, true, true);
-		Renderer::Line({vars::players::beltx, vars::players::belty + 20}, {vars::players::beltx + Width, vars::players::belty + 20}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
-		float Pos = 0;
-		for (int i = 0; i < TargetPlayerA->item_list_b( )->get_size( ); i++) { // belt
-			Item* ActWeapon = TargetPlayerA->item_list_b( )->get_value(i);
-			wchar_t prefix[ 3 ];
-			if (ActWeapon) {
-				if (ActWeapon == TargetPlayerA->GetActiveWeapon( )) {
-					_swprintf(prefix, xorstr(L"->"));
-				}
-				else { 
-					_swprintf(prefix, xorstr(L"")); 
-				}
-				wchar_t* ActiveItem = ActWeapon->get_name( );
-				if (ActiveItem) {
-					//wchar_t itemName[ 0x100 ];
-					//_swprintf(itemName, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
-					//Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, itemName, D2D1::ColorF::White, true, true);
-					Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, D2D1::ColorF::White, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
-				}
-			}
-			Pos += 15;
-		}
-		Renderer::FillRectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80 * (TargetPlayerA->health( ) / 100.f), 10}, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
-		Renderer::Rectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80, 10}, D2D1::ColorF::White, 0.5f);
-		float cPos = 125;
-		for (int i = 0; i < TargetPlayerA->item_list_w( )->get_size( ); i++) { // clothes
-			Item* ActWeapon = TargetPlayerA->item_list_w( )->get_value(i);
-			if (ActWeapon) {
-				wchar_t* ActiveItem = ActWeapon->get_name( );
-				if (ActiveItem) {
-					//wchar_t itemName[ 0x100 ];
-					//_swprintf(itemName, xorstr(L"%s"), ActiveItem);
-					//Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, itemName, D2D1::ColorF::White, true, true);
-					Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, D2D1::ColorF::White, xorstr(L"%s"), ActiveItem);
+			Renderer::FillRectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
+			Renderer::Rectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
+			Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 10}, TargetPlayerA->_displayName( ), D2D1::ColorF::White, true, true);
+			Renderer::Line({vars::players::beltx, vars::players::belty + 20}, {vars::players::beltx + Width, vars::players::belty + 20}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
+			float Pos = 0;
+			if (TargetPlayerA->item_list_b( )) {
+				for (int i = 0; i < TargetPlayerA->item_list_b( )->get_size( ); i++) { // belt
+					Item* ActWeapon = TargetPlayerA->item_list_b( )->get_value(i);
+					wchar_t prefix[ 3 ];
+					if (ActWeapon) {
+						if (ActWeapon == TargetPlayerA->GetActiveWeapon( )) {
+							_swprintf(prefix, xorstr(L"->"));
+						}
+						else {
+							_swprintf(prefix, xorstr(L""));
+						}
+						wchar_t* ActiveItem = ActWeapon->get_name( );
+						if (ActiveItem) {
+							Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + Pos}, D2D1::ColorF::White, true, true, xorstr(L"%s %s [x%d]"), prefix, ActiveItem, ActWeapon->count( ));
+						}
+					}
+					Pos += 15;
 				}
 			}
-			cPos += 15;
+			Renderer::FillRectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80 * (TargetPlayerA->health( ) / 100.f), 10}, D2D1::ColorF(0.f, 255.f, 0.f, 0.8f));
+			Renderer::Rectangle(Vector2{vars::players::beltx + (Width / 2) - 40, vars::players::belty + 135}, Vector2{80, 10}, D2D1::ColorF::White, 0.5f);
+			float cPos = 125;
+			if (TargetPlayerA->item_list_w( )) {
+				for (int i = 0; i < TargetPlayerA->item_list_w( )->get_size( ); i++) { // clothes
+					Item* ActWeapon = TargetPlayerA->item_list_w( )->get_value(i);
+					if (ActWeapon) {
+						wchar_t* ActiveItem = ActWeapon->get_name( );
+						if (ActiveItem) {
+							Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 40 + cPos}, D2D1::ColorF::White, true, true, xorstr(L"%s"), ActiveItem);
+						}
+					}
+					cPos += 15;
+				}
+			}
 		}
 	}
 	ent_loop( );

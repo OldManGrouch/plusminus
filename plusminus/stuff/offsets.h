@@ -1,5 +1,6 @@
 
 namespace CO {
+	auto cursor_get_visible = 0x1798020;
 	auto get_Entity = 0x590920; // localplayer
 	auto Refract = 0x8B06E0;
 	auto SendSignalBroadcast = 0x3B5690;

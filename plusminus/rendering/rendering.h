@@ -17,7 +17,7 @@ namespace Renderer {
 	ID2D1SolidColorBrush* SolidColor;
 	bool initialized = false;
 
-	__forceinline UINT wcslen(const wchar_t* Str) {
+	UINT wcslen(const wchar_t* Str) {
 		const wchar_t* TempStr = Str;
 		for (; *TempStr; ++TempStr);
 		return (UINT)(TempStr - Str);
@@ -44,29 +44,29 @@ namespace Renderer {
 		flags |= 0x20; HRESULT canvas_state = Interface->CreateDxgiSurfaceRenderTarget(d3d_bbuf, d2d_prop, &Canvas); flags &= ~0x20; d3d_bbuf->Release(); if (canvas_state) return false;
 		if (!SolidColor) Canvas->CreateSolidColorBrush({}, &SolidColor); return true;
 	}
-	__forceinline bool NewFrame(IDXGISwapChain* SwapChain)
+	bool NewFrame(IDXGISwapChain* SwapChain)
 	{
 		if (!Canvas && !InitRender(SwapChain))
 			return false;
 		Canvas->BeginDraw();
 		return true;
 	}
-	__forceinline Vector2 CanvasSize() {
+	Vector2 CanvasSize() {
 		D2D1_SIZE_F Size = Canvas->GetSize();
 		return Vector2{ Size.width, Size.height };
 	}
-	__forceinline void ResetCanvas() {
+	void ResetCanvas() {
 		if (Canvas) {
 			Canvas->Release();
 			Canvas = nullptr;
 		}
 	}
-	__forceinline void EndFrame() {
+	void EndFrame() {
 		HRESULT state = Canvas->EndDraw();
 		if (state == D2DERR_RECREATE_TARGET)
 			ResetCanvas();
 	}
-	__forceinline void Line(const Vector2& Start, const Vector2& End, const D2D1::ColorF& Clr, float Thick = 1.5f, bool outline = false) {
+	void Line(const Vector2& Start, const Vector2& End, const D2D1::ColorF& Clr, float Thick = 1.5f, bool outline = false) {
 		if (outline) {
 			SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
 			Canvas->DrawLine({ Start.x, Start.y }, { End.x, End.y }, SolidColor, Thick * 1.75);
@@ -74,20 +74,21 @@ namespace Renderer {
 		SolidColor->SetColor(Clr);
 		Canvas->DrawLine({ Start.x, Start.y }, { End.x, End.y }, SolidColor, Thick);
 	}
-	__forceinline void Image(const Vector2& point) {
-		
+	void Circle(const Vector2& Start, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
+		SolidColor->SetColor(Clr); 
+		Canvas->DrawEllipse({ { Start.x, Start.y }, Rad, Rad }, SolidColor, Thick);
 	}
-	__forceinline void Circle(const Vector2& Start, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
-		SolidColor->SetColor(Clr); Canvas->DrawEllipse({ { Start.x, Start.y }, Rad, Rad }, SolidColor, Thick);
+	void FillCircle(const Vector2& Start, const D2D1::ColorF& Clr, float Rad) {
+		SolidColor->SetColor(Clr); 
+		Canvas->FillEllipse({ { Start.x, Start.y }, Rad, Rad }, SolidColor);
 	}
-	__forceinline void FillCircle(const Vector2& Start, const D2D1::ColorF& Clr, float Rad) {
-		SolidColor->SetColor(Clr); Canvas->FillEllipse({ { Start.x, Start.y }, Rad, Rad }, SolidColor);
+	void Rectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Thick = 1.5f) {
+		SolidColor->SetColor(Clr); 
+		Canvas->DrawRectangle({ Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, SolidColor, Thick);
 	}
-	__forceinline void Rectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Thick = 1.5f) {
-		SolidColor->SetColor(Clr); Canvas->DrawRectangle({ Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, SolidColor, Thick);
-	}
-	__forceinline void FillRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr) {
-		SolidColor->SetColor(Clr); Canvas->FillRectangle({ Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, SolidColor);
+	void FillRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr) {
+		SolidColor->SetColor(Clr); 
+		Canvas->FillRectangle({ Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, SolidColor);
 	}
 	void OutlineRect(const Vector2& pos, const Vector2& size, const D2D1::ColorF& color, const D2D1::ColorF& oColor, float thickness) {
 		SolidColor->SetColor(color);
@@ -95,13 +96,18 @@ namespace Renderer {
 		SolidColor->SetColor(oColor);
 		Canvas->DrawRectangle({ pos.x, pos.y, pos.x + size.x, pos.y + size.y }, SolidColor, thickness);
 	}
-	__forceinline void RoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
-		SolidColor->SetColor(Clr); Canvas->DrawRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, Rad, Rad }, SolidColor, Thick);
+	void RoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad, float Thick = 1.5f) {
+		SolidColor->SetColor(Clr); 
+		Canvas->DrawRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y }, Rad, Rad }, SolidColor, Thick);
 	}
-	__forceinline void FillRoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad) {
-		SolidColor->SetColor(Clr); Canvas->FillRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y}, Rad, Rad }, SolidColor);
+	void FillRoundedRectangle(const Vector2& Start, const Vector2& Sz, const D2D1::ColorF& Clr, float Rad) {
+		SolidColor->SetColor(Clr); 
+		Canvas->FillRoundedRectangle({ {Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y}, Rad, Rad }, SolidColor);
 	}
-	__forceinline void CosTanSinLine(float flAngle, float range, int x, int y, int LineLength, const D2D1::ColorF& Clr) {
+	void RectanglePoint(const Vector2 middle, float sz, const D2D1::ColorF clr) {
+		Canvas->DrawRectangle({middle.x - (sz / 2), middle.y - (sz / 2), middle.x + sz, middle.y + sz}, SolidColor, 1.f);
+	}
+	void CosTanSinLine(float flAngle, float range, int x, int y, int LineLength, const D2D1::ColorF& Clr) {
 		float nigga = flAngle;
 		nigga += 45.f;//cant remember wht this is here for tbh (this doesnt mess it up though)
 
@@ -119,7 +125,7 @@ namespace Renderer {
 		Line(Vector2(x, y), Vector2(posonscreenX, posonscreenY), Clr);
 		FillCircle(Vector2(posonscreenX, posonscreenY), Clr, 4);//P.S this is the small dot at the end of each line!!!!!!!!!XD
 	}
-	__forceinline void FillGradientRoundedRectangle(const Vector2& Dot, const Vector2& WidthHeight, const D2D1::ColorF& Clr, float Radius, float per) {
+	void FillGradientRoundedRectangle(const Vector2& Dot, const Vector2& WidthHeight, const D2D1::ColorF& Clr, float Radius, float per) {
 		auto kek_g = 1.f - per; auto kek_r = 1.f - kek_g;
 		ID2D1GradientStopCollection* pGradientStops = NULL;
 		D2D1_GRADIENT_STOP gradientStops[4];
@@ -151,7 +157,7 @@ namespace Renderer {
 		pGradientStops->Release();
 	}
 	template <typename ...Args>
-	void Text(const Vector2 pos, const D2D1::ColorF clr, const std::wstring_view text, Args&&... args) {
+	void Text(const Vector2 pos, const D2D1::ColorF clr, bool center, bool outline, const std::wstring_view text, Args&&... args) {
 		const auto size = static_cast<std::size_t>(std::swprintf(nullptr, 0, text.data( ), std::forward<Args>(args)...) + 1);
 
 		const std::unique_ptr<wchar_t [ ]> buffer(new wchar_t[ size ]);
@@ -171,21 +177,43 @@ namespace Renderer {
 
 		dwrite_layout->SetFontSize(12.f, range);
 
-		static const auto black_color = D2D1::ColorF(D2D1::ColorF::Black);
+		if (center) {
+			SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
+			DWRITE_TEXT_METRICS TextInfo;
+			dwrite_layout->GetMetrics(&TextInfo);
+			Vector2 TextSize = {TextInfo.width / 2.f, TextInfo.height / 2.f};
+			const auto x = pos.x - TextSize.x;
+			const auto y = pos.y - TextSize.y;
+			if (outline) {
 
-		SolidColor->SetColor(black_color);
+				Canvas->DrawTextLayout(D2D1::Point2F(x - 1, y), dwrite_layout, SolidColor);
+				Canvas->DrawTextLayout(D2D1::Point2F(x + 1, y), dwrite_layout, SolidColor);
+				Canvas->DrawTextLayout(D2D1::Point2F(x, y - 1), dwrite_layout, SolidColor);
+				Canvas->DrawTextLayout(D2D1::Point2F(x, y + 1), dwrite_layout, SolidColor);
+			}
 
-		const auto x = pos.x;
-		const auto y = pos.y;
+			SolidColor->SetColor(clr);
 
-		Canvas->DrawTextLayout(D2D1::Point2F(x - 1, y), dwrite_layout, SolidColor);
-		Canvas->DrawTextLayout(D2D1::Point2F(x + 1, y), dwrite_layout, SolidColor);
-		Canvas->DrawTextLayout(D2D1::Point2F(x, y - 1), dwrite_layout, SolidColor);
-		Canvas->DrawTextLayout(D2D1::Point2F(x, y + 1), dwrite_layout, SolidColor);
+			Canvas->DrawTextLayout(D2D1::Point2F(x, y), dwrite_layout, SolidColor);
+			dwrite_layout->Release( );
+			return;
+		}
+
+
+		SolidColor->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
+
+		if (outline) {
+			const auto x = pos.x;
+			const auto y = pos.y;
+
+			Canvas->DrawTextLayout(D2D1::Point2F(x - 1, y), dwrite_layout, SolidColor);
+			Canvas->DrawTextLayout(D2D1::Point2F(x + 1, y), dwrite_layout, SolidColor);
+			Canvas->DrawTextLayout(D2D1::Point2F(x, y - 1), dwrite_layout, SolidColor);
+			Canvas->DrawTextLayout(D2D1::Point2F(x, y + 1), dwrite_layout, SolidColor);
+		}
 
 		SolidColor->SetColor(clr);
-		Canvas->DrawTextLayout(D2D1::Point2F(x, y), dwrite_layout, SolidColor);
-
+		Canvas->DrawTextLayout(D2D1::Point2F(pos.x, pos.y), dwrite_layout, SolidColor);
 		dwrite_layout->Release( );
 	}
 	Vector2 String(const Vector2& pos, const wchar_t* text, const D2D1::ColorF& color, bool outline, bool center = false, bool big = false) {
