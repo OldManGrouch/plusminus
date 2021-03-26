@@ -16,7 +16,5 @@ void Write(DWORD64 address, T data) {
 #define read(Addr, Type) Read<Type>((DWORD64)Addr)
 #define write(Addr, Data, Type) Write<Type>((DWORD64)Addr, Data);
 #define CALLED_BY(func,off) (reinterpret_cast<std::uint64_t>(_ReturnAddress()) > func && reinterpret_cast<std::uint64_t>(_ReturnAddress()) < func + off)
-#define STR_MERGE_IMPL(a, b) a##b
-#define STR_MERGE(a, b) STR_MERGE_IMPL(a, b)
-#define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
-#define OFFSETFIELD(type, name, offset) struct {unsigned char MAKE_PAD(offset); type name;}
+
+#define OFFSETFIELD(type, name, offset) struct {unsigned char _pad##__COUNTER__[offset]; type name;}

@@ -114,6 +114,7 @@ private:
 		SetupValue(vars::combat::ignore_sleepers, false, xorstr("Combat"), xorstr("IgnoreSleepers"));
 		SetupValue(vars::combat::ignore_team, false, xorstr("Combat"), xorstr("IgnoreTeam"));
 		SetupValue(vars::combat::ignore_npc, false, xorstr("Combat"), xorstr("IgnoreNpc"));
+		SetupValue(vars::combat::ignore_invisible, false, xorstr("Combat"), xorstr("IgnoreInvisible"));
 		SetupValue(vars::combat::ignore_heli, false, xorstr("Combat"), xorstr("IgnoreHeli"));
 
 		SetupValue(vars::weapons::no_recoil, false, xorstr("Weapon"), xorstr("NoRecoil"));

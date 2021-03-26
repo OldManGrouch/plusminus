@@ -416,7 +416,19 @@ enum class Button : int {
 	RELOAD = 8192,
 	FIRE_THIRD = 134217728
 };
-
+class BufferList {
+public:
+	char pad_0000[ 0x10 ];
+	int32_t size;
+	char pad_0014[ 0x4 ];
+	void* buffer;
+};
+class ListDictionary {
+public:
+	char pad_0000[ 0x20 ];
+	class BufferList* keys;
+	class BufferList* vals;
+};
 template<typename T>
 class List {
 public:
@@ -490,7 +502,21 @@ struct Ray {
 	}
 	Ray( ) { }
 };
+template<typename T = void*>
+class Array {
+public:
+	uint32_t size( ) {
+		if (!this) return 0;
 
+		return *reinterpret_cast<uint32_t*>(this + 0x18);
+	}
+
+	T get(int idx) {
+		if (!this) return T{};
+
+		return *reinterpret_cast<T*>(this + (0x20 + (idx * 0x8)));
+	}
+};
 
 
 

@@ -162,10 +162,44 @@ namespace lol {
 	float LastPickup = 0.f;
 	void pickup_player(BasePlayer* ent) {
 		typedef void(__stdcall* AssistPlayer)(BasePlayer*, BasePlayer*);
-		if (!LocalPlayer::Entity( )->is_teammate(ent->GetSteamID( )) && vars::misc::revive_team_only) return;
+		if (!LocalPlayer::Entity( )->is_teammate(ent->userID( )) && vars::misc::revive_team_only) return;
 		if (LocalPlayer::Entity( )->lastSentTickTime( ) > LastPickup + 0.5f) {
 			((AssistPlayer)(vars::stor::gBase + CO::AssistPlayer))(ent, LocalPlayer::Entity( ));
 			LastPickup = LocalPlayer::Entity( )->lastSentTickTime( );
+		}
+	}
+	void cachePlayer(BasePlayer* player) {
+		auto model = player->model( );
+		if (model) {
+			auto cache = new BoneCache( );
+
+			cache->head = model->resolve(STATIC_CRC32("head"));
+			cache->neck = model->resolve(STATIC_CRC32("neck"));
+			cache->root = model->resolve(STATIC_CRC32("root"));
+			cache->spine4 = model->resolve(STATIC_CRC32("spine4"));
+			cache->spine1 = model->resolve(STATIC_CRC32("spine1"));
+			cache->l_clavicle = model->resolve(STATIC_CRC32("l_clavicle"));
+			cache->l_upperarm = model->resolve(STATIC_CRC32("l_upperarm"));
+			cache->l_forearm = model->resolve(STATIC_CRC32("l_forearm"));
+			cache->l_hand = model->resolve(STATIC_CRC32("l_hand"));
+			cache->r_clavicle = model->resolve(STATIC_CRC32("r_clavicle"));
+			cache->r_upperarm = model->resolve(STATIC_CRC32("r_upperarm"));
+			cache->r_forearm = model->resolve(STATIC_CRC32("r_forearm"));
+			cache->r_hand = model->resolve(STATIC_CRC32("r_hand"));
+			cache->pelvis = model->resolve(STATIC_CRC32("pelvis"));
+			cache->l_hip = model->resolve(STATIC_CRC32("l_hip"));
+			cache->l_knee = model->resolve(STATIC_CRC32("l_knee"));
+			cache->l_ankle_scale = model->resolve(STATIC_CRC32("l_ankle_scale"));
+			cache->l_foot = model->resolve(STATIC_CRC32("l_foot"));
+			cache->r_hip = model->resolve(STATIC_CRC32("r_hip"));
+			cache->r_knee = model->resolve(STATIC_CRC32("r_knee"));
+			cache->r_ankle_scale = model->resolve(STATIC_CRC32("r_ankle_scale"));
+			cache->r_foot = model->resolve(STATIC_CRC32("r_foot"));
+
+			if (!map_contains_key(cachedBones, player->userID( )))
+				cachedBones.insert(std::make_pair(player->userID( ), cache));
+			else
+				cachedBones[ player->userID( ) ] = cache;
 		}
 	}
 	void auto_farm_loop(bool weaponmelee, uintptr_t active) {

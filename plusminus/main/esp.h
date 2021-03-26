@@ -55,7 +55,9 @@ namespace radar {
 			if (strstr(buff, xorstr("player.prefab")) || strstr(buff, xorstr("scientist")) && !strstr(buff, xorstr("prop")) && !strstr(buff, xorstr("corpse"))) {
 				BasePlayer* Player = (BasePlayer*)read(Object + 0x28, DWORD64);
 				if (!read(Player + 0x4A8, DWORD64)) return;
-				Vector3 ply = Player->get_bone_pos(head);
+				if (!Player->isCached( )) return;
+
+				Vector3 ply = cachedBones[Player->userID()]->head->position;
 				float dist = Math::Distance_3D(local, ply);
 				float y = local.x - ply.x;
 				float x = local.z - ply.z;
@@ -72,7 +74,7 @@ namespace radar {
 				if (Math::Distance_2D(point, Vector2(mid_x, mid_y)) < vars::visuals::radar::size) {
 					if (!Player->IsNpc()) {
 						if (!Player->HasFlags(PlayerFlags::Sleeping)) {
-							if (LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) {
+							if (LocalPlayer::Entity()->is_teammate(Player->userID())) {
 								Renderer::FillCircle(point, D2D1::ColorF::Lime, 2.5f);
 							}
 							else {
@@ -80,7 +82,12 @@ namespace radar {
 									Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
 								}
 								else {
-									Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+									if (Player->is_visible( )) {
+										Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
+									}
+									else {
+										Renderer::FillCircle(point, D2D1::ColorF::DarkGray, 2.5f);
+									}
 								}
 							}
 						}
@@ -303,28 +310,63 @@ namespace otherEsp {
 		}
 	}
 }
-void Skeleton(BasePlayer* BasePlayer, D2D1::ColorF color) {
-	BoneList Bones[15] = {
-		/*LF*/l_foot, l_knee, l_hip,
-		/*RF*/r_foot, r_knee, r_hip,
-		/*BD*/spine1, neck, head,
-		/*LH*/l_upperarm, l_forearm, l_hand,
-		/*RH*/r_upperarm, r_forearm, r_hand
-	}; 
-	Vector2 BonesPos[15];
+void Skeleton(BasePlayer* player, D2D1::ColorF color) {
+	auto head_pos = cachedBones[ player->userID( ) ]->head->position;
+	auto spine4_pos = cachedBones[ player->userID( ) ]->spine4->position;
+	auto l_clavicle_pos = cachedBones[ player->userID( ) ]->l_clavicle->position;
+	auto l_upperarm_pos = cachedBones[ player->userID( ) ]->l_upperarm->position;
+	auto l_forearm_pos = cachedBones[ player->userID( ) ]->l_forearm->position;
+	auto l_hand_pos = cachedBones[ player->userID( ) ]->l_hand->position;
+	auto r_clavicle_pos = cachedBones[ player->userID( ) ]->r_clavicle->position;
+	auto r_upperarm_pos = cachedBones[ player->userID( ) ]->r_upperarm->position;
+	auto r_forearm_pos = cachedBones[ player->userID( ) ]->r_forearm->position;
+	auto r_hand_pos = cachedBones[ player->userID( ) ]->r_hand->position;
+	auto pelvis_pos = cachedBones[ player->userID( ) ]->pelvis->position;
+	auto l_hip_pos = cachedBones[ player->userID( ) ]->l_hip->position;
+	auto l_knee_pos = cachedBones[ player->userID( ) ]->l_knee->position;
+	auto l_ankle_scale_pos = cachedBones[ player->userID( ) ]->l_ankle_scale->position;
+	auto l_foot_pos = cachedBones[ player->userID( ) ]->l_foot->position;
+	auto r_hip_pos = cachedBones[ player->userID( ) ]->r_hip->position;
+	auto r_knee_pos = cachedBones[ player->userID( ) ]->r_knee->position;
+	auto r_ankle_scale_pos = cachedBones[ player->userID( ) ]->r_ankle_scale->position;
+	auto r_foot_pos = cachedBones[ player->userID( ) ]->r_foot->position;
 
-	for (int j = 0; j < 15; j++) {
-		if (!utils::w2s(BasePlayer->get_bone_pos(Bones[j]), BonesPos[j]))
-			return;
+	Vector2 head, spine, l_clavicle, l_upperarm, l_forearm, l_hand, r_clavicle, r_upperarm, r_forearm, r_hand, pelvis, l_hip, l_knee, l_ankle_scale, l_foot, r_hip, r_knee, r_ankle_scale, r_foot;
+	if (utils::w2s(head_pos, head) &&
+		utils::w2s(spine4_pos, spine) &&
+		utils::w2s(l_clavicle_pos, l_clavicle) &&
+		utils::w2s(l_upperarm_pos, l_upperarm) &&
+		utils::w2s(l_forearm_pos, l_forearm) &&
+		utils::w2s(l_hand_pos, l_hand) &&
+		utils::w2s(r_clavicle_pos, r_clavicle) &&
+		utils::w2s(r_upperarm_pos, r_upperarm) &&
+		utils::w2s(r_forearm_pos, r_forearm) &&
+		utils::w2s(r_hand_pos, r_hand) &&
+		utils::w2s(pelvis_pos, pelvis) &&
+		utils::w2s(l_hip_pos, l_hip) &&
+		utils::w2s(l_knee_pos, l_knee) &&
+		utils::w2s(l_ankle_scale_pos, l_ankle_scale) &&
+		utils::w2s(l_foot_pos, l_foot) &&
+		utils::w2s(r_hip_pos, r_hip) &&
+		utils::w2s(r_knee_pos, r_knee) &&
+		utils::w2s(r_ankle_scale_pos, r_ankle_scale) &&
+		utils::w2s(r_foot_pos, r_foot)) {
+
+		Renderer::Line(head, spine, color, 1.5f, true);
+		Renderer::Line(spine, l_upperarm, color, 1.5f, true);
+		Renderer::Line(l_upperarm, l_forearm, color, 1.5f, true);
+		Renderer::Line(l_forearm, l_hand, color, 1.5f, true);
+		Renderer::Line(spine, r_upperarm, color, 1.5f, true);
+		Renderer::Line(r_upperarm, r_forearm, color, 1.5f, true);
+		Renderer::Line(r_forearm, r_hand, color, 1.5f, true);
+		Renderer::Line(spine, pelvis, color, 1.5f, true);
+		Renderer::Line(pelvis, l_hip, color, 1.5f, true);
+		Renderer::Line(l_hip, l_knee, color, 1.5f, true);
+		Renderer::Line(l_knee, l_foot, color, 1.5f, true);
+		Renderer::Line(pelvis, r_hip, color, 1.5f, true);
+		Renderer::Line(r_hip, r_knee, color, 1.5f, true);
+		Renderer::Line(r_knee, r_foot, color, 1.5f, true);
 	}
-	for (int j = 0; j < 15; j += 3) {
-		Renderer::Line(Vector2{ BonesPos[j].x, BonesPos[j].y }, Vector2{ BonesPos[j + 1].x, BonesPos[j + 1].y }, color, 1.5f, true);
-		Renderer::Line(Vector2{ BonesPos[j + 1].x, BonesPos[j + 1].y }, Vector2{ BonesPos[j + 2].x, BonesPos[j + 2].y }, color, 1.5f, true);
-	}
-	Renderer::Line(Vector2{ BonesPos[2].x, BonesPos[2].y }, Vector2{ BonesPos[6].x, BonesPos[6].y }, color, 1.5f, true);
-	Renderer::Line(Vector2{ BonesPos[5].x, BonesPos[5].y }, Vector2{ BonesPos[6].x, BonesPos[6].y }, color, 1.5f, true);
-	Renderer::Line(Vector2{ BonesPos[9].x, BonesPos[9].y }, Vector2{ BonesPos[7].x, BonesPos[7].y }, color, 1.5f, true);
-	Renderer::Line(Vector2{ BonesPos[12].x, BonesPos[12].y }, Vector2{ BonesPos[7].x, BonesPos[7].y }, color, 1.5f, true);
 }
 void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Entity_h, D2D1::ColorF color) {
 	Renderer::Line({ Entity_x, Entity_y }, { Entity_x + Entity_w / 3.5f, Entity_y }, D2D1::ColorF::Black, 3.f);
@@ -353,16 +395,16 @@ void Box3D(BasePlayer* player, D2D1::ColorF color) {
 
 	IsDucked ducked = (IsDucked)(vars::stor::gBase + CO::IsDucked);
 	if (ducked(player)) {
-		bounds.center = player->get_bone_pos(l_foot).midPoint(player->get_bone_pos(r_foot)) + Vector3(0.0f, 0.55f, 0.0f);
+		bounds.center = cachedBones[ player->userID( ) ]->l_foot->position.midPoint(cachedBones[ player->userID( ) ]->r_foot->position) + Vector3(0.0f, 0.55f, 0.0f);
 		bounds.extents = Vector3(0.4f, 0.65f, 0.4f);
 	}
 	else {
 		if (player->HasFlags(PlayerFlags::Wounded) || player->HasFlags(PlayerFlags::Sleeping)) {
-			bounds.center = player->get_bone_pos(pelvis);
+			bounds.center = cachedBones[ player->userID( ) ]->pelvis->position;
 			bounds.extents = Vector3(0.9f, 0.2f, 0.4f);
 		}
 		else {
-			bounds.center = player->get_bone_pos(l_foot).midPoint(player->get_bone_pos(r_foot)) + Vector3(0.0f, 0.85f, 0.0f);
+			bounds.center = cachedBones[ player->userID( ) ]->l_foot->position.midPoint(cachedBones[ player->userID( ) ]->r_foot->position) + Vector3(0.0f, 0.85f, 0.0f);
 			bounds.extents = Vector3(0.4f, 0.9f, 0.4f);
 		}
 	}
@@ -407,17 +449,17 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 	if (vars::players::sleeperignore && BP->HasFlags(PlayerFlags::Sleeping)) return;
 	if (!BP) return;
 	Vector2 tempFeetR, tempFeetL;
-	if (utils::w2s(BP->get_bone_pos(r_foot), tempFeetR) && utils::w2s(BP->get_bone_pos(l_foot), tempFeetL)) {
+	if (utils::w2s(cachedBones[ BP->userID( ) ]->r_foot->position, tempFeetR) && utils::w2s(cachedBones[ BP->userID( ) ]->l_foot->position, tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
 		Vector2 tempHead;
-		if (utils::w2s(BP->get_bone_pos(jaw) + Vector3(0.f, 0.16f, 0.f), tempHead)) {
+		if (utils::w2s(cachedBones[ BP->userID( ) ]->head->position, tempHead)) {
 			Vector2 tempFeet = (tempFeetR + tempFeetL) / 2.f;
 			float Entity_h = tempHead.y - tempFeet.y;
 			float w = Entity_h / 4;
 			float Entity_x = tempFeet.x - w;
 			float Entity_y = tempFeet.y;
 			float Entity_w = Entity_h / 2;
-			Vector3 middlePointWorld = BP->get_bone_pos(l_foot).midPoint(BP->get_bone_pos(r_foot));
+			Vector3 middlePointWorld = cachedBones[ BP->userID( ) ]->l_foot->position.midPoint(cachedBones[ BP->userID( ) ]->r_foot->position);
 			int CurPos = 0;
 			int CurPos2 = 0;
 			Vector2 middlePointPlayerTop;
@@ -425,7 +467,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 			if (utils::w2s(middlePointWorld + Vector3(0, 2, 0), middlePointPlayerTop) && utils::w2s(middlePointWorld, middlePointPlayerFeet)) {
 				if (vars::players::fillbox) {
 					if ((int)BP->health() > 0) {
-						if (LocalPlayer::Entity()->is_teammate(BP->GetSteamID())) {
+						if (LocalPlayer::Entity()->is_teammate(BP->userID())) {
 							Renderer::FillRectangle(Vector2{ Entity_x, Entity_y }, Vector2{ Entity_w, Entity_h }, D2D1::ColorF(0.f, 0.4f, 0.f, 0.4f));
 						}
 						else {
@@ -466,7 +508,7 @@ void ESP(BasePlayer* BP, BasePlayer* LP, D2D1::ColorF color) {
 					int health = (int)BP->health();
 					float maxheal = 100.f;
 					if (vars::players::healthbarstyle == 0) {
-						if ((int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), BP->get_bone_pos(head)) < 201) {
+						if ((int)Math::Distance_3D(LocalPlayer::Entity()->get_bone_pos(head), cachedBones[ BP->userID( ) ]->head->position) < 201) {
 							if ((int)BP->health() <= 33) {
 								Renderer::FillRectangle(Vector2{ Entity_x + Entity_w - 8.f, Entity_y }, Vector2{ 5, Entity_h * (health / maxheal) }, D2D1::ColorF(255.f, 0.f, 0.f, 0.8f));
 							}

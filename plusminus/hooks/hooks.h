@@ -54,6 +54,18 @@ namespace hk {
 		}
 	}
 	namespace misc {
+		void ClientUpdate(BasePlayer* player) {
+			lol::cachePlayer(player);
+
+			return original_clientupdate(player);
+		}
+		void ClientUpdate_Sleeping(BasePlayer* player) {
+			if (!vars::players::sleeperignore) {
+				lol::cachePlayer(player);
+			}
+
+			return original_clientupdate_sleeping(player);
+		}
 		void Jump(PlayerWalkMovement* playerwalkmovement, ModelState* modelstate, bool indirection) {
 			if (vars::misc::better_jump) {
 				bool climbing = read(playerwalkmovement + 0x132, bool);
@@ -332,7 +344,7 @@ namespace hk {
 				if (vars::combat::ignore_team) {
 					if (test->HitEntity( ) != null) {
 						if (test->HitEntity( )->IsValid( )) {
-							if (LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity( ))->GetSteamID( ))) {
+							if (LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(test->HitEntity( ))->userID( ))) {
 								if (reinterpret_cast<BaseCombatEntity*>(test->HitEntity( ))->IsPlayer( )) {
 									return false;
 								}
@@ -514,6 +526,8 @@ void hk__( ) {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoMovement), (void**)&original_domovement, hk::exploit::DoMovement);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Launch), (void**)&original_launch, hk::combat::Launch);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoFixedUpdate), (void**)&original_dofixedupdate, hk::misc::DoFixedUpdate);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + 0x2FB040), (void**)&original_clientupdate, hk::misc::ClientUpdate);
+	hk_((void*)(uintptr_t)(vars::stor::gBase + 0x2FACB0), (void**)&original_clientupdate_sleeping, hk::misc::ClientUpdate_Sleeping);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Jump), (void**)&original_jump, hk::misc::Jump);

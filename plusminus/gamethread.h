@@ -35,7 +35,7 @@ void game_thread_loop() {
 						uintptr_t playermodel = read(Entity + 0x4A8, uintptr_t);
 						uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
 						if (!lol->HasFlags(PlayerFlags::Sleeping)) {
-							if (LocalPlayer::Entity()->is_teammate(lol->GetSteamID())) {
+							if (LocalPlayer::Entity()->is_teammate(lol->userID())) {
 								lol::chams(multimesh, Color(0, 1, 0, 1));
 							}
 							else {

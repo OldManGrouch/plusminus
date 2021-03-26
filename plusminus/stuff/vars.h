@@ -71,6 +71,7 @@ namespace vars {
 		bool lock_target = false;
 		bool ignore_players = false;
 		bool ignore_heli = false;
+		bool ignore_invisible = false;
 		bool ignore_sleepers = false;
 		bool ignore_team = true;
 		bool ignore_npc = false;

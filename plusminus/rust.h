@@ -59,14 +59,148 @@ public:
 #define STATIC_FUNCTION(method_path,name,ta) static inline UnmanagedPointer<ta> name = { METHOD(method_path), UnmanagedStdcall }
 
 
-class ItemModProjectile {
+class Transform {
 public:
-	float GetRandomVelocity( ) {
-		typedef float(__fastcall* randomvelocity)(ItemModProjectile*);
-		return ((randomvelocity)(vars::stor::gBase + CO::GetRandomVelocity))(this);
+	Vector3 position( ) {
+		if (!this) return Vector3::Zero( );
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::get_position(): Vector3");
+		return SafeExecution::Execute<Vector3>(off, Vector3::Zero( ), this);
+	}
+	Vector3 InverseTransformPoint(Vector3 position) {
+		if (!this) return Vector3::Zero( );
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformPoint(Vector3): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
+	}
+
+	Vector3 InverseTransformDirection(Vector3 position) {
+		if (!this) return Vector3::Zero( );
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformDirection(Vector3): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
 	}
 };
-class BaseEntity {
+class GameObject {
+public:
+};
+class Object {
+public:
+	Transform* transform( ) {
+		if (!this) return nullptr;
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_transform(): Transform");
+		return SafeExecution::Execute<Transform*>(off, nullptr, this);
+	}
+};
+class Type {
+public:
+	static Type* GetType( ) {
+		static auto off = METHOD("mscorlib::System::Type::GetType(String): Type");
+		return reinterpret_cast<Type * (__cdecl*)(Str)>(off)(Str(L"ItemModProjectile, Assembly-CSharp"));
+	}
+};
+class Component : public Object {
+public:
+	template<typename T = Component>
+	T* GetComponent(Type* type) {
+		if (!this || !type) return nullptr;
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::GetComponent(Type): Component");
+		return reinterpret_cast<T * (__fastcall*)(Component*, Type*)>(off)(this, type);
+	}
+	GameObject* gameObject( ) {
+		if (!this) return nullptr;
+		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_gameObject(): GameObject");
+		return reinterpret_cast<GameObject * (__fastcall*)(Component*)>(off)(this);
+	}
+};
+class Bone {
+public:
+	Vector3 position;
+	bool visible;
+
+	Bone( ) {
+		this->position = Vector3::Zero( );
+		this->visible = false;
+	}
+	Bone(Vector3 position) {
+		this->position = position;
+		this->visible = false;
+	}
+	Bone(Vector3 position, bool visible) {
+		this->position = position;
+		this->visible = visible;
+	}
+};
+class BoneCache {
+public:
+	Bone* head;
+	Bone* neck;
+	Bone* root;
+	Bone* spine4;
+	Bone* spine1;
+	Bone* l_clavicle;
+	Bone* l_upperarm;
+	Bone* l_forearm;
+	Bone* l_hand;
+	Bone* r_clavicle;
+	Bone* r_upperarm;
+	Bone* r_forearm;
+	Bone* r_hand;
+	Bone* pelvis;
+	Bone* l_hip;
+	Bone* l_knee;
+	Bone* l_ankle_scale;
+	Bone* l_foot;
+	Bone* r_hip;
+	Bone* r_knee;
+	Bone* r_ankle_scale;
+	Bone* r_foot;
+
+	BoneCache( ) {
+		head = new Bone( );
+		neck = new Bone( );
+		root = new Bone( );
+		spine4 = new Bone( );
+		spine1 = new Bone( );
+		l_clavicle = new Bone( );
+		l_upperarm = new Bone( );
+		l_forearm = new Bone( );
+		l_hand = new Bone( );
+		r_clavicle = new Bone( );
+		r_upperarm = new Bone( );
+		r_forearm = new Bone( );
+		r_hand = new Bone( );
+		pelvis = new Bone( );
+		l_hip = new Bone( );
+		l_knee = new Bone( );
+		l_ankle_scale = new Bone( );
+		l_foot = new Bone( );
+		r_hip = new Bone( );
+		r_knee = new Bone( );
+		r_ankle_scale = new Bone( );
+		r_foot = new Bone( );
+	}
+};
+std::map<uint64_t, BoneCache*> cachedBones = std::map<uint64_t, BoneCache*>( );
+	
+class Model;
+class ItemModProjectile {
+
+};
+class BaseNetworkable : public Component {
+public:
+	class EntityRealm {
+	public:
+		template<typename T = BaseNetworkable*> T Find(uint32_t uid) {
+			static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
+			return reinterpret_cast<T(__fastcall*)(EntityRealm*, uint32_t)>(off)(this, uid);
+		}
+
+		FIELD("Assembly-CSharp::EntityRealm::entityList", entityList, ListDictionary*);
+	};
+	static EntityRealm* clientEntities( ) {
+		static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
+		return *reinterpret_cast<EntityRealm**>(std::uint64_t(clazz->static_fields));
+	}
+};
+class BaseEntity : public BaseNetworkable {
 public:
 	Vector3 GetWorldVelocity( ) {
 		if (!this) return Vector3::Zero( );
@@ -82,6 +216,7 @@ public:
 		if (!this) return false;
 		return !this->IsDestroyed( );
 	}
+	FIELD("Assembly-CSharp::BaseEntity::model", model, Model*);
 };
 class RenderSettings {
 public:
@@ -146,16 +281,7 @@ public:
 	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::Time::get_renderedFrameCount(): Int32", renderedFrameCount, int( ));
 	STATIC_FUNCTION("UnityEngine.CoreModule::UnityEngine::Time::get_realtimeSinceStartup(): Single", realtimeSinceStartup, float( ));
 };
-class Type {
-public:
-	static Type* GetType( ) {
-		static auto off = METHOD("mscorlib::System::Type::GetType(String): Type");
-		return reinterpret_cast<Type * (__cdecl*)(Str)>(off)(Str(L"ItemModProjectile, Assembly-CSharp"));
-	}
-};
-class GameObject {
-public:
-};
+
 class Physics {
 public:
 	STATIC_FUNCTION("UnityEngine.PhysicsModule::UnityEngine::Physics::get_gravity(): Vector3", get_gravity, Vector3( ));
@@ -163,20 +289,7 @@ public:
 		return reinterpret_cast<void(*)(int, int, bool)>(il2cpp::il2cpp_resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision")))(layer1, layer2, ignore);
 	}
 };
-class Component {
-public:
-	template<typename T = Component>
-	T* GetComponent(Type* type) {
-		if (!this || !type) return nullptr;
-		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::GetComponent(Type): Component");
-		return reinterpret_cast<T * (__fastcall*)(Component*, Type*)>(off)(this, type);
-	}
-	GameObject* gameObject( ) {
-		if (!this) return nullptr;
-		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_gameObject(): GameObject");
-		return reinterpret_cast<GameObject * (__fastcall*)(Component*)>(off)(this);
-	}
-};
+
 class ItemDefinition : public Component {
 public:
 	FIELD("Assembly-CSharp::ItemDefinition::itemid", itemid, int);
@@ -310,35 +423,8 @@ public:
 		return result;
 	}
 };
-class BufferList {
-public:
-	char pad_0000[ 0x10 ];
-	int32_t size;
-	char pad_0014[ 0x4 ];
-	void* buffer;
-};
-class ListDictionary {
-public:
-	char pad_0000[ 0x20 ];
-	class BufferList* keys;
-	class BufferList* vals;
-};
-class BaseNetworkable {
-public:
-	class EntityRealm {
-	public:
-		template<typename T = BaseNetworkable*> T Find(uint32_t uid) {
-			static auto off = METHOD("Assembly-CSharp::EntityRealm::Find(UInt32): BaseNetworkable");
-			return reinterpret_cast<T(__fastcall*)(EntityRealm*, uint32_t)>(off)(this, uid);
-		}
 
-		FIELD("Assembly-CSharp::EntityRealm::entityList", entityList, ListDictionary*);
-	};
-	static EntityRealm* clientEntities( ) {
-		static auto clazz = CLASS("Assembly-CSharp::BaseNetworkable");
-		return *reinterpret_cast<EntityRealm**>(std::uint64_t(clazz->static_fields));
-	}
-};
+
 class PlayerTick {
 public:
 	Vector3 position( ) {
@@ -452,6 +538,24 @@ public:
 	}
 	PlayerEyes* eyes( ) { return read(this + 0x600, PlayerEyes*); }
 	PlayerTick* lastSentTick( ) { return read(this + 0x5D0, PlayerTick*); }
+	FIELD("Assembly-CSharp::BasePlayer::userID", userID, uint64_t);
+	bool isCached( ) {
+		return map_contains_key(cachedBones, this->userID( ));
+	}
+	bool is_visible( ) {
+		if (cachedBones[ this->userID( ) ]->head->visible ||
+			cachedBones[ this->userID( ) ]->spine4->visible ||
+			cachedBones[ this->userID( ) ]->pelvis->visible ||
+			cachedBones[ this->userID( ) ]->r_foot->visible ||
+			cachedBones[ this->userID( ) ]->l_foot->visible) {
+			
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	void set_viewangles(const Vector2& VA) {
 		DWORD64 Input = read(this + 0x4C8, DWORD64);
 		write(Input + 0x3C, VA, Vector2);
@@ -470,9 +574,6 @@ public:
 	bool IsNpc( ) {
 		DWORD64 PlayerModel = read(this + 0x4A8, DWORD64);
 		return read(PlayerModel + 0x2C0, bool);
-	}
-	DWORD64 GetSteamID( ) {
-		return read(this + 0x640, DWORD64);
 	}
 	bool is_alive( ) {
 		if (!this) return false;
@@ -627,6 +728,7 @@ public:
 		return reinterpret_cast<BasePlayer * (*)()>(vars::stor::gBase + CO::get_Entity)();
 	}
 };
+
 class Mathf {
 public:
 	static float Abs(float a) {
@@ -656,28 +758,8 @@ public:
 	}
 };
 
-class Transform {
-public:
-	Vector3 InverseTransformPoint(Vector3 position) {
-		if (!this) return Vector3::Zero( );
-		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformPoint(Vector3): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
-	}
 
-	Vector3 InverseTransformDirection(Vector3 position) {
-		if (!this) return Vector3::Zero( );
-		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformDirection(Vector3): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
-	}
-};
-class Object {
-public:
-	Transform* transform( ) {
-		if (!this) return nullptr;
-		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_transform(): Transform");
-		return SafeExecution::Execute<Transform*>(off, nullptr, this);
-	}
-};
+
 class HitTest {
 public:
 	BaseEntity* HitEntity( ) { return read(this + 0x88, BaseEntity*); }
@@ -866,9 +948,18 @@ namespace utils {
 		return true;
 	}
 	Vector3 GetEntityPosition(std::uint64_t entity) {
+		if (!entity) return Vector3::Zero( );
+
 		uintptr_t plyVis = read(entity + 0x8, uintptr_t); if (!plyVis) return {0,0,0};
+		if (!plyVis) return Vector3::Zero( );
+
 		uintptr_t visualState = read(plyVis + 0x38, uintptr_t); if (!visualState) return {0,0,0};
-		return read(visualState + 0x90, Vector3);
+		if (!visualState) return Vector3::Zero( );
+
+		Vector3 ret = read(visualState + 0x90, Vector3);
+		if (!ret.empty( )) return Vector3::Zero( );
+
+		return ret;
 	}
 	Vector3 ClosestPoint(BasePlayer* player, Vector3 vec) {
 		typedef Vector3(__stdcall* CPoint)(BasePlayer*, Vector3);
@@ -902,3 +993,29 @@ namespace utils {
 		}
 	};
 }
+// need 2 keep here 4 now || TO-DO move up
+class Model : public Component {
+public:
+	FIELD("Assembly-CSharp::Model::boneTransforms", boneTransforms, Array<Transform*>*);
+	FIELD("Assembly-CSharp::Model::boneNames", boneNames, Array<il2cpp::String*>*);
+
+	Bone* resolve(uint32_t hash) {
+		if (!this) return nullptr;
+
+		if (!this->boneNames( ) || !this->boneTransforms( )) return nullptr;
+
+		auto bone_names = this->boneNames( );
+		auto bone_transforms = this->boneTransforms( );
+
+		for (int i = 0; i < bone_names->size( ); i++) {
+			auto bone_name = bone_names->get(i);
+			auto bone_transform = bone_transforms->get(i);
+			if (!bone_name || !bone_transform) continue;
+
+			if (RUNTIME_CRC32_W(bone_name->buffer) == hash/*wcscmp(bone_name->buffer, name) == 0*/)
+				return new Bone(bone_transform->position( ), utils::LineOfSight(bone_transform->position( ), LocalPlayer::Entity( )->get_bone_pos(head)));
+		}
+
+		return nullptr;
+	}
+};

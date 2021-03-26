@@ -50,9 +50,11 @@ void ent_loop( ) {
 			if (reinterpret_cast<BaseCombatEntity*>(Entity)->IsPlayer( )) {
 				BasePlayer* Player = (BasePlayer*)Entity;
 
+				if (!Player->isCached( )) continue;
+
 				if (vars::players::skeleton && !Player->IsNpc( )) {
 					if (!Player->HasFlags(PlayerFlags::Sleeping)) {
-						if (LocalPlayer::Entity( )->is_teammate(Player->GetSteamID( ))) {
+						if (LocalPlayer::Entity( )->is_teammate(Player->userID( ))) {
 							Skeleton(Player, D2D1::ColorF::Lime);
 						}
 						else {
@@ -60,7 +62,12 @@ void ent_loop( ) {
 								Skeleton(Player, D2D1::ColorF::Red);
 							}
 							else {
-								Skeleton(Player, D2D1::ColorF::White);
+								if (Player->is_visible( )) {
+									Skeleton(Player, D2D1::ColorF::White);
+								}
+								else {
+									Skeleton(Player, D2D1::ColorF::DarkGray);
+								}
 							}
 						}
 					}
@@ -73,7 +80,7 @@ void ent_loop( ) {
 				}
 				if (!Player->IsNpc( )) {
 					if (!Player->HasFlags(PlayerFlags::Sleeping)) {
-						if (LocalPlayer::Entity( )->is_teammate(Player->GetSteamID( ))) {
+						if (LocalPlayer::Entity( )->is_teammate(Player->userID( ))) {
 							ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Lime);
 						}
 						else {
@@ -81,7 +88,12 @@ void ent_loop( ) {
 								ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Red);
 							}
 							else {
-								ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::White);
+								if (Player->is_visible( )) {
+									ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::White);
+								}
+								else {
+									ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::DarkGray);
+								}
 							}
 						}
 					}
@@ -96,7 +108,8 @@ void ent_loop( ) {
 				}
 				if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) continue;
 				if (vars::combat::ignore_npc && Player->IsNpc( )) continue;
-				if (vars::combat::ignore_team && LocalPlayer::Entity( )->is_teammate(Player->GetSteamID( ))) continue;
+				if (vars::combat::ignore_team && LocalPlayer::Entity( )->is_teammate(Player->userID( ))) continue;
+				if (vars::combat::ignore_invisible && !Player->is_visible( )) continue;
 				if (Player->get_bone_pos(head).x == 0 || Player->get_bone_pos(head).y == 0 || Player->get_bone_pos(head).z == 0) continue;
 				if (vars::combat::ignore_players) continue;
 				if (Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), Player->get_bone_pos(head)) > vars::combat::range) continue;
@@ -188,11 +201,14 @@ void ent_loop( ) {
 			if (TargetPlayer->HasFlags(PlayerFlags::Sleeping) && vars::combat::ignore_sleepers) {
 				vars::stor::closestPlayer = NULL;
 			}
-			if (LocalPlayer::Entity( )->is_teammate(TargetPlayer->GetSteamID( )) && vars::combat::ignore_team) {
+			if (LocalPlayer::Entity( )->is_teammate(TargetPlayer->userID( )) && vars::combat::ignore_team) {
 				vars::stor::closestPlayer = NULL;
 			}
 			if (TargetPlayer->health( ) <= 0) {
 				vars::combat::lock_target = false;
+				vars::stor::closestPlayer = NULL;
+			}
+			if (vars::combat::ignore_invisible && !TargetPlayer->is_visible( )) {
 				vars::stor::closestPlayer = NULL;
 			}
 		}
@@ -221,7 +237,7 @@ void ent_loop( ) {
 			vars::stor::closestHeliObj = NULL;
 		}
 		if (LocalPlayer::Entity( ) != nullptr) {
-			if (vars::combat::aimbot && !LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->GetSteamID( ))) {
+			if (vars::combat::aimbot && !LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->userID( ))) {
 				if (vars::stor::closestPlayer && !LocalPlayer::Entity( )->IsMenu( )) {
 					if (GetAsyncKeyState(vars::keys::aimkey)) {
 						do_aimbot(reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer));

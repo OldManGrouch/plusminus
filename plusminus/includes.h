@@ -35,7 +35,6 @@
 #include "main/weapons.h"
 #include "class.h"
 #include "stuff/il2cpp.h"
-
 #include "rust.h"
 #include "main/f_object.h"
 #include <d3d11.h>

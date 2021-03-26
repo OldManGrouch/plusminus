@@ -81,7 +81,7 @@ public:
 		if (Player->health() <= 0) return res;
 		if (vars::combat::ignore_npc && Player->IsNpc()) return res;
 		if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) return res;
-		if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->GetSteamID())) return res;
+		if (vars::combat::ignore_team && LocalPlayer::Entity()->is_teammate(Player->userID())) return res;
 		Vector3 prepos = Player->get_bone_pos(head);
 		Vector3 closest_entity = utils::ClosestPoint(LocalPlayer::Entity(), prepos);
 		Vector3 closest_local = utils::ClosestPoint(Player, closest_entity);

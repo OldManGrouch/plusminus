@@ -20,9 +20,6 @@
     <Filter Include="source\main\core">
       <UniqueIdentifier>{5f392fa9-1698-4200-a62c-2ab8633b0371}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\main\core\sdk">
-      <UniqueIdentifier>{9345b5da-4641-4db4-80a2-18474cef01bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\main\render">
       <UniqueIdentifier>{03a8b386-acf1-4ca9-82c5-2098da2d41c6}</UniqueIdentifier>
     </Filter>
@@ -32,10 +29,13 @@
     <Filter Include="source\main\render\menu\imgui">
       <UniqueIdentifier>{117bdcbc-a7e4-44e0-9ab2-e03ace856803}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\main\backend">
+    <Filter Include="source\main\core\sdk">
+      <UniqueIdentifier>{9345b5da-4641-4db4-80a2-18474cef01bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\main\core\main">
       <UniqueIdentifier>{c4e3de37-ef91-4472-963d-c6a9b106370f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\main\backend\ent">
+    <Filter Include="source\main\core\main\ent">
       <UniqueIdentifier>{2ea38aa1-f453-4a88-a836-0105b9f0a394}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -128,10 +128,10 @@
       <Filter>source\main\core\sdk</Filter>
     </ClInclude>
     <ClInclude Include="main/entities.h">
-      <Filter>source\main\backend\ent</Filter>
+      <Filter>source\main\core\main\ent</Filter>
     </ClInclude>
     <ClInclude Include="gamethread.h">
-      <Filter>source\main\backend\ent</Filter>
+      <Filter>source\main\core\main\ent</Filter>
     </ClInclude>
     <ClInclude Include="crc32.h">
       <Filter>source\main\core</Filter>
@@ -152,28 +152,28 @@
       <Filter>source\main\core\sdk</Filter>
     </ClInclude>
     <ClInclude Include="main/aim.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="main/weapons.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="init\pre_draw.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="main/misc.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="hooks\hooks.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="main\f_object.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="main/esp.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
     <ClInclude Include="config/config.h">
-      <Filter>source\main\backend</Filter>
+      <Filter>source\main\core\main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

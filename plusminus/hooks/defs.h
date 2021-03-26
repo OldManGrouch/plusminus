@@ -3,13 +3,19 @@ namespace hk_defs {
 	inline SendProjectileAttack_fn original_sendprojectileattack{ };
 
 	typedef void(__fastcall* launch)(Projectile*);
-	inline launch original_launch;
+	inline launch original_launch{ };
 
 	typedef void(__fastcall* dfixd)(PlayerWalkMovement*, ModelState*);
-	inline dfixd original_dofixedupdate;
+	inline dfixd original_dofixedupdate{ };
+
+	typedef void(__fastcall* clientupdate)(BasePlayer*);
+	inline clientupdate original_clientupdate{ };
+
+	typedef void(__fastcall* clientupdate_sleeping)(BasePlayer*);
+	inline clientupdate_sleeping original_clientupdate_sleeping{ };
 
 	typedef bool(__fastcall* dhit)(Projectile*, HitTest*, Vector3, Vector3);
-	inline dhit original_dohit;
+	inline dhit original_dohit{ };
 
 	typedef Projectile* (__fastcall* create_projectile_fn)(BaseProjectile*, void*, Vector3, Vector3, Vector3);
 	inline create_projectile_fn original_create_projectile{ };

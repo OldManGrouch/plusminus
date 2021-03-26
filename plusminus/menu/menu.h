@@ -229,6 +229,7 @@ namespace menu {
 		ImGui::Checkbox(xorstr("Ignore Players"), &vars::combat::ignore_players);
 		ImGui::Checkbox(xorstr("Ignore Heli"), &vars::combat::ignore_heli);
 		ImGui::Checkbox(xorstr("Ignore NPC's"), &vars::combat::ignore_npc);
+		ImGui::Checkbox(xorstr("Ignore Invisible"), &vars::combat::ignore_invisible);
 		ImGui::Checkbox(xorstr("Ignore Teammates"), &vars::combat::ignore_team);
 		ImGui::Checkbox(xorstr("Ignore Sleeping"), &vars::combat::ignore_sleepers);
 	}
