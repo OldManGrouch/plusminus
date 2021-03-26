@@ -12,21 +12,23 @@ namespace hk {
 				if (target.valid) {
 					Vector3 tar = reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head);
 					if (utils::LineOfSight(tar, projectile->currentPosition( )) && projectile->traveledDistance( ) >= Math::Distance_3D(projectile->currentPosition( ), LocalPlayer::Entity( )->get_bone_pos(head))) {
-						Transform* transform = reinterpret_cast<Transform*>(reinterpret_cast<BasePlayer*>(target.entity)->mono_transform(head));
+						if (!reinterpret_cast<BasePlayer*>(target.entity)->HasFlags(PlayerFlags::Sleeping)) {
+							Transform* transform = reinterpret_cast<Transform*>(reinterpret_cast<BasePlayer*>(target.entity)->mono_transform(head));
 
-						HitTest* hitTest = projectile->hitTest( );
-						hitTest->DidHit( ) = true;
-						hitTest->HitEntity((BaseEntity*)target.entity);
-						hitTest->HitTransform( ) = transform;
-						//hitTest->HitMaterial() = il2cpp::String::New("Flesh");
+							HitTest* hitTest = projectile->hitTest( );
+							hitTest->DidHit( ) = true;
+							hitTest->HitEntity((BaseEntity*)target.entity);
+							hitTest->HitTransform( ) = transform;
+							//hitTest->HitMaterial() = il2cpp::String::New("Flesh");
 
-						hitTest->HitPoint( ) = transform->InverseTransformPoint(projectile->currentPosition( ));
-						hitTest->HitNormal( ) = transform->InverseTransformDirection(projectile->currentPosition( ));
+							hitTest->HitPoint( ) = transform->InverseTransformPoint(projectile->currentPosition( ));
+							hitTest->HitNormal( ) = transform->InverseTransformDirection(projectile->currentPosition( ));
 
-						hitTest->AttackRay( ) = Ray(projectile->currentPosition( ), reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head) - projectile->currentPosition( ));
+							hitTest->AttackRay( ) = Ray(projectile->currentPosition( ), reinterpret_cast<BasePlayer*>(target.entity)->get_bone_pos(head) - projectile->currentPosition( ));
 
-						projectile->DoHit(hitTest, hitTest->HitPointWorld( ), hitTest->HitNormalWorld( ));
-						return;
+							projectile->DoHit(hitTest, hitTest->HitPointWorld( ), hitTest->HitNormalWorld( ));
+							return;
+						}
 					}
 				}
 			}
