@@ -1,6 +1,8 @@
 #pragma warning(disable : 4530)
 #define _CRT_SECURE_NO_WARNINGS
-//#define noauth
+
+#define noauth
+
 #include <stdint.h>
 #include <Windows.h>
 #include <psapi.h>
@@ -38,6 +40,7 @@
 #include "rust.h"
 #include "main/f_object.h"
 #include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
 #include "init/d3defs.h"
 #include "rendering/rendering.h"
 #include "menu/imgui/imgui_impl_win32.h"
@@ -49,20 +52,11 @@
 #include "main/aim.h"
 #include "main/misc.h"
 #include "main/esp.h"
-
 #include "gamethread.h"
 #include "hooks/hooks.h"
 #include "main/entities.h"
-
-
-
 #include "init/pre_draw.h"
 #include "config/config.h"
 #include "menu/menu.h"
 #include "init/present.h"
-#pragma comment(lib, "urlmon.lib")
-#include <d3d11.h>
-#include <D3Dcompiler.h>
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "winmm.lib")

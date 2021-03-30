@@ -1,6 +1,37 @@
 float indicator_x = 100;
 float indicator_y = 100;
+
+int Drehungswinkel = 90;
+void swastika_crosshair( ) {
+	POINT Screen; 
+	Screen.x = vars::stuff::ScreenWidth; Screen.y = vars::stuff::ScreenHeight;
+	POINT Middle; Middle.x = (int)(Screen.x / 2); Middle.y = (int)(Screen.y / 2);
+	int a = (int)(Screen.y / 2 / 30);
+	float gamma = atan(a / a);
+	int i = 0;
+	while (i < 4) {
+		std::vector <int> p;
+		p.push_back(a * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[0]		p0_A.x
+		p.push_back(a * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90))));									//p[1]		p0_A.y
+		p.push_back((a / cos(gamma)) * sin(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[2]		p0_B.x
+		p.push_back((a / cos(gamma)) * cos(Math::GRD_TO_BOG(Drehungswinkel + (i * 90) + Math::BOG_TO_GRD(gamma))));	//p[3]		p0_B.y
+
+		Renderer::Line(Vector2(Middle.x, Middle.y), Vector2(Middle.x + p[ 0 ], Middle.y - p[ 1 ]), D2D1::ColorF::Red);
+		Renderer::Line(Vector2(Middle.x + p[ 0 ], Middle.y - p[ 1 ]), Vector2(Middle.x + p[ 2 ], Middle.y - p[ 3 ]), D2D1::ColorF::Red);
+
+		i++;
+	}
+}
+void aff( ) {
+	Drehungswinkel += 2.f;
+	if (Drehungswinkel >= 90.f) {
+		Drehungswinkel = 0.f;
+	}
+}
 void pre_draw( ) {
+	//swastika_crosshair( );
+	//aff( );
+
 	auto* TargetPlayerA = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	Vector2 kek = Renderer::CanvasSize( );
 	vars::stuff::ScreenWidth = kek.x;
@@ -161,7 +192,7 @@ void pre_draw( ) {
 			}
 			Renderer::FillRectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
 			Renderer::Rectangle({vars::players::beltx, vars::players::belty}, {Width, Height}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f));
-			Renderer::String({vars::players::beltx + (Width / 2), vars::players::belty + 10}, TargetPlayerA->_displayName( ), D2D1::ColorF::White, true, true);
+			Renderer::Text({vars::players::beltx + (Width / 2), vars::players::belty + 10}, D2D1::ColorF::White, true, true, TargetPlayerA->_displayName( ));
 			Renderer::Line({vars::players::beltx, vars::players::belty + 20}, {vars::players::beltx + Width, vars::players::belty + 20}, D2D1::ColorF(0.43f, 0.43f, 0.50f, 0.50f), 1);
 			float Pos = 0;
 			if (TargetPlayerA->item_list_b( )) {

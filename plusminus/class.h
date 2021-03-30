@@ -464,6 +464,19 @@ public:
 	float timeSince;
 	Vector3 position;
 };
+class BulletTracer {
+public:
+	Vector3 start;
+	Vector3 end;
+	BulletTracer( ) {
+		this->start = Vector3::Zero( );
+		this->end = Vector3::Zero( );
+	}
+	BulletTracer(Vector3 st, Vector3 en) {
+		this->start = st;
+		this->end = en;
+	}
+};
 class CBounds {
 public:
 	Vector3 center;

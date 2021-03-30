@@ -3,8 +3,11 @@ bool inited = false;
 void ent_loop( ) {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 	if (!bn) {
-		Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+		//Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
 		return;
+	}
+	else {
+		Renderer::Text(Vector2(100, 55), D2D1::ColorF::White, false, true, xorstr(L"new discord: https://discord.gg/9hnYsU4w3b"));
 	}
 	if (!LocalPlayer::Entity( )) return;
 
@@ -19,6 +22,7 @@ void ent_loop( ) {
 		Renderer::Rectangle(Vector2(vars::stuff::ScreenWidth / 2 - 214, 230), Vector2(428, 10), D2D1::ColorF::Black);
 	}
 	LogSystem::Render( );
+	LogSystem::RenderTracers( );
 	if (vars::visuals::raid_esp) {
 		LogSystem::RenderExplosions( );
 	}
@@ -62,6 +66,7 @@ void ent_loop( ) {
 								Skeleton(Player, D2D1::ColorF::Red);
 							}
 							else {
+								
 								if (Player->is_visible( )) {
 									Skeleton(Player, D2D1::ColorF::White);
 								}
@@ -78,32 +83,37 @@ void ent_loop( ) {
 				else if (vars::npc::skeleton && Player->IsNpc( )) {
 					Skeleton(Player, D2D1::ColorF::Yellow);
 				}
+
+				D2D1::ColorF color = D2D1::ColorF(0.f, 0.f, 0.f, 1.f);
 				if (!Player->IsNpc( )) {
 					if (!Player->HasFlags(PlayerFlags::Sleeping)) {
 						if (LocalPlayer::Entity( )->is_teammate(Player->userID( ))) {
-							ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Lime);
+							color = D2D1::ColorF::Lime;
 						}
 						else {
 							if (Player->health( ) <= 0) {
-								ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Red);
+								color = D2D1::ColorF::Red;
 							}
 							else {
 								if (Player->is_visible( )) {
-									ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::White);
+									color = D2D1::ColorF::White;
 								}
 								else {
-									ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::DarkGray);
+									color = D2D1::ColorF::DarkGray;
 								}
 							}
 						}
 					}
 					else {
-						ESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Orange);
+						color = D2D1::ColorF::Orange;
 					}
 				}
-				else if (Player->IsNpc( )) {
+				ESP(Player, color);
+				OOF(Player, color);
+
+				if (Player->IsNpc( )) {
 					if (Player->health( ) > 0) {
-						NPCESP(Player, LocalPlayer::Entity( ), D2D1::ColorF::Yellow);
+						NPCESP(Player, D2D1::ColorF::Yellow);
 					}
 				}
 				if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) continue;

@@ -7,6 +7,10 @@ void game_thread_loop() {
 	if (vars::players::chams) {
 		lol::update_chams();
 	}
+	if (vars::stuff::Panic) {
+		lol::update_chams( );
+		vars::stuff::Panic = false;
+	}
 	auto entityList = BaseNetworkable::clientEntities()->entityList();
 	if (entityList) {
 		for (int i = 1; i < entityList->vals->size; i++) {

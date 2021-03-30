@@ -361,3 +361,33 @@ void CheckFlyhack( ) {
 		vars::stuff::hor_flyhack = flyhackDistanceHorizontal;
 	}
 }
+/*if (should_interactive) {
+				bool left = LocalPlayer::Entity( )->GetKeyState(Button::LEFT);
+				bool right = LocalPlayer::Entity( )->GetKeyState(Button::RIGHT);
+				bool forward = LocalPlayer::Entity( )->GetKeyState(Button::FORWARD);
+				bool back = LocalPlayer::Entity( )->GetKeyState(Button::BACKWARD);
+				bool up = LocalPlayer::Entity( )->GetKeyState(Button::JUMP);
+				bool down = LocalPlayer::Entity( )->GetKeyState(Button::DUCK);
+
+				Vector3 sheesh = Vector3::Zero( );
+				if (left) {
+					sheesh += Vector3(-1, 0, 0);
+				}
+				if (right) {
+					sheesh += Vector3(1, 0, 0);
+				}
+				if (forward) {
+					sheesh += Vector3(0, 0, 1);
+				}
+				if (back) {
+					sheesh += Vector3(0, 0, -1);
+				}
+				if (up) {
+					sheesh += Vector3(0, 1, 0);
+				}
+				if (back) {
+					sheesh += Vector3(0, -1, 0);
+				}
+
+				*reinterpret_cast<Vector3*>(LocalPlayer::Entity( )->eyes( ) + 0x38) = sheesh;
+			}*/

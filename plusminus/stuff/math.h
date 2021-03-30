@@ -30,6 +30,12 @@ namespace Math {
 		angles.y = NormalizeAngle(angles.y);
 		return angles;
 	}
+	float BOG_TO_GRD(float BOG) {
+		return (180 / M_PI) * BOG;
+	}
+	float GRD_TO_BOG(float GRD) {
+		return (M_PI / 180) * GRD;
+	}
 	float Distance_3D(Vector3 a, Vector3 b) {
 		return sqrtf(powf((a.x - b.x), 2) + powf((a.y - b.y), 2) + powf((a.z - b.z), 2));
 	}

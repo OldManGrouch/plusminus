@@ -11,6 +11,9 @@ std::wstring wSatchel = xorstr(L"Satchel");
 std::wstring wIncenRocket = xorstr(L"Incendiary Rocket");
 std::wstring wRocket = xorstr(L"Rocket");
 
+bool should_interactive = false;
+Vector2 screen_center = {0, 0};
+
 namespace vars {
 	namespace stuff {
 		bool gongetflyhack = false;
@@ -94,6 +97,7 @@ namespace vars {
 		
 	}
 	namespace players {
+		bool oof_arrows = false;
 		bool chams = false;
 		bool chams_xqz = false;
 		bool belt = false;

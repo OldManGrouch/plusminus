@@ -17,6 +17,9 @@ namespace hk_defs {
 	typedef bool(__fastcall* dhit)(Projectile*, HitTest*, Vector3, Vector3);
 	inline dhit original_dohit{ };
 
+	typedef bool(__fastcall* movement_walking)(PlayerWalkMovement*, InputState*, ModelState*);
+	inline movement_walking original_walking{ };
+
 	typedef Projectile* (__fastcall* create_projectile_fn)(BaseProjectile*, void*, Vector3, Vector3, Vector3);
 	inline create_projectile_fn original_create_projectile{ };
 

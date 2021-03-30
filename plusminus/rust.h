@@ -381,6 +381,17 @@ public:
 class PlayerWalkMovement {
 public:
 };
+class InputState {
+public:
+	bool IsDown(Button b) {
+		if (!this) return false;
+		return reinterpret_cast<bool(__fastcall*)(InputState*, Button)>(vars::stor::gBase + 0x57D210)(this, b);
+	}
+	bool WasJustPressed(Button b) {
+		if (!this) return false;
+		return reinterpret_cast<bool(__fastcall*)(InputState*, Button)>(vars::stor::gBase + 0x57D300)(this, b);
+	}
+};
 class ModelState {
 public:
 };
@@ -421,6 +432,17 @@ public:
 		typedef Vector3(__stdcall* get_position)(PlayerEyes*);
 		Vector3 result = ((get_position)(vars::stor::gBase + CO::get_position))(this);
 		return result;
+	}
+
+	Vector3 MovementForward( ) {
+		if (!this) return Vector3::Zero( );
+		static auto off = METHOD("Assembly-CSharp::PlayerEyes::MovementForward(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(PlayerEyes*)>(off)(this);
+	}
+	Vector3 MovementRight( ) {
+		if (!this) return Vector3::Zero( );
+		static auto off = METHOD("Assembly-CSharp::PlayerEyes::MovementRight(): Vector3");
+		return reinterpret_cast<Vector3(__fastcall*)(PlayerEyes*)>(off)(this);
 	}
 };
 
@@ -616,6 +638,7 @@ public:
 		get_position(transform, pos);
 		return pos;
 	}
+	bool OOF( );
 	DWORD64 GetTeammateByPos(int Id) {
 		DWORD64 ClientTeam = read(this + 0x540, DWORD64);
 		DWORD64 members = read(ClientTeam + 0x30, DWORD64);
@@ -946,6 +969,16 @@ namespace utils {
 		};
 
 		return true;
+	}
+	bool OOF(BasePlayer* ply) {
+		Vector3 pos = ply->get_bone_pos(head);
+		Vector2 screen;
+
+		if (!utils::w2s(pos, screen))
+			return true;
+
+		float num = Math::Distance_2D(screen_center, screen);
+		return num > 800.f;
 	}
 	Vector3 GetEntityPosition(std::uint64_t entity) {
 		if (!entity) return Vector3::Zero( );

@@ -284,6 +284,7 @@ namespace menu {
 			ImGui::Combo(xorstr("Target Tracer Position"), &vars::players::targetline_pos, target_tracer_pos, IM_ARRAYSIZE(target_tracer_pos));
 			ImGui::PopItemWidth();
 		}
+		HelpCheckbox(xorstr("OOF Arrows"), &vars::players::oof_arrows, xorstr("Draws an arrow to players that are out of your eye FOV range."));
 		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
 		if (vars::players::chams) {
 			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);

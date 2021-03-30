@@ -46,6 +46,7 @@ public:
 	static inline int max_entries = 10;
 
 	static void draw_text(Vector2, std::wstring);
+	static void draw_line(Vector2, Vector2);
 
 	struct LogEntry {
 	public:
@@ -62,13 +63,19 @@ public:
 
 	static inline std::vector<LogEntry> logs = std::vector<LogEntry>();
 	static inline std::vector<Explosion> loggedExplosions = std::vector<Explosion>();
-	static inline std::vector<BasePlayer*> visiblePlayers = std::vector<BasePlayer*>();
+	static inline std::vector<BulletTracer> bulletTracers = std::vector<BulletTracer>( );
 
 	static void Log(std::wstring message, float duration) {
 		if (logs.size() >= max_entries)
 			logs.erase(logs.begin());
 
 		logs.push_back(LogEntry(message, duration));
+	}
+	static void AddTracer(Vector3 start, Vector3 end) {
+		bulletTracers.push_back(BulletTracer(start, end));
+
+		if (bulletTracers.size( ) > 1)
+			bulletTracers.erase(bulletTracers.begin( ));
 	}
 	static void LogExplosion(std::string type, Vector3 pos) {
 		bool explosionCollision = false;
@@ -87,20 +94,28 @@ public:
 			explosion.timeSince = get_time_since_startup();
 			loggedExplosions.push_back(explosion);
 		}
-		//loggedExplosions.insert(std::make_pair(StringFormat::format(xorstr_("%s Raid (%d)"), type.c_str(), loggedExplosions.size() + 1), pos));
-		//printf("%d at (%.2f, %.2f, %.2f)\n", type, pos.x, pos.y, pos.z);
 	}
 
-	static void Render() {
+	static void Render( ) {
 		float yPos = 30.0f;
-		for (int i = 0; i < logs.size(); i++) {
-			LogEntry entry = logs[i];
-			if ((get_time_since_startup() - entry.startedAt) >= entry.duration) {
-				logs.erase(logs.begin() + i);
+		for (int i = 0; i < logs.size( ); i++) {
+			LogEntry entry = logs[ i ];
+			if ((get_time_since_startup( ) - entry.startedAt) >= entry.duration) {
+				logs.erase(logs.begin( ) + i);
 				continue;
 			}
 			draw_text(Vector2(200, yPos), entry.message);
 			yPos += 15.0f;
+		}
+	}
+	static void RenderTracers( ) {
+		for (int i = 0; i < bulletTracers.size( ); i++) {
+			BulletTracer tracer = bulletTracers[ i ];
+			
+			Vector2 s_pos_start; Vector2 s_pos_end;
+			if (utils::w2s(tracer.start, s_pos_start) && utils::w2s(tracer.end, s_pos_end)) {
+				draw_line(s_pos_start, s_pos_end);
+			}
 		}
 	}
 	static void RenderExplosions() {
@@ -113,20 +128,24 @@ public:
 
 			Vector2 explPos;
 			if (utils::w2s(explosion.position, explPos)) {
-				Renderer::String(
+				Renderer::Text(
 					explPos,
+					D2D1::ColorF::Red,
+					true,
+					true,
 					StringConverter::ToUnicode(StringFormat::format(xorstr("%s [%.2fm] [%d]"),
 						explosion.name.c_str(),
 						Math::Distance_3D(explosion.position, LocalPlayer::Entity()->get_bone_pos(head)),
-						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str(),
-					D2D1::ColorF::Red,
-					true,
-					true
+						(int)(timee - (get_time_since_startup() - LogSystem::loggedExplosions[i].timeSince)))).c_str()
 				);
 			}
 		}
 	}
 };
 void LogSystem::draw_text(Vector2 pos, std::wstring str) {
-	Renderer::String(pos, str.c_str(), D2D1::ColorF::White, true);
+	Renderer::Text(pos, D2D1::ColorF::White, false, true, str.c_str( ));
 }
+void LogSystem::draw_line(Vector2 pos, Vector2 pos2) {
+	Renderer::Line(pos, pos2, D2D1::ColorF::Red, 1.f, true);
+}
+

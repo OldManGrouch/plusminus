@@ -57,16 +57,16 @@ float GetBulletSpeed() {
 	Item* active = LocalPlayer::Entity()->GetActiveWeapon();
 	Weapon tar = active->Info();
 	int ammo = active->LoadedAmmo();
-	if (ammo == 0) return vars::weapons::fast_bullets ? tar.ammo[0].speed * 1.3 : tar.ammo[0].speed;
+	if (ammo == 0) return vars::weapons::fast_bullets ? tar.ammo[0].speed * 1.3 + vars::stuff::testFloat : tar.ammo[0].speed + vars::stuff::testFloat;
 	for (Ammo am : tar.ammo) {
 		for (int id : am.id) {
 			if (id == ammo) {
-				return vars::weapons::fast_bullets ? am.speed * 1.3 : am.speed;
+				return vars::weapons::fast_bullets ? am.speed * 1.3 + vars::stuff::testFloat : am.speed + vars::stuff::testFloat;
 			}
 		}
-		if (am.id[0] == 0) return vars::weapons::fast_bullets ? am.speed * 1.3 : am.speed;
+		if (am.id[ 0 ] == 0) return vars::weapons::fast_bullets ? am.speed * 1.3 + vars::stuff::testFloat : am.speed + vars::stuff::testFloat;
 	}
-	return vars::weapons::fast_bullets ? 250.f * 1.3 : 250.f;
+	return vars::weapons::fast_bullets ? 250.f * 1.3 + vars::stuff::testFloat : 250.f + vars::stuff::testFloat;
 }
 
 void StepConstant(Vector2& angles) {
@@ -107,7 +107,7 @@ void StepConstant(Vector2& angles) {
 }
 
 void do_aimbot(BasePlayer* player) {
-	if (!LocalPlayer::Entity()) { return; }
+	if (!LocalPlayer::Entity() || !player) { return; }
 	if (!LocalPlayer::Entity()->GetActiveWeapon() || player->IsDestroyed()) { return; }
 	bool long_neck = vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck);
 	Vector3 local = long_neck ? LocalPlayer::Entity()->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity()->get_bone_pos(head);
@@ -120,5 +120,5 @@ void do_aimbot(BasePlayer* player) {
 		StepConstant(AngleToAim);
 	}
 	Math::Normalize(AngleToAim.y, AngleToAim.x);
-	LocalPlayer::Entity()->viewangles() = AngleToAim;
+	LocalPlayer::Entity()->set_viewangles(AngleToAim);
 }

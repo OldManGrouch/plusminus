@@ -107,7 +107,7 @@ namespace hk {
 		GameObject* CreateEffect(pUncStr strPrefab, Effect* effect) {
 			auto effectName = strPrefab->str;
 			auto position = read(effect + 0x5C, Vector3);
-			if (vars::visuals::raid_esp && effect && strPrefab->str && !position.empty()) {
+			if (vars::visuals::raid_esp && effect && strPrefab->str && !position.empty( )) {
 				switch (RUNTIME_CRC32_W(effectName)) {
 				case STATIC_CRC32("assets/prefabs/tools/c4/effects/c4_explosion.prefab"):
 					LogSystem::LogExplosion(C4, position);
@@ -182,13 +182,10 @@ namespace hk {
 			if (vars::misc::farmbot) {
 				Vector3 vel = read(movement + 0x34, Vector3);
 				f_object closest = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("ore.prefab"));
-				if (closest.valid && !vel.empty( )) {
+				if (closest.valid && vel.Length( ) > 0.f) {
 					Vector3 direction = (closest.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
 					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
 				}
-				//if (LocalPlayer::Entity( )->newVelocity( ).empty( )) {
-				//	reinterpret_cast<void(_fastcall*)(PlayerWalkMovement*, ModelState*, bool)>(vars::stor::gBase + CO::Jump)(movement, modelstate, true);
-				//}
 			}
 			original_dofixedupdate(movement, modelstate);
 		}
@@ -221,6 +218,7 @@ namespace hk {
 
 				}
 			}
+			
 			if (vars::misc::flyhack_indicator) {
 				CheckFlyhack( );
 			}
@@ -233,6 +231,7 @@ namespace hk {
 					reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
 				}
 			}
+
 			lol::auto_farm_loop(weaponmelee, active);
 			game_thread_loop( );
 			if (vars::misc::fake_lag) {
@@ -296,6 +295,8 @@ namespace hk {
 					return;
 				}
 			}
+
+
 			return original_dohitnotify(entity, info);
 		}
 		bool get_isHeadshot(HitInfo* hitinfo) {
@@ -381,11 +382,9 @@ namespace hk {
 						}
 					}
 				}
-				/*if (vars::stuff::testBool) {
-					if (!reinterpret_cast<BaseCombatEntity*>(test->HitEntity())->IsPlayer()) {
-						return false;
-					}
-				}*/
+				//if (!test->HitPoint( ).empty( ) && !test->AttackRay( ).origin.empty()) {
+				//	LogSystem::AddTracer(test->AttackRay( ).origin, test->HitPoint( ));
+				//}
 			}
 			return original_dohit(prj, test, point, normal);
 		}
@@ -455,7 +454,7 @@ namespace hk {
 
 			float gravity;
 			if (LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1540934679 || LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1602646136) {
-				gravity = 2.f;
+				gravity = 1.9f;
 			}
 			else {
 				gravity = GetGravity(LocalPlayer::Entity( )->GetActiveWeapon( )->LoadedAmmo( ));
@@ -529,6 +528,7 @@ void hk__( ) {
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientUpdate), (void**)&original_clientupdate, hk::misc::ClientUpdate);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientUpdate_Sleeping), (void**)&original_clientupdate_sleeping, hk::misc::ClientUpdate_Sleeping);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::DoHit), (void**)&original_dohit, hk::combat::DoHit);
+	//hk_((void*)(uintptr_t)(vars::stor::gBase + 0x897620), (void**)&original_walking, hk::misc::Movement_Walking);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::UpdateAmbient), (void**)&original_updateambient, hk::misc::UpdateAmbient);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::Jump), (void**)&original_jump, hk::misc::Jump);
 	hk_((void*)(uintptr_t)(vars::stor::gBase + CO::ClientInput), (void**)&original_clientinput, hk::misc::ClientInput);
