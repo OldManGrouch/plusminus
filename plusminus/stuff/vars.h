@@ -1,6 +1,9 @@
 bool init, show = true;
 #define null NULL
 
+float indicator_x = 100;
+float indicator_y = 100;
+
 std::string C4 = xorstr("C4");
 std::string Satchel = xorstr("Satchel");
 std::string IncenRocket = xorstr("Incendiary Rocket");

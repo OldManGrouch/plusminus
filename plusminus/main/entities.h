@@ -3,7 +3,7 @@ bool inited = false;
 void ent_loop( ) {
 	uintptr_t bn = read(vars::stor::gBase + CO::BaseNetworkable, uintptr_t);
 	if (!bn) {
-		//Renderer::String(Vector2(100, 55), xorstr(L"if you're reading this, you're on the wrong game version"), D2D1::ColorF(1.f, 1.f, 1.f, 1.f), true, false);
+		Renderer::Text(Vector2(100, 55), D2D1::ColorF::White, false, true, xorstr(L"wrong game version"));
 		return;
 	}
 	else {
@@ -29,6 +29,8 @@ void ent_loop( ) {
 	float FOV = vars::combat::fov, CurFOV;
 	if (!inited) {
 		LogSystem::Log(xorstr(L"Cheat loaded successfully!"), 7.5f);
+		Beep(500, 100);
+		config.Initialize( );
 		inited = true;
 	}
 	auto entityList = BaseNetworkable::clientEntities( )->entityList( );

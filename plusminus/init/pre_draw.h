@@ -1,5 +1,4 @@
-float indicator_x = 100;
-float indicator_y = 100;
+
 
 int Drehungswinkel = 90;
 void swastika_crosshair( ) {
@@ -86,8 +85,8 @@ void pre_draw( ) {
 		Renderer::Text(Vector2{xs, ys - 50}, D2D1::ColorF::PaleVioletRed, true, true, xorstr(L"Target Locked: %s"), TargetPlayerA->_displayName( ));
 	}
 	if (vars::ores::closest_ore) {
-		static float screenX = GetSystemMetrics(SM_CXSCREEN);
-		static float screenY = GetSystemMetrics(SM_CYSCREEN);
+		static float screenX = vars::stuff::ScreenWidth;
+		static float screenY = vars::stuff::ScreenHeight;
 		Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 
 		f_object tr1 = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("ore.prefab"));
@@ -115,8 +114,8 @@ void pre_draw( ) {
 		}
 	}
 	if (vars::stor::closestPlayer != NULL && vars::players::targetline && TargetPlayerA->IsValid( )) {
-		static float screenX = GetSystemMetrics(SM_CXSCREEN);
-		static float screenY = GetSystemMetrics(SM_CYSCREEN);
+		static float screenX = vars::stuff::ScreenWidth;
+		static float screenY = vars::stuff::ScreenHeight;
 		static Vector2 startPos;
 		if (vars::players::targetline_pos == 0) {
 			startPos = Vector2(screenX / 2.f, screenY - 200.f);
@@ -141,8 +140,8 @@ void pre_draw( ) {
 	}
 	//DoIcon();
 	if (vars::stor::closestHeli != NULL && vars::visuals::patrol_heli) {
-		static float screenX = GetSystemMetrics(SM_CXSCREEN);
-		static float screenY = GetSystemMetrics(SM_CYSCREEN);
+		static float screenX = vars::stuff::ScreenWidth;
+		static float screenY = vars::stuff::ScreenHeight;
 		static Vector2 startPos = Vector2(screenX / 2.f, screenY - 200.f);
 		Vector2 ScreenPos;
 		if ((int)ceil(read(vars::stor::closestHeli + 0x20C, float)) > 0) {

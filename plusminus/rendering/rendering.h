@@ -102,8 +102,9 @@ namespace Renderer {
 		SolidColor->SetColor(Clr);
 		Canvas->FillRoundedRectangle({{Start.x, Start.y, Start.x + Sz.x, Start.y + Sz.y}, Rad, Rad}, SolidColor);
 	}
-	void RectanglePoint(const Vector2 middle, float sz, const D2D1::ColorF clr) {
-		Canvas->DrawRectangle({middle.x - (sz / 2), middle.y - (sz / 2), middle.x + sz, middle.y + sz}, SolidColor, 1.f);
+	void RectanglePoint(const Vector2 middle, float sz, float szy, const D2D1::ColorF clr) {
+		SolidColor->SetColor(clr);
+		Canvas->DrawRectangle({middle.x - (sz / 2), middle.y - (szy / 2), middle.x + sz, middle.y + szy}, SolidColor, 1.f);
 	}
 	void Triangle(const Vector2 top, const D2D1::ColorF clr, float sz) {
 		Line(top, top + Vector2(sz, sz), clr);
@@ -146,15 +147,15 @@ namespace Renderer {
 			Line(Vector2(x, y), Vector2(posonscreenX, posonscreenY), Clr);
 		}
 		else {
-			Line(CosTanSinLineH(flAngle, range, x, y, LineLength / 1.1), Vector2(posonscreenX, posonscreenY), Clr);
+			Line(CosTanSinLineH(flAngle, range, x, y, LineLength / 1.3), Vector2(posonscreenX, posonscreenY), Clr, 1.5f);
 			if (outline) {
-				Line(CosTanSinLineH(flAngle, range, x, y, LineLength / 1.1), Vector2(posonscreenX, posonscreenY), Clr, 1.5f, true);
+				Line(CosTanSinLineH(flAngle, range, x, y, LineLength / 1.3), Vector2(posonscreenX, posonscreenY), Clr, 1.5f, true);
 			}
 		}
-		FillCircle(Vector2(posonscreenX, posonscreenY), Clr, 4);//P.S this is the small dot at the end of each line!!!!!!!!!XD
 		if (outline) {
-			FillCircle(Vector2(posonscreenX, posonscreenY), D2D1::ColorF::Black, vars::stuff::testFloat);
+			FillCircle(Vector2(posonscreenX, posonscreenY), D2D1::ColorF::Black, 5.35f);
 		}
+		FillCircle(Vector2(posonscreenX, posonscreenY), Clr, 4);//P.S this is the small dot at the end of each line!!!!!!!!!XD
 	}
 	template <typename ...Args>
 	void Text(const Vector2 pos, const D2D1::ColorF clr, bool center, bool outline, const std::wstring_view text, Args&&... args) {

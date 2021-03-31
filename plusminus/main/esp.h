@@ -426,7 +426,11 @@ void OOF(BasePlayer* ply, const D2D1::ColorF color) {
 			float x = local.z - cachedBones[ ply->userID( ) ]->head->position.z;
 			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer::Entity( )->eyes( )->get_rotation( ));
 			float num = atan2(y, x) * 57.29578f - 180.f - eulerAngles.y;
-			Renderer::CosTanSinLine(num, 5.f, screen_center.x, screen_center.y, 200.f, color, true);//this the function from b4 btw
+			//Renderer::CosTanSinLine(num, 5.f, screen_center.x, screen_center.y, 200.f, color, true, true);//this the function from b4 btw
+			Vector2 point = Renderer::CosTanSinLineH(num, 5.f, screen_center.x, screen_center.y, 200.f);
+
+			Renderer::RectanglePoint(point, vars::stuff::testFloat, vars::stuff::testFloat, color);
+			Renderer::RectanglePoint(point, vars::stuff::testFloat + vars::stuff::testInt, vars::stuff::testFloat + vars::stuff::testInt, D2D1::ColorF::Black);
 		}
 	}
 }
@@ -572,8 +576,8 @@ void ESP(BasePlayer* BP, const D2D1::ColorF color) {
 					}
 				}
 				if (vars::players::tracers && !BP->HasFlags(PlayerFlags::Sleeping)) {
-					static float screenX = GetSystemMetrics(SM_CXSCREEN);
-					static float screenY = GetSystemMetrics(SM_CYSCREEN);
+					static float screenX = vars::stuff::ScreenWidth;
+					static float screenY = vars::stuff::ScreenHeight;
 					static Vector2 startPos;
 					if (vars::players::tracers_pos == 0) {
 						startPos = Vector2(screenX / 2.f, screenY - 200.f);
@@ -671,8 +675,8 @@ void NPCESP(BasePlayer* BP, D2D1::ColorF color) {
 					}
 				}
 				if (vars::npc::tracers) {
-					static float screenX = GetSystemMetrics(SM_CXSCREEN);
-					static float screenY = GetSystemMetrics(SM_CYSCREEN);
+					static float screenX = vars::stuff::ScreenWidth;
+					static float screenY = vars::stuff::ScreenHeight;
 					static Vector2 startPos = Vector2(screenX / 2.0f, screenY - 200.f);
 					Renderer::Line(startPos, tempHead, color, 0.5f);
 				}

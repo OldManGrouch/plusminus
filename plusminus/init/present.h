@@ -38,8 +38,6 @@ HRESULT present_hook(IDXGISwapChain* swapChain, UINT SyncInterval, UINT Flags) {
 		ImGui_ImplDX11_Init(device, immediate_context);
 		Renderer::InitRender(swapChain);
 		menu::style( );
-		Beep(500, 100);
-		config.Initialize( );
 	}
 
 	immediate_context->OMSetRenderTargets(1, &render_target_view, nullptr);

@@ -87,6 +87,35 @@ namespace Math {
 		num5 += center.z;
 		return Vector3(num6, origin.y, num5);
 	}
+	void RotateTriangle(Vector2& point1, Vector2& point2, Vector2& point3, float rotation) {
+		const auto points_center = (point1 + point2 + point3) / 3;
+
+		point1 -= points_center;
+		point2 -= points_center;
+		point3 -= points_center;
+
+		const auto temp_x = point1.x;
+		const auto temp_y = point1.y;
+		const auto temp_x2 = point2.x;
+		const auto temp_y2 = point2.y;
+		const auto temp_x3 = point3.x;
+		const auto temp_y3 = point3.y;
+
+		const auto theta = DEG2RAD(rotation);
+		const auto c = cosf(theta);
+		const auto s = sinf(theta);
+
+		point1.x = temp_x * c - temp_y * s;
+		point1.y = temp_x * s + temp_y * c;
+		point2.x = temp_x2 * c - temp_y2 * s;
+		point2.y = temp_x2 * s + temp_y2 * c;
+		point3.x = temp_x3 * c - temp_y3 * s;
+		point3.y = temp_x3 * s + temp_y3 * c;
+
+		point1 += points_center;
+		point2 += points_center;
+		point3 += points_center;
+	}
 	__forceinline Vector2 CalcAngle(const Vector3& Src, const Vector3& Dst) {
 		Vector3 dir = Src - Dst;
 		return Vector2{ RAD2DEG(std::asin(dir.y / dir.Length())), RAD2DEG(-std::atan2(dir.x, -dir.z)) };

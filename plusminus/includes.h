@@ -54,9 +54,10 @@
 #include "main/esp.h"
 #include "gamethread.h"
 #include "hooks/hooks.h"
+#include "config/config.h"
 #include "main/entities.h"
 #include "init/pre_draw.h"
-#include "config/config.h"
+
 #include "menu/menu.h"
 #include "init/present.h"
 #pragma comment(lib, "winmm.lib")
