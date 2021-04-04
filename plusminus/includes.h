@@ -10,6 +10,10 @@
 #include <string>
 #include <codecvt>
 #include <locale>
+#include <cstdint>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 #include <emmintrin.h>
 #include "winternl.h"
 #include <iostream>

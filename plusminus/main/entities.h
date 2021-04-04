@@ -9,8 +9,13 @@ void ent_loop( ) {
 	else {
 		Renderer::Text(Vector2(100, 55), D2D1::ColorF::White, false, true, xorstr(L"new discord: https://discord.gg/9hnYsU4w3b"));
 	}
+	if (!inited) {
+		LogSystem::Log(xorstr(L"Cheat loaded successfully!"), 7.5f);
+		Beep(500, 100);
+		config.Initialize( );
+		inited = true;
+	}
 	if (!LocalPlayer::Entity( )) return;
-
 	if (vars::visuals::radar_) {
 		radar::radar_bg( );
 	}
@@ -23,16 +28,12 @@ void ent_loop( ) {
 	}
 	LogSystem::Render( );
 	LogSystem::RenderTracers( );
+	LogSystem::RenderTraceResults( );
 	if (vars::visuals::raid_esp) {
 		LogSystem::RenderExplosions( );
 	}
 	float FOV = vars::combat::fov, CurFOV;
-	if (!inited) {
-		LogSystem::Log(xorstr(L"Cheat loaded successfully!"), 7.5f);
-		Beep(500, 100);
-		config.Initialize( );
-		inited = true;
-	}
+	
 	auto entityList = BaseNetworkable::clientEntities( )->entityList( );
 	if (entityList) {
 		for (int i = 0; i < entityList->vals->size; i++) {
@@ -109,15 +110,19 @@ void ent_loop( ) {
 					else {
 						color = D2D1::ColorF::Orange;
 					}
+					ESP(Player, color);
 				}
-				ESP(Player, color);
-				OOF(Player, color);
-
-				if (Player->IsNpc( )) {
+				else if (Player->IsNpc()) {
+					color = D2D1::ColorF::Yellow;
 					if (Player->health( ) > 0) {
 						NPCESP(Player, D2D1::ColorF::Yellow);
 					}
 				}
+				else {
+					color = D2D1::ColorF::Yellow;
+				}
+				OOF(Player, color);
+
 				if (vars::combat::ignore_sleepers && Player->HasFlags(PlayerFlags::Sleeping)) continue;
 				if (vars::combat::ignore_npc && Player->IsNpc( )) continue;
 				if (vars::combat::ignore_team && LocalPlayer::Entity( )->is_teammate(Player->userID( ))) continue;

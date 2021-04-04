@@ -547,3 +547,18 @@ public:
 		str[ size ] = 0;
 	}
 };
+struct TraceResult {
+	float hitDist;
+	Vector3 hitPosition;
+	Vector3 outVelocity;
+	float hitTime;
+	Vector3 current;
+
+	TraceResult( ) {
+		this->hitDist = 0.f;
+		this->hitPosition = Vector3::Zero( );
+		this->outVelocity = Vector3::Zero( );
+		this->hitTime = 0.f;
+		this->current = Vector3::Zero( );
+	}
+};

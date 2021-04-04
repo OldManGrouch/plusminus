@@ -978,7 +978,7 @@ namespace utils {
 			return true;
 
 		float num = Math::Distance_2D(screen_center, screen);
-		return num > 800.f;
+		return num > 1000.f;
 	}
 	Vector3 GetEntityPosition(std::uint64_t entity) {
 		if (!entity) return Vector3::Zero( );

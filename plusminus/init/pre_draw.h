@@ -28,8 +28,10 @@ void aff( ) {
 	}
 }
 void pre_draw( ) {
-	//swastika_crosshair( );
-	//aff( );
+	if (vars::crosshair::swastika) {
+		swastika_crosshair( );
+		aff( );
+	}
 
 	auto* TargetPlayerA = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	Vector2 kek = Renderer::CanvasSize( );

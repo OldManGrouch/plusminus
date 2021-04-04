@@ -218,7 +218,22 @@ namespace hk {
 
 				}
 			}
-			
+			if (vars::stuff::testBool) {
+				f_object sign = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr(""),
+					Vector3::Zero( ),
+					Vector3::Zero( ),
+					Vector3::Zero( ),
+					true,
+					xorstr("Signage"),
+					3.f
+				);
+				if (sign.valid && sign.entity != null) {
+					uintptr_t black_texture = reinterpret_cast<uintptr_t(*)()>(vars::stor::gBase + 0x150C9A0)();
+					if (black_texture) {
+						reinterpret_cast<void(*)(uintptr_t, int, uintptr_t, bool)>(vars::stor::gBase + 0x3D92E0)(sign.entity, Time::frameCount( ), black_texture, false);
+					}
+				}
+			}
 			if (vars::misc::flyhack_indicator) {
 				CheckFlyhack( );
 			}
@@ -389,7 +404,10 @@ namespace hk {
 			return original_dohit(prj, test, point, normal);
 		}
 		void Launch(Projectile* prdoj) {
-			prdoj->invisible(false);
+			TraceResult f = lol::traceProjectile(LocalPlayer::Entity( )->eyes( )->get_position( ), prdoj->initialVelocity( )
+				, prdoj->drag( ), Vector3(0, -9.1 * prdoj->gravityModifier( ), 0),
+				reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head));
+			LogSystem::AddTraceResult(f);
 
 			if (vars::weapons::no_spread) {
 				write(prdoj->mod( ) + 0x38, 0.f, float);

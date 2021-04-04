@@ -137,6 +137,7 @@ private:
 		SetupValue(vars::players::box, false, xorstr("Players"), xorstr("box"));
 		SetupValue(vars::players::boxstyle, 0, xorstr("Players"), xorstr("boxstyle"));
 		SetupValue(vars::players::fillbox, false, xorstr("Players"), xorstr("fillbox"));
+		SetupValue(vars::players::oof_arrows, false, xorstr("Players"), xorstr("oof_arrows"));
 		SetupValue(vars::players::skeleton, false, xorstr("Players"), xorstr("skeleton"));
 		SetupValue(vars::players::healthdist, false, xorstr("Players"), xorstr("healthdist"));
 		SetupValue(vars::players::healthbar, false, xorstr("Players"), xorstr("healthbar"));
@@ -154,6 +155,7 @@ private:
 		SetupValue(vars::npc::name, false, xorstr("NPCs"), xorstr("name"));
 		SetupValue(vars::npc::box, false, xorstr("NPCs"), xorstr("box"));
 		SetupValue(vars::npc::boxstyle, 0, xorstr("NPCs"), xorstr("boxstyle"));
+		SetupValue(vars::npc::oof_arrows, false, xorstr("NPCs"), xorstr("oof_arrows"));
 		SetupValue(vars::npc::fillbox, false, xorstr("NPCs"), xorstr("fillbox"));
 		SetupValue(vars::npc::skeleton, false, xorstr("NPCs"), xorstr("skeleton"));
 		SetupValue(vars::npc::healthdist, false, xorstr("NPCs"), xorstr("healthdist"));
@@ -265,6 +267,7 @@ private:
 		SetupValue(vars::keys::longneck, 0x4D, xorstr("Keys"), xorstr("neck"));
 
 		SetupValue(vars::crosshair::default, false, xorstr("Crosshair"), xorstr("Default"));
+		SetupValue(vars::crosshair::swastika, false, xorstr("Crosshair"), xorstr("Swastika"));
 		SetupValue(vars::crosshair::custom, false, xorstr("Crosshair"), xorstr("Custom"));
 		SetupValue(vars::crosshair::gap, 5.f, xorstr("Crosshair"), xorstr("Gap"));
 		SetupValue(vars::crosshair::length, 5.f, xorstr("Crosshair"), xorstr("Length"));

@@ -64,12 +64,19 @@ public:
 	static inline std::vector<LogEntry> logs = std::vector<LogEntry>();
 	static inline std::vector<Explosion> loggedExplosions = std::vector<Explosion>();
 	static inline std::vector<BulletTracer> bulletTracers = std::vector<BulletTracer>( );
+	static inline std::vector<TraceResult> traceResults = std::vector<TraceResult>( );
 
 	static void Log(std::wstring message, float duration) {
 		if (logs.size() >= max_entries)
 			logs.erase(logs.begin());
 
 		logs.push_back(LogEntry(message, duration));
+	}
+	static void AddTraceResult(TraceResult res) {
+		traceResults.push_back(res);
+
+		if (traceResults.size( ) > 1)
+			traceResults.erase(traceResults.begin( ));
 	}
 	static void AddTracer(Vector3 start, Vector3 end) {
 		bulletTracers.push_back(BulletTracer(start, end));
@@ -114,6 +121,16 @@ public:
 			
 			Vector2 s_pos_start; Vector2 s_pos_end;
 			if (utils::w2s(tracer.start, s_pos_start) && utils::w2s(tracer.end, s_pos_end)) {
+				draw_line(s_pos_start, s_pos_end);
+			}
+		}
+	}
+	static void RenderTraceResults( ) {
+		for (int i = 0; i < traceResults.size( ); i++) {
+			TraceResult tracer = traceResults[ i ];
+
+			Vector2 s_pos_start; Vector2 s_pos_end;
+			if (utils::w2s(tracer.current, s_pos_start) && utils::w2s(tracer.hitPosition, s_pos_end)) {
 				draw_line(s_pos_start, s_pos_end);
 			}
 		}

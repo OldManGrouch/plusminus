@@ -98,9 +98,50 @@ namespace lol {
 		reinterpret_cast<void(*)(uintptr_t, float)>(vars::stor::gBase + CO::StartAttackCooldown)(Held, read(Held + 0x1DC, float));
 		return reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::ProcessAttack)(Held, newHitTest);
 	}
+	// 0, -9.1 * gravityModifier, 0
+	TraceResult traceProjectile(Vector3 position, Vector3 velocity, float drag, Vector3 gravity, Vector3 targetPoint) {
+		constexpr float num = 0.03125f;
+		Vector3 prevPosition = position;
+		Vector3 swagg = position;
+		float prevDist = FLT_MAX;
+		Line resultLine = Line(position, position);
+		float travelTime = 0.f;
+		TraceResult result;
+
+		for (; travelTime < 8.f; ) {
+			prevPosition = position;
+			position += velocity * num;
+
+			swagg = position;
+
+			Line line = Line(prevPosition, position);
+			Vector3 nearest = line.ClosestPoint(targetPoint);
+
+			float dst = (nearest - targetPoint).Length( );
+
+			if (dst > prevDist) {
+				break;
+			}
+			prevDist = dst;
+			resultLine = line;
+
+			velocity += gravity * num;
+			velocity -= velocity * drag * num;
+			travelTime += num;
+		}
+
+		Vector3 hitPos = resultLine.ClosestPoint(targetPoint);
+
+		result.hitDist = (hitPos - targetPoint).Length( );
+		result.hitPosition = hitPos;
+		result.outVelocity = velocity;
+		result.hitTime = travelTime - num;
+		result.current = swagg;
+		return result;
+	};
 	uintptr_t shader;
 	int property;
-	void chams(uintptr_t target, Color col) {
+	void chams(uintptr_t target, Color col, bool npc = false) {
 		if (!vars::players::chams) return;
 		if (target) {
 			if (!property) {
@@ -116,8 +157,15 @@ namespace lol {
 							shader = utils::ShaderFind(Str(xorstr(L"Hidden/Internal-Colored")));
 						reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::set_shader)(material, shader);
 						reinterpret_cast<void(*)(uintptr_t, int, Color)>(vars::stor::gBase + CO::SetColor)(material, property, col);
-						if (vars::players::chams_xqz) {
-							reinterpret_cast<void(*)(uintptr_t, Str, int)>(vars::stor::gBase + CO::SetInt)(material, Str(xorstr(L"_ZTest")), 8);
+						if (!npc) {
+							if (vars::players::chams_xqz) {
+								reinterpret_cast<void(*)(uintptr_t, Str, int)>(vars::stor::gBase + CO::SetInt)(material, Str(xorstr(L"_ZTest")), 8);
+							}
+						}
+						else {
+							if (vars::npc::chams_xqz) {
+								reinterpret_cast<void(*)(uintptr_t, Str, int)>(vars::stor::gBase + CO::SetInt)(material, Str(xorstr(L"_ZTest")), 8);
+							}
 						}
 					}
 				}
@@ -203,6 +251,23 @@ namespace lol {
 		}
 	}
 	void auto_farm_loop(bool weaponmelee, uintptr_t active) {
+		if (vars::misc::auto_pickup) {
+			f_object entity = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head),
+				xorstr("/collectable/"),
+				Vector3::Zero( ),
+				Vector3::Zero( ),
+				Vector3::Zero( ),
+				false
+			);
+			if (entity.valid) {
+				Vector3 local = utils::ClosestPoint(LocalPlayer::Entity( ), entity.position);
+				if (Math::Distance_3D(local, entity.position) < 3.f) {
+					if (reinterpret_cast<BaseEntity*>(entity.entity)->IsValid( )) {
+						utils::ServerRPC(entity.entity, Str(xorstr(L"Pickup")));
+					}
+				}
+			}
+		}
 		if (vars::misc::auto_grade) {
 			f_object building_block = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head),
 				xorstr(""),

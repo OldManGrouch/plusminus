@@ -284,7 +284,7 @@ namespace menu {
 			ImGui::Combo(xorstr("Target Tracer Position"), &vars::players::targetline_pos, target_tracer_pos, IM_ARRAYSIZE(target_tracer_pos));
 			ImGui::PopItemWidth();
 		}
-		HelpCheckbox(xorstr("OOF Arrows"), &vars::players::oof_arrows, xorstr("Draws an arrow to players that are out of your eye FOV range."));
+		HelpCheckbox(xorstr("OOF Indicators"), &vars::players::oof_arrows, xorstr("Draws an indicator to players that are out of your eye FOV range."));
 		HelpCheckbox(xorstr("Chams"), &vars::players::chams, xorstr("Colors player models and their clothes")); ImGui::SameLine(); ImGui::ColorButton(xorstr("Chams##Color"), vars::colors::chams);
 		if (vars::players::chams) {
 			ImGui::Checkbox(xorstr("XQZ Chams"), &vars::players::chams_xqz);
@@ -311,13 +311,18 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Weapon "), &vars::npc::weapon);
 		ImGui::Checkbox(xorstr("Tracers "), &vars::npc::tracers);
+		HelpCheckbox(xorstr("OOF Indicators "), &vars::npc::oof_arrows, xorstr("Draws an indicator to NPC's that are out of your eye FOV range."));
+		ImGui::Checkbox(xorstr("Chams "), &vars::npc::chams);
+		if (vars::npc::chams) {
+			ImGui::Checkbox(xorstr("XQZ Chams "), &vars::npc::chams_xqz);
+		}
 	}
 	void visuals() {
-		
 		ImGui::Checkbox(xorstr("Raids"), &vars::visuals::raid_esp);
 		ImGui::Checkbox(xorstr("Patrol Heli"), &vars::visuals::patrol_heli);
 		ImGui::Checkbox(xorstr("Bradley APC"), &vars::visuals::bradley_apc);
 		ImGui::Checkbox(xorstr("Default Crosshair"), &vars::crosshair::default);
+		ImGui::Checkbox(xorstr("Swastika Crosshair"), &vars::crosshair::swastika);
 		ImGui::Checkbox(xorstr("Custom Crosshair"), &vars::crosshair::custom);
 		if (vars::crosshair::custom) {
 			ImGui::SliderFloat(xorstr("Gap"), &vars::crosshair::gap, 0.f, 50.f);

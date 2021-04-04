@@ -122,6 +122,9 @@ namespace vars {
 		bool fillbox = false;
 	}
 	namespace npc {
+		bool chams_xqz = false;
+		bool chams = false;
+		bool oof_arrows = false;
 		bool box = false;
 		int boxstyle = false;
 		bool skeleton = false;
@@ -255,6 +258,7 @@ namespace vars {
 	}
 	namespace crosshair {
 		bool default = false;
+		bool swastika = false;
 
 		bool custom = false;
 		bool dot = false;

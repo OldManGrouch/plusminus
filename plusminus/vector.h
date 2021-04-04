@@ -585,3 +585,19 @@ public:
 	}
 	float m[ 4 ][ 4 ];
 };
+struct Line {
+public:
+	Vector3 start;
+	Vector3 end;
+	Line(Vector3 s, Vector3 e) {
+		start = s; end = e;
+	}
+	Line( ) { }
+	Vector3 ClosestPoint(Vector3 pos) {
+		Vector3 a = end - start;
+		float magnitude = a.Length( );
+		if (magnitude == 0.f) return start;
+		Vector3 vector = a / magnitude;
+		return start + vector * std::clamp(Vector3(pos - start).dot_product(vector), 0.f, magnitude);
+	}
+};

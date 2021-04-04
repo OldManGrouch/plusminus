@@ -106,6 +106,10 @@ namespace Renderer {
 		SolidColor->SetColor(clr);
 		Canvas->DrawRectangle({middle.x - (sz / 2), middle.y - (szy / 2), middle.x + sz, middle.y + szy}, SolidColor, 1.f);
 	}
+	void RectangleFillPoint(const Vector2 middle, float sz, float szy, const D2D1::ColorF clr) {
+		SolidColor->SetColor(clr);
+		Canvas->FillRectangle({middle.x - (sz / 2), middle.y - (szy / 2), middle.x + sz, middle.y + szy}, SolidColor);
+	}
 	void Triangle(const Vector2 top, const D2D1::ColorF clr, float sz) {
 		Line(top, top + Vector2(sz, sz), clr);
 		Line(top, top - Vector2(sz, -sz), clr);

@@ -84,16 +84,11 @@ namespace radar {
 									Renderer::FillCircle(point, D2D1::ColorF::Red, 2.5f);
 								}
 								else {
-									if (utils::OOF(Player)) {
-										Renderer::FillCircle(point, D2D1::ColorF::HotPink, 2.5f);
+									if (Player->is_visible( )) {
+										Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
 									}
 									else {
-										if (Player->is_visible( )) {
-											Renderer::FillCircle(point, D2D1::ColorF::White, 2.5f);
-										}
-										else {
-											Renderer::FillCircle(point, D2D1::ColorF::DarkGray, 2.5f);
-										}
+										Renderer::FillCircle(point, D2D1::ColorF::DarkGray, 2.5f);
 									}
 								}
 							}
@@ -416,6 +411,7 @@ void CornerBox(float Entity_x, float Entity_y, float Entity_w, float Entity_h, D
 }
 void OOF(BasePlayer* ply, const D2D1::ColorF color) {
 	if (vars::players::sleeperignore && ply->HasFlags(PlayerFlags::Sleeping)) return;
+	if (!vars::npc::oof_arrows && ply->IsNpc( )) return;
 	if (!ply) return;
 	if (!LocalPlayer::Entity( )->isCached( )) return;
 
@@ -426,11 +422,10 @@ void OOF(BasePlayer* ply, const D2D1::ColorF color) {
 			float x = local.z - cachedBones[ ply->userID( ) ]->head->position.z;
 			Vector3 eulerAngles = Math::EulerAngles(LocalPlayer::Entity( )->eyes( )->get_rotation( ));
 			float num = atan2(y, x) * 57.29578f - 180.f - eulerAngles.y;
-			//Renderer::CosTanSinLine(num, 5.f, screen_center.x, screen_center.y, 200.f, color, true, true);//this the function from b4 btw
 			Vector2 point = Renderer::CosTanSinLineH(num, 5.f, screen_center.x, screen_center.y, 200.f);
 
-			Renderer::RectanglePoint(point, vars::stuff::testFloat, vars::stuff::testFloat, color);
-			Renderer::RectanglePoint(point, vars::stuff::testFloat + vars::stuff::testInt, vars::stuff::testFloat + vars::stuff::testInt, D2D1::ColorF::Black);
+			Renderer::RectangleFillPoint(point, 9.f, 9.f, D2D1::ColorF(0.06f, 0.06f, 0.06f, 0.94f));
+			Renderer::RectanglePoint(point, 9.f, 9.f, color);
 		}
 	}
 }
@@ -497,7 +492,7 @@ void ESP(BasePlayer* BP, const D2D1::ColorF color) {
 	if (utils::w2s(cachedBones[ BP->userID( ) ]->r_foot->position, tempFeetR) && utils::w2s(cachedBones[ BP->userID( ) ]->l_foot->position, tempFeetL)) {
 		if (tempFeetR.x == 0 && tempFeetR.y == 0) return;
 		Vector2 tempHead;
-		if (utils::w2s(cachedBones[ BP->userID( ) ]->head->position, tempHead)) {
+		if (utils::w2s(cachedBones[ BP->userID( ) ]->head->position + Vector3(0, 0.2f, 0), tempHead)) {
 			Vector2 tempFeet = (tempFeetR + tempFeetL) / 2.f;
 			float Entity_h = tempHead.y - tempFeet.y;
 			float w = Entity_h / 4;
