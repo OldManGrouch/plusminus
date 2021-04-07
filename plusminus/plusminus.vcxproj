@@ -13,6 +13,7 @@
     <ClInclude Include="hooks/defs.h" />
     <ClInclude Include="logsystem.h" />
     <ClInclude Include="rust.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="stuff/offsets.h" />
     <ClInclude Include="main/aim.h" />
     <ClInclude Include="main/entities.h" />

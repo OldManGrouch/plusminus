@@ -21,18 +21,17 @@ void swastika_crosshair( ) {
 		i++;
 	}
 }
-void aff( ) {
-	Drehungswinkel += 2.f;
-	if (Drehungswinkel >= 90.f) {
-		Drehungswinkel = 0.f;
-	}
-}
+
 void pre_draw( ) {
 	if (vars::crosshair::swastika) {
 		swastika_crosshair( );
-		aff( );
-	}
 
+		Drehungswinkel += 2.f;
+		if (Drehungswinkel >= 90.f) {
+			Drehungswinkel = 0.f;
+		}
+	}
+	
 	auto* TargetPlayerA = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
 	Vector2 kek = Renderer::CanvasSize( );
 	vars::stuff::ScreenWidth = kek.x;
@@ -58,9 +57,6 @@ void pre_draw( ) {
 		Renderer::FillRectangle(Vector2{xs - vars::crosshair::gap + 2, ys}, Vector2{-vars::crosshair::length , 2}, D2D1::ColorF::White); // left
 		Renderer::FillRectangle(Vector2{xs , ys - vars::crosshair::gap + 2}, Vector2{2 , -vars::crosshair::length}, D2D1::ColorF::White); // up
 		Renderer::FillRectangle(Vector2{xs , ys + vars::crosshair::gap}, Vector2{2 , vars::crosshair::length}, D2D1::ColorF::White); // down
-	}
-	if (show) {
-		Renderer::FillRectangle({0, 0}, {(float)vars::stuff::ScreenWidth, (float)vars::stuff::ScreenHeight}, D2D1::ColorF(0, 0, 0, 0.2));
 	}
 	if (vars::combat::visualize_fov) {
 		Renderer::Circle(Vector2{xs, ys}, D2D1::ColorF::White, vars::combat::fov, 1.f);

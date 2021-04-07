@@ -487,7 +487,7 @@ public:
 		uintptr_t Held = this->entity( );
 		if (!Held) return 0;
 
-		uintptr_t Magazine = read(Held + 0x2A0, uintptr_t);
+		uintptr_t Magazine = read(Held + 0x2A8, uintptr_t);
 		if (!Magazine) return 0;
 
 		uintptr_t ammoType = read(Magazine + 0x20, uintptr_t);
@@ -511,46 +511,38 @@ public:
 	void RapidFire( ) {
 		if (vars::weapons::rapid_fire) {
 			DWORD64 heldentity = this->entity( );
-			write(heldentity + 0x1DC, 0.09f, float);
+			write(heldentity + 0x1E4, 0.09f, float);
 		}
 	}
 	void NoSway( ) {
 		DWORD64 Heldd = this->entity( );
 		if (vars::weapons::no_sway) {
-			write(Heldd + 0x2B8, 0.f, float);
-			write(Heldd + 0x2BC, 0.f, float);
+			write(Heldd + 0x2C0, 0.f, float);
+			write(Heldd + 0x2C4, 0.f, float);
 		}
 	}
 	void SetAutomatic( ) {
 		if (vars::weapons::automatic) {
 			DWORD64 Heldd = this->entity( );
-			write(Heldd + 0x270, 1, bool);
-		}
-	}
-	void SetBulletSpeed( ) {
-		DWORD64 Heldd = this->entity( );
-		if (vars::weapons::fast_bullets) {
-			write(Heldd + 0x26C, 1.4, float);
-		}
-		else {
-			write(Heldd + 0x26C, 1, float);
+			write(Heldd + 0x278, 1, bool);
 		}
 	}
 	void FastBow( ) {
 		if (vars::weapons::fastbow) {
 			DWORD64 Heldd = this->entity( );
-			write(Heldd + 0x348, true, bool);
-			write(Heldd + 0x34C, 1.f, float);
+			write(Heldd + 0x350, true, bool);
+			write(Heldd + 0x354, 1.f, float);
 		}
 	}
 	void EokaTap( ) {
 		if (vars::weapons::eokatap) {
 			DWORD64 Heldd = this->entity( );
-			write(Heldd + 0x348, 1.f, float); // successFraction
-			write(Heldd + 0x358, true, bool); // didSparkThisFrame
+			write(Heldd + 0x350, 1.f, float); // successFraction
+			write(Heldd + 0x360, true, bool); // didSparkThisFrame
 		}
 	}
 };
+
 class BasePlayer : public BaseCombatEntity {
 public:
 	const wchar_t* _displayName( ) {
@@ -558,8 +550,8 @@ public:
 		static auto off = OFFSET("Assembly-CSharp::BasePlayer::_displayName");
 		return (*reinterpret_cast<il2cpp::String**>(this + off))->buffer;
 	}
-	PlayerEyes* eyes( ) { return read(this + 0x600, PlayerEyes*); }
-	PlayerTick* lastSentTick( ) { return read(this + 0x5D0, PlayerTick*); }
+	PlayerEyes* eyes( ) { return read(this + 0x640, PlayerEyes*); }
+	PlayerTick* lastSentTick( ) { return read(this + 0x610, PlayerTick*); }
 	FIELD("Assembly-CSharp::BasePlayer::userID", userID, uint64_t);
 	bool isCached( ) {
 		return map_contains_key(cachedBones, this->userID( ));
@@ -579,32 +571,26 @@ public:
 	}
 
 	void set_viewangles(const Vector2& VA) {
-		DWORD64 Input = read(this + 0x4C8, DWORD64);
+		DWORD64 Input = read(this + 0x4D0, DWORD64);
 		write(Input + 0x3C, VA, Vector2);
 	}
 	Vector2 viewangles( ) {
-		DWORD64 Input = read(this + 0x4C8, DWORD64);
+		DWORD64 Input = read(this + 0x4D0, DWORD64);
 		return read(Input + 0x3C, Vector2);
 	}
 	Vector3 newVelocity( ) {
-		DWORD64 PlayerModel = read(this + 0x4A8, DWORD64);
+		DWORD64 PlayerModel = read(this + 0x4B0, DWORD64);
 		return read(PlayerModel + 0x1FC, Vector3);
 	}
 	float GetHealth( ) {
 		return this->health( );
 	}
 	bool IsNpc( ) {
-		DWORD64 PlayerModel = read(this + 0x4A8, DWORD64);
+		DWORD64 PlayerModel = read(this + 0x4B0, DWORD64);
 		return read(PlayerModel + 0x2C0, bool);
 	}
-	bool is_alive( ) {
-		if (!this) return false;
-		Lifestate lifestate = read(this + 0x204, Lifestate);
-		if (!lifestate) return false;
-		return lifestate == Lifestate::Alive;
-	}
 	ULONG64 mono_transform(int bone) {
-		DWORD64 entity_model = read(this + 0x118, DWORD64);
+		DWORD64 entity_model = read(this + 0x120, DWORD64);
 		DWORD64 bone_dict = read(entity_model + 0x48, DWORD64);
 		DWORD64 val = read(bone_dict + 0x20 + bone * 0x8, DWORD64);
 		return val;
@@ -623,24 +609,27 @@ public:
 		write(static_fields + 0x28, 1.f, float);
 	}
 	bool HasFlags(int Flg) {
-		return (read(this + 0x5F8, int) & Flg);
+		return (read(this + 0x638, int) & Flg);
 	}
+
+	FIELD("Assembly-CSharp::Model::boneTransforms", boneTransforms, Array<Transform*>*);
+	FIELD("Assembly-CSharp::Model::boneNames", boneNames, Array<il2cpp::String*>*);
+
 	Vector3 get_bone_pos(BoneList bone) {
-		uintptr_t player_model = read(this + 0x118, uintptr_t);
-		uintptr_t boneTransforms = read(player_model + 0x48, uintptr_t);
-		uintptr_t BoneValue = read(boneTransforms + 0x20 + bone * 0x8, uintptr_t);
-		uintptr_t transform = read(BoneValue + 0x10, uintptr_t);
+		uintptr_t player_model = read(this + 0x120, uintptr_t);// public Model model
+		uintptr_t boneTransforms = read(player_model + 0x48, uintptr_t);//public Transform[] boneTransforms;
+		Transform* transform = read(boneTransforms + 0x20 + bone * 0x8, Transform*);
+		//const Transform* transform = read(BoneValue + 0x10, Transform*);
 
 		if (!transform)
 			return Vector3::Zero( );
-		Vector3 pos = Vector3::Zero( );
-		static auto get_position = reinterpret_cast<void(__fastcall*)(DWORD64, Vector3&)>(std::uint64_t(vars::stor::uBase + 0xDD2160));
-		get_position(transform, pos);
-		return pos;
+		//Vector3 pos = Vector3::Zero( );
+		//static auto get_position = reinterpret_cast<void(__fastcall*)(Transform*, Vector3&)>(std::uint64_t(vars::stor::uBase + 0xDD2160));
+		//get_position(transform, pos);
+		return transform->position( );
 	}
-	bool OOF( );
 	DWORD64 GetTeammateByPos(int Id) {
-		DWORD64 ClientTeam = read(this + 0x540, DWORD64);
+		DWORD64 ClientTeam = read(this + 0x580, DWORD64);
 		DWORD64 members = read(ClientTeam + 0x30, DWORD64);
 		DWORD64 List = read(members + 0x10, DWORD64);
 		DWORD64 player = read(List + 0x20 + (Id * 0x8), DWORD64);
@@ -661,17 +650,17 @@ public:
 		return reinterpret_cast<bool(*)()>(vars::stor::gBase + CO::cursor_get_visible)();
 	}
 	void add_modelstate_flag(ModelStateFlag flag) {
-		DWORD64 mstate = read(this + 0x588, DWORD64);
+		DWORD64 mstate = read(this + 0x5C8, DWORD64);
 		int flags = read(mstate + 0x24, int);
 		write(mstate + 0x24, flags |= (int)flag, int);
 	}
 	void remove_modelstate_flag(ModelStateFlag flag) {
-		DWORD64 mstate = read(this + 0x588, DWORD64);
+		DWORD64 mstate = read(this + 0x5C8, DWORD64);
 		int flags = read(mstate + 0x24, int);
 		write(mstate + 0x24, flags &= (int)flag, int);
 	}
 	bool has_modelstate_flag(ModelStateFlag flag) {
-		DWORD64 mstate = read(this + 0x588, DWORD64);
+		DWORD64 mstate = read(this + 0x5C8, DWORD64);
 		int flags = read(mstate + 0x24, int);
 		return flags & (int)flag;
 	}
@@ -680,52 +669,38 @@ public:
 	}
 
 	bool GetKeyState(Button b) {
-		DWORD64 InputState = read(read(this + 0x4C8, DWORD64) + 0x20, DWORD64);
+		DWORD64 InputState = read(read(this + 0x4D0, DWORD64) + 0x20, DWORD64);
 		DWORD64 Cur = read(InputState + 0x10, DWORD64);
 		if (!Cur) return false;
 		int btn = read(Cur + 0x14, int);
 		return ((btn & (int)b) == (int)b);
 	}
-	void force_key_state(Button b) {
-		DWORD64 InputState = read(read(this + 0x4C8, DWORD64) + 0x20, DWORD64);
-		DWORD64 Cur = read(InputState + 0x10, DWORD64);
-		if (!Cur) return;
-		int btn = read(Cur + 0x14, int);
-		write(Cur + 0x14, btn |= (int)b, int);
-	}
-	void free_key_state(Button b) {
-		DWORD64 InputState = read(read(this + 0x4C8, DWORD64) + 0x20, DWORD64);
-		DWORD64 Cur = read(InputState + 0x10, DWORD64);
-		if (!Cur) return;
-		int btn = read(Cur + 0x14, int);
-		write(Cur + 0x14, btn &= (int)b, int);
-	}
 	Item* GetWeaponInfo(int Id) {
-		DWORD64 Inventory = read(this + 0x608, DWORD64);
+		DWORD64 Inventory = read(this + 0x648, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x28, DWORD64); // containerBelt
 		DWORD64 ItemList = read(Belt + 0x38, DWORD64);// public List<Item> itemList;
 		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
 		return (Item*)read(Items + 0x20 + (Id * 0x8), DWORD64);
 	}
 	List<Item*>* item_list_b( ) {
-		DWORD64 Inventory = read(this + 0x608, DWORD64);
+		DWORD64 Inventory = read(this + 0x648, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x28, DWORD64); // containerBelt
 		return read(Belt + 0x38, List<Item*>*);// public List<Item> itemList;
 	}
 	Item* GetClothesInfo(int Id) {
-		DWORD64 Inventory = read(this + 0x608, DWORD64);
+		DWORD64 Inventory = read(this + 0x648, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x30, DWORD64); // containerWear
 		DWORD64 ItemList = read(Belt + 0x38, DWORD64);// public List<Item> itemList;
 		DWORD64 Items = read(ItemList + 0x10, DWORD64); //	public List<InventoryItem.Amount> items;
 		return (Item*)read(Items + 0x20 + (Id * 0x8), DWORD64);
 	}
 	List<Item*>* item_list_w( ) {
-		DWORD64 Inventory = read(this + 0x608, DWORD64);
+		DWORD64 Inventory = read(this + 0x648, DWORD64);
 		DWORD64 Belt = read(Inventory + 0x30, DWORD64); // containerWear
 		return read(Belt + 0x38, List<Item*>*);// public List<Item> itemList;
 	}
 	Item* GetActiveWeapon( ) {
-		int ActUID = read(this + 0x570, int);
+		int ActUID = read(this + 0x5B0, int);
 		if (!ActUID) return nullptr;
 		Item* ActiveWeapon;
 		for (int i = 0; i < 6; i++)
@@ -734,14 +709,14 @@ public:
 		return nullptr;
 	}
 	float lastSentTickTime( ) {
-		return read(this + 0x5CC, float);
+		return read(this + 0x60C, float);
 	}
 	void FakeAdmin( ) {
-		int Flags = read(this + 0x5F8, int);
-		write(this + 0x5F8, (Flags |= 4), int);
+		int Flags = read(this + 0x638, int);
+		write(this + 0x638, (Flags |= 4), int);
 	}
 	void SetGravity(float val) {
-		DWORD64 Movement = read(this + 0x4D0, DWORD64);
+		DWORD64 Movement = read(this + 0x4D8, DWORD64);
 		write(Movement + 0x74, val, float);
 	}
 };
@@ -1028,6 +1003,7 @@ namespace utils {
 class Model : public Component {
 public:
 	FIELD("Assembly-CSharp::Model::boneTransforms", boneTransforms, Array<Transform*>*);
+	//FIELD("Assembly-CSharp::BoneDictionary::hashDict", hashDict, List<int, Transform*>*);
 	FIELD("Assembly-CSharp::Model::boneNames", boneNames, Array<il2cpp::String*>*);
 
 	Bone* resolve(uint32_t hash) {
@@ -1042,7 +1018,7 @@ public:
 			auto bone_name = bone_names->get(i);
 			auto bone_transform = bone_transforms->get(i);
 			if (!bone_name || !bone_transform) continue;
-
+			
 			if (RUNTIME_CRC32_W(bone_name->buffer) == hash/*wcscmp(bone_name->buffer, name) == 0*/)
 				return new Bone(bone_transform->position( ), utils::LineOfSight(bone_transform->position( ), LocalPlayer::Entity( )->eyes()->get_position()));
 		}

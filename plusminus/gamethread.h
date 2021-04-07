@@ -39,9 +39,8 @@ void game_thread_loop() {
 				if (!lol) continue;
 
 				if (vars::players::chams) {
-					uintptr_t playermodel = read(Entity + 0x4A8, uintptr_t);
+					uintptr_t playermodel = read(Entity + 0x4B0, uintptr_t);
 					uintptr_t multimesh = read(playermodel + 0x280, uintptr_t);
-
 					if (playermodel != null && multimesh != null) {
 						if (!lol->IsNpc( )) {
 							if (lol->health( ) > 0) {
@@ -72,7 +71,7 @@ void game_thread_loop() {
 						lol::pickup_player((BasePlayer*)Entity);
 					}
 					if (vars::misc::insta_revive && (BasePlayer*)Entity && lol->HasFlags(PlayerFlags::Wounded) && Math::Distance_3D(local, utils::GetEntityPosition(gameObject)) < 3.f && LocalPlayer::Entity()->GetKeyState(Button::USE)
-						&& read(LocalPlayer::Entity() + 0x4E8, uintptr_t) == Entity) {
+						&& read(LocalPlayer::Entity() + 0x4F0, uintptr_t) == Entity) {
 						lol::pickup_player((BasePlayer*)Entity);
 					}
 				}

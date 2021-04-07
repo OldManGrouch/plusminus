@@ -129,9 +129,10 @@ public:
 		for (int i = 0; i < traceResults.size( ); i++) {
 			TraceResult tracer = traceResults[ i ];
 
-			Vector2 s_pos_start; Vector2 s_pos_end;
-			if (utils::w2s(tracer.current, s_pos_start) && utils::w2s(tracer.hitPosition, s_pos_end)) {
-				draw_line(s_pos_start, s_pos_end);
+			Vector2 s_pos_end;
+			if (utils::w2s(tracer.hitPosition, s_pos_end)) {
+				//draw_line(s_pos_start, s_pos_end);
+				Renderer::Circle(s_pos_end, D2D1::ColorF::Blue, 5.f);
 			}
 		}
 	}

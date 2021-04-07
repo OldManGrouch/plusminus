@@ -529,6 +529,11 @@ public:
 
 		return *reinterpret_cast<T*>(this + (0x20 + (idx * 0x8)));
 	}
+	T gett(int idx) {
+		if (!this) return T{};
+
+		return *reinterpret_cast<T*>(this + 0x20 + idx * 0x8);
+	}
 };
 
 
@@ -552,13 +557,11 @@ struct TraceResult {
 	Vector3 hitPosition;
 	Vector3 outVelocity;
 	float hitTime;
-	Vector3 current;
 
 	TraceResult( ) {
 		this->hitDist = 0.f;
 		this->hitPosition = Vector3::Zero( );
 		this->outVelocity = Vector3::Zero( );
 		this->hitTime = 0.f;
-		this->current = Vector3::Zero( );
 	}
 };

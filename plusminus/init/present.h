@@ -36,6 +36,10 @@ HRESULT present_hook(IDXGISwapChain* swapChain, UINT SyncInterval, UINT Flags) {
 		ImGui::CreateContext( );
 		ImGui_ImplWin32_Init(game_window);
 		ImGui_ImplDX11_Init(device, immediate_context);
+		int LogoWidth = 16;
+		int LogoHeight = 16;
+		bool ImageLoaded = Renderer::LoadTextureFromFile(xorstr("D:\\SteamLibrary\\steamapps\\common\\Rust\\Bundles\\items\\rifle.ak.png"), &logo, &LogoWidth, &LogoHeight);
+		IM_ASSERT(ImageLoaded);
 		Renderer::InitRender(swapChain);
 		menu::style( );
 	}

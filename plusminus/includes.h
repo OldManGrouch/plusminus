@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #define noauth
+//#define disable
 
 #include <stdint.h>
 #include <Windows.h>

@@ -205,7 +205,7 @@ namespace menu {
 			ImGui::PushItemWidth(100);
 			ImGui::Combo(xorstr("pSilent Targeting"), &vars::combat::psilenttarget, psilent_targeting, IM_ARRAYSIZE(psilent_targeting));
 			ImGui::PopItemWidth();
-			ImGui::Checkbox(xorstr("Autoshoot"), &vars::combat::psilent_autoshoot);
+			//ImGui::Checkbox(xorstr("Autoshoot"), &vars::combat::psilent_autoshoot);
 			ImGui::Checkbox(xorstr("On Key"), &vars::combat::psilentonkey);
 			if (vars::combat::psilentonkey) {
 				Hotkey(xorstr("pSilent Key"), &vars::keys::psilent, ImVec2(120.f, 0));
@@ -435,6 +435,7 @@ namespace menu {
 		}
 		if (ImGui::CollapsingHeader(xorstr("Automation"))) {
 			HelpCheckbox(xorstr("FarmBot"), &vars::misc::farmbot, xorstr("Automatically walks to nearest ore."));
+			HelpCheckbox(xorstr("EggBot"), &vars::misc::egg_bot, xorstr("Automatically walks to nearest egg and picks it up."));
 			HelpCheckbox(xorstr("Auto Farm Barrels"), &vars::misc::auto_farm_barrel, xorstr("Will automatically hit barrels when you are close to them with a melee weapon"));
 			HelpCheckbox(xorstr("Auto Farm Ores"), &vars::misc::auto_farm_ore, xorstr("Will automatically hit ore hotspots when you are close to them with a melee weapon"));
 			HelpCheckbox(xorstr("Auto Farm Trees"), &vars::misc::auto_farm_tree, xorstr("Will automatically hit trees when you are close to them with a melee weapon, hit the tree to start automatically hitting it. Keep in mind, you need to have line of sight with the hitmarker!"));
@@ -503,7 +504,10 @@ namespace menu {
 		}
 		ImGui::Checkbox(xorstr("Developer Mode [don't touch]"), &vars::stuff::debugtab);
 		if (vars::stuff::debugtab) {
-			ImGui::SliderFloat(xorstr("float"), &vars::stuff::testFloat, 0.f, 500.f);
+			ImGui::SliderFloat(xorstr("float1"), &vars::stuff::testFloat, 0.f, 500.f);
+			ImGui::SliderFloat(xorstr("float2"), &vars::stuff::testFloat1, 0.f, 500.f);
+			ImGui::SliderFloat(xorstr("float3"), &vars::stuff::testFloat2, 0.f, 500.f);
+			ImGui::SliderFloat(xorstr("float4"), &vars::stuff::testFloat3, 0.f, 500.f);
 			ImGui::Checkbox(xorstr("bool"), &vars::stuff::testBool);
 			ImGui::SliderInt(xorstr("int"), &vars::stuff::testInt, 0, 100);
 			ImGui::InputText(xorstr("char"), vars::stuff::testChar, 0x100);

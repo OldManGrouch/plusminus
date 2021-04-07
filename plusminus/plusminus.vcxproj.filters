@@ -175,6 +175,9 @@
     <ClInclude Include="config/config.h">
       <Filter>source\main\core\main</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>source\main\render\menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

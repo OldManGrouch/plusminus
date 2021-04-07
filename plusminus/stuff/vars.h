@@ -29,6 +29,9 @@ namespace vars {
 		bool debugtab = false;
 		int testInt = 0;
 		float testFloat = 0.f;
+		float testFloat1 = 0.f;
+		float testFloat2 = 0.f;
+		float testFloat3 = 0.f;
 		bool testBool = false;
 		char testChar[0x100] = "testyvesty";
 		char testChar2[0x100] = "testyvesty";
@@ -240,6 +243,7 @@ namespace vars {
 		bool annoyer = false;
 		bool bright_ambient = false;
 		bool auto_farm_barrel = false;
+		bool egg_bot = false;
 		bool auto_pickup = false;
 		bool spoof_ladderstate = false;
 		bool anti_aim = false;

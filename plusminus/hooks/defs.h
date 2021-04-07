@@ -98,7 +98,7 @@ namespace hk_defs {
 	typedef pUncStr(__fastcall* consoleRun)(ConsoleOptions*, pUncStr, DWORD64);
 	inline consoleRun original_consolerun{ };
 
-	typedef void(__fastcall* viewmodelPlay)(ViewModel*, pUncStr);
+	typedef void(__fastcall* viewmodelPlay)(ViewModel*, pUncStr, int);
 	inline viewmodelPlay original_viewmodelplay{ };
 
 	typedef bool(__fastcall* cancan)(BaseMountable*);

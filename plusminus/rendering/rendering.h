@@ -1,12 +1,20 @@
 
-#include <d2d1.h>
+#include <memory>
+#include <D3D11.h>
+#include <d3d9.h>
+#include <D2D1.h>
+#include <unordered_map>
 #include <dwrite_1.h>
-#include <intrin.h>
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "dwrite.lib")
+#include <string_view>
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "stb_image.h"
+#pragma comment( lib, "dxgi" )
+#pragma comment( lib, "d2d1" )
+#pragma comment( lib, "dcomp" )
+#pragma comment( lib, "dwrite" )
 #define RET_CHK(x) if ( x != S_OK ) return
+
+ID3D11ShaderResourceView * logo = NULL;
 
 namespace Renderer {
 	ID2D1Factory* Interface;
@@ -115,6 +123,7 @@ namespace Renderer {
 		Line(top, top - Vector2(sz, -sz), clr);
 		Line(top + Vector2(sz, sz), top - Vector2(sz, -sz), clr);
 	}
+
 	Vector2 CosTanSinLineH(float flAngle, float range, int x, int y, int LineLength) {
 		float nigga = flAngle;
 		nigga += 45.f;
@@ -160,6 +169,50 @@ namespace Renderer {
 			FillCircle(Vector2(posonscreenX, posonscreenY), D2D1::ColorF::Black, 5.35f);
 		}
 		FillCircle(Vector2(posonscreenX, posonscreenY), Clr, 4);//P.S this is the small dot at the end of each line!!!!!!!!!XD
+	}
+	bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height) {
+		// Load from disk into a raw RGBA buffer
+		int image_width = 0;
+		int image_height = 0;
+		unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+		if (image_data == NULL)
+			return false;
+
+		// Create texture
+		D3D11_TEXTURE2D_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Width = image_width;
+		desc.Height = image_height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+
+		ID3D11Texture2D* pTexture = NULL;
+		D3D11_SUBRESOURCE_DATA subResource;
+		subResource.pSysMem = image_data;
+		subResource.SysMemPitch = desc.Width * 4;
+		subResource.SysMemSlicePitch = 0;
+		device->CreateTexture2D(&desc, &subResource, &pTexture);
+
+		// Create texture view
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory(&srvDesc, sizeof(srvDesc));
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = desc.MipLevels;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		device->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+		pTexture->Release( );
+
+		*out_width = image_width;
+		*out_height = image_height;
+		stbi_image_free(image_data);
+
+		return true;
 	}
 	template <typename ...Args>
 	void Text(const Vector2 pos, const D2D1::ColorF clr, bool center, bool outline, const std::wstring_view text, Args&&... args) {

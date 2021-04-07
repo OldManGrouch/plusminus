@@ -36,7 +36,7 @@ void misc_set( ) {
 	Item* weapon = LocalPlayer::Entity( )->GetActiveWeapon( );
 	if ((weapon->GetID( ) == 1079279582 || weapon->GetID( ) == -2072273936) && vars::misc::faster_healing) {
 		DWORD64 Held = weapon->entity( );
-		bool deployed = read(Held + 0x188, bool);
+		bool deployed = read(Held + 0x190, bool);
 		float curtime = LocalPlayer::Entity( )->lastSentTickTime( );
 		if (LocalPlayer::Entity( )->GetKeyState(Button::FIRE_PRIMARY) && deployed && curtime > w_last_syringe + 0.7f) {
 			reinterpret_cast<void(_stdcall*)(DWORD64, Str)>(vars::stor::gBase + CO::ServerRPC)(Held, Str(xorstr(L"UseSelf")));
@@ -57,7 +57,7 @@ void misc_set( ) {
 		write(static_fields + 0x18, vars::misc::fov, float);
 	}
 	if (vars::misc::spiderman) {
-		uintptr_t Movement = read(LocalPlayer::Entity( ) + 0x4D0, uintptr_t);
+		uintptr_t Movement = read(LocalPlayer::Entity( ) + 0x4D8, uintptr_t);
 		write(Movement + 0xB8, 0.f, float);
 	}
 	LocalPlayer::Entity( )->PatchCamspeed( );
@@ -68,8 +68,8 @@ namespace lol {
 	void do_attack(f_object target, uintptr_t Held, bool transform) {
 		if (!target.valid || !Held) return;
 
-		if (read(Held + 0x230, float) >= Time::time( )) { return; }
-		if (read(Held + 0x23C, float) < read(Held + 0x1D8, float)) { return; }
+		if (read(Held + 0x238, float) >= Time::time( )) { return; }
+		if (read(Held + 0x244, float) < read(Held + 0x1E0, float)) { return; }
 
 		uintptr_t staticHitTest = read(vars::stor::gBase + CO::HitTest, DWORD64); if (!staticHitTest) return;
 		uintptr_t newHitTest = il2cpp::il2cpp_object_new(staticHitTest); if (!newHitTest) return;
@@ -94,15 +94,14 @@ namespace lol {
 		write(newHitTest + 0x88, reinterpret_cast<BasePlayer*>(target.entity), BasePlayer*);
 		write(newHitTest + 0x90, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
 		write(newHitTest + 0x9C, reinterpret_cast<Transform*>(trans)->InverseTransformPoint(target.position), Vector3);
-		write(newHitTest + 0x68, read(Held + 0x268, uintptr_t), uintptr_t);
-		reinterpret_cast<void(*)(uintptr_t, float)>(vars::stor::gBase + CO::StartAttackCooldown)(Held, read(Held + 0x1DC, float));
+		write(newHitTest + 0x68, read(Held + 0x270, uintptr_t), uintptr_t);
+		reinterpret_cast<void(*)(uintptr_t, float)>(vars::stor::gBase + CO::StartAttackCooldown)(Held, read(Held + 0x1E4, float));
 		return reinterpret_cast<void(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + CO::ProcessAttack)(Held, newHitTest);
 	}
 	// 0, -9.1 * gravityModifier, 0
 	TraceResult traceProjectile(Vector3 position, Vector3 velocity, float drag, Vector3 gravity, Vector3 targetPoint) {
 		constexpr float num = 0.03125f;
 		Vector3 prevPosition = position;
-		Vector3 swagg = position;
 		float prevDist = FLT_MAX;
 		Line resultLine = Line(position, position);
 		float travelTime = 0.f;
@@ -111,8 +110,6 @@ namespace lol {
 		for (; travelTime < 8.f; ) {
 			prevPosition = position;
 			position += velocity * num;
-
-			swagg = position;
 
 			Line line = Line(prevPosition, position);
 			Vector3 nearest = line.ClosestPoint(targetPoint);
@@ -136,7 +133,6 @@ namespace lol {
 		result.hitPosition = hitPos;
 		result.outVelocity = velocity;
 		result.hitTime = travelTime - num;
-		result.current = swagg;
 		return result;
 	};
 	uintptr_t shader;
