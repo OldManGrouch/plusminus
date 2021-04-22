@@ -276,7 +276,7 @@ namespace otherEsp {
 					float distance = Math::Distance_3D(LocalPlayer::Entity( )->get_bone_pos(head), pos);
 					Vector2 screen;
 					if (utils::w2s(pos, screen)) {
-						uintptr_t timerText = read(crate + 0x440, uintptr_t);
+						uintptr_t timerText = read(crate + 0x448, uintptr_t);
 						auto* m_Text = reinterpret_cast<pUncStr>(read(timerText + 0xD0, DWORD64));
 						D2D1::ColorF color = D2D1::ColorF::OrangeRed;
 						if (!((IsFullyHacked)(vars::stor::gBase + CO::IsFullyHacked))(crate)) {

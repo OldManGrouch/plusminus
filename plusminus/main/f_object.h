@@ -4,6 +4,7 @@ public:
 	DWORD64 entity;
 	Vector3 position;
 	float dist = 10000.f;
+	bool visible = false;
 
 	bool operator<(const f_object& b) { return this->dist < b.dist; }
 	bool operator>(const f_object& b) { return this->dist > b.dist; }
@@ -17,7 +18,7 @@ public:
 		this->position = target;
 	}
 
-	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr(""), float get_dist = 99999.f) {
+	static f_object get_closest_object(Vector3 from, const char* namee, Vector3 ignore = Vector3::Zero(), Vector3 ignore2 = Vector3::Zero(), Vector3 ignore3 = Vector3::Zero(), bool classname = false, const char* classnamee = xorstr(""), float get_dist = 99999.f, bool vis = false, bool y = false) {
 		f_object lowest = f_object();
 
 		auto entityList = BaseNetworkable::clientEntities()->entityList();
@@ -50,11 +51,24 @@ public:
 						uintptr_t a = read(ObjectClass + 0x30, UINT64);
 						float dist = Math::Distance_3D(utils::GetEntityPosition(a), from);
 						if (utils::GetEntityPosition(a) != ignore && utils::GetEntityPosition(a) != ignore2 && utils::GetEntityPosition(a) != ignore3) {
-							res.valid = dist <= get_dist;
-							res.dist = dist;
-							res.entity = Entity;
-							res.position = utils::GetEntityPosition(a);
-							if (res < lowest) lowest = res;
+							if (vis ? utils::LineOfSight(utils::GetEntityPosition(a), from) : true) {
+								if (y) {
+									if (utils::GetEntityPosition(a).y > 0) {
+										res.valid = dist <= get_dist;
+										res.dist = dist;
+										res.entity = Entity;
+										res.position = utils::GetEntityPosition(a);
+										if (res < lowest) lowest = res;
+									}
+								}
+								else {
+									res.valid = dist <= get_dist;
+									res.dist = dist;
+									res.entity = Entity;
+									res.position = utils::GetEntityPosition(a);
+									if (res < lowest) lowest = res;
+								}
+							}
 						}
 					}
 				}

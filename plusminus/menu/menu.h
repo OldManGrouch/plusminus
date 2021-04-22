@@ -509,6 +509,8 @@ namespace menu {
 			ImGui::SliderFloat(xorstr("float3"), &vars::stuff::testFloat2, 0.f, 500.f);
 			ImGui::SliderFloat(xorstr("float4"), &vars::stuff::testFloat3, 0.f, 500.f);
 			ImGui::Checkbox(xorstr("bool"), &vars::stuff::testBool);
+			ImGui::Checkbox(xorstr("bool2"), &vars::stuff::testBool2);
+			ImGui::Checkbox(xorstr("bool3"), &vars::stuff::testBool3);
 			ImGui::SliderInt(xorstr("int"), &vars::stuff::testInt, 0, 100);
 			ImGui::InputText(xorstr("char"), vars::stuff::testChar, 0x100);
 		}

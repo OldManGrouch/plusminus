@@ -362,22 +362,17 @@ void TestFlying( ) {
 	bool inAir = false;
 	float radius = reinterpret_cast<float(*)(BasePlayer*)>(vars::stor::gBase + CO::GetRadius)(LocalPlayer::Entity( ));
 	float height = reinterpret_cast<float(*)(BasePlayer*, bool)>(vars::stor::gBase + CO::GetHeight)(LocalPlayer::Entity( ), false);
-	Vector3 vector = (LocalPlayer::Entity( )->lastSentTick( )->position( ) + read(read(LocalPlayer::Entity( ) + 0x4A8, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
+	Vector3 vector = (LocalPlayer::Entity( )->lastSentTick( )->position( ) + read(read(LocalPlayer::Entity( ) + 0x4B0, uintptr_t) + 0x1D8, Vector3)) * 0.5f;
 	Vector3 vector2 = vector + Vector3(0.f, radius - 2.f, 0.f);
 	Vector3 vector3 = vector + Vector3(0.f, height - radius, 0.f);
 	float radius2 = radius - 0.05f;
-	bool a = reinterpret_cast<bool(*)(Vector3, Vector3, float, int, QueryTriggerInteraction)>(vars::stor::gBase + CO::CheckCapsule)(
-		vector2,
-		vector3,
-		radius2,
-		1503731969,
-		QueryTriggerInteraction::Ignore);
+	bool a = Physics::CheckCapsule(vector2, vector3, radius2, 1503731969, QueryTriggerInteraction::Ignore);
 	inAir = !a;
 
 	if (inAir) {
 		bool flag = false;
 
-		Vector3 vector4 = read(read(LocalPlayer::Entity( ) + 0x4A8, uintptr_t) + 0x1D8, Vector3) - LocalPlayer::Entity( )->lastSentTick( )->position( );
+		Vector3 vector4 = read(read(LocalPlayer::Entity( ) + 0x4B0, uintptr_t) + 0x1D8, Vector3) - LocalPlayer::Entity( )->lastSentTick( )->position( );
 		float num3 = Mathf::Abs(vector4.y);
 		float num4 = reinterpret_cast<float(*)(Vector3)>(vars::stor::gBase + CO::Magnitude2D)(vector4);
 		if (vector4.y >= 0.f) {
@@ -441,7 +436,7 @@ void CheckFlyhack( ) {
 					sheesh += Vector3(0, 0, 1);
 				}
 				if (back) {
-					sheesh += Vector3(0, 0, -1);
+					sheesh += Vector3(0, 0, -1);do
 				}
 				if (up) {
 					sheesh += Vector3(0, 1, 0);
@@ -452,3 +447,33 @@ void CheckFlyhack( ) {
 
 				*reinterpret_cast<Vector3*>(LocalPlayer::Entity( )->eyes( ) + 0x38) = sheesh;
 			}*/
+			//if (vars::stuff::testBool && vars::stor::closestPlayer != null) {
+						//	uintptr_t mag = read(LocalPlayer::Entity( )->GetActiveWeapon( )->entity( ) + 0x2A8, uintptr_t);
+						//	if (mag == null) { LogSystem::Log(xorstr(L"mag == null"), 5.f); }
+
+						//	uintptr_t ammotype = read(mag + 0x20, uintptr_t);
+						//	if (ammotype == null) { LogSystem::Log(xorstr(L"ammotype == null"), 5.f); }
+
+						//	uintptr_t component = reinterpret_cast<uintptr_t(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + 0x102AF10)(
+						//		ammotype,
+						//		read(vars::stor::gBase + 0x3194970, uintptr_t)); // ItemModProjectile
+						//	if (component == null) { LogSystem::Log(xorstr(L"component == null"), 5.f); }
+
+						//	uintptr_t v70 = read(component + 0x18, uintptr_t);
+						//	if (v70 == null) { LogSystem::Log(xorstr(L"v70 == null"), 5.f); }
+
+						//	uintptr_t v71 = reinterpret_cast<uintptr_t(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + 0x8EBAA0)(v70,
+						//		read(vars::stor::gBase + 0x3189118, uintptr_t));
+						//	if (v71 == null) { LogSystem::Log(xorstr(L"v71 == null"), 5.f); }
+
+						//	uintptr_t v73 = reinterpret_cast<uintptr_t(*)(uintptr_t, uintptr_t)>(vars::stor::gBase + 0x10315E0)(v71,
+						//		read(vars::stor::gBase + 0x318D9B8, uintptr_t));
+						//	if (v73 == null) { LogSystem::Log(xorstr(L"v73 == null"), 5.f); }
+
+						//	Projectile* prrrr = reinterpret_cast<Projectile*>(v73);
+
+						//	TraceResult f = lol::traceProjectile(LocalPlayer::Entity( )->eyes( )->get_position( ), prrrr->initialVelocity( )
+						//		, prrrr->drag( ), Vector3(0, -9.1 * prrrr->gravityModifier( ), 0),
+						//		reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer)->get_bone_pos(head));
+						//	LogSystem::AddTraceResult(f);
+						//}

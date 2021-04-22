@@ -69,13 +69,13 @@ public:
 	Vector3 InverseTransformPoint(Vector3 position) {
 		if (!this) return Vector3::Zero( );
 		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformPoint(Vector3): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
+		return SafeExecution::Execute<Vector3>(off, Vector3::Zero( ), this, position);
 	}
 
 	Vector3 InverseTransformDirection(Vector3 position) {
 		if (!this) return Vector3::Zero( );
 		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Transform::InverseTransformDirection(Vector3): Vector3");
-		return reinterpret_cast<Vector3(__fastcall*)(Transform*, Vector3)>(off)(this, position);
+		return SafeExecution::Execute<Vector3>(off, Vector3::Zero( ), this, position);
 	}
 };
 class GameObject {
@@ -91,10 +91,7 @@ public:
 };
 class Type {
 public:
-	static Type* GetType( ) {
-		static auto off = METHOD("mscorlib::System::Type::GetType(String): Type");
-		return reinterpret_cast<Type * (__cdecl*)(Str)>(off)(Str(L"ItemModProjectile, Assembly-CSharp"));
-	}
+	
 };
 class Component : public Object {
 public:
@@ -107,7 +104,7 @@ public:
 	GameObject* gameObject( ) {
 		if (!this) return nullptr;
 		static auto off = METHOD("UnityEngine.CoreModule::UnityEngine::Component::get_gameObject(): GameObject");
-		return reinterpret_cast<GameObject * (__fastcall*)(Component*)>(off)(this);
+		return SafeExecution::Execute<GameObject*>(off, nullptr, this);
 	}
 };
 class Bone {
@@ -287,6 +284,9 @@ public:
 	STATIC_FUNCTION("UnityEngine.PhysicsModule::UnityEngine::Physics::get_gravity(): Vector3", get_gravity, Vector3( ));
 	static void IgnoreLayerCollision(int layer1, int layer2, bool ignore) {
 		return reinterpret_cast<void(*)(int, int, bool)>(il2cpp::il2cpp_resolve_icall(xorstr("UnityEngine.Physics::IgnoreLayerCollision")))(layer1, layer2, ignore);
+	}
+	static bool CheckCapsule(Vector3 start, Vector3 end, float radius, int layerMask, QueryTriggerInteraction queryTriggerInteraction) {
+		return SafeExecution::Execute<bool>(vars::stor::gBase + CO::CheckCapsule, false, start, end, radius, layerMask, queryTriggerInteraction);
 	}
 };
 

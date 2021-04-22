@@ -33,6 +33,27 @@ namespace hk {
 					}
 				}
 			}
+			if (projectile->isAuthoritative( )) {
+				if (vars::stuff::testBool2) {
+					if (vars::stor::meme_target != NULL) {
+						Vector3 tar = reinterpret_cast<BaseEntity*>(vars::stor::meme_target)->transform( )->position( );
+						Transform* transform = reinterpret_cast<BaseEntity*>(vars::stor::meme_target)->transform( );
+
+						HitTest* hitTest = projectile->hitTest( );
+						hitTest->DidHit( ) = true;
+						hitTest->HitEntity((BaseEntity*)vars::stor::meme_target);
+						hitTest->HitTransform( ) = transform;
+
+						hitTest->HitPoint( ) = transform->InverseTransformPoint(projectile->currentPosition( ));
+						hitTest->HitNormal( ) = transform->InverseTransformDirection(projectile->currentPosition( ));
+
+						hitTest->AttackRay( ) = Ray(projectile->currentPosition( ), tar - projectile->currentPosition( ));
+
+						projectile->DoHit(hitTest, hitTest->HitPointWorld( ), hitTest->HitNormalWorld( ));
+						return;
+					}
+				}
+			}
 			return original_domovement(projectile, deltaTime);
 		}
 		bool Refract(Projectile* prj, uint32_t seed, Vector3 point, Vector3 normal, float resistancePower) {
@@ -189,14 +210,25 @@ namespace hk {
 				}
 			}
 			if (vars::misc::egg_bot) {
-				Vector3 vel = read(movement + 0x34, Vector3);
-				f_object egg = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("egg.prefab"));
-				if (egg.valid/* && LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1856217390*/) {
-					Vector3 direction = (egg.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
-					write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
-					Vector3 local = utils::ClosestPoint(LocalPlayer::Entity( ), egg.position);
-					if (Math::Distance_3D(local, egg.position) < 3.f) {
-						reinterpret_cast<void(*)(uintptr_t, BasePlayer*)>(vars::stor::gBase + 0x401A30)(egg.entity, LocalPlayer::Entity( ));
+				uintptr_t egghunt_typeinfo = read(vars::stor::gBase + 0x31B6D00, uintptr_t);
+				uintptr_t st = read(egghunt_typeinfo + 0xB8, uintptr_t);
+				uintptr_t clientEvent = read(st + 0x8, uintptr_t);
+
+				if (clientEvent != null) {
+					bool act = reinterpret_cast<bool(*)(uintptr_t)>(vars::stor::gBase + 0x974D90)(clientEvent);
+					if (act) {
+						Vector3 vel = read(movement + 0x34, Vector3);
+						f_object egg = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("egg.prefab"),
+							Vector3::Zero( ), Vector3::Zero( ), Vector3::Zero( ), false, xorstr(""),
+							99999.f, true, true);
+						if (egg.valid && LocalPlayer::Entity( )->GetActiveWeapon( )->GetID( ) == 1856217390) {
+							Vector3 direction = (egg.position - LocalPlayer::Entity( )->get_bone_pos(head)).Normalized( ) * speed;
+							write(movement + 0x34, Vector3(direction.x, vel.y, direction.z), Vector3);
+							Vector3 local = utils::ClosestPoint(LocalPlayer::Entity( ), egg.position);
+							if (Math::Distance_3D(local, egg.position) < 3.f) {
+								reinterpret_cast<void(*)(uintptr_t, BasePlayer*)>(vars::stor::gBase + CO::Menu_Pickup_CollectableEasterEgg)(egg.entity, LocalPlayer::Entity( ));
+							}
+						}
 					}
 				}
 			}
@@ -219,18 +251,7 @@ namespace hk {
 			}
 			if (vars::misc::suicide && GetAsyncKeyState(vars::keys::suicide) && LocalPlayer::Entity( )->GetHealth( ) > 0 && !LocalPlayer::Entity( )->IsMenu( )) {
 				reinterpret_cast<void(_fastcall*)(BasePlayer*, float)>(vars::stor::gBase + CO::OnLand)(LocalPlayer::Entity( ), -50);
-			}
-			/*if (vars::combat::psilent_autoshoot && vars::stor::closestPlayer != null && vars::combat::psilent && !LocalPlayer::Entity( )->IsMenu( )) {
-				auto* TargetPlayer = reinterpret_cast<BasePlayer*>(vars::stor::closestPlayer);
-				Item* weapon = LocalPlayer::Entity( )->GetActiveWeapon( );
-				DWORD64 basepr = weapon->entity( );
-				DWORD64 mag = read(basepr + 0x2A0, DWORD64);
-				int contents = read(mag + 0x1C, int);
-				if (basepr && weapon && contents > 0 && utils::LineOfSight(TargetPlayer->get_bone_pos(head),
-					(vars::misc::long_neck && GetAsyncKeyState(vars::keys::longneck)) ? LocalPlayer::Entity( )->get_bone_pos(head) + Vector3(0, 1.15, 0) : LocalPlayer::Entity( )->get_bone_pos(head))) {
-
-				}
-			}*/
+			} 
 			if (vars::misc::flyhack_indicator) {
 				CheckFlyhack( );
 			}
@@ -243,7 +264,36 @@ namespace hk {
 					reinterpret_cast<void(*)(uintptr_t, Signal, Str)>(vars::stor::gBase + CO::SendSignalBroadcast)(active, Signal::Attack, Str(xorstr(L"")));
 				}
 			}
-
+			if (vars::stuff::testBool2) {
+				f_object clo = f_object::get_closest_object(LocalPlayer::Entity( )->get_bone_pos(head), xorstr("player.prefab"));
+				if (clo.valid) {
+					if (!reinterpret_cast<BasePlayer*>(clo.valid)->HasFlags(PlayerFlags::Sleeping)) {
+						//if (!LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(clo.entity)->userID( ))) {
+							vars::stor::meme_target = clo.entity;
+						//}
+					}
+				}
+				if (vars::stor::meme_target != NULL && vars::stuff::testBool3) {
+					uintptr_t mag = read(LocalPlayer::Entity( )->GetActiveWeapon( )->entity( ) + 0x2A8, uintptr_t);
+					int am = read(mag + 0x1C, int);
+					if (am > 0) {
+						mouse_event(MOUSEEVENTF_LEFTDOWN, vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2, 0, 0);
+						mouse_event(MOUSEEVENTF_LEFTUP, vars::stuff::ScreenWidth / 2, vars::stuff::ScreenHeight / 2, 0, 0);
+					}
+				}
+			}
+			if (vars::stor::meme_target != NULL) {
+				if (!reinterpret_cast<BasePlayer*>(vars::stor::meme_target)->IsValid( )) {
+					vars::stor::meme_target = NULL;
+				}
+				if (LocalPlayer::Entity( )->is_teammate(reinterpret_cast<BasePlayer*>(vars::stor::meme_target)->userID( ))) {
+					vars::stor::meme_target = NULL;
+				}
+				if (reinterpret_cast<BasePlayer*>(vars::stor::meme_target)->health( ) <= 0.f) {
+					vars::stor::meme_target = NULL;
+				}
+			}
+			
 			lol::auto_farm_loop(weaponmelee, active);
 			game_thread_loop( );
 			if (vars::misc::fake_lag) {
@@ -265,7 +315,7 @@ namespace hk {
 			if (vars::misc::spoof_ladderstate) {
 				LocalPlayer::Entity( )->add_modelstate_flag(ModelStateFlag::OnLadder);
 			}
-			if (vars::misc::farmbot) {
+			if (vars::misc::farmbot || vars::misc::egg_bot) {
 				LocalPlayer::Entity( )->add_modelstate_flag(ModelStateFlag::Sprinting);
 			}
 		}
@@ -462,11 +512,12 @@ namespace hk {
 				projectile->thickness(0.1f);
 			}
 
+			
+
 			/*uintptr_t klass_baseprojectile_c = read(vars::stor::gBase + 0x31BDCE0, uintptr_t);
 			uintptr_t v12 = *(uintptr_t*)(*(uintptr_t*)(klass_baseprojectile_c + 0xB8) + 0x130);
 			uintptr_t v15 = *(uintptr_t*)(*(uintptr_t*)(klass_baseprojectile_c + 0xB8) + 0x138);
-			float num = reinterpret_cast<float(*)(BaseProjectile*, uintptr_t, uintptr_t, float)>(vars::stor::gBase + 0x5C3F30)(BaseProjectileA, v12, v15, 1.f);
-			LogSystem::Log(StringFormat::format(xorstr(L"%.2f"), num), 5.f);*/
+			float num = reinterpret_cast<float(*)(BaseProjectile*, uintptr_t, uintptr_t, float)>(vars::stor::gBase + 0x5C3F30)(BaseProjectileA, v12, v15, 1.f);*/
 
 			return projectile;
 		}

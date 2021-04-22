@@ -33,6 +33,8 @@ namespace vars {
 		float testFloat2 = 0.f;
 		float testFloat3 = 0.f;
 		bool testBool = false;
+		bool testBool2 = false;
+		bool testBool3 = false;
 		char testChar[0x100] = "testyvesty";
 		char testChar2[0x100] = "testyvesty";
 		bool Panic = false;
@@ -56,6 +58,7 @@ namespace vars {
 		uintptr_t gBase = NULL;
 		uintptr_t closestPlayer = NULL;
 		uintptr_t closestHeli = NULL;
+		uintptr_t meme_target = NULL;
 	}
 	namespace combat {
 		bool tree_reflect = false;

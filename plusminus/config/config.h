@@ -254,7 +254,7 @@ private:
 		SetupValue(vars::visuals::crates::elite, false, xorstr("visuals"), xorstr("elite"));
 		SetupValue(vars::visuals::crates::military, false, xorstr("visuals"), xorstr("military"));
 		SetupValue(vars::visuals::crates::bradley, false, xorstr("visuals"), xorstr("Bradley"));
-		SetupValue(vars::visuals::crates::show_distance, false, xorstr("visuals"), xorstr("Hemp"));
+		SetupValue(vars::visuals::crates::show_distance, false, xorstr("visuals"), xorstr("cratehsowdist"));
 		SetupValue(vars::visuals::crates::draw_distance, 300.f, xorstr("visuals"), xorstr("otherDistanceCRTATES"));
 
 		SetupValue(vars::keys::locktarget, 0x4A, xorstr("Keys"), xorstr("LockTarget"));
